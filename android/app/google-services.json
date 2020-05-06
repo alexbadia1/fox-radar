@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "436825085023",
+    "firebase_url": "https://community-tabs.firebaseio.com",
+    "project_id": "community-tabs",
+    "storage_bucket": "community-tabs.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:436825085023:android:d297087eec252c0c86b7ea",
+        "android_client_info": {
+          "package_name": "com.company.communitytabs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "436825085023-pg6bdlcvvnk77mipgfdl6ci6bs1q5r52.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAheJP4-AW4j_H_UsbTeHy8WMzoAcmFmFM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "436825085023-pg6bdlcvvnk77mipgfdl6ci6bs1q5r52.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
