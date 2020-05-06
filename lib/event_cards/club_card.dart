@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 
+/// This widget defines the card that is used in the list of events
+
 Widget clubCard (ClubEventData newEvent, context) {
 
   ClubEventData _myEvent = newEvent;
@@ -20,6 +22,8 @@ Widget clubCard (ClubEventData newEvent, context) {
     child: GestureDetector(
       onTap: () { Navigator.pushNamed(context, '/eventDetails', arguments: {'event': _myEvent});},
       child: Container(
+        height: 100.00,
+        width: double.infinity,
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
@@ -30,8 +34,6 @@ Widget clubCard (ClubEventData newEvent, context) {
             ),
           ],
         ),
-        height: 100.00,
-        width: double.infinity,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -40,7 +42,6 @@ Widget clubCard (ClubEventData newEvent, context) {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  //Host of the event
                   Expanded(
                     flex: 2,
                     child: Container(
@@ -129,6 +130,7 @@ Widget clubCard (ClubEventData newEvent, context) {
     ),
   );
 }
+
 
 Widget subText (String newText, [String newEventRoom = ""]) {
   return Expanded(

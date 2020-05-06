@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "436825085023",
-    "firebase_url": "https://community-tabs.firebaseio.com",
-    "project_id": "community-tabs",
-    "storage_bucket": "community-tabs.appspot.com"
+    "project_number": "644012301263",
+    "firebase_url": "https://maristcommunitytabs.firebaseio.com",
+    "project_id": "maristcommunitytabs",
+    "storage_bucket": "maristcommunitytabs.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:436825085023:android:d297087eec252c0c86b7ea",
+        "mobilesdk_app_id": "1:644012301263:android:f30138c403ca230cc790ba",
         "android_client_info": {
-          "package_name": "com.company.communitytabs"
+          "package_name": "com.example.communitytabs"
         }
       },
       "oauth_client": [
         {
-          "client_id": "436825085023-pg6bdlcvvnk77mipgfdl6ci6bs1q5r52.apps.googleusercontent.com",
+          "client_id": "644012301263-tlqiee0tgh4qb76vv90bd3pg54hbgg3f.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAheJP4-AW4j_H_UsbTeHy8WMzoAcmFmFM"
+          "current_key": "AIzaSyDsfOSgr1UhVNa_XZvY3sWoMK1tB0Q4O1M"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "436825085023-pg6bdlcvvnk77mipgfdl6ci6bs1q5r52.apps.googleusercontent.com",
+              "client_id": "644012301263-tlqiee0tgh4qb76vv90bd3pg54hbgg3f.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
