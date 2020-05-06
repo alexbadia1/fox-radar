@@ -1,5 +1,5 @@
 import'package:communitytabs/colors/marist_color_scheme.dart';
-import 'package:communitytabs/club_event_data.dart';
+import 'package:communitytabs/data_definitions//club_event_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

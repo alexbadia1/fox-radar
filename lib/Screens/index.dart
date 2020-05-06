@@ -1,6 +1,6 @@
 import 'dart:ui';
-import 'package:communitytabs/auth.dart';
-import 'package:communitytabs/club_event_data.dart';
+import 'package:communitytabs/authentication/auth.dart';
+import 'package:communitytabs/data_definitions/club_event_data.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/colors/marist_color_scheme.dart';
 import 'package:communitytabs/event_cards/club_card.dart';
