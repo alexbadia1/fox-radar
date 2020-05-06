@@ -56,42 +56,33 @@ class _LoginState extends State<Login> {
               children: <Widget>[
 
                 Expanded(flex: 13, child: SizedBox(),),
-                Row(
-                  children: <Widget>[
-                    Expanded(child: SizedBox(),),
-                    Container(
-                      child: Text(
-                        'MARIST',
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          fontWeight: FontWeight.w400,
-                          fontSize: 72.0,
-                          letterSpacing: 1.5,
-                          color: kHavenLightGray,
-                        )
-                      ),
-                    ),
-                    Expanded(child: SizedBox(),),
-                  ],
+
+                Container(
+                  child: Text(
+                    'MARIST',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Lato',
+                      fontWeight: FontWeight.w400,
+                      fontSize: 72.0,
+                      letterSpacing: 1.5,
+                      color: kHavenLightGray,
+                    )
+                  ),
                 ),
 
-                Row(
-                  children: <Widget>[
-                    Expanded(child: SizedBox(),),
-                    Container(
-                      child: Text(
-                        'See What\'s Going On',
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          fontWeight: FontWeight.w400,
-                          fontSize: 18.0,
-                          color: kHavenLightGray,
-                          fontStyle: FontStyle.italic,
-                        )
-                      )
-                    ),
-                    Expanded(child: SizedBox(),),
-                  ],
+                Container(
+                  child: Text(
+                    'See What\'s Going On',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Lato',
+                      fontWeight: FontWeight.w400,
+                      fontSize: 18.0,
+                      color: kHavenLightGray,
+                      fontStyle: FontStyle.italic,
+                    )
+                  )
                 ),
 
                 Expanded(flex: 9, child: SizedBox(),),
@@ -188,30 +179,6 @@ class _LoginState extends State<Login> {
 
                 Expanded(flex: 11, child: SizedBox(),),
 
-//                Container(
-//                  height: MediaQuery.of(context).size.height * .06,
-//                  color: kHavenLightGray,
-//                  child: FlatButton(
-//                    child: Row(
-//                      mainAxisAlignment: MainAxisAlignment.center,
-//                      children: <Widget>[
-//                        Text(
-//                            'Continue as a Guest User',
-//                          style: TextStyle(
-//                            color: Colors.white,
-//                            fontFamily: 'Lato',
-//                            fontSize: 12.0
-//                          ),
-//                        ),
-//                        Icon(
-//                          Icons.chevron_right,
-//                          size: 12.0,
-//                          color: Colors.white,)
-//                      ],
-//                    ),
-//                  ),
-//                ),
-
               ],
             ),
           ),
@@ -220,3 +187,4 @@ class _LoginState extends State<Login> {
     );
   }
 }
+
