@@ -46,8 +46,8 @@ class _HomePageState extends State<HomePage> {
         leading: FlatButton(
           child: Text("Sign Out"),
           onPressed: () async {
-            await _auth.signOut();
-            Navigator.pushReplacementNamed(context, '/');
+            dynamic success = await _auth.signOut();
+            success != -1 ? Navigator.pushReplacementNamed(context, '/') : print ("Error Signing Out");
           },
         ),
       ),

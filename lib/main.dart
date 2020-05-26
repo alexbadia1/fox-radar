@@ -6,7 +6,9 @@ import 'package:communitytabs/Screens/loading.dart';
 import 'package:communitytabs/Screens/wrapper.dart';
 import 'package:communitytabs/Screens/error.dart';
 import 'package:communitytabs/Screens/login.dart';
+import 'package:communitytabs/Screens/signUp.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 import 'package:communitytabs/authentication/user.dart';
 
 void main() => runApp(MyApp());
@@ -14,6 +16,7 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return StreamProvider<User>.value(
       value: AuthService().user,
       child: MaterialApp(
@@ -22,8 +25,9 @@ class MyApp extends StatelessWidget {
         routes: <String, WidgetBuilder>{
           '/': (context) => Wrapper(),
           '/home' : (context) => HomePage(),
-          '/eventDetails' : (context) => EventDetails(),
           '/login': (context) => Login(),
+          '/signUp': (context) => SignUp(),
+          '/eventDetails' : (context) => EventDetails(),
           '/error': (context) => Error(),
           '/loading': (context) => Loading(),
         }
