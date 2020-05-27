@@ -10,16 +10,16 @@ class Suggestions extends StatefulWidget {
 }
 
 class _SuggestionsState extends State<Suggestions> {
-
   List<ClubEventData> _events = [];
 
   @override
   Widget build(BuildContext context) {
-
     _events = Provider.of<List<ClubEventData>>(context);
 
     return Container(
-      child: _events == null ? LoadingWidget() : ListView.builder(
+      child: _events == null
+          ? LoadingWidget()
+          : ListView.builder(
               itemCount: _events?.length,
               itemBuilder: (BuildContext context, int index) {
                 return clubCard(_events[index], context);
