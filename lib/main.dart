@@ -1,4 +1,5 @@
 import 'package:communitytabs/Screens/eventDetails.dart';
+import 'package:communitytabs/Screens/sportsList.dart';
 import 'package:communitytabs/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/Screens/index.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
           '/eventDetails' : (context) => EventDetails(),
           '/error': (context) => Error(),
           '/loading': (context) => LoadingScreen(),
+          '/sports' : (context) => SportsList(),
         }
       ),
     );

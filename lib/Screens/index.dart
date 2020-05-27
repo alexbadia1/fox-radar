@@ -45,6 +45,13 @@ class _HomePageState extends State<HomePage> {
                   : print("Error Signing Out");
             },
           ),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.arrow_forward), 
+              onPressed: () {
+                Navigator.pushNamed(context, '/sports');
+            },)
+          ],
         ),
         body: Suggestions(),
       ),

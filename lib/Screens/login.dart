@@ -29,11 +29,11 @@ class _LoginState extends State<Login> {
           child: Stack(
             children: <Widget>[
               Container(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  child: Image(
-                      image: AssetImage("images/image1.jpg"),
-                      fit: BoxFit.cover)),
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: Image(
+                    image: AssetImage("images/image1.jpg"), fit: BoxFit.cover),
+              ),
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -110,7 +110,8 @@ class _LoginState extends State<Login> {
                                   //////Email//////
                                   /////////////////
                                   Container(
-                                    width: MediaQuery.of(context).size.width * .65,
+                                    width:
+                                        MediaQuery.of(context).size.width * .65,
                                     child: Focus(
                                       onFocusChange: (hasFocus) {
                                         if (hasFocus) {
@@ -143,7 +144,8 @@ class _LoginState extends State<Login> {
                                   //////Password//////
                                   ////////////////////
                                   Container(
-                                    width: MediaQuery.of(context).size.width * .65,
+                                    width:
+                                        MediaQuery.of(context).size.width * .65,
                                     child: Focus(
                                       onFocusChange: (hasFocus) {
                                         if (hasFocus) {
