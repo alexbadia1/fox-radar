@@ -2,12 +2,12 @@ import 'package:communitytabs/data/club_event_data.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/colors/marist_color_scheme.dart';
 
-class Loading extends StatefulWidget {
+class LoadingScreen extends StatefulWidget {
   @override
-  _LoadingState createState() => _LoadingState();
+  _LoadingScreenState createState() => _LoadingScreenState();
 }
 
-class _LoadingState extends State<Loading> {
+class _LoadingScreenState extends State<LoadingScreen> {
 
   void loading () async {
     List<ClubEventData> _eventList;

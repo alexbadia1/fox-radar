@@ -1,4 +1,6 @@
+import 'package:communitytabs/Navigation/transitions.dart';
 import 'package:communitytabs/services/auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/colors/marist_color_scheme.dart';
 import 'package:flutter/widgets.dart';
@@ -264,7 +266,7 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                           onTap: () {
-                            Navigator.pushNamed(context, "/signUp");
+                            Navigator.of(context).push(slideInRight());
                           },
                         ),
                       ],

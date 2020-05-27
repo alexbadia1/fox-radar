@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
           '/signUp': (context) => SignUp(),
           '/eventDetails' : (context) => EventDetails(),
           '/error': (context) => Error(),
-          '/loading': (context) => Loading(),
+          '/loading': (context) => LoadingScreen(),
         }
       ),
     );

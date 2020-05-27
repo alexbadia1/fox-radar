@@ -52,10 +52,40 @@ class _SignUpState extends State<SignUp> {
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
                     Expanded(
-                      flex: 7,
+                      flex: 4,
                       child: SizedBox(),
                     ),
 
+                    Container(
+                      height: MediaQuery.of(context).size.height * .10,
+                      width: MediaQuery.of(context).size.width * .75,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          IconButton(
+                            icon: Icon(Icons.chevron_left),
+                            iconSize: 35.0,
+                            color: kHavenLightGray,
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          Container(
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                'Back',
+                                style: TextStyle(
+                                    fontSize: 22.0,
+                                    color: kHavenLightGray),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     ////////////////
                     /////Title/////
                     ///////////////
@@ -102,107 +132,121 @@ class _SignUpState extends State<SignUp> {
                       flex: 17,
                       child: Form(
                         key: _loginFormKey,
-                        child: loading ? LoadingWidget() : Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            Container(
-                              width: MediaQuery.of(context).size.width * .75,
-                              child: Focus(
-                                onFocusChange: (hasFocus) {
-                                  if (hasFocus) {
-                                    setState(() {
-                                      failedLogin = false;
-                                    });
-                                  }
-                                },
-                                child: TextFormField(
-                                  textInputAction: TextInputAction.done,
-                                  decoration: customTextField.copyWith(labelText: 'Marist Email'),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      myEmail = value;
-                                    });
-                                  },
-                                  validator: (String value) {
-                                    value = value.trim();
-                                    return value.isEmpty
-                                        ? '\u26A0 Enter a MARIST email.'
-                                        : null;
-                                  },
-                                ),
+                        child: loading
+                            ? LoadingWidget()
+                            : Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * .75,
+                                    child: Focus(
+                                      onFocusChange: (hasFocus) {
+                                        if (hasFocus) {
+                                          setState(() {
+                                            failedLogin = false;
+                                          });
+                                        }
+                                      },
+                                      child: TextFormField(
+                                        textInputAction: TextInputAction.done,
+                                        decoration: customTextField.copyWith(
+                                            labelText: 'Marist Email'),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            myEmail = value;
+                                          });
+                                        },
+                                        validator: (String value) {
+                                          value = value.trim();
+                                          return value.isEmpty
+                                              ? '\u26A0 Enter a MARIST email.'
+                                              : null;
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * .75,
+                                    child: Focus(
+                                      onFocusChange: (hasFocus) {
+                                        if (hasFocus) {
+                                          setState(() {
+                                            failedLogin = false;
+                                          });
+                                        }
+                                      },
+                                      child: TextFormField(
+                                        textInputAction: TextInputAction.done,
+                                        obscureText: true,
+                                        decoration: customTextField.copyWith(
+                                            labelText: 'New Password'),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            myPassword = value;
+                                          });
+                                        },
+                                        validator: (String value) {
+                                          value = value.trim();
+                                          if (value.isNotEmpty) {
+                                            return value.length < 6
+                                                ? '\u26A0 Should be at least 6 characters.'
+                                                : null;
+                                          } else
+                                            return '\u26A0 Enter a password.';
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * .75,
+                                    child: Focus(
+                                      onFocusChange: (hasFocus) {
+                                        if (hasFocus) {
+                                          setState(() {
+                                            failedLogin = false;
+                                          });
+                                        }
+                                      },
+                                      child: TextFormField(
+                                        textInputAction: TextInputAction.done,
+                                        obscureText: true,
+                                        decoration: customTextField.copyWith(
+                                            labelText: 'Confirm Password'),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            myConfirmPassword = value;
+                                          });
+                                        },
+                                        validator: (String value) {
+                                          value = value.trim();
+                                          if (myConfirmPassword.isNotEmpty)
+                                            return myPassword !=
+                                                    myConfirmPassword
+                                                ? '\u26A0 Passwords must match.'
+                                                : null;
+                                          else
+                                            return '\u26A0 Confirm the new password.';
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    child: failedLogin
+                                        ? Center(child: Text(myError))
+                                        : SizedBox(),
+                                  ),
+                                ],
                               ),
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width * .75,
-                              child: Focus(
-                                onFocusChange: (hasFocus) {
-                                  if (hasFocus) {
-                                    setState(() {
-                                      failedLogin = false;
-                                    });
-                                  }
-                                },
-                                child: TextFormField(
-                                  textInputAction: TextInputAction.done,
-                                  obscureText: true,
-                                  decoration: customTextField.copyWith(labelText: 'New Password'),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      myPassword = value;
-                                    });
-                                  },
-                                  validator: (String value) {
-                                    value = value.trim();
-                                    if (value.isNotEmpty) {
-                                      return value.length < 6
-                                          ? '\u26A0 Should be at least 6 characters.'
-                                          : null;
-                                    } else return '\u26A0 Enter a password.';
-                                  },
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width * .75,
-                              child: Focus(
-                                onFocusChange: (hasFocus) {
-                                  if (hasFocus) {
-                                    setState(() {
-                                      failedLogin = false;
-                                    });
-                                  }
-                                },
-                                child: TextFormField(
-                                  textInputAction: TextInputAction.done,
-                                  obscureText: true,
-                                  decoration: customTextField.copyWith(labelText: 'Confirm Password'),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      myConfirmPassword = value;
-                                    });
-                                  },
-                                  validator: (String value) {
-                                    value = value.trim();
-                                    if (myConfirmPassword.isNotEmpty)
-                                      return myPassword != myConfirmPassword
-                                          ? '\u26A0 Passwords must match.'
-                                          : null;
-                                    else return '\u26A0 Confirm the new password.';
-                                  },
-                                ),
-                              ),
-                            ),
-                            Container(
-                              child: failedLogin
-                                  ? Center(child: Text(myError))
-                                  : SizedBox(),
-                            ),
-                          ],
-                        ),
                       ),
                     ),
 
-                    SizedBox(height: MediaQuery.of(context).size.height * .025,),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * .025,
+                    ),
 
                     //////////////////////
                     ////Sign Up Button////
@@ -230,9 +274,11 @@ class _SignUpState extends State<SignUp> {
                                     setState(() {
                                       loading = false;
                                       failedLogin = true;
-                                      myError = '\u26A0 An existing account already uses that email.';
+                                      myError =
+                                          '\u26A0 An existing account already uses that email.';
                                     });
-                                  } else failedLogin = false;
+                                  } else
+                                    failedLogin = false;
                                 }
                               },
                               child: Container(
