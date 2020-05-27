@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class ClubEventData {
@@ -9,14 +10,14 @@ class ClubEventData {
   String _myLocation;
   String _myRoom;
   String _mySummary;
-  List<String> _myHighlights;
+  List<dynamic> _myHighlights;
   String _image;
 
-  ClubEventData(String newHost, String newTitle, String newDate, String newStartTime, String newEndTime, String newLocation, String newRoom,
-    String newSummary, List<String> newHighlights, String newImage) {
+  ClubEventData({String newHost, String newTitle, Timestamp newDate, String newStartTime, String newEndTime, String newLocation, String newRoom,
+    String newSummary, List<dynamic> newHighlights, String newImage}) {
     _myHost = newHost;
     _myTitle = newTitle;
-    _myDate = newDate;
+    _myDate = DateTime.fromMillisecondsSinceEpoch(newDate.millisecondsSinceEpoch * 1000).toString();
     _myStartTime = newStartTime;
     _myEndTime = newEndTime;
     _myLocation = newLocation;

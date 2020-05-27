@@ -1,4 +1,4 @@
-import 'package:communitytabs/authentication/auth.dart';
+import 'package:communitytabs/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/colors/marist_color_scheme.dart';
 import 'package:flutter/widgets.dart';

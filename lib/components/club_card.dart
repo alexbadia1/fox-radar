@@ -1,15 +1,12 @@
 import 'package:communitytabs/colors/marist_color_scheme.dart';
-import 'package:communitytabs/data_definitions/club_event_data.dart';
+import 'package:communitytabs/data/club_event_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 
 /// This widget defines the card that is used in the list of events
-
 Widget clubCard (ClubEventData newEvent, context) {
-
   ClubEventData _myEvent = newEvent;
-
   String _eventHost = _myEvent.getHost;
   String _eventTitle = _myEvent.getTitle;
   String _eventLocation = _myEvent.getLocation;
@@ -17,6 +14,7 @@ Widget clubCard (ClubEventData newEvent, context) {
   String _eventStartTime = _myEvent.getStartTime;
   String _eventEndTime = _myEvent.getEndTime;
   String _eventDate = _myEvent.getDate;
+  String _eventImage = _myEvent.getImage;
 
   return Card(
     child: GestureDetector(
@@ -119,7 +117,7 @@ Widget clubCard (ClubEventData newEvent, context) {
               child: Container(
                 height: double.infinity,
                 child: Image(
-                  image: AssetImage(_myEvent.getImage),
+                  image: AssetImage(_eventImage),
                   fit: BoxFit.fitHeight,
                 ),
               ),

@@ -1,9 +1,11 @@
 import 'dart:ui';
-import 'package:communitytabs/authentication/auth.dart';
-import 'package:communitytabs/data_definitions/club_event_data.dart';
+import 'package:communitytabs/components/suggestions.dart';
+import 'package:communitytabs/data/club_event_data.dart';
+import 'package:communitytabs/services/auth.dart';
+import 'package:communitytabs/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/colors/marist_color_scheme.dart';
-import 'package:communitytabs/event_cards/club_card.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -12,51 +14,40 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  Map _myData = {};
-  List<ClubEventData> _myEventList = [];
   final AuthService _auth = AuthService();
-
   @override
   Widget build(BuildContext context) {
-
-     try { _myData = ModalRoute
-          .of(context)
-          .settings
-          .arguments;
-      _myEventList = _myData['events'];
-     } on Error {_myEventList = [];}
-
-    return Scaffold(
-      backgroundColor: cBackgroundColor,
-      appBar: AppBar (
-        title: Text("Marist"),
-        centerTitle: true,
-        flexibleSpace: Container(
-          decoration: BoxDecoration (
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: <Color> [
-                cWashedRed,
-                cFullRed,
-              ],
+    return StreamProvider<List<ClubEventData>>.value(
+      value: DatabaseService().getEvents,
+      child: Scaffold(
+        backgroundColor: cBackgroundColor,
+        appBar: AppBar(
+          title: Text("Marist"),
+          centerTitle: true,
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: <Color>[
+                  cWashedRed,
+                  cFullRed,
+                ],
+              ),
             ),
           ),
+          leading: FlatButton(
+            child: Text("Sign Out"),
+            onPressed: () async {
+              dynamic success = await _auth.signOut();
+              success != -1
+                  ? Navigator.pushReplacementNamed(context, '/')
+                  : print("Error Signing Out");
+            },
+          ),
         ),
-        leading: FlatButton(
-          child: Text("Sign Out"),
-          onPressed: () async {
-            dynamic success = await _auth.signOut();
-            success != -1 ? Navigator.pushReplacementNamed(context, '/') : print ("Error Signing Out");
-          },
-        ),
-      ),
-      body: ListView.builder (
-          itemCount: _myEventList.length,
-          itemBuilder: (BuildContext context, int index) {
-            return clubCard(_myEventList[index], context);
-          }
+        body: Suggestions(),
       ),
     );
   }
-}
+}//class

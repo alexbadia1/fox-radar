@@ -16,7 +16,7 @@ const Color kHavenLightGray = Color.fromRGBO(50, 50, 50, 1.0);
 const Color kActiveHavenLightGray = Color.fromRGBO(77, 77, 77, 1.0);
 
 //Components
-const Color cBackgroundColor = Color.fromRGBO(255, 255, 255, 1.0);
+const Color cBackgroundColor = Color.fromRGBO(50, 50, 50, 1.0);
 
 //Form Text Field Decoration
 const InputDecoration customTextField = InputDecoration(
@@ -44,3 +44,5 @@ class LoadingWidget extends StatelessWidget {
     );
   }
 }
+
+

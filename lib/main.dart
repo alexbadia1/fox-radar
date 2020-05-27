@@ -1,5 +1,5 @@
 import 'package:communitytabs/Screens/eventDetails.dart';
-import 'package:communitytabs/authentication/auth.dart';
+import 'package:communitytabs/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/Screens/index.dart';
 import 'package:communitytabs/Screens/loading.dart';
@@ -9,7 +9,7 @@ import 'package:communitytabs/Screens/login.dart';
 import 'package:communitytabs/Screens/signUp.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
-import 'package:communitytabs/authentication/user.dart';
+import 'package:communitytabs/data/user.dart';
 
 void main() => runApp(MyApp());
 

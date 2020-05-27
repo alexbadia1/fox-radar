@@ -1,7 +1,7 @@
 import 'package:communitytabs/Screens/loading.dart';
 import 'package:communitytabs/Screens/login.dart';
 import 'package:flutter/material.dart';
-import 'package:communitytabs/authentication/user.dart';
+import 'package:communitytabs/data/user.dart';
 import 'package:provider/provider.dart';
 
 
