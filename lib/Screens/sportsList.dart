@@ -1,4 +1,5 @@
 import 'package:communitytabs/colors/marist_color_scheme.dart';
+import 'package:communitytabs/components/slidingUpNavigationBar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/services/search.dart';
@@ -99,6 +100,7 @@ class _SportsListState extends State<SportsList> {
                 ),
               ],
             ),
+            bottomNavigationBar: SlidingUpNavigationBar(namedRoute: '/sports',),
           ),
         ),
     );

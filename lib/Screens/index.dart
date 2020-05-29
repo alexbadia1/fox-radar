@@ -1,6 +1,6 @@
 import 'dart:ui';
-import 'package:communitytabs/components/homeSlidingUpNavigationBar.dart';
-import 'package:communitytabs/services/search.dart';
+import 'package:communitytabs/components/slidingUpNavigationBar.dart';
+import 'package:communitytabs/components/searchButton.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/colors/marist_color_scheme.dart';
 
@@ -39,17 +39,10 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           actions: <Widget>[
-            IconButton(
-              color: kHavenLightGray,
-              splashColor: kActiveHavenLightGray,
-              icon: Icon(Icons.search),
-              onPressed: () async {
-                await showSearch(context: context, delegate: Search());
-              },
-            )
+            SearchButton()
           ],
         ),
-        body: HomeSlidingUpNavigationBar(),
+        body: SlidingUpNavigationBar(namedRoute: '/home',),
         ),
     );
   }

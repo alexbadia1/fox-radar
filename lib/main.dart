@@ -1,5 +1,6 @@
 import 'package:communitytabs/Screens/eventDetails.dart';
 import 'package:communitytabs/Screens/sportsList.dart';
+import 'package:communitytabs/data/IconsStateProvider.dart';
 import 'package:communitytabs/data/club_event_data.dart';
 import 'package:communitytabs/services/auth.dart';
 import 'package:communitytabs/services/database.dart';
@@ -16,11 +17,25 @@ import 'package:communitytabs/data/user.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'Screens/account.dart';
 
+
+/*
+Author: Alex Badia
+Implemented MultiProvider for very basic state management
+  1. User Stream:
+    ~Contains Auth user data returned from the Firebase Authentication
+    ~Allows for the app to 'remember' the user for login
+     by passing the Auth User through a wrapper class.
+  2. Events Stream:
+  `~Contains class definitions of the events returned from Firebase database,
+   ~In the services/database.dart,
+  3. Panel Controller Stream:
+ */
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
 
   PanelController pc = new PanelController();
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -29,7 +44,8 @@ class MyApp extends StatelessWidget {
         StreamProvider<User>.value(value: AuthService().user),
         StreamProvider<List<ClubEventData>>.value(
             value: DatabaseService().getEvents),
-        Provider<PanelController>(create: (context) => pc ,),
+        Provider<PanelController>(create: (context) => pc,),
+        ChangeNotifierProvider<IconStateProvider>(create: (context) => IconStateProvider(),),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
