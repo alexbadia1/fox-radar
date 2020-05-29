@@ -1,10 +1,8 @@
 import 'package:communitytabs/colors/marist_color_scheme.dart';
-import 'package:communitytabs/data/club_event_data.dart';
-import 'package:communitytabs/services/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/services/search.dart';
-import 'package:provider/provider.dart';
+
 
 class SportsList extends StatefulWidget {
   @override
@@ -12,12 +10,9 @@ class SportsList extends StatefulWidget {
 }
 
 class _SportsListState extends State<SportsList> {
-
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<List<ClubEventData>>.value(
-      value: DatabaseService().getEvents,
-      child: DefaultTabController(
+    return DefaultTabController(
         length: 3,
         child: SafeArea(
           child: Scaffold(
@@ -63,8 +58,8 @@ class _SportsListState extends State<SportsList> {
                   color: kHavenLightGray,
                   splashColor: kActiveHavenLightGray,
                   icon: Icon(Icons.search),
-                  onPressed: () {
-                    showSearch(context: context, delegate: SportsSearch());
+                  onPressed: () async {
+                    await showSearch(context: context, delegate: Search());
                   },
                 )
               ],
@@ -106,7 +101,6 @@ class _SportsListState extends State<SportsList> {
             ),
           ),
         ),
-      ),
     );
   }
 }

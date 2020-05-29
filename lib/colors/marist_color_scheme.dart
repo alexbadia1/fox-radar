@@ -3,10 +3,12 @@ import 'package:loading/indicator/ball_spin_fade_loader_indicator.dart';
 import 'package:loading/loading.dart';
 
 //Color Palette
-//Washed Red
+//Washed
 const Color cWashedRed = Color.fromRGBO(255, 77, 77, .8);
+const Color cWashedGreen = Color.fromRGBO(121, 255, 77, 1.0);
 //Full Red
 const Color cFullRed = Color.fromRGBO(230, 0, 0, .8);
+const Color cFullGreen = Color.fromRGBO(57, 230, 0, 1.0);
 
 const Color cWashedRedFaded = Color.fromRGBO(255, 77, 77, .725);
 //Full Red
@@ -21,6 +23,35 @@ const Color kActiveHavenLightGray = Color.fromRGBO(77, 77, 77, 1.0);
 
 //Components
 const Color cBackgroundColor = Color.fromRGBO(255, 255, 255, 1.0);
+
+//Fully solid gradients
+LinearGradient cGreedGradient = LinearGradient(
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+  colors: <Color>[
+    cWashedGreen,
+    cFullGreen,
+  ],
+);
+
+//Gradients
+LinearGradient cMaristGradient = LinearGradient(
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+  colors: <Color>[
+    cWashedRed,
+    cFullRed,
+  ],
+);
+
+LinearGradient cMaristGradientWashed = LinearGradient(
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+  colors: <Color>[
+    cWashedRedFaded,
+    cFullRedFaded,
+  ],
+);
 
 //Form Text Field Decoration
 const InputDecoration customTextField = InputDecoration(
@@ -48,5 +79,3 @@ class LoadingWidget extends StatelessWidget {
     );
   }
 }
-
-

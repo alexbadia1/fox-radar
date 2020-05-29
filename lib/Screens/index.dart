@@ -1,11 +1,8 @@
 import 'dart:ui';
-import 'package:communitytabs/components/suggestions.dart';
-import 'package:communitytabs/data/club_event_data.dart';
-import 'package:communitytabs/services/auth.dart';
-import 'package:communitytabs/services/database.dart';
+import 'package:communitytabs/components/homeSlidingUpNavigationBar.dart';
+import 'package:communitytabs/services/search.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/colors/marist_color_scheme.dart';
-import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -13,48 +10,47 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
-  final AuthService _auth = AuthService();
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<List<ClubEventData>>.value(
-      value: DatabaseService().getEvents,
+    return SafeArea(
       child: Scaffold(
-        backgroundColor: cBackgroundColor,
         appBar: AppBar(
-          title: Text("Marist"),
-          centerTitle: true,
-          flexibleSpace: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: <Color>[
-                  cWashedRed,
-                  cFullRed,
-                ],
-              ),
-            ),
+          backgroundColor: Colors.transparent,
+          title: Text(
+            "Marist",
+            style: TextStyle(color: kHavenLightGray),
           ),
-          leading: FlatButton(
-            child: Text("Sign Out"),
-            onPressed: () async {
-              dynamic success = await _auth.signOut();
-              success != -1
-                  ? Navigator.pushReplacementNamed(context, '/')
-                  : print("Error Signing Out");
-            },
+          centerTitle: false,
+          flexibleSpace: Stack(
+            children: <Widget>[
+              Image(
+                  width: double.infinity,
+                  height: 100.0,
+                  image: ResizeImage(
+                    AssetImage("images/tenney.jpg"),
+                    width: 500,
+                    height: 100,
+                  ),
+                  fit: BoxFit.fill),
+              Container(
+                decoration:
+                BoxDecoration(gradient: cMaristGradientWashed),
+              ),
+            ],
           ),
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.arrow_forward), 
-              onPressed: () {
-                Navigator.pushNamed(context, '/sports');
-            },)
+              color: kHavenLightGray,
+              splashColor: kActiveHavenLightGray,
+              icon: Icon(Icons.search),
+              onPressed: () async {
+                await showSearch(context: context, delegate: Search());
+              },
+            )
           ],
         ),
-        body: Suggestions(),
-      ),
+        body: HomeSlidingUpNavigationBar(),
+        ),
     );
   }
-}//class
+} //class
