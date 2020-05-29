@@ -17,7 +17,6 @@ import 'package:communitytabs/data/user.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'Screens/account.dart';
 
-
 /*
 Author: Alex Badia
 Implemented MultiProvider for very basic state management

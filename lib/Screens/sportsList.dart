@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/services/search.dart';
 
-
 class SportsList extends StatefulWidget {
   @override
   _SportsListState createState() => _SportsListState();
