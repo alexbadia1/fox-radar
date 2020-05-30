@@ -1,6 +1,6 @@
-import 'package:communitytabs/data/club_event_data.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/colors/marist_color_scheme.dart';
+import 'index.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -8,15 +8,13 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-
-  void loading () async {
-    List<ClubEventData> _eventList;
-    ClubEventData defaultEvent = new ClubEventData.nullConstructor();
-    _eventList = [defaultEvent];
-    //5.) Pass the list to the home page
-    Future.delayed(Duration(seconds: 2), (){
-      Navigator.pushReplacementNamed(context, '/home', arguments: {
-      'events': _eventList });
+  void loading() async {
+    Future.delayed(Duration(seconds: 2), () {
+      Navigator.of(context).pushAndRemoveUntil(
+        PageRouteBuilder(
+          pageBuilder: (context, animation1, animation2) => HomePage(),
+        ), (Route<dynamic> route) => false
+      );
     });
   }
 
@@ -33,11 +31,11 @@ class _LoadingScreenState extends State<LoadingScreen> {
         child: Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: BoxDecoration (
+          decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: <Color> [
+              colors: <Color>[
                 cWashedRed,
                 cFullRed,
               ],

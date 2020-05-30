@@ -16,7 +16,7 @@ class _AccountDrawerState extends State<AccountDrawer> {
               onPressed: () async {
                 dynamic success = await _auth.signOut();
                 success != -1
-                    ? Navigator.pushReplacementNamed(context, '/')
+                    ? Navigator.of(context).pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false)
                     : print("Error Signing Out");
               },
             ),

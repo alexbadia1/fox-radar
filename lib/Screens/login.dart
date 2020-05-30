@@ -33,7 +33,8 @@ class _LoginState extends State<Login> {
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
                   child: Image(
-                      image: AssetImage("images/image1.jpg"), fit: BoxFit.cover),
+                      image: AssetImage("images/image1.jpg"),
+                      fit: BoxFit.cover),
                 ),
                 Container(
                   decoration: BoxDecoration(
@@ -97,13 +98,15 @@ class _LoginState extends State<Login> {
                       ////////////////
                       //////Form//////
                       ////////////////
-                      Expanded(
-                        flex: 17,
-                        child: Form(
-                          key: _loginFormKey,
-                          child: loading
-                              ? LoadingWidget()
-                              : Column(
+                      loading
+                          ? Container(
+                              height: MediaQuery.of(context).size.height * .15,
+                            )
+                          : Expanded(
+                              flex: 17,
+                              child: Form(
+                                key: _loginFormKey,
+                                child: Column(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
                                   children: <Widget>[
@@ -111,8 +114,8 @@ class _LoginState extends State<Login> {
                                     //////Email//////
                                     /////////////////
                                     Container(
-                                      width:
-                                          MediaQuery.of(context).size.width * .65,
+                                      width: MediaQuery.of(context).size.width *
+                                          .65,
                                       child: Focus(
                                         onFocusChange: (hasFocus) {
                                           if (hasFocus) {
@@ -145,8 +148,8 @@ class _LoginState extends State<Login> {
                                     //////Password//////
                                     ////////////////////
                                     Container(
-                                      width:
-                                          MediaQuery.of(context).size.width * .65,
+                                      width: MediaQuery.of(context).size.width *
+                                          .65,
                                       child: Focus(
                                         onFocusChange: (hasFocus) {
                                           if (hasFocus) {
@@ -181,8 +184,8 @@ class _LoginState extends State<Login> {
                                     ),
                                   ],
                                 ),
-                        ),
-                      ),
+                              ),
+                            ),
 
                       SizedBox(
                         height: MediaQuery.of(context).size.height * .02,
@@ -190,147 +193,162 @@ class _LoginState extends State<Login> {
                       ////////////////////////
                       //////Login Button//////
                       ////////////////////////
-                      Container(
-                        height: MediaQuery.of(context).size.height * .0475,
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: SizedBox(),
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width * .535,
-                              child: FlatButton(
-                                color: kHavenLightGray,
-                                onPressed: () async {
-                                  if (_loginFormKey.currentState.validate()) {
-                                    setState(() {
-                                      loading = true;
-                                    });
-                                    dynamic result =
-                                        await _auth.signInWithEmailAndPassword(
-                                            myEmail, myPassword);
-                                    if (result == null) {
-                                      print('Error Signing In User.');
-                                      setState(() {
-                                        loading = false;
-                                        myError =
-                                            "\u26A0 Incorrect email and/or password.";
-                                        failedLogin = true;
-                                      });
-                                    } else
-                                      setState(() {
-                                        failedLogin = false;
-                                      });
-                                  }
-                                },
-                                child: Container(
-                                  child: Text(
-                                    'Login',
-                                    style: TextStyle(
-                                      letterSpacing: 1.0,
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.w400,
+                      loading
+                          ? LoadingWidget()
+                          : Container(
+                              height:
+                                  MediaQuery.of(context).size.height * .0475,
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    child: SizedBox(),
+                                  ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width *
+                                        .535,
+                                    child: FlatButton(
+                                      color: kHavenLightGray,
+                                      onPressed: () async {
+                                        if (_loginFormKey.currentState
+                                            .validate()) {
+                                          setState(() {
+                                            loading = true;
+                                          });
+                                          dynamic result = await _auth
+                                              .signInWithEmailAndPassword(
+                                                  myEmail, myPassword);
+                                          if (result == null) {
+                                            print('Error Signing In User.');
+                                            setState(() {
+                                              loading = false;
+                                              myError =
+                                                  "\u26A0 Incorrect email and/or password.";
+                                              failedLogin = true;
+                                            });
+                                          } else
+                                            setState(() {
+                                              failedLogin = false;
+                                            });
+                                        }
+                                      },
+                                      child: Container(
+                                        child: Text(
+                                          'Login',
+                                          style: TextStyle(
+                                            letterSpacing: 1.0,
+                                            color: Colors.white,
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            new BorderRadius.circular(10.0),
+                                        side:
+                                            BorderSide(color: kHavenLightGray),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(10.0),
-                                  side: BorderSide(color: kHavenLightGray),
-                                ),
+                                  Expanded(
+                                    child: SizedBox(),
+                                  ),
+                                ],
                               ),
                             ),
-                            Expanded(
-                              child: SizedBox(),
-                            ),
-                          ],
-                        ),
-                      ),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * .015,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            'Don\'t have an account? ',
-                            style: TextStyle(
-                              fontSize: 12.0,
+                      loading
+                          ? Container()
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  'Don\'t have an account? ',
+                                  style: TextStyle(
+                                    fontSize: 12.0,
+                                  ),
+                                ),
+                                InkWell(
+                                  child: Text(
+                                    'Sign Up',
+                                    style: TextStyle(
+                                      fontSize: 14.0,
+                                      fontStyle: FontStyle.italic,
+                                      fontWeight: FontWeight.bold,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    Navigator.of(context).push(slideInRight());
+                                  },
+                                ),
+                              ],
                             ),
-                          ),
-                          InkWell(
-                            child: Text(
-                              'Sign Up',
-                              style: TextStyle(
-                                fontSize: 14.0,
-                                fontStyle: FontStyle.italic,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                            onTap: () {
-                              Navigator.of(context).push(slideInRight());
-                            },
-                          ),
-                        ],
-                      ),
                       Expanded(
                         child: SizedBox(),
                       ),
-                      Container(
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                                child: Divider(
-                              thickness: 1.5,
-                            )),
-                            Container(
-                              child: Text(
-                                " OR ",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 15.0,
-                                  fontFamily: 'Lato',
-                                  color: kHavenLightGray,
+                      loading
+                          ? Container()
+                          : Container(
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                      child: Divider(
+                                    thickness: 1.5,
+                                  )),
+                                  Container(
+                                    child: Text(
+                                      " OR ",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 15.0,
+                                        fontFamily: 'Lato',
+                                        color: kHavenLightGray,
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                      child: Divider(
+                                    thickness: 1.5,
+                                  )),
+                                ],
+                              ),
+                            ),
+                      Expanded(
+                        child: SizedBox(),
+                      ),
+                      loading
+                          ? Container()
+                          : Container(
+                              child: GestureDetector(
+                                onTap: () async {
+                                  dynamic _result =
+                                      await _auth.anonymousSignIn();
+                                  if (_result == null) {
+                                    print('Error Signing In');
+                                  } else {
+                                    print('Sign in successful');
+                                    print(_result);
+                                    Navigator.pushReplacementNamed(
+                                        context, '/loading');
+                                  }
+                                },
+                                child: Text(
+                                  'Continue as Guest',
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    fontFamily: 'Lato',
+                                    fontWeight: FontWeight.w400,
+                                    color: kHavenLightGray,
+                                    decoration: TextDecoration.underline,
+                                    fontStyle: FontStyle.italic,
+                                  ),
                                 ),
                               ),
+                              alignment: Alignment.center,
                             ),
-                            Expanded(
-                                child: Divider(
-                              thickness: 1.5,
-                            )),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: SizedBox(),
-                      ),
-                      Container(
-                        child: GestureDetector(
-                          onTap: () async {
-                            dynamic _result = await _auth.anonymousSignIn();
-                            if (_result == null) {
-                              print('Error Signing In');
-                            } else {
-                              print('Sign in successful');
-                              print(_result);
-                              Navigator.pushReplacementNamed(context, '/loading');
-                            }
-                          },
-                          child: Text(
-                            'Continue as Guest',
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              fontFamily: 'Lato',
-                              fontWeight: FontWeight.w400,
-                              color: kHavenLightGray,
-                              decoration: TextDecoration.underline,
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
-                        ),
-                        alignment: Alignment.center,
-                      ),
                       Expanded(
                         flex: 9,
                         child: SizedBox(),

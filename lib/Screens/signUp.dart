@@ -57,7 +57,9 @@ class _SignUpState extends State<SignUp> {
                         child: SizedBox(),
                       ),
 
-                      Container(
+                      loading
+                          ? Container()
+                          : Container(
                         height: MediaQuery.of(context).size.height * .10,
                         width: MediaQuery.of(context).size.width * .75,
                         child: Row(
@@ -131,11 +133,11 @@ class _SignUpState extends State<SignUp> {
                       ////////////////
                       Expanded(
                         flex: 17,
-                        child: Form(
+                        child: loading
+                            ? LoadingWidget()
+                            : Form(
                           key: _loginFormKey,
-                          child: loading
-                              ? LoadingWidget()
-                              : Column(
+                          child: Column(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
                                   children: <Widget>[
@@ -252,7 +254,9 @@ class _SignUpState extends State<SignUp> {
                       //////////////////////
                       ////Sign Up Button////
                       //////////////////////
-                      Container(
+                      loading
+                          ? Container()
+                          : Container(
                         height: MediaQuery.of(context).size.height * .05,
                         child: Row(
                           children: <Widget>[
@@ -308,7 +312,9 @@ class _SignUpState extends State<SignUp> {
                       SizedBox(
                         height: MediaQuery.of(context).size.height * .015,
                       ),
-                      Row(
+                      loading
+                          ? Container()
+                          : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Text(

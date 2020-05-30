@@ -1,3 +1,4 @@
+import 'package:communitytabs/Screens/categoryScreen.dart';
 import 'package:communitytabs/colors/marist_color_scheme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,16 +13,26 @@ class CustomNavigationItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(4.0, 0, 4.0, 0),
+      padding: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 0),
       child: Container(
         child: Stack(
           children: <Widget>[
             Container(
               decoration: BoxDecoration(
+                  color: Colors.blueAccent,
                   borderRadius: BorderRadius.all(Radius.circular(5))),
             ),
             FlatButton(
-              onPressed: () => Navigator.pushNamed(context, nextPage),
+              onPressed: () => Navigator.pushReplacement(
+                context,
+                //TODO: Add a Slide-In-Right transition to the specified Category Page
+                PageRouteBuilder(
+                  pageBuilder: (context, animation1, animation2) =>
+                      CategoryScreen(
+                    namedRoute: nextPage,
+                  ),
+                ),
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.stretch,

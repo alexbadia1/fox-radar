@@ -38,8 +38,22 @@ class _AccountState extends State<Account> {
             style: TextStyle(color: kHavenLightGray),
           ),
           centerTitle: false,
-          flexibleSpace: Container(
-            decoration: BoxDecoration(gradient: cMaristGradient),
+          flexibleSpace: Stack(
+            children: <Widget>[
+              Image(
+                  width: double.infinity,
+                  height: 100.0,
+                  image: ResizeImage(
+                    AssetImage("images/tenney.jpg"),
+                    width: 500,
+                    height: 100,
+                  ),
+                  fit: BoxFit.fill),
+              Container(
+                decoration:
+                BoxDecoration(gradient: cMaristGradientWashed),
+              ),
+            ],
           ),
           actions: <Widget>[
             CoverContainer(openDrawerCallback: openSideDrawer)

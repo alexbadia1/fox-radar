@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 
 class SlidingUpNavigationBar extends StatefulWidget {
   final String namedRoute;
-  SlidingUpNavigationBar({this.namedRoute});
+  SlidingUpNavigationBar({@ required this.namedRoute});
   @override
   _SlidingUpNavigationBarState createState() =>
       _SlidingUpNavigationBarState();
@@ -36,49 +36,49 @@ class _SlidingUpNavigationBarState extends State<SlidingUpNavigationBar> {
           Container(
             decoration: BoxDecoration(gradient: cMaristGradient),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              IconButton(
-                icon: Icon(Icons.home),
-                color: kHavenLightGray,
-                splashColor: kActiveHavenLightGray,
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation1, animation2) =>
-                          HomePage(),
-                    ),
-                  );
-                },
-              ),
-              IconButton(
-                  icon: Icon(Icons.add),
+         Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.home),
                   color: kHavenLightGray,
                   splashColor: kActiveHavenLightGray,
                   onPressed: () {
-                    pc.open();
-                    iconsProvider.setShowSearch(false);
-                    iconsProvider.setShowDrawer(false);
-                  }
-                  ),
-              IconButton(
-                icon: Icon(Icons.person),
-                color: kHavenLightGray,
-                splashColor: kActiveHavenLightGray,
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation1, animation2) =>
-                          Account(),
+                    Navigator.pushReplacement(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                            HomePage(),
+                      ),
+                    );
+                  },
+                ),
+                IconButton(
+                    icon: Icon(Icons.add),
+                    color: kHavenLightGray,
+                    splashColor: kActiveHavenLightGray,
+                    onPressed: () {
+                      pc.open();
+                      iconsProvider.setShowSearch(false);
+                      iconsProvider.setShowDrawer(false);
+                    }
                     ),
-                  );
-                },
-              ),
-            ],
-          ),
+                IconButton(
+                  icon: Icon(Icons.person),
+                  color: kHavenLightGray,
+                  splashColor: kActiveHavenLightGray,
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation1, animation2) =>
+                            Account(),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
         ],
       ) : Container(),
       isDraggable: false,

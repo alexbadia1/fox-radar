@@ -16,53 +16,53 @@ class _HomePageContentState extends State<HomePageContent> {
   @override
   Widget build(BuildContext context) {
     _events = Provider.of<List<ClubEventData>>(context);
-    if (_events == null) {_events = [];}
+    if (_events == null) {
+      _events = [];
+    }
 
     return CustomScrollView(
       slivers: [
         SliverGrid.count(
           key: navigation,
           crossAxisCount: 2,
-          crossAxisSpacing: MediaQuery.of(context).size.width * .015,
+          crossAxisSpacing: MediaQuery.of(context).size.width * .02,
           mainAxisSpacing: MediaQuery.of(context).size.height * .01,
-          childAspectRatio: 5,
+          childAspectRatio: 4,
           children: <Widget>[
             CustomNavigationItem(
-                option: 'Arts', icon: Icons.palette, nextPage: '/sports'),
+                option: 'Arts', icon: Icons.palette, nextPage: '/arts'),
             CustomNavigationItem(
-              option: 'Sports',
-              icon: Icons.flag,
-              nextPage: '/sports',
-            ),
+                option: 'Sports', icon: Icons.flag, nextPage: '/sports'),
             CustomNavigationItem(
-                option: 'Diversity',
-                icon: Icons.public,
-                nextPage: '/sports'),
+                option: 'Diversity', icon: Icons.public, nextPage: '/diversity'),
             CustomNavigationItem(
-                option: 'Clubs', icon: Icons.group, nextPage: '/sports'),
+                option: 'Student', icon: Icons.library_books, nextPage: '/clubs'),
             CustomNavigationItem(
-                option: 'Food',
-                icon: Icons.local_dining,
-                nextPage: '/sports'),
+                option: 'Food', icon: Icons.local_dining, nextPage: '/food'),
             CustomNavigationItem(
                 option: 'Greek',
                 icon: Icons.account_balance,
-                nextPage: '/sports'),
+                nextPage: '/greek'),
           ],
         ),
         SliverAppBar(
           centerTitle: false,
-          title: Text('Suggestions', style: TextStyle(color: kHavenLightGray),),
+          title: Text(
+            'Suggestions',
+            style: TextStyle(color: kHavenLightGray),
+          ),
           backgroundColor: Colors.transparent,
         ),
         SliverList(
-          delegate: _events == null?
-          SliverChildListDelegate(
-            [Center(child: Text('Welp, Nothings Going On'),)]
-          )
-          :SliverChildBuilderDelegate((BuildContext context, int index) {
-            return clubCard(_events[index], context);
-          }, childCount: _events?.length ),
+          delegate: _events == null
+              ? SliverChildListDelegate([
+                  Center(
+                    child: Text('Welp, Nothings Going On'),
+                  )
+                ])
+              : SliverChildBuilderDelegate((BuildContext context, int index) {
+                  return clubCard(_events[index], context);
+                }, childCount: _events?.length),
         ),
       ],
     );
