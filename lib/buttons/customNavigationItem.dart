@@ -1,8 +1,8 @@
-import 'package:communitytabs/Screens/categoryScreen.dart';
-import 'package:communitytabs/colors/marist_color_scheme.dart';
+import 'package:communitytabs/wrappers/categoryWrapper.dart';
+import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../colors/marist_color_scheme.dart';
+import '../constants/marist_color_scheme.dart';
 
 class CustomNavigationItem extends StatelessWidget {
   final String option;

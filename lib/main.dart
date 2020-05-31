@@ -1,21 +1,20 @@
-import 'package:communitytabs/Screens/eventDetails.dart';
-import 'package:communitytabs/data/IconsStateProvider.dart';
+import 'package:communitytabs/Screens/event.dart';
+import 'package:communitytabs/data/pageViewMetadata.dart';
 import 'package:communitytabs/data/club_event_data.dart';
 import 'package:communitytabs/services/auth.dart';
 import 'package:communitytabs/services/database.dart';
 import 'package:flutter/material.dart';
-import 'package:communitytabs/Screens/index.dart';
+import 'package:communitytabs/wrappers/homeWrapper.dart';
 import 'package:communitytabs/Screens/loading.dart';
-import 'package:communitytabs/Screens/wrapper.dart';
+import 'package:communitytabs/wrappers/loginWrapper.dart';
 import 'package:communitytabs/Screens/error.dart';
 import 'package:communitytabs/Screens/login.dart';
 import 'package:communitytabs/Screens/signUp.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:communitytabs/data/user.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'Screens/account.dart';
-
+import 'wrappers/accountWrapper.dart';
+import 'package:communitytabs/data/slidingUpPanelMetadata.dart';
 /*
 Author: Alex Badia
 Implemented MultiProvider for very basic state management
@@ -31,10 +30,6 @@ Implemented MultiProvider for very basic state management
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-
-  PanelController pc = new PanelController();
-  PageController c = new PageController(initialPage: 0, keepPage: true);
-
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -43,8 +38,8 @@ class MyApp extends StatelessWidget {
         StreamProvider<User>.value(value: AuthService().user),
         StreamProvider<List<ClubEventData>>.value(
             value: DatabaseService().getEvents),
-        Provider<PanelController>(create: (context) => pc,),
-        ChangeNotifierProvider<IconStateProvider>(create: (context) => IconStateProvider(),),
+        ChangeNotifierProvider<SlidingUpPanelMetaData>(create: (context) => SlidingUpPanelMetaData()),
+        ChangeNotifierProvider<PageViewMetaData>(create: (context) => PageViewMetaData(),),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,

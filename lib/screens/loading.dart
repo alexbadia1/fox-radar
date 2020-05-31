@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:communitytabs/colors/marist_color_scheme.dart';
-import 'index.dart';
+import 'package:communitytabs/constants/marist_color_scheme.dart';
+import '../wrappers/homeWrapper.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override

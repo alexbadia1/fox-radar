@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:communitytabs/services/auth.dart';
-import 'package:communitytabs/colors/marist_color_scheme.dart';
+import 'package:communitytabs/constants/marist_color_scheme.dart';
 
 class SignUp extends StatefulWidget {
   @override

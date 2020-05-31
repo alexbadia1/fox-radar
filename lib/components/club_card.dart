@@ -1,12 +1,11 @@
-import 'package:communitytabs/colors/marist_color_scheme.dart';
+import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:communitytabs/data/club_event_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
-import '../colors/marist_color_scheme.dart';
 
 /// This widget defines the card that is used in the list of events
-Widget clubCard (ClubEventData newEvent, context) {
+Widget clubCard(ClubEventData newEvent, context) {
   ClubEventData _myEvent = newEvent;
   String _eventHost = _myEvent.getHost;
   String _eventTitle = _myEvent.getTitle;
@@ -18,7 +17,10 @@ Widget clubCard (ClubEventData newEvent, context) {
   String _eventImage = _myEvent.getImage;
 
   return GestureDetector(
-    onTap: () { Navigator.pushNamed(context, '/eventDetails', arguments: {'event': _myEvent});},
+    onTap: () {
+      Navigator.pushNamed(context, '/eventDetails',
+          arguments: {'event': _myEvent});
+    },
     child: Container(
       color: cCard,
       height: 100.00,
@@ -38,24 +40,24 @@ Widget clubCard (ClubEventData newEvent, context) {
                     alignment: Alignment.bottomLeft,
                     child: Row(
                       children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(5.0, 6.0, 0, 0),
-                            child: Container(
-                              height: double.infinity,
-                              alignment: Alignment.bottomCenter,
-                              child: Text(
-                                "NOW ",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Lato-Regular.ttf',
-                                  fontSize: 14,
-                                ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(5.0, 6.0, 0, 0),
+                          child: Container(
+                            height: double.infinity,
+                            alignment: Alignment.bottomCenter,
+                            child: Text(
+                              "NOW ",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Lato-Regular.ttf',
+                                fontSize: 14,
                               ),
-                        ),
+                            ),
                           ),
+                        ),
                         Expanded(
                           flex: 1,
                           child: Container(
@@ -70,8 +72,10 @@ Widget clubCard (ClubEventData newEvent, context) {
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'Lato-Regular.ttf',
                                 fontSize: 8,
+                              ),
+                            ),
                           ),
-                        ),),),
+                        ),
                       ],
                     ),
                   ),
@@ -85,7 +89,7 @@ Widget clubCard (ClubEventData newEvent, context) {
                       width: double.infinity,
                       alignment: Alignment.centerLeft,
                       child: Text(
-                          _eventTitle,
+                        _eventTitle,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -99,7 +103,7 @@ Widget clubCard (ClubEventData newEvent, context) {
                   ),
                 ),
                 subText(_eventLocation, _eventRoom),
-                subText (_eventDate),
+                subText(_eventDate),
                 subText(_eventStartTime + " -", _eventEndTime),
               ],
             ),
@@ -120,8 +124,7 @@ Widget clubCard (ClubEventData newEvent, context) {
   );
 }
 
-
-Widget subText (String newText, [String newEventRoom = ""]) {
+Widget subText(String newText, [String newEventRoom = ""]) {
   return Expanded(
     flex: 1,
     child: Padding(

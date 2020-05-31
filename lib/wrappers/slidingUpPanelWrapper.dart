@@ -1,6 +1,6 @@
-import 'package:communitytabs/components/accountPageContent.dart';
-import 'package:communitytabs/components/homePageContent.dart';
-import 'package:communitytabs/components/categoryContent.dart';
+import 'package:communitytabs/screens/account.dart';
+import 'package:communitytabs/Screens/home.dart';
+import 'package:communitytabs/Screens/category.dart';
 import 'package:flutter/material.dart';
 
 class SlidingUpPanelBodyWrapper extends StatelessWidget {
@@ -16,10 +16,7 @@ class SlidingUpPanelBodyWrapper extends StatelessWidget {
         return AccountPageContent();
         break;
       case '/sports':
-        return CategoryContent(
-          title: 'Sports',
-          tabNamesFromLtoR: ['Intramural', 'College', 'Club'],
-        );
+        return CategoryContent(title: 'Sports', tabNamesFromLtoR: ['Intramural', 'College', 'Club'],);
         break;
       case '/arts':
         return CategoryContent(title: 'Arts', tabNamesFromLtoR: ['Music & Dance', 'Movies & Theatre'],);

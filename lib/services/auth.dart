@@ -8,7 +8,7 @@ class AuthService {
 
   //Create our own user object
   User _userFromFirebaseUser(FirebaseUser user) {
-    return user != null ? new User(uid: user.uid): null;
+    return user != null ? new User(newUserId: user.uid, newEmail: user.email): null;
   }//_userFromFirebaseUser
 
   //Listening to the stream

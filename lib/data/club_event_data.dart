@@ -28,13 +28,13 @@ class ClubEventData {
   }//full constructor
 
   ClubEventData.nullConstructor() {
-    _myHost = 'Asian Alliance';
-    _myTitle = 'Lunar New Year';
-    _myLocation = "Student Center";
+    _myHost = '[Host Name]';
+    _myTitle = '';
+    _myLocation = '';
     _myDate =  DateFormat.yMMMMEEEEd().format(DateTime.now());
     _myStartTime = DateFormat.jm().format(DateTime.now());
     _myEndTime = DateFormat.jm().format(DateTime.now());
-    _myRoom = '1203';
+    _myRoom = '';
     _mySummary = 'Tonight we are celebrating Chinese New Year by painting lanterns! '
         + 'There wil be a quick presentation and then music and latern art... '
         + 'Come join, chill, relax and have fun!';
@@ -61,4 +61,44 @@ class ClubEventData {
   String get getDate => _myDate;
 
   String get getTitle => _myTitle;
+
+  void setImage(String value) {
+    _image = value;
+  }
+
+  void setHighlights(List<String> value) {
+    _myHighlights = value;
+  }
+
+  void setSummary(String value) {
+    _mySummary = value;
+  }
+
+  void setRoom(String value) {
+    _myRoom = value;
+  }
+
+  void setLocation(String value) {
+    _myLocation = value;
+  }
+
+  void setEndTime(String value) {
+    _myEndTime = value;
+  }
+
+  void setStartTime(String value) {
+    _myStartTime = value;
+  }
+
+  void setDate(String value) {
+    _myDate = value;
+  }
+
+  void setTitle(String value) {
+    _myTitle = value;
+  }
+
+  set setHost(String value) {
+    _myHost = value;
+  }
 }//class

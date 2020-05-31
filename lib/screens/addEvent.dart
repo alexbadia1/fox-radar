@@ -1,35 +1,62 @@
+import 'package:communitytabs/components/formPart1.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
-import '../data/IconsStateProvider.dart';
+import 'package:communitytabs/data/pageViewMetadata.dart';
 import 'package:communitytabs/components/addEvent/addEventHeader.dart';
+import 'package:communitytabs/data/club_event_data.dart';
 
 class AddEventContent extends StatefulWidget {
-  final bool hasHeader;
-  AddEventContent({this.hasHeader});
   @override
   _AddEventContentState createState() => _AddEventContentState();
 }
 
 class _AddEventContentState extends State<AddEventContent> {
-  ScrollController _controller = new ScrollController();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: this.widget.hasHeader
-            ? PreferredSize(
-                preferredSize:
-                    Size.fromHeight(MediaQuery.of(context).size.height * .0725),
-                child: AddEventHeader(),
-              )
-            : null,
-        body: ListView(
-          controller: _controller,
+        appBar: PreferredSize(
+          preferredSize:
+              Size.fromHeight(MediaQuery.of(context).size.height * .0725),
+          child: AddEventHeader(),
+        ),
+        body: Column(
           children: [
-            ProgressBarHeader(),
-            EventForm(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                SizedBox(width: MediaQuery.of(context).size.width * .05),
+                FormTitle(),
+                Expanded(
+                  child: SizedBox(),
+                ),
+                ProgressBarHeader(),
+                SizedBox(width: MediaQuery.of(context).size.width * .05),
+              ],
+            ),
+            Expanded(child: EventForm()),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class FormTitle extends StatefulWidget {
+  @override
+  _FormTitleState createState() => _FormTitleState();
+}
+
+class _FormTitleState extends State<FormTitle> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Center(
+        child: Text(
+          'Description',
+          style: TextStyle(fontSize: 18.0),
         ),
       ),
     );
@@ -42,32 +69,32 @@ class EventForm extends StatefulWidget {
 }
 
 class _EventFormState extends State<EventForm> {
-
+  GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  ClubEventData newEvent = new ClubEventData.nullConstructor();
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * .3,
-      child: Consumer<IconStateProvider>(
-        builder: (context, iconState, child) {
-          return PageView(
-            controller: iconState.pageViewController,
-              children: <Widget>[
-                Container(
-                  color: Colors.redAccent,
-                  child: Center(child: Text('1')),
-                ),
-                Container(
-                  color: Colors.greenAccent,
-                  child: Center(child: Text('2')),
-                ),
-                Container(
-                  color: Colors.blueAccent,
-                  child: Center(child: Text('3')),
-                ),
-              ],
-          );
-        },
-      ),
+    return Consumer<PageViewMetaData>(
+      builder: (context, pageViewState, child) {
+        return PageView(
+          controller: pageViewState.pageViewController,
+          physics: NeverScrollableScrollPhysics(),
+          children: <Widget>[
+            Container(
+              child: FormPart1(formKey: _formKey, newEvent: newEvent),
+            ),
+            Container(
+              color: Colors.greenAccent,
+              child: Center(child: Text('2')),
+            ),
+            Container(
+              color: Colors.blueAccent,
+              child: Center(
+                child: Text('3'),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
@@ -81,7 +108,6 @@ class _ProgressBarHeaderState extends State<ProgressBarHeader> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
       height: MediaQuery.of(context).size.height * .0725,
       child: ProgressIndicator(),
     );
@@ -96,12 +122,12 @@ class ProgressIndicator extends StatefulWidget {
 class _ProgressIndicatorState extends State<ProgressIndicator> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<IconStateProvider>(
-      builder: (context, iconState, child) {
+    return Consumer<PageViewMetaData>(
+      builder: (context, pageViewState, child) {
         return Container(
           child: StepProgressIndicator(
             totalSteps: 3,
-            currentStep: iconState.formStepNum,
+            currentStep: pageViewState.formStepNum,
             size: 36,
             selectedColor: Colors.green,
             unselectedColor: Colors.grey[200],

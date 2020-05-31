@@ -1,4 +1,4 @@
-import 'package:communitytabs/colors/marist_color_scheme.dart';
+import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:communitytabs/components/club_card.dart';
 import 'package:communitytabs/data/club_event_data.dart';
 import 'package:flutter/cupertino.dart';

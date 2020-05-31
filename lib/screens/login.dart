@@ -2,7 +2,7 @@ import 'package:communitytabs/Navigation/transitions.dart';
 import 'package:communitytabs/services/auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:communitytabs/colors/marist_color_scheme.dart';
+import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:flutter/widgets.dart';
 
 class Login extends StatefulWidget {

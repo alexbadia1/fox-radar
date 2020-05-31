@@ -1,32 +1,42 @@
-import 'package:communitytabs/Screens/account.dart';
-import 'package:communitytabs/Screens/addEventWrapper.dart';
-import 'package:communitytabs/Screens/index.dart';
-import 'package:communitytabs/Screens/slidingUpPanelBodyWrapper.dart';
-import 'package:communitytabs/colors/marist_color_scheme.dart';
-import 'package:communitytabs/data/IconsStateProvider.dart';
+import 'package:communitytabs/data/slidingUpPanelMetadata.dart';
+import 'package:communitytabs/wrappers/accountWrapper.dart';
+import 'package:communitytabs/wrappers/homeWrapper.dart';
+import 'package:communitytabs/wrappers/slidingUpPanelWrapper.dart';
+import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:provider/provider.dart';
+import 'package:communitytabs/Screens/addEvent.dart';
 
-class SlidingUpNavigationBar extends StatefulWidget {
+class SlidingUpNavigationBar extends StatelessWidget {
   final String namedRoute;
   SlidingUpNavigationBar({@required this.namedRoute});
   @override
-  _SlidingUpNavigationBarState createState() => _SlidingUpNavigationBarState();
-}
-
-class _SlidingUpNavigationBarState extends State<SlidingUpNavigationBar> {
-  @override
   Widget build(BuildContext context) {
-    PanelController pc = Provider.of<PanelController>(context);
-    var iconsProvider = Provider.of<IconStateProvider>(context);
+
+    SlidingUpPanelMetaData _slidingUpPanelMetaData = Provider.of<SlidingUpPanelMetaData>(context);
 
     return SafeArea(
       child: SlidingUpPanel(
-        controller: pc,
+        controller: _slidingUpPanelMetaData.getPanelController,
         minHeight: MediaQuery.of(context).size.height * .065,
         maxHeight: MediaQuery.of(context).size.height,
-        collapsed: iconsProvider.showSearch
+        collapsed: CollapsedWidget(),
+        isDraggable: false,
+        panel: AddEventContent(),
+        body: SlidingUpPanelBodyWrapper(namedRoute: this.namedRoute),
+      ),
+    );
+  }
+}
+
+class CollapsedWidget extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<SlidingUpPanelMetaData>(
+      builder: (context, panelState, child) {
+        return panelState.getPanelIsClosed
             ? Stack(
                 children: <Widget>[
                   Container(
@@ -57,9 +67,9 @@ class _SlidingUpNavigationBarState extends State<SlidingUpNavigationBar> {
                           color: kHavenLightGray,
                           splashColor: kActiveHavenLightGray,
                           onPressed: () {
-                            pc.open();
-                            iconsProvider.setShowSearch(false);
-                            iconsProvider.setShowDrawer(false);
+                            print("+ pressed");
+                            panelState.getPanelController.open();
+                            panelState.setPanelIsClosed(false);
                           }),
                       IconButton(
                         icon: Icon(Icons.person),
@@ -79,13 +89,8 @@ class _SlidingUpNavigationBarState extends State<SlidingUpNavigationBar> {
                   ),
                 ],
               )
-            : Container(),
-        isDraggable: false,
-        panel: AddEventWrapper(
-          route: this.widget.namedRoute,
-        ),
-        body: SlidingUpPanelBodyWrapper(namedRoute: this.widget.namedRoute),
-      ),
+            : Container();
+      },
     );
   }
 }

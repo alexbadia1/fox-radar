@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/services/search.dart';
-import 'package:communitytabs/colors/marist_color_scheme.dart';
+import 'package:communitytabs/constants/marist_color_scheme.dart';
 
-import '../Screens/index.dart';
+import '../wrappers/homeWrapper.dart';
 
 ///CategoryContent Definition:
 ///  An abstraction of the multiple category pages. Instead of having multiple different files
