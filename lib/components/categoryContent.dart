@@ -62,74 +62,80 @@ class _CategoryContentState extends State<CategoryContent> {
       child: DefaultTabController(
         length: this.widget.tabNamesFromLtoR.length,
         child: Scaffold(
-          appBar: AppBar(
-            flexibleSpace: Stack(
-              children: <Widget>[
-                Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  child: Image(
-                    image: ResizeImage(
-                      AssetImage("images/tenney.jpg"),
-                      width: int.parse(
-                        MediaQuery.of(context)
-                            .size
-                            .width
-                            .toString()
-                            .replaceAll('.', ''),
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * .15),
+            child: AppBar(
+              flexibleSpace: Stack(
+                children: <Widget>[
+                  Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    child: Image(
+                      image: ResizeImage(
+                        AssetImage("images/tenney.jpg"),
+                        width: int.parse(
+                          MediaQuery.of(context)
+                              .size
+                              .width
+                              .toString()
+                              .replaceAll('.', ''),
+                        ),
+                      ),
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: <Color>[
+                          cWashedRedFaded,
+                          cFullRedFaded,
+                        ],
                       ),
                     ),
-                    fit: BoxFit.fill,
                   ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: <Color>[
-                        cWashedRedFaded,
-                        cFullRedFaded,
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            leading: IconButton(
-              color: kHavenLightGray,
-              splashColor: kActiveHavenLightGray,
-              icon: Icon(Icons.chevron_left),
-              onPressed: () => Navigator.pushReplacement(
-                context,
-                //TODO: Add a Slide-In-Left to the Home Page.
-                PageRouteBuilder(
-                  pageBuilder: (context, animation1, animation2) => HomePage(),
-                ),
+                ],
               ),
-            ),
-            centerTitle: false,
-            title: Text(this.widget.title,
-                style: TextStyle(
-                    color: kHavenLightGray, fontWeight: FontWeight.bold)),
-            actions: <Widget>[
-              IconButton(
+              leading: IconButton(
                 color: kHavenLightGray,
                 splashColor: kActiveHavenLightGray,
-                icon: Icon(Icons.search),
-                onPressed: () async {
-                  await showSearch(context: context, delegate: Search());
-                },
-              )
-            ],
-            bottom: TabBar(
-              labelStyle: TextStyle(color: kActiveHavenLightGray),
-              unselectedLabelColor: kHavenLightGray,
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicatorColor: kHavenLightGray,
-              tabs: _tabs,
+                icon: Icon(Icons.chevron_left),
+                onPressed: () => Navigator.pushReplacement(
+                  context,
+                  //TODO: Add a Slide-In-Left to the Home Page.
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation1, animation2) => HomePage(),
+                  ),
+                ),
+              ),
+              centerTitle: false,
+              title: Text(this.widget.title,
+                  style: TextStyle(
+                      color: kHavenLightGray, fontWeight: FontWeight.bold)),
+              actions: <Widget>[
+                IconButton(
+                  color: kHavenLightGray,
+                  splashColor: kActiveHavenLightGray,
+                  icon: Icon(Icons.search),
+                  onPressed: () async {
+                    await showSearch(context: context, delegate: Search());
+                  },
+                )
+              ],
+              bottom: TabBar(
+                labelStyle: TextStyle(color: kActiveHavenLightGray),
+                unselectedLabelColor: kHavenLightGray,
+                indicatorSize: TabBarIndicatorSize.tab,
+                indicatorColor: kHavenLightGray,
+                tabs: _tabs,
+              ),
             ),
           ),
+          
+          
+          
           body: TabBarView(children: _pageView),
         ),
       ),

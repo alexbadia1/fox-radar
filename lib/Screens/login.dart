@@ -19,7 +19,7 @@ class _LoginState extends State<Login> {
   String myPassword = '';
   bool loading = false;
   bool failedLogin = false;
-
+  bool _showPassword = false;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -160,9 +160,17 @@ class _LoginState extends State<Login> {
                                         },
                                         child: TextFormField(
                                           textInputAction: TextInputAction.done,
-                                          obscureText: true,
+                                          obscureText: !_showPassword,
                                           decoration: customTextField.copyWith(
-                                              labelText: 'Password'),
+                                              labelText: 'Password',
+                                              suffixIcon: IconButton(
+                                                  icon: _showPassword ? Icon(Icons.visibility): Icon(Icons.visibility_off),
+                                              onPressed: () {
+                                                    setState(() {
+                                                      _showPassword = !_showPassword;
+                                                    });
+                                              },),
+                                          ),
                                           onChanged: (value) {
                                             setState(() {
                                               myPassword = value;
@@ -333,6 +341,7 @@ class _LoginState extends State<Login> {
                                     print(_result);
                                     Navigator.pushReplacementNamed(
                                         context, '/loading');
+                                    FocusScope.of(context).unfocus();
                                   }
                                 },
                                 child: Text(

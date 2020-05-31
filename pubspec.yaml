@@ -25,6 +25,7 @@ dependencies:
   provider: ^4.0.5+1
   loading: ^1.0.2
   sliding_up_panel: ^1.0.2
+  step_progress_indicator: ^0.2.3+6
 
 
   # The following adds the Cupertino Icons font to your application.

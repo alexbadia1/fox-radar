@@ -2,6 +2,7 @@ import 'package:communitytabs/Screens/categoryScreen.dart';
 import 'package:communitytabs/colors/marist_color_scheme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../colors/marist_color_scheme.dart';
 
 class CustomNavigationItem extends StatelessWidget {
   final String option;
@@ -19,7 +20,7 @@ class CustomNavigationItem extends StatelessWidget {
           children: <Widget>[
             Container(
               decoration: BoxDecoration(
-                  color: Colors.blueAccent,
+                  color: kHavenLightGray,
                   borderRadius: BorderRadius.all(Radius.circular(5))),
             ),
             FlatButton(
@@ -43,14 +44,14 @@ class CustomNavigationItem extends StatelessWidget {
                         child: Text(
                           option,
                           textAlign: TextAlign.left,
-                          style: TextStyle(color: kHavenLightGray),
+                          style: TextStyle(color: Colors.white),
                         )),
                   ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * .1,
                   ),
                   Container(
-                      child: Center(child: Icon(icon, color: kHavenLightGray))),
+                      child: Center(child: Icon(icon, color: Colors.white))),
                 ],
               ),
             )

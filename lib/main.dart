@@ -1,5 +1,4 @@
 import 'package:communitytabs/Screens/eventDetails.dart';
-import 'package:communitytabs/Screens/sportsList.dart';
 import 'package:communitytabs/data/IconsStateProvider.dart';
 import 'package:communitytabs/data/club_event_data.dart';
 import 'package:communitytabs/services/auth.dart';
@@ -34,6 +33,7 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
 
   PanelController pc = new PanelController();
+  PageController c = new PageController(initialPage: 0, keepPage: true);
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,6 @@ class MyApp extends StatelessWidget {
             '/eventDetails': (context) => EventDetails(),
             '/error': (context) => Error(),
             '/loading': (context) => LoadingScreen(),
-            '/sports': (context) => SportsList(),
             '/account' : (context) => Account(),
           }),
     );

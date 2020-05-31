@@ -3,6 +3,10 @@ import 'package:loading/indicator/ball_spin_fade_loader_indicator.dart';
 import 'package:loading/loading.dart';
 
 //Color Palette
+//Dark Mode
+const Color cBackground = Color.fromRGBO(32, 32, 32, 1);
+const Color cCard = Color.fromRGBO(48, 48, 48, 1);
+
 //Washed
 const Color cWashedRed = Color.fromRGBO(255, 77, 77, .8);
 const Color cWashedGreen = Color.fromRGBO(121, 255, 77, 1.0);

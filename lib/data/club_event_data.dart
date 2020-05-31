@@ -10,11 +10,11 @@ class ClubEventData {
   String _myLocation;
   String _myRoom;
   String _mySummary;
-  List<dynamic> _myHighlights;
+  List<String> _myHighlights;
   String _image;
 
   ClubEventData({String newHost, String newTitle, Timestamp newDate, String newStartTime, String newEndTime, String newLocation, String newRoom,
-    String newSummary, List<dynamic> newHighlights, String newImage}) {
+    String newSummary, List<String> newHighlights, String newImage}) {
     _myHost = newHost;
     _myTitle = newTitle;
     _myDate = DateTime.fromMillisecondsSinceEpoch(newDate.millisecondsSinceEpoch * 1000).toString();

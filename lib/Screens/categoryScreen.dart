@@ -11,8 +11,10 @@ class CategoryScreen extends StatefulWidget {
 class _CategoryScreenState extends State<CategoryScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: SlidingUpNavigationBar(namedRoute: this.widget.namedRoute)
+    return SafeArea(
+      child: Scaffold(
+          body: SlidingUpNavigationBar(namedRoute: this.widget.namedRoute)
+      ),
     );
   }
 }

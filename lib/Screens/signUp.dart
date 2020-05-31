@@ -16,6 +16,7 @@ class _SignUpState extends State<SignUp> {
   String myConfirmPassword = '';
   bool loading = false;
   bool failedLogin = false;
+  bool _showPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -53,12 +54,12 @@ class _SignUpState extends State<SignUp> {
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
                       Expanded(
-                        flex: 4,
+                        flex: 2,
                         child: SizedBox(),
                       ),
 
                       loading
-                          ? Container()
+                          ? Container(height: MediaQuery.of(context).size.height * .10,)
                           : Container(
                         height: MediaQuery.of(context).size.height * .10,
                         width: MediaQuery.of(context).size.width * .75,
@@ -132,7 +133,7 @@ class _SignUpState extends State<SignUp> {
                       //////Form//////
                       ////////////////
                       Expanded(
-                        flex: 17,
+                        flex: 10,
                         child: loading
                             ? LoadingWidget()
                             : Form(
@@ -183,9 +184,15 @@ class _SignUpState extends State<SignUp> {
                                         },
                                         child: TextFormField(
                                           textInputAction: TextInputAction.done,
-                                          obscureText: true,
+                                          obscureText: !_showPassword,
                                           decoration: customTextField.copyWith(
-                                              labelText: 'New Password'),
+                                              labelText: 'Password', suffixIcon: IconButton(
+                                            icon: _showPassword ? Icon(Icons.visibility): Icon(Icons.visibility_off),
+                                            onPressed: () {
+                                              setState(() {
+                                                _showPassword = !_showPassword;
+                                              });
+                                            },),),
                                           onChanged: (value) {
                                             setState(() {
                                               myPassword = value;
@@ -204,40 +211,6 @@ class _SignUpState extends State<SignUp> {
                                       ),
                                     ),
                                     Container(
-                                      width:
-                                          MediaQuery.of(context).size.width * .75,
-                                      child: Focus(
-                                        onFocusChange: (hasFocus) {
-                                          if (hasFocus) {
-                                            setState(() {
-                                              failedLogin = false;
-                                            });
-                                          }
-                                        },
-                                        child: TextFormField(
-                                          textInputAction: TextInputAction.done,
-                                          obscureText: true,
-                                          decoration: customTextField.copyWith(
-                                              labelText: 'Confirm Password'),
-                                          onChanged: (value) {
-                                            setState(() {
-                                              myConfirmPassword = value;
-                                            });
-                                          },
-                                          validator: (String value) {
-                                            value = value.trim();
-                                            if (myConfirmPassword.isNotEmpty)
-                                              return myPassword !=
-                                                      myConfirmPassword
-                                                  ? '\u26A0 Passwords must match.'
-                                                  : null;
-                                            else
-                                              return '\u26A0 Confirm the new password.';
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
                                       child: failedLogin
                                           ? Center(child: Text(myError))
                                           : SizedBox(),
@@ -245,10 +218,6 @@ class _SignUpState extends State<SignUp> {
                                   ],
                                 ),
                         ),
-                      ),
-
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * .025,
                       ),
 
                       //////////////////////
