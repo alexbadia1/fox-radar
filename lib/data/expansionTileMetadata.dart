@@ -8,7 +8,7 @@ class ExpansionTiles extends ChangeNotifier {
   String _tempStartDate;
   String _tempEndDate;
   List<ExpansionTileData> data = [
-    ExpansionTileData(newHeaderDateValue: '', newHeaderTimeValue: '', newHeaderActionValue: 'Start Time', newIsExpanded: false),
+    ExpansionTileData(newHeaderDateValue: '', newHeaderTimeValue: '', newHeaderActionValue: 'Start', newIsExpanded: false),
     ExpansionTileData(newHeaderDateValue: '', newHeaderTimeValue: '', newHeaderActionValue: 'Add End Time', newIsExpanded: false),
   ];
 

@@ -45,7 +45,8 @@ class DateAndTimeActions extends StatelessWidget {
           expansionTileState.data[index].setHeaderDateValue('');
 
           ///Set the header to Add End Time
-          expansionTileState.data[index].setHeaderActionValue('Add End Time');
+          if (index == 1)
+            expansionTileState.data[index].setHeaderActionValue('Add End Time');
 
           ///Set showTrashCanIcon to false.
           /// expansionTileState.data[index].setShowTrashCanIcon(false);
@@ -109,7 +110,8 @@ class DateAndTimeActions extends StatelessWidget {
       }
 
       ///Set the header to Remove End Time
-      expansionTileState.data[index].setHeaderActionValue('End');
+      if (index == 1)
+        expansionTileState.data[index].setHeaderActionValue('End');
 
       ///Set showTrashCanIcon to true
       /// expansionTileState.data[index].setShowTrashIcon(true);
