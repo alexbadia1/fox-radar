@@ -1,3 +1,4 @@
+import 'package:communitytabs/data/expansionTileMetadata.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:communitytabs/data/pageViewMetadata.dart';
@@ -6,10 +7,10 @@ class NextOrCreateButton extends StatefulWidget {
   @override
   _NextOrCreateButtonState createState() => _NextOrCreateButtonState();
 }
-
 class _NextOrCreateButtonState extends State<NextOrCreateButton> {
   @override
   Widget build(BuildContext context) {
+    ExpansionTiles expansionTiles = Provider.of<ExpansionTiles>(context);
     return Consumer<PageViewMetaData>(
         builder: (context, pageViewState, child) {
           return Container(
@@ -21,9 +22,19 @@ class _NextOrCreateButtonState extends State<NextOrCreateButton> {
                 style: TextStyle(fontSize: 16.0),
               ),
               onPressed: () {
-                ///TODO: Advance to the next step
+                ///Close Keyboard
+                FocusScope.of(context).unfocus();
+
+                ///Close Expansion Panels
+                expansionTiles.data[0].setIsExpanded(false);
+                expansionTiles.data[1].setIsExpanded(false);
+                expansionTiles.updateExpansionPanels();
+
+                ///Update what form step number we're on
                 pageViewState.setFormStepNum(pageViewState.formStepNum + 1);
-                pageViewState.pageViewController.animateToPage(pageViewState.formStepNum - 1, duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
+
+                ///"Navigate" to the next Page View
+                pageViewState.pageViewController.animateToPage(pageViewState.formStepNum - 1, duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
               },
             )
                 : FlatButton(
@@ -33,6 +44,9 @@ class _NextOrCreateButtonState extends State<NextOrCreateButton> {
                 style: TextStyle(fontSize: 16.0),
               ),
               onPressed: () {
+                ///Close Keyboard
+                FocusScope.of(context).unfocus();
+
                 ///TODO: Submit the Event Form
               },
             ),

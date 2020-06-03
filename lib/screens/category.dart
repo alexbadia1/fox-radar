@@ -1,9 +1,9 @@
+import 'package:communitytabs/components/category/singleCategoryList.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/services/search.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
-
-import '../wrappers/homeWrapper.dart';
+import 'package:communitytabs/wrappers.dart';
 
 ///CategoryContent Definition:
 ///  An abstraction of the multiple category pages. Instead of having multiple different files
@@ -46,16 +46,7 @@ class _CategoryContentState extends State<CategoryContent> {
 
     ///Dynamically Generating PageViews
     for (int i = 0; i < this.widget.tabNamesFromLtoR.length; ++i) {
-      _pageView.add(
-        PageView(
-          children: <Widget>[
-            ///TODO: Generate a list events using the condition that: this.widget.tabNamesFromLtoR[i] == ClubEventData.category
-            Center(
-                child: Text(
-                    this.widget.tabNamesFromLtoR[i] + ' Content Goes Here...'))
-          ],
-        ),
-      );
+      _pageView.add(SingleCategoryView(eventType: this.widget.tabNamesFromLtoR[i]));
     } //for
     ///TODO: Account for only 1 sub-Category. Maybe just use a different special widget
     return SafeArea(
@@ -63,7 +54,8 @@ class _CategoryContentState extends State<CategoryContent> {
         length: this.widget.tabNamesFromLtoR.length,
         child: Scaffold(
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * .15),
+            preferredSize:
+                Size.fromHeight(MediaQuery.of(context).size.height * .15),
             child: AppBar(
               flexibleSpace: Stack(
                 children: <Widget>[
@@ -106,7 +98,8 @@ class _CategoryContentState extends State<CategoryContent> {
                   context,
                   //TODO: Add a Slide-In-Left to the Home Page.
                   PageRouteBuilder(
-                    pageBuilder: (context, animation1, animation2) => HomePage(),
+                    pageBuilder: (context, animation1, animation2) =>
+                        HomePage(),
                   ),
                 ),
               ),
@@ -133,9 +126,6 @@ class _CategoryContentState extends State<CategoryContent> {
               ),
             ),
           ),
-          
-          
-          
           body: TabBarView(children: _pageView),
         ),
       ),

@@ -1,3 +1,4 @@
+import 'package:communitytabs/data/expansionTileMetadata.dart';
 import 'package:communitytabs/data/slidingUpPanelMetadata.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +15,7 @@ class _PreviousOrCloseButtonState extends State<PreviousOrCloseButton> {
   Widget build(BuildContext context) {
     SlidingUpPanelMetaData slidingUpPanelMetaData =
         Provider.of<SlidingUpPanelMetaData>(context);
+    ExpansionTiles expansionTiles = Provider.of<ExpansionTiles>(context);
     return Consumer<PageViewMetaData>(
       builder: (context, pageViewState, child) {
         return Container(
@@ -22,20 +24,31 @@ class _PreviousOrCloseButtonState extends State<PreviousOrCloseButton> {
                   icon: Icon(Icons.chevron_left),
                   color: kHavenLightGray,
                   onPressed: () {
-                    pageViewState.setFormStepNum(pageViewState.formStepNum - 1);
+                    ///Close Keyboard
                     FocusScope.of(context).unfocus();
+
+                    ///Update what form step number We're on
+                    pageViewState.setFormStepNum(pageViewState.formStepNum - 1);
+
+                    ///"Navigate" to the next PageView based on the form step number
                     pageViewState.pageViewController.animateToPage(
                         pageViewState.formStepNum - 1,
                         duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeInOut);
+                        curve: Curves.easeIn);
                   },
                 )
               : IconButton(
                   icon: Icon(Icons.close),
                   color: kHavenLightGray,
                   onPressed: () {
-                    //Close Keyboard
+                    ///Close Keyboard
                     FocusScope.of(context).unfocus();
+
+                    ///TODO: Close all Expansion Panels by setting isExpanded to false. Hint use ChangeNotifier for the data and Consumer around the ExpansionPanelList
+                    expansionTiles.data[0].setIsExpanded(false);
+                    expansionTiles.data[1].setIsExpanded(false);
+                    expansionTiles.updateExpansionPanels();
+                    ///Close the Sliding Up Panel
                     slidingUpPanelMetaData.setPanelIsClosed(true);
                     slidingUpPanelMetaData.getPanelController.close();
                   },

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:communitytabs/data/user.dart';
-import 'package:communitytabs/components/account/accountDrawer.dart';
+import 'package:communitytabs/components/account/accountDrawerContents.dart';
 import 'package:communitytabs/components/account/accountPageTitle.dart';
 
 class AccountPageContent extends StatefulWidget {
@@ -13,11 +13,6 @@ class AccountPageContent extends StatefulWidget {
 
 class _AccountPageContentState extends State<AccountPageContent> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  void openSideDrawer(ans) {
-    ans = 1;
-    print('openSideDrawerCalled!');
-    _scaffoldKey.currentState.openEndDrawer();
-  }
   @override
   Widget build(BuildContext context) {
     User user = Provider.of<User>(context);
@@ -31,6 +26,7 @@ class _AccountPageContentState extends State<AccountPageContent> {
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * .0725),
           child: AppBar(
+            iconTheme: IconThemeData(color: kHavenLightGray),
             backgroundColor: Colors.transparent,
             flexibleSpace: Container(
               width: double.infinity,
@@ -50,10 +46,10 @@ class _AccountPageContentState extends State<AccountPageContent> {
                   Row(
                     children: <Widget>[
                       Expanded(flex: 1, child: SizedBox()),
-                      Expanded(flex: 4,child: MaristFoxLogo()),
+                      Expanded(flex: 4, child: MaristFoxLogo()),
                       Expanded(flex: 1, child: SizedBox()),
                       Expanded(flex: 30, child: AccountPageTitle(username: accountName),),
-                      Expanded(flex: 3, child: Container()),
+                      Expanded(flex: 3, child: SizedBox()),
                       Expanded(flex: 2, child: SizedBox()),
                     ],
                   ),

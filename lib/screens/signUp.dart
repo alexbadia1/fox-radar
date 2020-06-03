@@ -1,3 +1,4 @@
+import 'package:communitytabs/screens/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/services/auth.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
@@ -59,37 +60,39 @@ class _SignUpState extends State<SignUp> {
                       ),
 
                       loading
-                          ? Container(height: MediaQuery.of(context).size.height * .10,)
+                          ? Container(
+                              height: MediaQuery.of(context).size.height * .10,
+                            )
                           : Container(
-                        height: MediaQuery.of(context).size.height * .10,
-                        width: MediaQuery.of(context).size.width * .75,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            IconButton(
-                              icon: Icon(Icons.chevron_left),
-                              iconSize: 35.0,
-                              color: kHavenLightGray,
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                            Container(
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text(
-                                  'Back',
-                                  style: TextStyle(
-                                      fontSize: 22.0,
-                                      color: kHavenLightGray),
-                                ),
+                              height: MediaQuery.of(context).size.height * .10,
+                              width: MediaQuery.of(context).size.width * .75,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  IconButton(
+                                    icon: Icon(Icons.chevron_left),
+                                    iconSize: 35.0,
+                                    color: kHavenLightGray,
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                  Container(
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text(
+                                        'Back',
+                                        style: TextStyle(
+                                            fontSize: 22.0,
+                                            color: kHavenLightGray),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
                       ////////////////
                       /////Title/////
                       ///////////////
@@ -137,14 +140,14 @@ class _SignUpState extends State<SignUp> {
                         child: loading
                             ? LoadingWidget()
                             : Form(
-                          key: _loginFormKey,
-                          child: Column(
+                                key: _loginFormKey,
+                                child: Column(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
                                   children: <Widget>[
                                     Container(
-                                      width:
-                                          MediaQuery.of(context).size.width * .75,
+                                      width: MediaQuery.of(context).size.width *
+                                          .75,
                                       child: Focus(
                                         onFocusChange: (hasFocus) {
                                           if (hasFocus) {
@@ -164,16 +167,16 @@ class _SignUpState extends State<SignUp> {
                                           },
                                           validator: (String value) {
                                             value = value.trim();
-                                            return value.isEmpty
-                                                ? '\u26A0 Enter a MARIST email.'
-                                                : null;
+                                            if (value.isNotEmpty && value.contains('@marist.edu')){
+                                                return null;
+                                            } else return '\u26A0 Please enter a MARIST email.';
                                           },
                                         ),
                                       ),
                                     ),
                                     Container(
-                                      width:
-                                          MediaQuery.of(context).size.width * .75,
+                                      width: MediaQuery.of(context).size.width *
+                                          .75,
                                       child: Focus(
                                         onFocusChange: (hasFocus) {
                                           if (hasFocus) {
@@ -186,13 +189,19 @@ class _SignUpState extends State<SignUp> {
                                           textInputAction: TextInputAction.done,
                                           obscureText: !_showPassword,
                                           decoration: customTextField.copyWith(
-                                              labelText: 'Password', suffixIcon: IconButton(
-                                            icon: _showPassword ? Icon(Icons.visibility): Icon(Icons.visibility_off),
-                                            onPressed: () {
-                                              setState(() {
-                                                _showPassword = !_showPassword;
-                                              });
-                                            },),),
+                                            labelText: 'Password',
+                                            suffixIcon: IconButton(
+                                              icon: _showPassword
+                                                  ? Icon(Icons.visibility)
+                                                  : Icon(Icons.visibility_off),
+                                              onPressed: () {
+                                                setState(() {
+                                                  _showPassword =
+                                                      !_showPassword;
+                                                });
+                                              },
+                                            ),
+                                          ),
                                           onChanged: (value) {
                                             setState(() {
                                               myPassword = value;
@@ -202,10 +211,10 @@ class _SignUpState extends State<SignUp> {
                                             value = value.trim();
                                             if (value.isNotEmpty) {
                                               return value.length < 6
-                                                  ? '\u26A0 Should be at least 6 characters.'
+                                                  ? '\u26A0 Password must be at least 6 characters.'
                                                   : null;
                                             } else
-                                              return '\u26A0 Enter a password.';
+                                              return '\u26A0 Please enter a password.';
                                           },
                                         ),
                                       ),
@@ -217,7 +226,7 @@ class _SignUpState extends State<SignUp> {
                                     ),
                                   ],
                                 ),
-                        ),
+                              ),
                       ),
 
                       //////////////////////
@@ -226,88 +235,103 @@ class _SignUpState extends State<SignUp> {
                       loading
                           ? Container()
                           : Container(
-                        height: MediaQuery.of(context).size.height * .05,
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: SizedBox(),
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width * .535,
-                              child: FlatButton(
-                                color: kHavenLightGray,
-                                onPressed: () async {
-                                  if (_loginFormKey.currentState.validate()) {
-                                    setState(() {
-                                      loading = true;
-                                    });
-                                    dynamic result =
-                                        await _auth.registerWithEmailAndPassword(
-                                            myEmail, myPassword);
-                                    if (result == null) {
-                                      setState(() {
-                                        loading = false;
-                                        failedLogin = true;
-                                        myError =
-                                            '\u26A0 An existing account already uses that email.';
-                                      });
-                                    } else
-                                      failedLogin = false;
-                                  }
-                                },
-                                child: Container(
-                                  child: Text(
-                                    'Sign Up',
-                                    style: TextStyle(
-                                      letterSpacing: 1.0,
-                                      color: Colors.white,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.w400,
+                              height: MediaQuery.of(context).size.height * .05,
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    child: SizedBox(),
+                                  ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width *
+                                        .535,
+                                    child: FlatButton(
+                                      color: kHavenLightGray,
+                                      onPressed: () async {
+                                        if (_loginFormKey.currentState
+                                            .validate()) {
+                                          setState(() {
+                                            loading = true;
+                                          });
+                                          dynamic result = await _auth
+                                              .registerWithEmailAndPassword(
+                                                  myEmail, myPassword);
+                                          if (result == null) {
+                                            setState(() {
+                                              loading = false;
+                                              failedLogin = true;
+                                              myError =
+                                                  '\u26A0 An existing account already uses that email.';
+                                            });
+                                          } else
+                                            failedLogin = false;
+                                          loading = false;
+                                          Navigator.of(context)
+                                              .pushAndRemoveUntil(
+                                                  PageRouteBuilder(
+                                                    pageBuilder: (context,
+                                                            animation1,
+                                                            animation2) =>
+                                                        LoadingScreen(),
+                                                  ),
+                                                  (Route<dynamic> route) =>
+                                                      false);
+                                        }
+                                      },
+                                      child: Container(
+                                        child: Text(
+                                          'Sign Up',
+                                          style: TextStyle(
+                                            letterSpacing: 1.0,
+                                            color: Colors.white,
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            new BorderRadius.circular(10.0),
+                                        side:
+                                            BorderSide(color: kHavenLightGray),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(10.0),
-                                  side: BorderSide(color: kHavenLightGray),
-                                ),
+                                  Expanded(
+                                    child: SizedBox(),
+                                  ),
+                                ],
                               ),
                             ),
-                            Expanded(
-                              child: SizedBox(),
-                            ),
-                          ],
-                        ),
-                      ),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * .015,
                       ),
                       loading
                           ? Container()
                           : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            'Already have an account? ',
-                            style: TextStyle(
-                              fontSize: 12.0,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  'Already have an account? ',
+                                  style: TextStyle(
+                                    fontSize: 12.0,
+                                  ),
+                                ),
+                                InkWell(
+                                  child: Text(
+                                    'Sign In',
+                                    style: TextStyle(
+                                      fontSize: 14.0,
+                                      fontStyle: FontStyle.italic,
+                                      fontWeight: FontWeight.bold,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ],
                             ),
-                          ),
-                          InkWell(
-                            child: Text(
-                              'Sign In',
-                              style: TextStyle(
-                                fontSize: 14.0,
-                                fontStyle: FontStyle.italic,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                        ],
-                      ),
                       Expanded(
                         flex: 7,
                         child: SizedBox(),

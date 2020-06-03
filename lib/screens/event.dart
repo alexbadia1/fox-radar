@@ -1,17 +1,13 @@
 import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:communitytabs/data/club_event_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class EventDetails extends StatelessWidget {
+  final myEvent;
+  EventDetails({this.myEvent});
   @override
   Widget build(BuildContext context) {
-    Map _myData = {};
-    ClubEventData _myEvent = new ClubEventData.nullConstructor();
-
-    _myData = ModalRoute.of(context).settings.arguments;
-    _myEvent = _myData['event'];
     return Scaffold(
       body: SafeArea(
         child: GestureDetector(
@@ -28,7 +24,7 @@ class EventDetails extends StatelessWidget {
                 children: <Widget>[
                   Container(
                     width: double.infinity,
-                    child: Image(image: AssetImage(_myEvent.getImage)),
+                    child: Image(image: AssetImage(myEvent.getImage)),
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width,
@@ -42,7 +38,7 @@ class EventDetails extends StatelessWidget {
                             child: Container(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                _myEvent.getHost,
+                                myEvent.getHost,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
@@ -78,7 +74,7 @@ class EventDetails extends StatelessWidget {
                                       const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
                                   child: Container(
                                     child: Text(
-                                      _myEvent.getLocation + _myEvent.getRoom,
+                                      myEvent.getLocation + myEvent.getRoom,
                                       style: TextStyle(
                                         fontSize: 12.0,
                                         fontWeight: FontWeight.w300,
@@ -115,9 +111,9 @@ class EventDetails extends StatelessWidget {
                                       const EdgeInsets.fromLTRB(8.0, 0, 0, 0),
                                   child: Container(
                                     child: Text(
-                                      _myEvent.getStartTime +
+                                      myEvent.getStartTime +
                                           " - " +
-                                          _myEvent.getEndTime,
+                                          myEvent.getEndTime,
                                       style: TextStyle(
                                         fontSize: 12.0,
                                         fontWeight: FontWeight.w300,
@@ -184,7 +180,7 @@ class EventDetails extends StatelessWidget {
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              _myEvent.getTitle,
+                              myEvent.getTitle,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
@@ -203,7 +199,7 @@ class EventDetails extends StatelessWidget {
                               alignment: Alignment.topLeft,
                               width: MediaQuery.of(context).size.width * .80,
                               child: Text(
-                                _myEvent.getSummary,
+                                myEvent.getSummary,
                                 style: TextStyle(
                                   fontSize: 12.0,
                                   fontWeight: FontWeight.w300,

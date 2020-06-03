@@ -48,13 +48,16 @@ class DatabaseService {
   List<ClubEventData> _eventListFromSnapshot(QuerySnapshot snap) {
     return snap.documents.map((doc) {
       return ClubEventData(
+          ///Category converted to [STRING] from [STRING] in Firebase.
+          newCategory: doc.data['category'] ?? 'Food',
+
           ///Host converted to [STRING] from [STRING] in Firebase.
           newHost: doc.data['host'] ?? 'Host',
 
           ///Title converted to [STRING] from [STRING] in Firebase.
           newTitle: doc.data['title'] ?? 'Title',
 
-          ///Date Converted to [] from [TIMESTAMP] in Firebase.
+          ///Date Converted to [TIMESTAMP] from [TIMESTAMP] in Firebase.
           newDate: doc.data['date'] ?? 'Date',
 
           ///Date Converted to [] from [] in Firebase.

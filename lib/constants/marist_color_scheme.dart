@@ -6,6 +6,8 @@ import 'package:loading/loading.dart';
 //Dark Mode
 const Color cBackground = Color.fromRGBO(32, 32, 32, 1);
 const Color cCard = Color.fromRGBO(48, 48, 48, 1);
+const Color cWhite70 = Color.fromRGBO(255, 255, 255, .7);
+const Color cWhite100 = Color.fromRGBO(255, 255, 255, .99);
 
 //Washed
 const Color cWashedRed = Color.fromRGBO(255, 77, 77, .8);

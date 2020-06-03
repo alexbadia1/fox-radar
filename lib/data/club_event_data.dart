@@ -10,14 +10,16 @@ class ClubEventData {
   String _myLocation;
   String _myRoom;
   String _mySummary;
+  String _myCategory;
   List<String> _myHighlights;
   String _image;
 
   ClubEventData({String newHost, String newTitle, Timestamp newDate, String newStartTime, String newEndTime, String newLocation, String newRoom,
-    String newSummary, List<String> newHighlights, String newImage}) {
+    String newSummary, List<String> newHighlights, String newImage, String newCategory}) {
+    DateFormat _formatter = new DateFormat('EEEE, MMMM d, y');
     _myHost = newHost;
     _myTitle = newTitle;
-    _myDate = DateTime.fromMillisecondsSinceEpoch(newDate.millisecondsSinceEpoch * 1000).toString();
+    _myDate = _formatter.format(DateTime.fromMillisecondsSinceEpoch(newDate.millisecondsSinceEpoch).toUtc().toLocal());
     _myStartTime = newStartTime;
     _myEndTime = newEndTime;
     _myLocation = newLocation;
@@ -25,6 +27,7 @@ class ClubEventData {
     _mySummary = newSummary;
     _myHighlights = newHighlights;
     _image = newImage;
+    _myCategory = newCategory;
   }//full constructor
 
   ClubEventData.nullConstructor() {
@@ -40,27 +43,19 @@ class ClubEventData {
         + 'Come join, chill, relax and have fun!';
     _myHighlights = ['Music', 'Guest Speaker', 'Priority Points', 'Candy', "Laterns"];
     _image = 'images/AsianAllianceLanterns.jpg';
-  }
+  }////null constructor
 
-  String get getImage => _image; //null constructor
-
+  String get getImage => _image;
   String get getHost => _myHost;
-
-  List<String> get getHighlights => _myHighlights;
-
   String get getSummary => _mySummary;
-
   String get getRoom => _myRoom;
-
   String get getLocation => _myLocation;
-
   String get getEndTime => _myEndTime;
-
   String get getStartTime => _myStartTime;
-
   String get getDate => _myDate;
-
   String get getTitle => _myTitle;
+  List<String> get getHighlights => _myHighlights;
+  String get myCategory => _myCategory;
 
   void setImage(String value) {
     _image = value;
@@ -98,7 +93,8 @@ class ClubEventData {
     _myTitle = value;
   }
 
-  set setHost(String value) {
+  void setHost(String value) {
     _myHost = value;
   }
+
 }//class

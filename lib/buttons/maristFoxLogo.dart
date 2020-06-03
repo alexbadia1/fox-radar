@@ -9,7 +9,7 @@ class MaristFoxLogo extends StatelessWidget {
     } else {
       throw 'Could not launch $url';
     }
-  }//_launchURL
+  } //_launchURL
 
   @override
   Widget build(BuildContext context) {

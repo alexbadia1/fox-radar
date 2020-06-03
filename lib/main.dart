@@ -1,19 +1,18 @@
 import 'package:communitytabs/Screens/event.dart';
+import 'package:communitytabs/data/expansionTileMetadata.dart';
 import 'package:communitytabs/data/pageViewMetadata.dart';
 import 'package:communitytabs/data/club_event_data.dart';
 import 'package:communitytabs/services/auth.dart';
 import 'package:communitytabs/services/database.dart';
+import 'package:communitytabs/wrappers.dart';
 import 'package:flutter/material.dart';
-import 'package:communitytabs/wrappers/homeWrapper.dart';
 import 'package:communitytabs/Screens/loading.dart';
-import 'package:communitytabs/wrappers/loginWrapper.dart';
 import 'package:communitytabs/Screens/error.dart';
 import 'package:communitytabs/Screens/login.dart';
 import 'package:communitytabs/Screens/signUp.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:communitytabs/data/user.dart';
-import 'wrappers/accountWrapper.dart';
 import 'package:communitytabs/data/slidingUpPanelMetadata.dart';
 /*
 Author: Alex Badia
@@ -40,12 +39,13 @@ class MyApp extends StatelessWidget {
             value: DatabaseService().getEvents),
         ChangeNotifierProvider<SlidingUpPanelMetaData>(create: (context) => SlidingUpPanelMetaData()),
         ChangeNotifierProvider<PageViewMetaData>(create: (context) => PageViewMetaData(),),
+        ChangeNotifierProvider<ExpansionTiles>(create: (context) => ExpansionTiles(),),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
           initialRoute: '/',
           routes: <String, WidgetBuilder>{
-            '/': (context) => Wrapper(),
+            '/': (context) => AuthWrapper(),
             '/home': (context) => HomePage(),
             '/login': (context) => Login(),
             '/signUp': (context) => SignUp(),

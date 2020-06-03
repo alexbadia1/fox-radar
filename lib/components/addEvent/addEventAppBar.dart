@@ -3,12 +3,12 @@ import 'package:communitytabs/buttons/nextOrCreateButton.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 
-class AddEventHeader extends StatefulWidget {
+class AddEventAppBar extends StatefulWidget {
   @override
-  _AddEventHeaderState createState() => _AddEventHeaderState();
+  _AddEventAppBarState createState() => _AddEventAppBarState();
 }
 
-class _AddEventHeaderState extends State<AddEventHeader> {
+class _AddEventAppBarState extends State<AddEventAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(

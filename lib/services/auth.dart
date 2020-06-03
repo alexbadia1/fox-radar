@@ -8,7 +8,10 @@ class AuthService {
 
   //Create our own user object
   User _userFromFirebaseUser(FirebaseUser user) {
-    return user != null ? new User(newUserId: user.uid, newEmail: user.email): null;
+     return user != null ?
+      user.isAnonymous ?
+        new User(newUserId: user.uid, newEmail: null) : new User(newUserId: user.uid, newEmail: user.email)
+     : null;
   }//_userFromFirebaseUser
 
   //Listening to the stream
@@ -45,16 +48,22 @@ class AuthService {
   Future registerWithEmailAndPassword(String newEmail, String newPassword) async {
     try {
       //Contact Firebase to see if user exists
+      print('Performing sign up task...');
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: newEmail, password: newPassword);
+
+      print('Recieved user sign up task results...');
       FirebaseUser user = result.user;
 
       //Create a new user account
+      print('Creating new user in database...');
       await new DatabaseService(uid: user.uid).updateUserData(newEmail, newPassword);
 
       //Return user data received from Firebase
+      print('Returning new firebase user');
       return _userFromFirebaseUser(user);
 
     } catch (e) {
+      print('User returned null');
       print(e.toString());
       return null;
     }

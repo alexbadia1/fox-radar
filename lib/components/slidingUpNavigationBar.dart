@@ -1,12 +1,10 @@
 import 'package:communitytabs/data/slidingUpPanelMetadata.dart';
-import 'package:communitytabs/wrappers/accountWrapper.dart';
-import 'package:communitytabs/wrappers/homeWrapper.dart';
-import 'package:communitytabs/wrappers/slidingUpPanelWrapper.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:provider/provider.dart';
 import 'package:communitytabs/Screens/addEvent.dart';
+import 'package:communitytabs/wrappers.dart';
 
 class SlidingUpNavigationBar extends StatelessWidget {
   final String namedRoute;

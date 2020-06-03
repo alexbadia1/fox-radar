@@ -7,7 +7,9 @@ class AccountDrawerButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () {return openDrawerCallback(2);},
+      onPressed: () {
+        return openDrawerCallback(2);
+      },
       color: kHavenLightGray,
       icon: Icon(Icons.menu, color: kHavenLightGray),
     );

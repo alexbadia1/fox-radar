@@ -1,15 +1,16 @@
+import 'package:communitytabs/components/clubCardBig.dart';
 import 'package:communitytabs/data/club_event_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:communitytabs/components/club_card.dart';
 import 'package:communitytabs/buttons/customNavigationItem.dart';
 import 'package:communitytabs/buttons/maristFoxLogo.dart';
 import 'package:communitytabs/components/home/searchButton.dart';
 import 'package:communitytabs/components/home/homePageTitle.dart';
 
 class HomePageContent extends StatefulWidget {
+  //TODO: Add add preferences Arguments for Horizontal Lists for preferences.
   @override
   _HomePageContentState createState() => _HomePageContentState();
 }
@@ -19,10 +20,9 @@ class _HomePageContentState extends State<HomePageContent> {
   List<ClubEventData> _events = [];
   @override
   Widget build(BuildContext context) {
-    _events = Provider.of<List<ClubEventData>>(context);
-    if (_events == null) {
-      _events = [];
-    }
+    double screenHeight = MediaQuery.of(context).size.height;
+    _events = Provider.of<List<ClubEventData>>(context) ?? [];
+    int size = _events?.length ?? 0;
 
     return Container(
       color: cBackground,
@@ -30,6 +30,7 @@ class _HomePageContentState extends State<HomePageContent> {
         slivers: [
           SliverAppBar(
             backgroundColor: Colors.transparent,
+            elevation: 0.0,
             pinned: true,
             flexibleSpace: Container(
               width: double.infinity,
@@ -51,7 +52,7 @@ class _HomePageContentState extends State<HomePageContent> {
                   Row(
                     children: <Widget>[
                       Expanded(flex: 1, child: SizedBox()),
-                      Expanded(flex: 4,child: MaristFoxLogo()),
+                      Expanded(flex: 4, child: MaristFoxLogo()),
                       Expanded(flex: 1, child: SizedBox()),
                       Expanded(flex: 30, child: HomePageTitle()),
                       Expanded(flex: 3, child: SearchButton()),
@@ -105,7 +106,17 @@ class _HomePageContentState extends State<HomePageContent> {
                     )
                   ])
                 : SliverChildBuilderDelegate((BuildContext context, int index) {
-                    return clubCard(_events[index], context);
+                    return index < size - 1
+                        ? clubCardBig(_events[index], context)
+                        : Column(
+                            children: <Widget>[
+                              clubCardBig(_events[index], context),
+                              SizedBox(
+                                height: screenHeight * .1,
+                                width: double.infinity,
+                              ),
+                            ],
+                          );
                   }, childCount: _events?.length),
           ),
         ],

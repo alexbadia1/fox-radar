@@ -1,8 +1,7 @@
-import 'package:communitytabs/wrappers/categoryWrapper.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../constants/marist_color_scheme.dart';
+import 'package:communitytabs/wrappers.dart';
 
 class CustomNavigationItem extends StatelessWidget {
   final String option;
@@ -29,7 +28,7 @@ class CustomNavigationItem extends StatelessWidget {
                 //TODO: Add a Slide-In-Right transition to the specified Category Page
                 PageRouteBuilder(
                   pageBuilder: (context, animation1, animation2) =>
-                      CategoryScreen(
+                      CategoryWrapper(
                     namedRoute: nextPage,
                   ),
                 ),
