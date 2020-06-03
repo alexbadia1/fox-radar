@@ -16,12 +16,44 @@ class DateAndTimeActions extends StatelessWidget {
   Widget build(BuildContext context) {
     ExpansionTiles expansionTileState = Provider.of<ExpansionTiles>(context);
 
-    void _closeExpansionPanel(int index) {
-      ///Set expansionPanel's isExpanded variable to false.
+    void _cancel(int index) {
+      /// Set expansionPanel's isExpanded variable to false.
       expansionTileState.data[index].setIsExpanded(false);
+
+      /// ShowCalenderStrip boolean variable controls whether the calender
+      /// is be shown or not.
+      ///
+      /// ShowCalenderStrip == true, Calender is shown.
+      /// ShowCalenderStrip == false, Cupertino Time Picker is shown.
+      ///
+      /// When user cancels adding the date and time, setting the ShowCalenderStrip
+      /// ensures that the calender will be shown first when the user goes to add a
+      /// date and time again.
       index == 0
           ? expansionTileState.setShowAddStartTimeCalenderStrip(true)
           : expansionTileState.setShowAddEndTimeCalenderStrip(true);
+
+      /// If this is the first time the user is picking a date or time,
+      /// cancel button should remove any progress made in picking a date or time.
+      ///
+      /// We know that it is the user's first time picking a date or time
+      /// by this condition: if (HeaderTimeLabel == '' ).
+      if (expansionTileState.data[index].getHeaderTimeValue() == '') {
+        if (index == 0) {
+          expansionTileState.data[index].setHeaderDateValue('');
+        } else {
+          expansionTileState.data[index].setHeaderDateValue('');
+
+          ///Set the header to Add End Time
+          expansionTileState.data[index].setHeaderActionValue('Add End Time');
+
+          ///Set showTrashCanIcon to false.
+          /// expansionTileState.data[index].setShowTrashCanIcon(false);
+        }
+      }
+
+      /// Method triggers the NotifyingListeners() event, to force widgets
+      /// wrapped with a Consumer<[Data Type]>(); to rebuild if there is a change.
       expansionTileState.updateExpansionPanels();
     }
 
@@ -33,11 +65,14 @@ class DateAndTimeActions extends StatelessWidget {
       expansionTileState.updateExpansionPanels();
     }
 
+    ///Method will only be called when the Calender Strip is showing,
+    ///
+    /// Should only submit the date
     void _continue(int index) {
       ///Set expansionPanel's showCalender variable to false.
       String newHeaderDateValue = '[Date Value]';
       if (index == 0) {
-        ///Set the START TIME
+        ///Set the START DATE
         newHeaderDateValue = expansionTileState.getTempStartDate().toString();
         expansionTileState.setShowAddStartTimeCalenderStrip(false);
       } else {
@@ -47,10 +82,11 @@ class DateAndTimeActions extends StatelessWidget {
 
       ///Update date label
       expansionTileState.data[index].setHeaderDateValue(newHeaderDateValue);
+
       expansionTileState.updateExpansionPanels();
     }
 
-    /// Method will only be called when the cupertino Time Picker is showing.
+    /// Method will only be called when the Cupertino Time Picker is showing.
     ///
     /// Should Submit the chosen time and close expansion panel.
     void _confirm({@required int index}) {
@@ -71,6 +107,12 @@ class DateAndTimeActions extends StatelessWidget {
         expansionTileState.setShowAddEndTimeCalenderStrip(true);
         newHeaderTimeValue = expansionTileState.getTempEndTime().toString();
       }
+
+      ///Set the header to Remove End Time
+      expansionTileState.data[index].setHeaderActionValue('End');
+
+      ///Set showTrashCanIcon to true
+      /// expansionTileState.data[index].setShowTrashIcon(true);
 
       /// HeaderTimeValue is used to set the expansion panel's time label.
       ///
@@ -100,6 +142,7 @@ class DateAndTimeActions extends StatelessWidget {
     } //confirm
 
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         FlatButton(
           child: CancelOrBackButtonLabel(index: this.index),
@@ -107,9 +150,7 @@ class DateAndTimeActions extends StatelessWidget {
             bool tempBool = this.index == 0
                 ? expansionTileState.getShowAddStartTimeCalenderStrip()
                 : expansionTileState.getShowAddEndTimeCalenderStrip();
-            tempBool
-                ? _closeExpansionPanel(this.index)
-                : _backToShowCalender(this.index);
+            tempBool ? _cancel(this.index) : _backToShowCalender(this.index);
           },
         ),
         FlatButton(

@@ -75,7 +75,7 @@ class _EventFormState extends State<EventForm> {
           controller: pageViewState.pageViewController,
           physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
-            SingleChildScrollView(child: FormPart1(formKey: _formKey, newEvent: newEvent)),
+            FormPart1(formKey: _formKey, newEvent: newEvent),
             Container(
               color: Colors.greenAccent,
               child: Center(child: Text('2')),

@@ -65,7 +65,6 @@ class CollapsedWidget extends StatelessWidget {
                           color: kHavenLightGray,
                           splashColor: kActiveHavenLightGray,
                           onPressed: () {
-                            print("+ pressed");
                             panelState.getPanelController.open();
                             panelState.setPanelIsClosed(false);
                           }),

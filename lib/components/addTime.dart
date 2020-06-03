@@ -1,4 +1,6 @@
 import 'package:communitytabs/buttons/dateTimeButtons.dart';
+import 'package:communitytabs/buttons/removeEndDateButton.dart';
+import 'package:communitytabs/components/addEvent/addStartOrEndTime.dart';
 import 'package:communitytabs/data/expansionTileMetadata.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,13 +27,26 @@ class _AddTimeState extends State<AddTime> {
       tiles.add(
         ExpansionPanel(
           headerBuilder: (BuildContext context, bool isExpanded) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(child: DateLabel(index: index)),
-                Expanded(child: SizedBox()),
-                Container(child: TimeOfDayLabel(index: index)),
-              ],
+            return Container(
+              height: MediaQuery.of(context).size.height * .0925,
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(width: 1.0, color: Colors.black38))),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  RemoveEndDateButton(index: index,),
+                  Container(child: AddStartOrEndTime(index: index)),
+                  Expanded(child: SizedBox()),
+                  Row(
+                    children: <Widget>[
+                      Container(child: DateLabel(index: index)),
+                      Container(width: MediaQuery.of(context).size.width * .03225,),
+                      Container(child: TimeOfDayLabel(index: index)),
+                    ],
+                  ),
+                ],
+              ),
             );
           },
           body: Column(
@@ -63,3 +78,4 @@ class _AddTimeState extends State<AddTime> {
     );
   }
 }
+

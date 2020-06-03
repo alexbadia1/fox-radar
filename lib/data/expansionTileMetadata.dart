@@ -8,8 +8,8 @@ class ExpansionTiles extends ChangeNotifier {
   String _tempStartDate;
   String _tempEndDate;
   List<ExpansionTileData> data = [
-    ExpansionTileData(newHeaderDateValue: 'Start', newHeaderTimeValue: '', newIsExpanded: false),
-    ExpansionTileData(newHeaderDateValue: 'Add End', newHeaderTimeValue: '', newIsExpanded: false),
+    ExpansionTileData(newHeaderDateValue: '', newHeaderTimeValue: '', newHeaderActionValue: 'Start Time', newIsExpanded: false),
+    ExpansionTileData(newHeaderDateValue: '', newHeaderTimeValue: '', newHeaderActionValue: 'Add End Time', newIsExpanded: false),
   ];
 
   ExpansionTiles(){
@@ -58,19 +58,27 @@ class ExpansionTiles extends ChangeNotifier {
   }
 }
 
+
+
+
+
+
 class ExpansionTileData {
   String _myHeaderDateValue;
   String _myHeaderTimeValue;
+  String _myHeaderActionValue;
   bool _myIsExpanded;
 
-  ExpansionTileData({String newHeaderTimeValue, String newHeaderDateValue, bool newIsExpanded}){
+  ExpansionTileData({String newHeaderTimeValue, String newHeaderDateValue, String newHeaderActionValue,  bool newIsExpanded}){
     _myHeaderTimeValue = newHeaderTimeValue;
     _myHeaderDateValue = newHeaderDateValue;
     _myIsExpanded = newIsExpanded;
+    _myHeaderActionValue = newHeaderActionValue;
   }
 
   String getHeaderDateValue () => _myHeaderDateValue;
   String getHeaderTimeValue () => _myHeaderTimeValue;
+  String getHeaderActionValue () => _myHeaderActionValue;
   bool getIsExpanded ()=> _myIsExpanded;
 
   void setIsExpanded (bool newIsExpanded) {
@@ -81,5 +89,8 @@ class ExpansionTileData {
   }
   void setHeaderTimeValue (String newHeaderTimeValue) {
     _myHeaderTimeValue = newHeaderTimeValue;
+  }
+  void setHeaderActionValue (String newHeaderActionValue) {
+    _myHeaderActionValue = newHeaderActionValue;
   }
 }
