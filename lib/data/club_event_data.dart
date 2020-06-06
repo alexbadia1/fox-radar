@@ -1,26 +1,26 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 
-class ClubEventData {
-  String _myHost;
+class ClubEventData extends ChangeNotifier{
   String _myTitle;
-  String _myDate;
-  String _myStartTime;
-  String _myEndTime;
+  String _myHost;
   String _myLocation;
   String _myRoom;
-  String _mySummary;
+  String _myStartDate;
+  String _myStartTime;
+  String _myEndDate;
+  String _myEndTime;
   String _myCategory;
   List<String> _myHighlights;
+  String _mySummary;
   String _image;
 
-  ClubEventData({String newHost, String newTitle, Timestamp newDate, String newStartTime, String newEndTime, String newLocation, String newRoom,
+  ClubEventData({String newHost, String newTitle, String newStartDate, String newStartTime, String newEndDate, String newEndTime, String newLocation, String newRoom,
     String newSummary, List<String> newHighlights, String newImage, String newCategory}) {
-    DateFormat _formatter = new DateFormat('EEEE, MMMM d, y');
     _myHost = newHost;
     _myTitle = newTitle;
-    _myDate = _formatter.format(DateTime.fromMillisecondsSinceEpoch(newDate.millisecondsSinceEpoch).toUtc().toLocal());
+    _myStartDate = newStartDate;
     _myStartTime = newStartTime;
+    _myEndDate = newEndDate;
     _myEndTime = newEndTime;
     _myLocation = newLocation;
     _myRoom = newRoom;
@@ -31,17 +31,16 @@ class ClubEventData {
   }//full constructor
 
   ClubEventData.nullConstructor() {
-    _myHost = '[Host Name]';
+    _myHost = '';
     _myTitle = '';
     _myLocation = '';
-    _myDate =  DateFormat.yMMMMEEEEd().format(DateTime.now());
-    _myStartTime = DateFormat.jm().format(DateTime.now());
-    _myEndTime = DateFormat.jm().format(DateTime.now());
+    _myStartDate =  '';
+    _myEndDate = '';
+    _myStartTime = '';
+    _myEndTime = '';
     _myRoom = '';
-    _mySummary = 'Tonight we are celebrating Chinese New Year by painting lanterns! '
-        + 'There wil be a quick presentation and then music and latern art... '
-        + 'Come join, chill, relax and have fun!';
-    _myHighlights = ['Music', 'Guest Speaker', 'Priority Points', 'Candy', "Laterns"];
+    _mySummary = '';
+    _myHighlights = [];
     _image = 'images/AsianAllianceLanterns.jpg';
   }////null constructor
 
@@ -50,9 +49,10 @@ class ClubEventData {
   String get getSummary => _mySummary;
   String get getRoom => _myRoom;
   String get getLocation => _myLocation;
+  String get getEndDate => _myEndDate;
   String get getEndTime => _myEndTime;
+  String get getStartDate => _myStartDate;
   String get getStartTime => _myStartTime;
-  String get getDate => _myDate;
   String get getTitle => _myTitle;
   List<String> get getHighlights => _myHighlights;
   String get myCategory => _myCategory;
@@ -85,8 +85,12 @@ class ClubEventData {
     _myStartTime = value;
   }
 
-  void setDate(String value) {
-    _myDate = value;
+  void setStartDate(String value) {
+    _myStartDate = value;
+  }
+
+  void setEndDate(String value) {
+    _myEndDate = value;
   }
 
   void setTitle(String value) {
@@ -95,6 +99,10 @@ class ClubEventData {
 
   void setHost(String value) {
     _myHost = value;
+  }
+
+  void applyChanges () {
+    notifyListeners();
   }
 
 }//class

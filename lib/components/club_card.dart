@@ -7,15 +7,15 @@ import 'dart:ui';
 /// This widget defines the card that is used in the list of events
 Widget clubCard(ClubEventData newEvent, context) {
   ClubEventData _myEvent = newEvent;
-  String _eventHost = _myEvent.getHost;
-  String _eventTitle = _myEvent.getTitle;
-  String _eventLocation = _myEvent.getLocation;
-  String _eventRoom = _myEvent.getRoom;
-  String _eventStartTime = _myEvent.getStartTime;
-  String _eventEndTime = _myEvent.getEndTime;
-  String _eventDate = _myEvent.getDate;
-  String _eventImage = _myEvent.getImage;
-
+  String _eventTitle = _myEvent.getTitle ?? '[Event Title]';
+  String _eventHost = _myEvent.getHost ?? '[Event Host]';
+  String _eventLocation = _myEvent.getLocation ?? '[Event Location]';
+  String _eventRoom = _myEvent.getRoom ?? '[Event Room]';
+  String _eventStartDate = _myEvent.getStartDate ?? '[Event Start Date]';
+  String _eventStartTime = _myEvent.getStartTime ?? '[Event Start Time]';
+  String _eventEndDate = _myEvent.getEndDate ?? '[Event End Date]';
+  String _eventEndTime = _myEvent.getEndTime ?? '[Event End Time]';
+  String _eventImage = _myEvent.getImage ?? 'images/AsianAllianceLanterns.jpg';
   return GestureDetector(
     onTap: () {
       Navigator.pushNamed(context, '/eventDetails',
@@ -103,7 +103,7 @@ Widget clubCard(ClubEventData newEvent, context) {
                   ),
                 ),
                 subText(_eventLocation, _eventRoom),
-                subText(_eventDate),
+                subText(_eventStartDate),
                 subText(_eventStartTime + " -", _eventEndTime),
               ],
             ),

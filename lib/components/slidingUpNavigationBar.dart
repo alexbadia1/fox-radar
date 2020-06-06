@@ -1,6 +1,8 @@
+import 'package:communitytabs/data/expansionTileMetadata.dart';
 import 'package:communitytabs/data/slidingUpPanelMetadata.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:provider/provider.dart';
 import 'package:communitytabs/Screens/addEvent.dart';
@@ -11,13 +13,13 @@ class SlidingUpNavigationBar extends StatelessWidget {
   SlidingUpNavigationBar({@required this.namedRoute});
   @override
   Widget build(BuildContext context) {
-
-    SlidingUpPanelMetaData _slidingUpPanelMetaData = Provider.of<SlidingUpPanelMetaData>(context);
+    SlidingUpPanelMetaData _slidingUpPanelMetaData =
+        Provider.of<SlidingUpPanelMetaData>(context);
 
     return SafeArea(
       child: SlidingUpPanel(
         controller: _slidingUpPanelMetaData.getPanelController,
-        minHeight: MediaQuery.of(context).size.height * .065,
+        minHeight: MediaQuery.of(context).size.height * .0625,
         maxHeight: MediaQuery.of(context).size.height,
         collapsed: CollapsedWidget(),
         isDraggable: false,
@@ -29,9 +31,9 @@ class SlidingUpNavigationBar extends StatelessWidget {
 }
 
 class CollapsedWidget extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
+    ExpansionTiles _expansionPanels = Provider.of<ExpansionTiles>(context);
     return Consumer<SlidingUpPanelMetaData>(
       builder: (context, panelState, child) {
         return panelState.getPanelIsClosed
@@ -67,6 +69,9 @@ class CollapsedWidget extends StatelessWidget {
                           onPressed: () {
                             panelState.getPanelController.open();
                             panelState.setPanelIsClosed(false);
+                            _expansionPanels.data[0].setHeaderDateValue(DateFormat('E, MMMM d, y').format(DateTime.now()).toString());
+                            _expansionPanels.data[0].setHeaderTimeValue(DateFormat.jm().format(DateTime.now()).toString());
+                            _expansionPanels.updateExpansionPanels();
                           }),
                       IconButton(
                         icon: Icon(Icons.person),

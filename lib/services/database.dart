@@ -57,16 +57,19 @@ class DatabaseService {
           ///Title converted to [STRING] from [STRING] in Firebase.
           newTitle: doc.data['title'] ?? 'Title',
 
-          ///Date Converted to [TIMESTAMP] from [TIMESTAMP] in Firebase.
-          newDate: doc.data['date'] ?? 'Date',
+          ///Start Date Converted to [STRING] from [STRING] in Firebase.
+          newStartDate: doc.data['startDate'] ?? 'Start Date',
 
-          ///Date Converted to [] from [] in Firebase.
+          ///Start Time Converted to [STRING] from [STRING] in Firebase.
           newStartTime: doc.data['startTime'] ?? 'Start Time',
 
-          ///Date Converted to [] from [] in Firebase.
+          ///Start Date Converted to [STRING] from [STRING] in Firebase.
+          newEndDate: doc.data['endDate'] ?? 'End Date',
+
+          ///End Time Converted to [STRING] from [STRING] in Firebase.
           newEndTime: doc.data['endTime'] ?? 'End Time',
 
-          ///Date Converted to [] from [] in Firebase.
+          ///Location Converted to [] from [] in Firebase.
           newLocation: doc.data['location'] ?? 'Location',
 
           ///Room converted to [STRING] from [String] in Firebase.

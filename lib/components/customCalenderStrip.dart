@@ -1,4 +1,5 @@
 import 'package:calendar_strip/calendar_strip.dart';
+import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:communitytabs/data/expansionTileMetadata.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -25,7 +26,7 @@ class _CustomCalenderStripState extends State<CustomCalenderStrip> {
         style: TextStyle(
           fontSize: 17,
           fontWeight: FontWeight.w600,
-          color: Colors.black87,
+          color: Colors.white,
           fontStyle: FontStyle.italic,
         ),
       ),
@@ -52,11 +53,11 @@ class _CustomCalenderStripState extends State<CustomCalenderStrip> {
   dateTileBuilder(
       date, selectedDate, rowIndex, dayName, isDateMarked, isDateOutOfRange) {
     bool isSelectedDate = date.compareTo(selectedDate) == 0;
-    Color fontColor = isDateOutOfRange ? Colors.black26 : Colors.black87;
+    Color fontColor = isDateOutOfRange ? cWhite25 : Colors.white;
     TextStyle normalStyle =
         TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: fontColor);
     TextStyle selectedStyle = TextStyle(
-        fontSize: 16, fontWeight: FontWeight.w800, color: Colors.black87);
+        fontSize: 16, fontWeight: FontWeight.w800, color: Colors.white);
     TextStyle dayNameStyle = TextStyle(fontSize: 13.5, color: fontColor);
     List<Widget> _children = [
       Text(dayName, style: dayNameStyle),
@@ -73,7 +74,7 @@ class _CustomCalenderStripState extends State<CustomCalenderStrip> {
       alignment: Alignment.center,
       padding: EdgeInsets.only(top: 8, left: 5, right: 5, bottom: 5),
       decoration: BoxDecoration(
-        color: !isSelectedDate ? Colors.transparent : Colors.black12,
+        color: !isSelectedDate ? Colors.transparent : Colors.white10,
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
       child: Column(
@@ -106,10 +107,10 @@ class _CustomCalenderStripState extends State<CustomCalenderStrip> {
                     .setTempEndDate(_formatter.format(data).toString());
           },
           dateTileBuilder: dateTileBuilder,
-          iconColor: Colors.black87,
+          iconColor: cWhite70,
           monthNameWidget: _monthNameWidget,
           markedDates: markedDates,
-          containerDecoration: BoxDecoration(color: Colors.white),
+          containerDecoration: BoxDecoration(color: cBackground),
           addSwipeGesture: true,
         ),
       ],

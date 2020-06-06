@@ -10,7 +10,7 @@ class FormTitle extends StatelessWidget {
       builder: (context, pageViewState, child) {
         switch (pageViewState.formStepNum) {
           case 1:
-            _title = 'Event Description';
+            _title = 'Step 1: Event';
             break;
           case 2:
             _title = 'Pick a Photo';
@@ -23,10 +23,11 @@ class FormTitle extends StatelessWidget {
             break;
         } //switch
         return Container(
+          color: Colors.transparent,
           child: Center(
             child: Text(
               _title,
-              style: TextStyle(fontSize: 18.0),
+              style: TextStyle(fontSize: 18.0, color: Colors.white),
             ),
           ),
         );

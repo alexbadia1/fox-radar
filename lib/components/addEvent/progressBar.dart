@@ -9,6 +9,7 @@ class ProgressBar extends StatelessWidget {
     return Consumer<PageViewMetaData>(
       builder: (context, pageViewState, child) {
         return Container(
+          color: Colors.transparent,
           child: StepProgressIndicator(
             totalSteps: 3,
             currentStep: pageViewState.formStepNum,

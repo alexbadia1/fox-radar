@@ -15,8 +15,8 @@ class Account extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        body: SlidingUpNavigationBar(namedRoute: '/account'),
+      child: Material(
+        child: SlidingUpNavigationBar(namedRoute: '/account'),
       ),
     );
   }
@@ -29,8 +29,9 @@ class CategoryWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child:
-          Scaffold(body: SlidingUpNavigationBar(namedRoute: this.namedRoute)),
+      child: Material(
+        child: SlidingUpNavigationBar(namedRoute: this.namedRoute),
+      ),
     );
   }
 }
@@ -58,9 +59,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        body: SlidingUpNavigationBar(namedRoute: '/home'),
-      ),
+      child: Material(child: SlidingUpNavigationBar(namedRoute: '/home')),
     );
   }
 }
@@ -143,36 +142,55 @@ class DateOrTimePicker extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ExpansionTiles>(
       builder: (context, calenderPickerState, child) {
-        index == 0 ? calenderPickerState.setTempStartTime(DateFormat.jm().format(DateTime.now()).toString()) :
-        calenderPickerState.setTempEndTime(DateFormat.jm().format(DateTime.now()).toString());
+        index == 0
+            ? calenderPickerState.setTempStartTime(
+                DateFormat.jm().format(DateTime.now()).toString())
+            : calenderPickerState.setTempEndTime(
+                DateFormat.jm().format(DateTime.now()).toString());
         return index == 0
             ? calenderPickerState.getShowAddStartTimeCalenderStrip()
                 ? CustomCalenderStrip(index: index, key: this._key)
                 : Container(
                     height: MediaQuery.of(context).size.height * .175,
-                    child: CupertinoDatePicker(
-                      mode: CupertinoDatePickerMode.time,
-                      onDateTimeChanged: (value) {
-                        ///Set the temp start date
-                        ///
-                        /// Later to be used by the Confirm Button
-                        calenderPickerState.setTempStartTime(DateFormat.jm().format(value).toString());
-                      },
+                    child: CupertinoTheme(
+                      data: CupertinoThemeData(
+                          textTheme: CupertinoTextThemeData(
+                              dateTimePickerTextStyle: TextStyle(
+                                  color: Colors.white))),
+                      child: CupertinoDatePicker(
+                        backgroundColor: Color.fromRGBO(0, 0, 0, .85),
+                        mode: CupertinoDatePickerMode.time,
+                        onDateTimeChanged: (value) {
+                          ///Set the temp start date
+                          ///
+                          /// Later to be used by the Confirm Button
+                          calenderPickerState.setTempStartTime(
+                              DateFormat.jm().format(value).toString());
+                        },
+                      ),
                     ),
                   )
             : calenderPickerState.getShowAddEndTimeCalenderStrip()
                 ? CustomCalenderStrip(index: index, key: this._key)
                 : Container(
                     height: MediaQuery.of(context).size.height * .175,
-                    child: CupertinoDatePicker(
-                      mode: CupertinoDatePickerMode.time,
-                      initialDateTime: DateTime.now(),
-                      onDateTimeChanged: (value) {
-                        ///Set the temp end date
-                        ///
-                        /// Later to be used by the Confirm Button
-                        calenderPickerState.setTempEndTime(DateFormat.jm().format(value).toString());
-                      },
+                    child: CupertinoTheme(
+                      data: CupertinoThemeData(
+                          textTheme: CupertinoTextThemeData(
+                              dateTimePickerTextStyle: TextStyle(
+                                  color: Colors.white))),
+                      child: CupertinoDatePicker(
+                        backgroundColor: Color.fromRGBO(0, 0, 0, .85),
+                        mode: CupertinoDatePickerMode.time,
+                        initialDateTime: DateTime.now(),
+                        onDateTimeChanged: (value) {
+                          ///Set the temp end date
+                          ///
+                          /// Later to be used by the Confirm Button
+                          calenderPickerState.setTempEndTime(
+                              DateFormat.jm().format(value).toString());
+                        },
+                      ),
                     ),
                   );
       },

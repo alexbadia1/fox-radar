@@ -1,16 +1,17 @@
+import 'package:communitytabs/buttons/buttonLabels.dart';
+import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:communitytabs/data/expansionTileMetadata.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'buttonLabels.dart';
 
-class DateAndTimeActions extends StatelessWidget {
+class DateAndTimeButtons extends StatelessWidget {
   /// Index used to track which expansion panel is being called.
   ///
   /// Start Time Expansion Panel: Index == 0.
   /// End Time Expansion Panel: Index == 1.
   final int index;
 
-  DateAndTimeActions({this.index});
+  DateAndTimeButtons({this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -143,28 +144,34 @@ class DateAndTimeActions extends StatelessWidget {
       expansionTileState.updateExpansionPanels();
     } //confirm
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        FlatButton(
-          child: CancelOrBackButtonLabel(index: this.index),
-          onPressed: () {
-            bool tempBool = this.index == 0
-                ? expansionTileState.getShowAddStartTimeCalenderStrip()
-                : expansionTileState.getShowAddEndTimeCalenderStrip();
-            tempBool ? _cancel(this.index) : _backToShowCalender(this.index);
-          },
-        ),
-        FlatButton(
-          child: ContinueOrConfirmButtonLabel(index: this.index),
-          onPressed: () {
-            bool tempBool = this.index == 0
-                ? expansionTileState.getShowAddStartTimeCalenderStrip()
-                : expansionTileState.getShowAddEndTimeCalenderStrip();
-            tempBool ? _continue(this.index) : _confirm(index: this.index);
-          },
-        ),
-      ],
+    return Container(
+      decoration: BoxDecoration(
+          color: cCard,
+          border:
+          Border(bottom: BorderSide(width: .25, color: Color.fromRGBO(255, 255, 255, .7)))),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          FlatButton(
+            child: CancelOrBackButtonLabel(index: this.index),
+            onPressed: () {
+              bool tempBool = this.index == 0
+                  ? expansionTileState.getShowAddStartTimeCalenderStrip()
+                  : expansionTileState.getShowAddEndTimeCalenderStrip();
+              tempBool ? _cancel(this.index) : _backToShowCalender(this.index);
+            },
+          ),
+          FlatButton(
+            child: ContinueOrConfirmButtonLabel(index: this.index),
+            onPressed: () {
+              bool tempBool = this.index == 0
+                  ? expansionTileState.getShowAddStartTimeCalenderStrip()
+                  : expansionTileState.getShowAddEndTimeCalenderStrip();
+              tempBool ? _continue(this.index) : _confirm(index: this.index);
+            },
+          ),
+        ],
+      ),
     );
   }
 }

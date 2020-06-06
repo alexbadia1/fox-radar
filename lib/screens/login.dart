@@ -332,9 +332,15 @@ class _LoginState extends State<Login> {
                           : Container(
                               child: GestureDetector(
                                 onTap: () async {
+                                  setState(() {
+                                    loading = true;
+                                  });
                                   dynamic _result =
                                       await _auth.anonymousSignIn();
                                   if (_result == null) {
+                                    setState(() {
+                                      loading = false;
+                                    });
                                     print('Error Signing In');
                                   } else {
                                     print('Sign in successful');

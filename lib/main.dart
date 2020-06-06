@@ -14,6 +14,8 @@ import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:communitytabs/data/user.dart';
 import 'package:communitytabs/data/slidingUpPanelMetadata.dart';
+
+import 'data/categoryPanels.dart';
 /*
 Author: Alex Badia
 Implemented MultiProvider for very basic state management
@@ -40,6 +42,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<SlidingUpPanelMetaData>(create: (context) => SlidingUpPanelMetaData()),
         ChangeNotifierProvider<PageViewMetaData>(create: (context) => PageViewMetaData(),),
         ChangeNotifierProvider<ExpansionTiles>(create: (context) => ExpansionTiles(),),
+        ChangeNotifierProvider<CategoryPanels>(create: (context) => CategoryPanels(),),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,

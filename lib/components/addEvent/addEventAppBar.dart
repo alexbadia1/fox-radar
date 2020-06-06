@@ -11,10 +11,7 @@ class AddEventAppBar extends StatefulWidget {
 class _AddEventAppBarState extends State<AddEventAppBar> {
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      elevation: 0,
-      backgroundColor: Colors.transparent,
-      flexibleSpace: Container(
+    return Container(
         width: double.infinity,
         height: MediaQuery.of(context).size.height * .0725,
         child: Stack(
@@ -46,7 +43,6 @@ class _AddEventAppBarState extends State<AddEventAppBar> {
             )
           ],
         ),
-      ),
     );
   }
 }

@@ -38,7 +38,7 @@ class EventDetails extends StatelessWidget {
                             child: Container(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                myEvent.getHost,
+                                myEvent.getTitle,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(

@@ -20,39 +20,47 @@ class _PreviousOrCloseButtonState extends State<PreviousOrCloseButton> {
       builder: (context, pageViewState, child) {
         return Container(
           child: pageViewState.formStepNum > 1
-              ? IconButton(
-                  icon: Icon(Icons.chevron_left),
-                  color: kHavenLightGray,
-                  onPressed: () {
-                    ///Close Keyboard
-                    FocusScope.of(context).unfocus();
+              ? Row(
+                children: <Widget>[
+                  SizedBox(width: MediaQuery.of(context).size.width * .03,),
+                  GestureDetector(
+                      child: Icon(Icons.chevron_left, color: kHavenLightGray),
+                      onTap: () {
+                        ///Close Keyboard
+                        FocusScope.of(context).unfocus();
 
-                    ///Update what form step number We're on
-                    pageViewState.setFormStepNum(pageViewState.formStepNum - 1);
+                        ///Update what form step number We're on
+                        pageViewState.setFormStepNum(pageViewState.formStepNum - 1);
 
-                    ///"Navigate" to the next PageView based on the form step number
-                    pageViewState.pageViewController.animateToPage(
-                        pageViewState.formStepNum - 1,
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeIn);
-                  },
-                )
-              : IconButton(
-                  icon: Icon(Icons.close),
-                  color: kHavenLightGray,
-                  onPressed: () {
-                    ///Close Keyboard
-                    FocusScope.of(context).unfocus();
+                        ///"Navigate" to the next PageView based on the form step number
+                        pageViewState.pageViewController.animateToPage(
+                            pageViewState.formStepNum - 1,
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeIn);
+                      },
+                    ),
+                ],
+              )
+              : Row(
+                children: <Widget>[
+                  SizedBox(width: MediaQuery.of(context).size.width * .03,),
+                  GestureDetector(
+                      child: Icon(Icons.close, color: kHavenLightGray),
+                      onTap: () {
+                        ///Close Keyboard
+                        FocusScope.of(context).unfocus();
 
-                    ///TODO: Close all Expansion Panels by setting isExpanded to false. Hint use ChangeNotifier for the data and Consumer around the ExpansionPanelList
-                    expansionTiles.data[0].setIsExpanded(false);
-                    expansionTiles.data[1].setIsExpanded(false);
-                    expansionTiles.updateExpansionPanels();
-                    ///Close the Sliding Up Panel
-                    slidingUpPanelMetaData.setPanelIsClosed(true);
-                    slidingUpPanelMetaData.getPanelController.close();
-                  },
-                ),
+                        ///TODO: Close all Expansion Panels by setting isExpanded to false. Hint use ChangeNotifier for the data and Consumer around the ExpansionPanelList
+                        expansionTiles.data[0].setIsExpanded(false);
+                        expansionTiles.data[1].setIsExpanded(false);
+                        expansionTiles.updateExpansionPanels();
+                        ///Close the Sliding Up Panel
+                        slidingUpPanelMetaData.setPanelIsClosed(true);
+                        slidingUpPanelMetaData.getPanelController.close();
+                      },
+                    ),
+                ],
+              ),
         );
       },
     );
