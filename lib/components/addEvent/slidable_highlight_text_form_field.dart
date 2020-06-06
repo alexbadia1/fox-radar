@@ -10,11 +10,11 @@ class SlidableHighlightList extends StatelessWidget {
     return Consumer<ClubEventData>(
       builder: (context, myHighlights, child) {
         List<Widget> highlightsWidgets = [];
+        print('Current List being used: ' +
+            myHighlights.getHighlights.toString());
         for (int index = 0;
             index < myHighlights.getHighlights.length;
             ++index) {
-          print('Current List being used: ' +
-              myHighlights.getHighlights.toString());
           highlightsWidgets.add(SlidableHighlightTextFormField(index: index));
         }
         return ListView(
@@ -37,12 +37,49 @@ class SlidableHighlightTextFormField extends StatefulWidget {
 }
 
 class _SlidableHighlightTextFormFieldState extends State<SlidableHighlightTextFormField> {
+  FocusNode focusNode;
+  String currentInput = '';
+
+  @override
+  void initState(){
+    super.initState();
+    final _myHighlights = Provider.of<ClubEventData>(context, listen: false);
+    focusNode = new FocusNode();
+    focusNode.addListener((){
+      if(!focusNode.hasFocus){
+        print('I lost focus');
+        List<String> tempList = _myHighlights.getHighlights;
+        print('Created temp list');
+        tempList[this.widget.index] = currentInput;
+        print('Added current user input to temp list');
+        _myHighlights.setHighlights(tempList);
+        print('Highlights updated with temp list');
+        _myHighlights.applyChanges();
+        print('Highlight List after a textfield has been edited: ' +
+            _myHighlights.getHighlights.toString());
+      }
+    });
+  }
+
+  void onEditingCompleteCallback (ClubEventData myHighlights, TextEditingController controller) {
+    List<String> tempList = myHighlights.getHighlights;
+    controller.text.trim().isEmpty
+        ? tempList[this.widget.index] = ''
+        : tempList[this.widget.index] = controller.text;
+    myHighlights.setHighlights(tempList);
+    myHighlights.applyChanges();
+    print('Highlight List after a textfield has been edited: ' +
+        myHighlights.getHighlights.toString());
+    focusNode.unfocus();
+  }
+
   @override
   Widget build(BuildContext context) {
     ClubEventData myHighlights = Provider.of<ClubEventData>(context);
     double _textFormFieldWidth = MediaQuery.of(context).size.width;
     double _textFormFieldHeight = MediaQuery.of(context).size.height * .07;
     TextEditingController _controller = new TextEditingController(text: myHighlights.getHighlights[this.widget.index],);
+
     return Slidable(
         enabled: true,
         direction: Axis.horizontal,
@@ -59,24 +96,20 @@ class _SlidableHighlightTextFormFieldState extends State<SlidableHighlightTextFo
               Expanded(
                 child: TextFormField(
                   controller: _controller,
+                  focusNode: focusNode,
                   key: Key(myHighlights.getHighlights[this.widget.index]),
-                  onEditingComplete: () {
-                    List<String> tempList = myHighlights.getHighlights;
-                    _controller.text.trim().isEmpty
-                        ? tempList[this.widget.index] = ''
-                        : tempList[this.widget.index] = _controller.text;
-                    myHighlights.setHighlights(tempList);
-                    myHighlights.applyChanges();
-                    print('Highlight List after a textfield has been edited: ' +
-                        myHighlights.getHighlights.toString());
+                  onEditingComplete: () => onEditingCompleteCallback(myHighlights, _controller),
+                  onFieldSubmitted: (value){
+                    focusNode.unfocus();
+                  },
+                  onChanged: (value) {
+                    currentInput = value;
                   },
                   autofocus: false,
                   style: TextStyle(color: cWhite100),
                   textInputAction: TextInputAction.done,
                   decoration: cAddEventTextFormFieldDecoration.copyWith(
                       hintText: 'HightLight ' + (this.widget.index).toString()),
-                  onChanged: (value) {
-                  },
                 ),
               ),
               cRightMarginSmall(context)

@@ -21,40 +21,31 @@ class _AddEventContentState extends State<AddEventContent> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         resizeToAvoidBottomPadding: false,
-        body: SingleChildScrollView(
-          reverse: true,
-          child: Padding(
-            padding: EdgeInsets.only(bottom: bottom),
-            child: Container(
-              color: cBackground,
-              height: MediaQuery.of(context).size.height,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  AddEventAppBar(),
-//                  Container(
-//                    decoration: BoxDecoration(
-//                      color: cCard,
-//                      border: Border(bottom: BorderSide(width: .25, color: Color.fromRGBO(255, 255, 255, .7)))
-//                    ),
-//                    width: double.infinity,
-//                    height: MediaQuery.of(context).size.height * .0725,
-//                    child: Row(
-//                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                      children: <Widget>[
-//                        SizedBox(width: MediaQuery.of(context).size.width * .05),
-//                        FormTitle(),
-//                        Expanded(child: SizedBox()),
-//                        ProgressBar(),
-//                        SizedBox(width: MediaQuery.of(context).size.width * .05),
-//                      ],
-//                    ),
-//                  ),
-                  Expanded(child: EventForm()),
-                ],
-              ),
-            ),
-          ),
+        body: Consumer<SlidingUpPanelMetaData>(
+          builder: (context, slidingUpPanelState, child) {
+            return slidingUpPanelState.getPanelIsClosed
+                ? Container()
+                : ChangeNotifierProvider<ClubEventData>(
+                    create: (context) => ClubEventData.nullConstructor(),
+                    child: SingleChildScrollView(
+                      reverse: true,
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: bottom),
+                        child: Container(
+                          color: cBackground,
+                          height: MediaQuery.of(context).size.height,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              AddEventAppBar(),
+                              Expanded(child: EventForm()),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+          },
         ),
       ),
     );
@@ -67,36 +58,48 @@ class EventForm extends StatefulWidget {
 }
 
 class _EventFormState extends State<EventForm> {
-
   @override
   Widget build(BuildContext context) {
-    return Consumer<SlidingUpPanelMetaData>(
-      builder: (context, slidingUpPanelState, child) {
-        return slidingUpPanelState.getPanelIsClosed ? Container() : Consumer<PageViewMetaData>(
-          builder: (context, pageViewState, child) {
-            return ChangeNotifierProvider<ClubEventData>(
-              create: (context) => ClubEventData.nullConstructor(),
-              child: PageView(
-                controller: pageViewState.pageViewController,
-                physics: NeverScrollableScrollPhysics(),
-                children: <Widget>[
-                  FormPart1(),
-                  Container(
-                    color: Colors.greenAccent,
-                    child: Center(child: Text('2')),
-                  ),
-                  Container(
-                    color: Colors.blueAccent,
-                    child: Center(
-                      child: Text('3'),
-                    ),
-                  ),
-                ],
+    return Consumer<PageViewMetaData>(
+      builder: (context, pageViewState, child) {
+        return PageView(
+          controller: pageViewState.pageViewController,
+          physics: NeverScrollableScrollPhysics(),
+          children: <Widget>[
+            FormPart1(),
+            Container(
+              color: Colors.greenAccent,
+              child: Center(child: Text('2')),
+            ),
+            Container(
+              color: Colors.blueAccent,
+              child: Center(
+                child: Text('3'),
               ),
-            );
-          },
+            ),
+          ],
         );
       },
     );
   }
 }
+
+//Form Section Headers and ProgressBars
+//Container(
+//  decoration: BoxDecoration(
+//    color: cCard,
+//    border: Border(bottom: BorderSide(width: .25, color: Color.fromRGBO(255, 255, 255, .7)))
+//  ),
+//  width: double.infinity,
+//  height: MediaQuery.of(context).size.height * .0725,
+//  child: Row(
+//    mainAxisAlignment: MainAxisAlignment.spaceAround,
+//    children: <Widget>[
+//      SizedBox(width: MediaQuery.of(context).size.width * .05),
+//      FormTitle(),
+//      Expanded(child: SizedBox()),
+//      ProgressBar(),
+//      SizedBox(width: MediaQuery.of(context).size.width * .05),
+//    ],
+//  ),
+//),
