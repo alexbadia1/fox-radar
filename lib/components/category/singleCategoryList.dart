@@ -21,6 +21,7 @@ class _SingleCategoryViewState extends State<SingleCategoryView> with AutomaticK
     _events = _events.where((_events) => _events.myCategory.contains(this.widget.eventType)).toList();
     int size = _events?.length ?? 0;
 
+
     return Container(
       color: Colors.black,
       child: ListView.builder(

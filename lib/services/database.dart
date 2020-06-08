@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:communitytabs/data/club_event_data.dart';
+import 'package:flutter/cupertino.dart';
 
 class DatabaseService {
   //Get local user data
@@ -23,24 +24,19 @@ class DatabaseService {
         .setData({'email': email, 'password': password});
   } //updateUserData
 
-  Future addEvent(
-      [String title,
-      String host,
-      String summary,
-      String location,
-      String room,
-      int startTime,
-      int endTime,
-      List<String> highlights]) async {
+  Future addEvent({@required ClubEventData newEvent}) async {
     return await _eventsCollection.document().setData({
-      'title': title,
-      'host': host,
-      'summary': summary,
-      'location': location,
-      'room': room,
-      'startTime': startTime,
-      'endTime': endTime,
-      'highlights': highlights
+      'title': newEvent.getTitle ?? '',
+      'host': newEvent.getHost ?? '',
+      'location': newEvent.getLocation ?? '',
+      'room': newEvent.getRoom ?? '',
+      'startDate': newEvent.getStartDate ?? '',
+      'startTime': newEvent.getStartTime ?? '',
+      'endDate': newEvent.getEndDate ?? '',
+      'endTime' : newEvent.getEndTime ?? '',
+      'category' : newEvent.myCategory ?? '',
+      'highlights': newEvent.getHighlights ?? [],
+      'summary' : newEvent.getSummary ?? '',
     });
   } //addEvent
 
@@ -49,43 +45,43 @@ class DatabaseService {
     return snap.documents.map((doc) {
       return ClubEventData(
           ///Category converted to [STRING] from [STRING] in Firebase.
-          newCategory: doc.data['category'] ?? 'Food',
+          newCategory: doc.data['category'] ?? '',
 
           ///Host converted to [STRING] from [STRING] in Firebase.
-          newHost: doc.data['host'] ?? 'Host',
+          newHost: doc.data['host'] ?? '',
 
           ///Title converted to [STRING] from [STRING] in Firebase.
-          newTitle: doc.data['title'] ?? 'Title',
+          newTitle: doc.data['title'] ?? '',
 
           ///Start Date Converted to [STRING] from [STRING] in Firebase.
-          newStartDate: doc.data['startDate'] ?? 'Start Date',
+          newStartDate: doc.data['startDate'] ?? '',
 
           ///Start Time Converted to [STRING] from [STRING] in Firebase.
-          newStartTime: doc.data['startTime'] ?? 'Start Time',
+          newStartTime: doc.data['startTime'] ?? '',
 
           ///Start Date Converted to [STRING] from [STRING] in Firebase.
-          newEndDate: doc.data['endDate'] ?? 'End Date',
+          newEndDate: doc.data['endDate'] ?? '',
 
           ///End Time Converted to [STRING] from [STRING] in Firebase.
-          newEndTime: doc.data['endTime'] ?? 'End Time',
+          newEndTime: doc.data['endTime'] ?? '',
 
           ///Location Converted to [] from [] in Firebase.
-          newLocation: doc.data['location'] ?? 'Location',
+          newLocation: doc.data['location'] ?? '',
 
           ///Room converted to [STRING] from [String] in Firebase.
-          newRoom: doc.data['room'] ?? 'Room',
+          newRoom: doc.data['room'] ?? '',
 
           ///Summary converted to [STRING] from [STRING] in Firebase.
-          newSummary: doc.data['summary'] ?? 'Summary',
+          newSummary: doc.data['summary'] ?? '',
 
           ///Highlights converted to [List<String>] from [List<dynamic>] in Firebase.
           newHighlights: List.from(doc.data['highlights']) ??
               [
-                '[Highlight 1]',
-                '[Highlight 2]',
-                '[Highlight 3]',
-                '[Highlight 4]',
-                '[Highlight 5]'
+                '',
+                '',
+                '',
+                '',
+                ''
               ],
 
           ///TODO: Implement Firebase Images.

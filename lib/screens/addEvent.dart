@@ -1,4 +1,4 @@
-import 'package:communitytabs/components/formPart1.dart';
+import 'package:communitytabs/components/addEvent/formPart1.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:communitytabs/data/club_event_data.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,7 +24,9 @@ class _AddEventContentState extends State<AddEventContent> {
         body: Consumer<SlidingUpPanelMetaData>(
           builder: (context, slidingUpPanelState, child) {
             return slidingUpPanelState.getPanelIsClosed
-                ? Container()
+                ? Container(
+                  color: cBackground,
+                )
                 : ChangeNotifierProvider<ClubEventData>(
                     create: (context) => ClubEventData.nullConstructor(),
                     child: SingleChildScrollView(

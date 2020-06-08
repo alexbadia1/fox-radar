@@ -39,11 +39,11 @@ class DateAndTimeButtons extends StatelessWidget {
       ///
       /// We know that it is the user's first time picking a date or time
       /// by this condition: if (HeaderTimeLabel == '' ).
-      if (expansionTileState.data[index].getHeaderTimeValue() == '') {
+      if (expansionTileState.data[index].getHeaderTimeValue() == null) {
         if (index == 0) {
-          expansionTileState.data[index].setHeaderDateValue('');
+          expansionTileState.data[index].setHeaderDateValue(null);
         } else {
-          expansionTileState.data[index].setHeaderDateValue('');
+          expansionTileState.data[index].setHeaderDateValue(null);
 
           ///Set the header to Add End Time
           if (index == 1)
@@ -72,13 +72,13 @@ class DateAndTimeButtons extends StatelessWidget {
     /// Should only submit the date
     void _continue(int index) {
       ///Set expansionPanel's showCalender variable to false.
-      String newHeaderDateValue = '[Date Value]';
+      DateTime newHeaderDateValue;
       if (index == 0) {
         ///Set the START DATE
-        newHeaderDateValue = expansionTileState.getTempStartDate().toString();
+        newHeaderDateValue = expansionTileState.getTempStartDate();
         expansionTileState.setShowAddStartTimeCalenderStrip(false);
       } else {
-        newHeaderDateValue = expansionTileState.getTempEndDate().toString();
+        newHeaderDateValue = expansionTileState.getTempEndDate();
         expansionTileState.setShowAddEndTimeCalenderStrip(false);
       }
 
@@ -92,7 +92,7 @@ class DateAndTimeButtons extends StatelessWidget {
     ///
     /// Should Submit the chosen time and close expansion panel.
     void _confirm({@required int index}) {
-      String newHeaderTimeValue = '[Time Value]';
+      DateTime newHeaderTimeValue;
 
       /// Index used to track which expansion panel is being called.
       ///
@@ -104,10 +104,10 @@ class DateAndTimeButtons extends StatelessWidget {
       /// showCalenderStrip boolean is FALSE, the cupertino time picker will show.
       if (index == 0) {
         expansionTileState.setShowAddStartTimeCalenderStrip(true);
-        newHeaderTimeValue = expansionTileState.getTempStartTime().toString();
+        newHeaderTimeValue = expansionTileState.getTempStartTime();
       } else {
         expansionTileState.setShowAddEndTimeCalenderStrip(true);
-        newHeaderTimeValue = expansionTileState.getTempEndTime().toString();
+        newHeaderTimeValue = expansionTileState.getTempEndTime();
       }
 
       ///Set the header to Remove End Time

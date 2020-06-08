@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ClubEventData extends ChangeNotifier{
+class ClubEventData extends ChangeNotifier {
   String _myTitle;
   String _myHost;
   String _myLocation;
@@ -101,8 +101,24 @@ class ClubEventData extends ChangeNotifier{
     _myHost = value;
   }
 
+  void setCategory (String newCategory) {
+    _myCategory = newCategory;
+  }
+
   void applyChanges () {
     notifyListeners();
   }
 
+  @override
+  String toString() {
+    return "Title: $_myTitle\n"
+        "Host: $_myHost\n"
+        "Location: $_myLocation\n"
+        "Room: $_myRoom\n"
+        "Start: $_myStartDate $_myStartTime\n"
+        "End: $_myEndDate $_myEndTime\n"
+        "Category: $_myCategory\n"
+        "Highlights: $_myHighlights\n"
+        "Summary: $_mySummary";
+  }
 }//class

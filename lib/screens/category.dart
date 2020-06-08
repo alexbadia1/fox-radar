@@ -59,23 +59,23 @@ class _CategoryContentState extends State<CategoryContent> {
             child: AppBar(
               flexibleSpace: Stack(
                 children: <Widget>[
-                  Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    child: Image(
-                      image: ResizeImage(
-                        AssetImage("images/tenney.jpg"),
-                        width: int.parse(
-                          MediaQuery.of(context)
-                              .size
-                              .width
-                              .toString()
-                              .replaceAll('.', ''),
-                        ),
-                      ),
-                      fit: BoxFit.fill,
-                    ),
-                  ),
+//                  Container(
+//                    width: double.infinity,
+//                    height: double.infinity,
+//                    child: Image(
+//                      image: ResizeImage(
+//                        AssetImage("images/image1.jpg"),
+//                        width: int.parse(
+//                          MediaQuery.of(context)
+//                              .size
+//                              .width
+//                              .toString()
+//                              .replaceAll('.', ''),
+//                        ),
+//                      ),
+//                      fit: BoxFit.fill,
+//                    ),
+//                  ),
                   Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(

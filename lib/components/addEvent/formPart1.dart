@@ -3,9 +3,9 @@ import 'package:communitytabs/components/addEvent/form_section_time.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'addEvent/form_section_highlights.dart';
-import 'addEvent/cupertinoCategoryPicker.dart';
-import 'addEvent/form_section_event.dart';
+import 'form_section_highlights.dart';
+import 'cupertinoCategoryPicker.dart';
+import 'form_section_event.dart';
 
 class FormPart1 extends StatefulWidget {
 
@@ -14,7 +14,7 @@ class FormPart1 extends StatefulWidget {
 }
 
 class _FormPart1State extends State<FormPart1> {
-  static final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Form(

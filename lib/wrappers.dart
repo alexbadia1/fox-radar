@@ -6,7 +6,6 @@ import 'package:communitytabs/screens/home.dart';
 import 'package:communitytabs/screens/login.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'components/customCalenderStrip.dart';
 import 'data/user.dart';
@@ -142,11 +141,13 @@ class DateOrTimePicker extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ExpansionTiles>(
       builder: (context, calenderPickerState, child) {
-        index == 0
-            ? calenderPickerState.setTempStartTime(
-                DateFormat.jm().format(DateTime.now()).toString())
-            : calenderPickerState.setTempEndTime(
-                DateFormat.jm().format(DateTime.now()).toString());
+        if(index == 0) {
+          if(calenderPickerState.getTempStartTime() == null)
+            calenderPickerState.setTempStartTime(calenderPickerState.data[index].getHeaderTimeValue() ?? DateTime.now());
+        } else {
+          if (calenderPickerState.getTempEndTime() == null)
+            calenderPickerState.setTempEndTime(calenderPickerState.data[index].getHeaderTimeValue() ?? DateTime.now());
+        }
         return index == 0
             ? calenderPickerState.getShowAddStartTimeCalenderStrip()
                 ? CustomCalenderStrip(index: index, key: this._key)
@@ -160,12 +161,12 @@ class DateOrTimePicker extends StatelessWidget {
                       child: CupertinoDatePicker(
                         backgroundColor: Color.fromRGBO(0, 0, 0, .85),
                         mode: CupertinoDatePickerMode.time,
+                        initialDateTime: calenderPickerState.getTempStartTime(),
                         onDateTimeChanged: (value) {
                           ///Set the temp start date
                           ///
                           /// Later to be used by the Confirm Button
-                          calenderPickerState.setTempStartTime(
-                              DateFormat.jm().format(value).toString());
+                          calenderPickerState.setTempStartTime(value);
                         },
                       ),
                     ),
@@ -182,13 +183,12 @@ class DateOrTimePicker extends StatelessWidget {
                       child: CupertinoDatePicker(
                         backgroundColor: Color.fromRGBO(0, 0, 0, .85),
                         mode: CupertinoDatePickerMode.time,
-                        initialDateTime: DateTime.now(),
+                        initialDateTime: calenderPickerState.getTempEndTime(),
                         onDateTimeChanged: (value) {
                           ///Set the temp end date
                           ///
                           /// Later to be used by the Confirm Button
-                          calenderPickerState.setTempEndTime(
-                              DateFormat.jm().format(value).toString());
+                          calenderPickerState.setTempEndTime(value);
                         },
                       ),
                     ),

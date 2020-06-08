@@ -2,7 +2,6 @@ import 'package:calendar_strip/calendar_strip.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:communitytabs/data/expansionTileMetadata.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class CustomCalenderStrip extends StatefulWidget {
@@ -17,7 +16,7 @@ class _CustomCalenderStripState extends State<CustomCalenderStrip> {
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now().add(Duration(days: 365));
   DateTime selectedDate = DateTime.now();
-  List<DateTime> markedDates = [DateTime.now().add(Duration(days: 4))];
+  List<DateTime> markedDates = [];
 
   _monthNameWidget(monthName) {
     return Container(
@@ -86,25 +85,34 @@ class _CustomCalenderStripState extends State<CustomCalenderStrip> {
   @override
   Widget build(BuildContext context) {
     ExpansionTiles _expansionTileState = Provider.of<ExpansionTiles>(context);
-    DateFormat _formatter = new DateFormat('E, MMMM d, y');
-    this.widget.index == 0
-        ? _expansionTileState
-            .setTempStartDate(_formatter.format(DateTime.now()).toString())
-        : _expansionTileState
-            .setTempEndDate(_formatter.format(DateTime.now()).toString());
+
+    if (this.widget.index == 0) {
+      if (_expansionTileState.getTempStartDate() == null)
+        _expansionTileState.setTempStartDate(
+            _expansionTileState.data[this.widget.index].getHeaderDateValue() ??
+                DateTime.now());
+    } else {
+      if (_expansionTileState.getTempEndDate() == null)
+        _expansionTileState.setTempEndDate(
+            _expansionTileState.data[this.widget.index].getHeaderDateValue() ??
+                DateTime.now());
+    }
+
     return Column(
       children: <Widget>[
         CalendarStrip(
           containerHeight: MediaQuery.of(context).size.height * .175,
+          /// Depending on the Start Time make sure the start date is equal to t
           startDate: startDate,
           endDate: endDate,
+          selectedDate: this.widget.index == 0
+              ? _expansionTileState.getTempStartDate()
+              : _expansionTileState.getTempEndDate(),
           onDateSelected: (data) {
             ///Set the temp Date to the selected date
             this.widget.index == 0
-                ? _expansionTileState
-                    .setTempStartDate(_formatter.format(data).toString())
-                : _expansionTileState
-                    .setTempEndDate(_formatter.format(data).toString());
+                ? _expansionTileState.setTempStartDate(data)
+                : _expansionTileState.setTempEndDate(data);
           },
           dateTileBuilder: dateTileBuilder,
           iconColor: cWhite70,

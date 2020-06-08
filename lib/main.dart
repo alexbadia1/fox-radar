@@ -1,4 +1,5 @@
 import 'package:communitytabs/Screens/event.dart';
+import 'package:communitytabs/data/addHighlightButtonController.dart';
 import 'package:communitytabs/data/expansionTileMetadata.dart';
 import 'package:communitytabs/data/pageViewMetadata.dart';
 import 'package:communitytabs/data/club_event_data.dart';
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<PageViewMetaData>(create: (context) => PageViewMetaData(),),
         ChangeNotifierProvider<ExpansionTiles>(create: (context) => ExpansionTiles(),),
         ChangeNotifierProvider<CategoryPanels>(create: (context) => CategoryPanels(),),
+        ChangeNotifierProvider<AddHighlightButtonController>(create: (context) => AddHighlightButtonController(),),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,

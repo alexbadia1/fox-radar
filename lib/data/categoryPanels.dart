@@ -15,9 +15,11 @@ class CategoryPanels extends ChangeNotifier {
 class CategoryPanel {
   CategoryPanel({
     this.isExpanded = false,
-    this.categoryPicked
+    this.categoryPicked,
+    this.defaultCategoryPicked
   });
 
   bool isExpanded;
   String categoryPicked;
+  String defaultCategoryPicked;
 }

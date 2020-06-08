@@ -84,8 +84,8 @@ class RemoveEndDateButton extends StatelessWidget {
                       ///
                       ///END COMMENT
                       if (index == 1) {
-                        expansionPanelState.data[index].setHeaderDateValue('');
-                        expansionPanelState.data[index].setHeaderTimeValue('');
+                        expansionPanelState.data[index].setHeaderDateValue(null);
+                        expansionPanelState.data[index].setHeaderTimeValue(null);
                         expansionPanelState.data[index]
                             .setHeaderActionValue('Add End Time');
                       }

@@ -3,30 +3,27 @@ import 'package:flutter/material.dart';
 class ExpansionTiles extends ChangeNotifier {
   bool _showAddStartTimeCalenderStrip;
   bool _showAddEndTimeCalenderStrip;
-  String _tempStartTime;
-  String _tempEndTime;
-  String _tempStartDate;
-  String _tempEndDate;
+  DateTime originalStartDateAndTime;
+  DateTime _tempStartTime;
+  DateTime _tempEndTime;
+  DateTime _tempStartDate;
+  DateTime _tempEndDate;
   List<ExpansionTileData> data = [
-    ExpansionTileData(newHeaderDateValue: '', newHeaderTimeValue: '', newHeaderActionValue: 'Start', newIsExpanded: false),
-    ExpansionTileData(newHeaderDateValue: '', newHeaderTimeValue: '', newHeaderActionValue: 'Add End Time', newIsExpanded: false),
+    ExpansionTileData(newHeaderActionValue: 'Start', newIsExpanded: false),
+    ExpansionTileData(newHeaderActionValue: 'Add End Time', newIsExpanded: false),
   ];
 
   ExpansionTiles(){
     _showAddStartTimeCalenderStrip = true;
     _showAddEndTimeCalenderStrip = true;
-    _tempStartDate = '';
-    _tempEndDate = '';
-    _tempStartTime = '';
-    _tempEndTime = '';
   }
 
   bool getShowAddStartTimeCalenderStrip () => _showAddStartTimeCalenderStrip;
   bool getShowAddEndTimeCalenderStrip () => _showAddEndTimeCalenderStrip;
-  String getTempEndTime () => _tempEndTime;
-  String getTempStartDate () => _tempStartDate;
-  String getTempEndDate () => _tempEndDate;
-  String getTempStartTime () => _tempStartTime;
+  DateTime getTempEndTime () => _tempEndTime;
+  DateTime getTempStartDate () => _tempStartDate;
+  DateTime getTempEndDate () => _tempEndDate;
+  DateTime getTempStartTime () => _tempStartTime;
 
   void setShowAddStartTimeCalenderStrip (bool newShowAddStartTimeCalenderStrip) {
     _showAddStartTimeCalenderStrip = newShowAddStartTimeCalenderStrip;
@@ -38,18 +35,18 @@ class ExpansionTiles extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setTempStartTime (String newTempStartTime) {
+  void setTempStartTime (DateTime newTempStartTime) {
     _tempStartTime = newTempStartTime;
 
   }
-  void setTempEndTime (String newTempEndTime) {
+  void setTempEndTime (DateTime newTempEndTime) {
     _tempEndTime = newTempEndTime;
   }
-  void setTempStartDate (String newTempStartDate) {
+  void setTempStartDate (DateTime newTempStartDate) {
     _tempStartDate = newTempStartDate;
 
   }
-  void setTempEndDate (String newTempEndDate) {
+  void setTempEndDate (DateTime newTempEndDate) {
     _tempEndDate = newTempEndDate;
   }
 
@@ -64,30 +61,30 @@ class ExpansionTiles extends ChangeNotifier {
 
 
 class ExpansionTileData {
-  String _myHeaderDateValue;
-  String _myHeaderTimeValue;
+  DateTime _myHeaderDateValue;
+  DateTime _myHeaderTimeValue;
   String _myHeaderActionValue;
   bool _myIsExpanded;
 
-  ExpansionTileData({String newHeaderTimeValue, String newHeaderDateValue, String newHeaderActionValue,  bool newIsExpanded}){
+  ExpansionTileData({DateTime newHeaderTimeValue, DateTime newHeaderDateValue, String newHeaderActionValue,  bool newIsExpanded}){
     _myHeaderTimeValue = newHeaderTimeValue;
     _myHeaderDateValue = newHeaderDateValue;
     _myIsExpanded = newIsExpanded;
     _myHeaderActionValue = newHeaderActionValue;
   }
 
-  String getHeaderDateValue () => _myHeaderDateValue;
-  String getHeaderTimeValue () => _myHeaderTimeValue;
+  DateTime getHeaderDateValue () => _myHeaderDateValue;
+  DateTime getHeaderTimeValue () => _myHeaderTimeValue;
   String getHeaderActionValue () => _myHeaderActionValue;
   bool getIsExpanded ()=> _myIsExpanded;
 
   void setIsExpanded (bool newIsExpanded) {
     _myIsExpanded = newIsExpanded;
   }
-  void setHeaderDateValue (String newHeaderDateValue) {
+  void setHeaderDateValue (DateTime newHeaderDateValue) {
     _myHeaderDateValue = newHeaderDateValue;
   }
-  void setHeaderTimeValue (String newHeaderTimeValue) {
+  void setHeaderTimeValue (DateTime newHeaderTimeValue) {
     _myHeaderTimeValue = newHeaderTimeValue;
   }
   void setHeaderActionValue (String newHeaderActionValue) {

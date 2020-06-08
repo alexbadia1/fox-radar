@@ -26,6 +26,7 @@ SizedBox cVerticalMarginSmall(context) {
 
 //Dark Mode
 const Color cBackground = Color.fromRGBO(0, 0, 0, .935);
+const Color cDialogueBackground = Color.fromRGBO(10, 10, 10, .935);
 const Color cCard = Color.fromRGBO(35, 35, 35, 1);
 const Color cWhite70 = Color.fromRGBO(255, 255, 255, .7);
 const Color cWhite65 = Color.fromRGBO(255, 255, 255, .625);
@@ -122,4 +123,18 @@ class LoadingWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+SnackBar formErrorSnackBar(BuildContext context, String message) {
+  return SnackBar(
+    content: Container(
+      height: MediaQuery.of(context).size.height * .07,
+      width: double.infinity,
+      alignment: Alignment.topCenter,
+      child: Text(
+        message,
+        style: TextStyle(color: Colors.redAccent),
+      ),
+    ),
+  );
 }
