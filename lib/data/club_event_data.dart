@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
 class ClubEventData extends ChangeNotifier {
+  DateTime _rawStartDateAndTime;
+  DateTime _rawEndDateAndTime;
   String _myTitle;
   String _myHost;
   String _myLocation;
@@ -14,27 +16,39 @@ class ClubEventData extends ChangeNotifier {
   String _mySummary;
   String _image;
 
-  ClubEventData({String newHost, String newTitle, String newStartDate, String newStartTime, String newEndDate, String newEndTime, String newLocation, String newRoom,
-    String newSummary, List<String> newHighlights, String newImage, String newCategory}) {
+  ClubEventData(
+      {String newHost,
+      String newTitle,
+      String newLocation,
+      String newRoom,
+      String newSummary,
+      List<String> newHighlights,
+      String newImage,
+      String newCategory,
+      DateTime newRawStartDateAndTime,
+      DateTime newRawEndDateAndTime,}) {
+
     _myHost = newHost;
     _myTitle = newTitle;
-    _myStartDate = newStartDate;
-    _myStartTime = newStartTime;
-    _myEndDate = newEndDate;
-    _myEndTime = newEndTime;
+    newRawStartDateAndTime == null ? _myStartDate = '' : _myStartDate = DateFormat('E, MMMM d, y').format(newRawStartDateAndTime);
+    newRawStartDateAndTime == null ? _myStartTime = '' : _myStartTime = DateFormat.jm().format(newRawStartDateAndTime);
+    newRawEndDateAndTime == null ? _myEndDate = '' : _myEndDate = DateFormat('E, MMMM d, y').format(newRawEndDateAndTime);
+    newRawEndDateAndTime == null ? _myEndTime = '' : _myEndTime = DateFormat.jm().format(newRawEndDateAndTime);
     _myLocation = newLocation;
     _myRoom = newRoom;
     _mySummary = newSummary;
     _myHighlights = newHighlights;
     _image = newImage;
     _myCategory = newCategory;
-  }//full constructor
+    _rawStartDateAndTime = newRawStartDateAndTime;
+    _rawEndDateAndTime = newRawEndDateAndTime;
+  } //full constructor
 
   ClubEventData.nullConstructor() {
     _myHost = '';
     _myTitle = '';
     _myLocation = '';
-    _myStartDate =  '';
+    _myStartDate = '';
     _myEndDate = '';
     _myStartTime = '';
     _myEndTime = '';
@@ -42,7 +56,7 @@ class ClubEventData extends ChangeNotifier {
     _mySummary = '';
     _myHighlights = [];
     _image = 'images/AsianAllianceLanterns.jpg';
-  }////null constructor
+  } ////null constructor
 
   String get getImage => _image;
   String get getHost => _myHost;
@@ -56,6 +70,16 @@ class ClubEventData extends ChangeNotifier {
   String get getTitle => _myTitle;
   List<String> get getHighlights => _myHighlights;
   String get myCategory => _myCategory;
+  DateTime get getRawStartDateAndTime => _rawStartDateAndTime;
+  DateTime get getRawEndDateAndTime => _rawEndDateAndTime;
+
+  void setRawStartDateAndTime(DateTime value) {
+    _rawStartDateAndTime = value;
+  }
+
+  void setRawEndDateAndTime(DateTime value) {
+    _rawEndDateAndTime = value;
+  }
 
   void setImage(String value) {
     _image = value;
@@ -77,22 +101,6 @@ class ClubEventData extends ChangeNotifier {
     _myLocation = value;
   }
 
-  void setEndTime(String value) {
-    _myEndTime = value;
-  }
-
-  void setStartTime(String value) {
-    _myStartTime = value;
-  }
-
-  void setStartDate(String value) {
-    _myStartDate = value;
-  }
-
-  void setEndDate(String value) {
-    _myEndDate = value;
-  }
-
   void setTitle(String value) {
     _myTitle = value;
   }
@@ -101,11 +109,11 @@ class ClubEventData extends ChangeNotifier {
     _myHost = value;
   }
 
-  void setCategory (String newCategory) {
+  void setCategory(String newCategory) {
     _myCategory = newCategory;
   }
 
-  void applyChanges () {
+  void applyChanges() {
     notifyListeners();
   }
 
@@ -115,10 +123,11 @@ class ClubEventData extends ChangeNotifier {
         "Host: $_myHost\n"
         "Location: $_myLocation\n"
         "Room: $_myRoom\n"
-        "Start: $_myStartDate $_myStartTime\n"
-        "End: $_myEndDate $_myEndTime\n"
+        "Start: $_rawStartDateAndTime\n"
+        "End: $_rawEndDateAndTime\n"
         "Category: $_myCategory\n"
         "Highlights: $_myHighlights\n"
         "Summary: $_mySummary";
   }
-}//class
+
+} //class

@@ -30,20 +30,41 @@ class DatabaseService {
       'host': newEvent.getHost ?? '',
       'location': newEvent.getLocation ?? '',
       'room': newEvent.getRoom ?? '',
-      'startDate': newEvent.getStartDate ?? '',
-      'startTime': newEvent.getStartTime ?? '',
-      'endDate': newEvent.getEndDate ?? '',
-      'endTime' : newEvent.getEndTime ?? '',
-      'category' : newEvent.myCategory ?? '',
+      'category': newEvent.myCategory ?? '',
       'highlights': newEvent.getHighlights ?? [],
-      'summary' : newEvent.getSummary ?? '',
+      'summary': newEvent.getSummary ?? '',
+      'rawStartDateAndTime': newEvent.getRawStartDateAndTime ?? null,
+      'rawEndDateAndTime': newEvent.getRawEndDateAndTime ?? null,
     });
   } //addEvent
 
   ///Creating a Local Object Instance of an Event for ease of use
   List<ClubEventData> _eventListFromSnapshot(QuerySnapshot snap) {
     return snap.documents.map((doc) {
+      Timestamp tempRawStartDateAndTime = doc.data['rawStartDateAndTime'];
+      Timestamp tempRawEndDateAndTime = doc.data['rawEndDateAndTime'];
+
+      DateTime tempRawStartDateAndTimeToDateTime;
+      DateTime tempRawEndDateAndTimeToDateTime;
+
+      if (tempRawStartDateAndTime != null)
+        tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(
+            tempRawStartDateAndTime.millisecondsSinceEpoch).toUtc().toLocal();
+      else tempRawStartDateAndTimeToDateTime = null;
+
+      if (tempRawEndDateAndTime != null)
+        tempRawEndDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(
+            tempRawEndDateAndTime.millisecondsSinceEpoch).toUtc().toLocal();
+      else tempRawEndDateAndTimeToDateTime = null;
+
       return ClubEventData(
+
+          /// RawStartDate converted to [DATETIME] from [TIMESTAMP] in Firebase.
+          newRawStartDateAndTime: tempRawStartDateAndTimeToDateTime ?? null,
+
+          /// RawEndDate converted to [DATETIME] from [TIMESTAMP] in Firebase.
+          newRawEndDateAndTime: tempRawEndDateAndTimeToDateTime ?? null,
+
           ///Category converted to [STRING] from [STRING] in Firebase.
           newCategory: doc.data['category'] ?? '',
 
@@ -52,18 +73,6 @@ class DatabaseService {
 
           ///Title converted to [STRING] from [STRING] in Firebase.
           newTitle: doc.data['title'] ?? '',
-
-          ///Start Date Converted to [STRING] from [STRING] in Firebase.
-          newStartDate: doc.data['startDate'] ?? '',
-
-          ///Start Time Converted to [STRING] from [STRING] in Firebase.
-          newStartTime: doc.data['startTime'] ?? '',
-
-          ///Start Date Converted to [STRING] from [STRING] in Firebase.
-          newEndDate: doc.data['endDate'] ?? '',
-
-          ///End Time Converted to [STRING] from [STRING] in Firebase.
-          newEndTime: doc.data['endTime'] ?? '',
 
           ///Location Converted to [] from [] in Firebase.
           newLocation: doc.data['location'] ?? '',
@@ -75,14 +84,8 @@ class DatabaseService {
           newSummary: doc.data['summary'] ?? '',
 
           ///Highlights converted to [List<String>] from [List<dynamic>] in Firebase.
-          newHighlights: List.from(doc.data['highlights']) ??
-              [
-                '',
-                '',
-                '',
-                '',
-                ''
-              ],
+          newHighlights:
+              List.from(doc.data['highlights']) ?? ['', '', '', '', ''],
 
           ///TODO: Implement Firebase Images.
           newImage: 'images/AsianAllianceLanterns.jpg');

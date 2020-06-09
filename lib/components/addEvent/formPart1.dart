@@ -17,13 +17,12 @@ class _FormPart1State extends State<FormPart1> {
   GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: ListView(
-          primary: false,
-          shrinkWrap: true,
+    return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             cVerticalMarginSmall(context),
             FormSectionEvent(),

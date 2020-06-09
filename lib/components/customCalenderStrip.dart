@@ -13,7 +13,7 @@ class CustomCalenderStrip extends StatefulWidget {
 }
 
 class _CustomCalenderStripState extends State<CustomCalenderStrip> {
-  DateTime startDate = DateTime.now();
+  DateTime startDate = DateTime.now().subtract(Duration(days: 365));
   DateTime endDate = DateTime.now().add(Duration(days: 365));
   DateTime selectedDate = DateTime.now();
   List<DateTime> markedDates = [];

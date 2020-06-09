@@ -3,7 +3,6 @@ import 'package:communitytabs/data/club_event_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart';
 
 class EventDetails extends StatelessWidget {
   final ClubEventData myEvent;
@@ -12,116 +11,75 @@ class EventDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     double _screenWidth = MediaQuery.of(context).size.width;
     double _screenHeight = MediaQuery.of(context).size.height;
-    String currentDate = DateFormat('E, MMMM d, y').format(DateTime.now());
-    String currentTime = DateFormat.jm().format(DateTime.now());
-    bool sameTime = false;
-    bool sameStartDate = false;
-    int militaryStartTime = 0;
-    int militaryEndTime = 0;
-    int militaryCurrentTime = 0;
+    DateTime myCurrent = DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+        DateTime.now().hour,
+        DateTime.now().minute,
+        0,
+        0,
+        0);
+    DateTime myStart = this.myEvent.getRawStartDateAndTime;
+    DateTime myEnd = this.myEvent.getRawEndDateAndTime;
+    String myFormattedStartDate = '';
+    String myFormattedEndDate = '';
     String startSubtitle = '';
     String endSubtitle = '';
 
-    int _convertToTwentyFourHour({String time}) {
-      int militaryTime;
-      if (time.contains('PM')) {
-        militaryTime = 1200 +
-            int.parse(time
-                .replaceAll(':', '')
-                .replaceAll('PM', '')
-                .replaceAll(' ', ''));
-      } else
-        militaryTime = int.parse(
-            time.replaceAll(':', '').replaceAll('AM', '').replaceAll(' ', ''));
-
-      return militaryTime;
+    if (myCurrent.difference(myStart).inDays == 0) {
+      myFormattedStartDate = 'today';
+    } else if (myCurrent.difference(myStart).inDays == 1) {
+      myFormattedStartDate = 'yesterday';
+    } else if (myCurrent.difference(myStart).inDays == -1) {
+      myFormattedStartDate = 'tomorrow';
+    } else {
+      myFormattedStartDate = 'on ${this.myEvent.getStartDate}';
     }
 
-    // Convert to military time
-    if (this.myEvent.getEndTime.trim().isNotEmpty) {
-      militaryEndTime = _convertToTwentyFourHour(time: this.myEvent.getEndTime);
-    } else
-      militaryEndTime = -1;
-    militaryStartTime =
-        _convertToTwentyFourHour(time: this.myEvent.getStartTime);
-    militaryCurrentTime = _convertToTwentyFourHour(time: currentTime);
+    if (myEnd != null) {
+      if (myCurrent
+          .difference(myEnd)
+          .inDays == 0) {
+        myFormattedEndDate = 'today';
+      } else if (myCurrent
+          .difference(myEnd)
+          .inDays == 1) {
+        myFormattedEndDate = 'yesterday';
+      } else if (myCurrent
+          .difference(myEnd)
+          .inDays == -1) {
+        myFormattedEndDate = 'tomorrow';
+      } else {
+        myFormattedEndDate = 'on ${this.myEvent.getEndDate}';
+      }
+    }
 
-    // Check for same date or same time
-    if (militaryCurrentTime == militaryStartTime) sameTime = true;
-    if (currentDate == this.myEvent.getStartDate) sameStartDate = true;
-
-    if (sameStartDate && sameTime) {
-      startSubtitle = 'Event just started now!';
-      endSubtitle = 'Event will end at ${this.myEvent.getEndTime}';
-    } else if (sameStartDate) {
-      if (currentDate == this.myEvent.getEndDate) {
-        // Event ends in the same day, compare times
-        if (militaryCurrentTime > militaryStartTime) {
-          // Current time is AFTER the Event Start Time, but
-          // we don't know if the even is in progress or ended.
-          if (militaryEndTime != -1) {
-            // Check if a end time was provided...
-            if (militaryCurrentTime < militaryEndTime) {
-              // Current Time is AFTER the Start Time and
-              // BEFORE the End Time, meaning the event
-              // is in progress
-              startSubtitle = 'Event in progress since ${this.myEvent.getStartTime} today!';
-              endSubtitle = 'Event will end at ${this.myEvent.getEndTime} today';
-            } else {
-              // Current Time is AFTER the End Time meaning,
-              // the event has ended
-              startSubtitle =
-                  'Event started at ${this.myEvent.getStartTime} but has ended.';
-              endSubtitle = '';
-            }
-          } else {
-            // No end time was provided, so we don't know if the event ended or not.
-            // We'll just let them know how long ago it was when the event ended.
-            int timeAgo = militaryCurrentTime - militaryStartTime;
-            double decimalVal = timeAgo / 100;
-            String timeDiff = decimalVal.toString();
-            // Hours: index == 0
-            // Minutes: index== 1
-            List<String> hoursAndMin = timeDiff.split('.');
-            bool hasHours =
-                hoursAndMin[0].replaceAll('0', '').trim().isNotEmpty;
-            bool hasMinutes =
-                hoursAndMin[1].replaceAll('0', '').trim().isNotEmpty;
-
-            if (hasHours && hasHours) {
-              startSubtitle =
-                  'The event started ${hoursAndMin[0]} hour(s) and ${hoursAndMin[1]} minute(s) ago';
-              endSubtitle = '';
-            } else if (hasHours && !hasHours) {
-              startSubtitle = 'The event started ${hoursAndMin[0]} hour(s) ago';
-              endSubtitle = '';
-            } else if (!hasHours && hasMinutes) {
-              startSubtitle =
-                  'The event started ${hoursAndMin[1]} minute(s) ago';
-              endSubtitle = '';
-            }
-          }
+    if (myCurrent.isBefore(myStart)) {
+      startSubtitle =
+          'Starts $myFormattedStartDate at ${this.myEvent.getStartTime}';
+      if (this.myEvent.getEndDate.trim().isNotEmpty)
+        endSubtitle = 'Ends $myFormattedEndDate at ${this.myEvent.getEndTime}';
+    } else if (myCurrent.isAtSameMomentAs(myStart)) {
+      startSubtitle = 'Event starts now!';
+      if (this.myEvent.getEndDate.trim().isNotEmpty)
+        endSubtitle = 'Ends at ${this.myEvent.getEndTime} $myFormattedEndDate';
+    } else if (myCurrent.isAfter(myStart)) {
+      if (myEnd != null) {
+        if (myCurrent.isBefore(myEnd)) {
+          startSubtitle = 'Started since ${this.myEvent.getStartTime} $myFormattedStartDate';
+          endSubtitle = 'Ends at ${this.myEvent.getEndTime} $myFormattedEndDate';
         } else {
-          // Current Time is BEFORE the Event Start Time
-          startSubtitle = 'Starts today at ${this.myEvent.getStartTime}';
-          endSubtitle = 'Ends today at ${this.myEvent.getEndTime}';
+          startSubtitle = 'Ended since ${this.myEvent.getEndTime} $myFormattedEndDate ';
         }
       } else {
-        // Event doesn't end on the same day which means the event is still in progress
-        startSubtitle = 'Event in progress since ${this.myEvent.getStartTime} today!';
-        if (this.myEvent.getEndDate == ''){
-          endSubtitle = '';
-        } else endSubtitle = 'Event will end on ${this.myEvent.getEndDate} at ${this.myEvent.getEndTime}';
+        startSubtitle = 'Started since ${this.myEvent.getStartTime} $myFormattedStartDate';
       }
     } else {
       startSubtitle =
-          'Starts on ${this.myEvent.getStartDate}, at ${this.myEvent.getStartTime}';
-      if (this.myEvent.getEndDate != '') {
-        endSubtitle =
-            'Ends on ${this.myEvent.getEndDate}, at ${this.myEvent.getEndTime}';
-      } else
-        endSubtitle = '';
+          'Ended since ${this.myEvent.getEndTime} $myFormattedEndDate ';
     }
+
     return SafeArea(
       child: Scaffold(
         body: GestureDetector(
@@ -131,7 +89,7 @@ class EventDetails extends StatelessWidget {
             }
           },
           child: Container(
-            color: cBackground,
+            color: Colors.black,
             height: _screenHeight,
             width: _screenWidth,
             child: SingleChildScrollView(

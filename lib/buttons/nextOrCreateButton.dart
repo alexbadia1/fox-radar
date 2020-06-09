@@ -46,9 +46,11 @@ class _NextOrCreateButtonState extends State<NextOrCreateButton> {
     militaryStartTime = _convertToTwentyFourHour(
         time: DateFormat.jm()
             .format(expansionTiles.data[0].getHeaderTimeValue()));
+    if(expansionTiles.data[1].getHeaderTimeValue() != null)
     militaryEndTime = _convertToTwentyFourHour(
         time: DateFormat.jm()
             .format(expansionTiles.data[1].getHeaderTimeValue()));
+    else militaryEndTime = -1;
 
     return Consumer<PageViewMetaData>(builder: (context, pageViewState, child) {
       return Container(
@@ -143,32 +145,38 @@ class _NextOrCreateButtonState extends State<NextOrCreateButton> {
                             }
 
                             if (validData) {
-                              /// Get the Start Date
-                              clubEventData.setStartDate(
-                                  DateFormat('E, MMMM d, y').format(
-                                      expansionTiles.data[0]
-                                          .getHeaderDateValue()));
+                              DateTime formattedEndDateAndTime;
+                              DateTime formattedStartDateAndTime;
 
-                              /// Get the Start Time
-                              clubEventData.setStartTime(DateFormat.jm().format(
-                                  expansionTiles.data[0].getHeaderTimeValue()));
+                              formattedStartDateAndTime = new DateTime(
+                                  expansionTiles.data[0].getHeaderDateValue().year,
+                                  expansionTiles.data[0].getHeaderDateValue().month,
+                                  expansionTiles.data[0].getHeaderDateValue().day,
+                                  expansionTiles.data[0].getHeaderTimeValue().hour,
+                                  expansionTiles.data[0].getHeaderTimeValue().minute,
+                                0, 0, 0
+                              );
+
+                              if(expansionTiles.data[1].getHeaderDateValue() != null) {
+                                formattedEndDateAndTime = new DateTime(
+                                    expansionTiles.data[1].getHeaderDateValue().year,
+                                    expansionTiles.data[1].getHeaderDateValue().month,
+                                    expansionTiles.data[1].getHeaderDateValue().day,
+                                    expansionTiles.data[1].getHeaderTimeValue().hour,
+                                    expansionTiles.data[1].getHeaderTimeValue().minute,
+                                    0, 0, 0
+                                );
+                              }
+
+                              /// Get the Start Date
+                              clubEventData.setRawStartDateAndTime(formattedStartDateAndTime);
 
                               /// Get the End Date
                               if (expansionTiles.data[1].getHeaderDateValue() !=
                                   null) {
-                                clubEventData.setEndDate(
-                                    DateFormat('E, MMMM d, y').format(
-                                        expansionTiles.data[1]
-                                            .getHeaderDateValue()));
-                              }
+                                clubEventData.setRawEndDateAndTime(formattedEndDateAndTime);
+                              } else clubEventData.setRawEndDateAndTime(null);
 
-                              /// Get the End Time
-                              if (expansionTiles.data[1].getHeaderTimeValue() !=
-                                  null) {
-                                clubEventData.setEndTime(DateFormat.jm().format(
-                                    expansionTiles.data[1]
-                                        .getHeaderTimeValue()));
-                              }
 
                               /// Avoid empty highlights in the list
                               List<String> tempList = [];

@@ -1,4 +1,5 @@
 import 'package:communitytabs/components/addEvent/formPart1.dart';
+import 'package:communitytabs/components/imagePicker/addImage.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:communitytabs/data/club_event_data.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,11 +17,8 @@ class AddEventContent extends StatefulWidget {
 class _AddEventContentState extends State<AddEventContent> {
   @override
   Widget build(BuildContext context) {
-    final bottom = MediaQuery.of(context).viewInsets.bottom;
     return SafeArea(
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        resizeToAvoidBottomPadding: false,
         body: Consumer<SlidingUpPanelMetaData>(
           builder: (context, slidingUpPanelState, child) {
             return slidingUpPanelState.getPanelIsClosed
@@ -29,21 +27,15 @@ class _AddEventContentState extends State<AddEventContent> {
                 )
                 : ChangeNotifierProvider<ClubEventData>(
                     create: (context) => ClubEventData.nullConstructor(),
-                    child: SingleChildScrollView(
-                      reverse: true,
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: bottom),
-                        child: Container(
-                          color: cBackground,
-                          height: MediaQuery.of(context).size.height,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              AddEventAppBar(),
-                              Expanded(child: EventForm()),
-                            ],
-                          ),
-                        ),
+                    child: Container(
+                      color: cBackground,
+                      height: MediaQuery.of(context).size.height,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          AddEventAppBar(),
+                          Expanded(child: EventForm()),
+                        ],
                       ),
                     ),
                   );
@@ -69,10 +61,7 @@ class _EventFormState extends State<EventForm> {
           physics: NeverScrollableScrollPhysics(),
           children: <Widget>[
             FormPart1(),
-            Container(
-              color: Colors.greenAccent,
-              child: Center(child: Text('2')),
-            ),
+            AddImage(),
             Container(
               color: Colors.blueAccent,
               child: Center(
