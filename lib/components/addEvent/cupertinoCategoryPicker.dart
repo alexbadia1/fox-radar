@@ -59,7 +59,7 @@ class _CategoryState extends State<Category> {
                     textTheme: CupertinoTextThemeData(
                         dateTimePickerTextStyle: TextStyle(color: Colors.white))),
                 child: CupertinoPicker(
-                  backgroundColor: Color.fromRGBO(0, 0, 0, .85),
+                  backgroundColor: Color.fromRGBO(0, 0, 0, .9325),
                   itemExtent: 40.0,
                   children: categoryWidgets,
                   onSelectedItemChanged: (value) {

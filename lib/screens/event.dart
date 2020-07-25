@@ -1,12 +1,15 @@
+import 'dart:typed_data';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:communitytabs/data/club_event_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+
 class EventDetails extends StatelessWidget {
   final ClubEventData myEvent;
-  EventDetails({@required this.myEvent});
+  final Uint8List imageBytes;
+  EventDetails({this.myEvent, this.imageBytes});
   @override
   Widget build(BuildContext context) {
     double _screenWidth = MediaQuery.of(context).size.width;
@@ -20,8 +23,8 @@ class EventDetails extends StatelessWidget {
         0,
         0,
         0);
-    DateTime myStart = this.myEvent.getRawStartDateAndTime;
-    DateTime myEnd = this.myEvent.getRawEndDateAndTime;
+    DateTime myStart = myEvent.getRawStartDateAndTime;
+    DateTime myEnd = myEvent.getRawEndDateAndTime;
     String myFormattedStartDate = '';
     String myFormattedEndDate = '';
     String startSubtitle = '';
@@ -34,7 +37,7 @@ class EventDetails extends StatelessWidget {
     } else if (myCurrent.difference(myStart).inDays == -1) {
       myFormattedStartDate = 'tomorrow';
     } else {
-      myFormattedStartDate = 'on ${this.myEvent.getStartDate}';
+      myFormattedStartDate = 'on ${myEvent.getStartDate}';
     }
 
     if (myEnd != null) {
@@ -51,33 +54,33 @@ class EventDetails extends StatelessWidget {
           .inDays == -1) {
         myFormattedEndDate = 'tomorrow';
       } else {
-        myFormattedEndDate = 'on ${this.myEvent.getEndDate}';
+        myFormattedEndDate = 'on ${myEvent.getEndDate}';
       }
     }
 
     if (myCurrent.isBefore(myStart)) {
       startSubtitle =
-          'Starts $myFormattedStartDate at ${this.myEvent.getStartTime}';
-      if (this.myEvent.getEndDate.trim().isNotEmpty)
-        endSubtitle = 'Ends $myFormattedEndDate at ${this.myEvent.getEndTime}';
+          'Starts $myFormattedStartDate at ${myEvent.getStartTime}';
+      if (myEvent.getEndDate.trim().isNotEmpty)
+        endSubtitle = 'Ends $myFormattedEndDate at ${myEvent.getEndTime}';
     } else if (myCurrent.isAtSameMomentAs(myStart)) {
       startSubtitle = 'Event starts now!';
-      if (this.myEvent.getEndDate.trim().isNotEmpty)
-        endSubtitle = 'Ends at ${this.myEvent.getEndTime} $myFormattedEndDate';
+      if (myEvent.getEndDate.trim().isNotEmpty)
+        endSubtitle = 'Ends at ${myEvent.getEndTime} $myFormattedEndDate';
     } else if (myCurrent.isAfter(myStart)) {
       if (myEnd != null) {
         if (myCurrent.isBefore(myEnd)) {
-          startSubtitle = 'Started since ${this.myEvent.getStartTime} $myFormattedStartDate';
-          endSubtitle = 'Ends at ${this.myEvent.getEndTime} $myFormattedEndDate';
+          startSubtitle = 'Started since ${myEvent.getStartTime} $myFormattedStartDate';
+          endSubtitle = 'Ends at ${myEvent.getEndTime} $myFormattedEndDate';
         } else {
-          startSubtitle = 'Ended since ${this.myEvent.getEndTime} $myFormattedEndDate ';
+          startSubtitle = 'Ended since ${myEvent.getEndTime} $myFormattedEndDate ';
         }
       } else {
-        startSubtitle = 'Started since ${this.myEvent.getStartTime} $myFormattedStartDate';
+        startSubtitle = 'Started since ${myEvent.getStartTime} $myFormattedStartDate';
       }
     } else {
       startSubtitle =
-          'Ended since ${this.myEvent.getEndTime} $myFormattedEndDate ';
+          'Ended since ${myEvent.getEndTime} $myFormattedEndDate ';
     }
 
     return SafeArea(
@@ -97,15 +100,15 @@ class EventDetails extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Container(
+                  this.imageBytes == null ? Container() : Container(
                     width: double.infinity,
-                    child: Image(image: AssetImage(this.myEvent.getImage)),
+                    child: Image.memory(this.imageBytes, fit: BoxFit.cover,)
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * .01),
                   headerLevelOne(
                     context: context,
                     child: Text(
-                      this.myEvent.getTitle,
+                      myEvent.getTitle,
                       style: TextStyle(
                         color: cWhite100,
                         fontSize: 32.0,
@@ -118,13 +121,13 @@ class EventDetails extends StatelessWidget {
                   subtitle(
                       context: context,
                       icon: Icons.person,
-                      text: this.myEvent.getHost),
+                      text: myEvent.getHost),
                   subtitle(
                       context: context,
                       icon: Icons.location_on,
-                      text: this.myEvent.getRoom.trim().isNotEmpty
-                          ? '${this.myEvent.getLocation}, ${this.myEvent.getRoom}'
-                          : '${this.myEvent.getLocation} ${this.myEvent.getRoom}'),
+                      text: myEvent.getRoom.trim().isNotEmpty
+                          ? '${myEvent.getLocation}, ${myEvent.getRoom}'
+                          : '${myEvent.getLocation} ${myEvent.getRoom}'),
                   subtitle(
                       context: context,
                       icon: Icons.access_time,
@@ -136,10 +139,10 @@ class EventDetails extends StatelessWidget {
                           text: endSubtitle)
                       : Container(),
 
-                  this.myEvent.getHighlights.length > 0
+                  myEvent.getHighlights.length > 0
                       ? SizedBox(height: _screenHeight * .04)
                       : Container(),
-                  this.myEvent.getHighlights.length > 0
+                  myEvent.getHighlights.length > 0
                       ? headerLevelTwo(
                           context: context,
                           child: Text(
@@ -154,16 +157,16 @@ class EventDetails extends StatelessWidget {
                         )
                       : Container(),
 
-                  this.myEvent.getHighlights.length > 0
+                  myEvent.getHighlights.length > 0
                       ? highlightsList(
                           context: context, highlights: myEvent.getHighlights)
                       : Container(),
 
                   /// Summary Section
-                  this.myEvent.getSummary.trim().isEmpty
+                  myEvent.getSummary.trim().isEmpty
                       ? Container()
                       : SizedBox(height: _screenHeight * .03475),
-                  this.myEvent.getSummary.trim().isEmpty
+                  myEvent.getSummary.trim().isEmpty
                       ? Container()
                       : headerLevelTwo(
                           context: context,
@@ -178,11 +181,11 @@ class EventDetails extends StatelessWidget {
                           ),
                         ),
 
-                  this.myEvent.getSummary.trim().isEmpty
+                  myEvent.getSummary.trim().isEmpty
                       ? Container()
                       : SizedBox(
                           height: MediaQuery.of(context).size.height * .016),
-                  this.myEvent.getSummary.trim().isEmpty
+                  myEvent.getSummary.trim().isEmpty
                       ? Container()
                       : Row(
                           children: <Widget>[
@@ -192,7 +195,7 @@ class EventDetails extends StatelessWidget {
                             Expanded(
                               flex: 9,
                               child: Text(
-                                this.myEvent.getSummary,
+                                myEvent.getSummary,
                                 style: TextStyle(
                                   color: cWhite70,
                                   fontSize: 14.0,

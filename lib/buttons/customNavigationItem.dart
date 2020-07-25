@@ -1,7 +1,8 @@
 import 'package:communitytabs/constants/marist_color_scheme.dart';
+import 'package:communitytabs/data/homePageViewModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:communitytabs/wrappers.dart';
+import 'package:provider/provider.dart';
 
 class CustomNavigationItem extends StatelessWidget {
   final String option;
@@ -12,6 +13,8 @@ class CustomNavigationItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    HomePageViewModel _homePageViewModel = Provider.of<HomePageViewModel>(context);
+    CategoryContentModel _categoryContentModel = Provider.of<CategoryContentModel>(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 0),
       child: Container(
@@ -23,16 +26,13 @@ class CustomNavigationItem extends StatelessWidget {
                   borderRadius: BorderRadius.all(Radius.circular(5))),
             ),
             FlatButton(
-              onPressed: () => Navigator.pushReplacement(
-                context,
-                //TODO: Add a Slide-In-Right transition to the specified Category Page
-                PageRouteBuilder(
-                  pageBuilder: (context, animation1, animation2) =>
-                      CategoryWrapper(
-                    namedRoute: nextPage,
-                  ),
-                ),
-              ),
+              onPressed: () {
+                _categoryContentModel.setCategory(nextPage);
+                _homePageViewModel.homePageViewController.animateToPage(
+                  1,
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeIn);
+              },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -2,14 +2,18 @@ import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:communitytabs/data/categoryPanels.dart';
 import 'package:communitytabs/data/club_event_data.dart';
 import 'package:communitytabs/data/expansionTileMetadata.dart';
+import 'package:communitytabs/data/selectedImageModel.dart';
 import 'package:communitytabs/data/slidingUpPanelMetadata.dart';
 import 'package:communitytabs/services/database.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:communitytabs/data/pageViewMetadata.dart';
 
 class NextOrCreateButton extends StatefulWidget {
+  final VoidCallback uploadImageCallback;
+  NextOrCreateButton({this.uploadImageCallback});
+
+
   @override
   _NextOrCreateButtonState createState() => _NextOrCreateButtonState();
 }
@@ -23,36 +27,17 @@ class _NextOrCreateButtonState extends State<NextOrCreateButton> {
         Provider.of<CategoryPanels>(context);
     SlidingUpPanelMetaData slidingUpPanelMetaData =
         Provider.of<SlidingUpPanelMetaData>(context);
+    SelectedImageModel selectedImageModel = Provider.of<SelectedImageModel>(context);
     DatabaseService _db = new DatabaseService();
 
-    int militaryStartTime = 0;
-    int militaryEndTime = 0;
-
-    int _convertToTwentyFourHour({String time}) {
-      int militaryTime;
-      if (time.contains('PM')) {
-        militaryTime = 1200 +
-            int.parse(time
-                .replaceAll(':', '')
-                .replaceAll('PM', '')
-                .replaceAll(' ', ''));
-      } else
-        militaryTime = int.parse(
-            time.replaceAll(':', '').replaceAll('AM', '').replaceAll(' ', ''));
-
-      return militaryTime;
-    }
-
-    militaryStartTime = _convertToTwentyFourHour(
-        time: DateFormat.jm()
-            .format(expansionTiles.data[0].getHeaderTimeValue()));
-    if(expansionTiles.data[1].getHeaderTimeValue() != null)
-    militaryEndTime = _convertToTwentyFourHour(
-        time: DateFormat.jm()
-            .format(expansionTiles.data[1].getHeaderTimeValue()));
-    else militaryEndTime = -1;
-
     return Consumer<PageViewMetaData>(builder: (context, pageViewState, child) {
+      bool noSelectedAnImage = false;
+      if (pageViewState.formStepNum == 2) {
+        if (selectedImageModel.getImageBytes() == null) {
+          noSelectedAnImage = true;
+        }
+      }
+
       return Container(
         child: pageViewState.formStepNum < 3
             ? Row(
@@ -76,7 +61,7 @@ class _NextOrCreateButtonState extends State<NextOrCreateButton> {
                                           null &&
                                       expansionTiles.data[1]
                                               .getHeaderDateValue() ==
-                                          null)
+                                          null) || noSelectedAnImage
                               ? Colors.grey
                               : Colors.blueAccent),
                     ),
@@ -90,83 +75,44 @@ class _NextOrCreateButtonState extends State<NextOrCreateButton> {
                             (expansionTiles.data[1].getHeaderTimeValue() !=
                                     null &&
                                 expansionTiles.data[1].getHeaderDateValue() ==
-                                    null)
+                                    null) || noSelectedAnImage
                         ? null
-                        : () {
+                        : () async {
                             bool validData = true;
+                            DateTime formattedEndDateAndTime;
+                            DateTime formattedStartDateAndTime;
+
+                            formattedStartDateAndTime = new DateTime(
+                                expansionTiles.data[0].getHeaderDateValue().year,
+                                expansionTiles.data[0].getHeaderDateValue().month,
+                                expansionTiles.data[0].getHeaderDateValue().day,
+                                expansionTiles.data[0].getHeaderTimeValue().hour,
+                                expansionTiles.data[0].getHeaderTimeValue().minute,
+                                0, 0, 0
+                            );
+
+                            if(expansionTiles.data[1].getHeaderDateValue() != null) {
+                              formattedEndDateAndTime = new DateTime(
+                                  expansionTiles.data[1].getHeaderDateValue().year,
+                                  expansionTiles.data[1].getHeaderDateValue().month,
+                                  expansionTiles.data[1].getHeaderDateValue().day,
+                                  expansionTiles.data[1].getHeaderTimeValue().hour,
+                                  expansionTiles.data[1].getHeaderTimeValue().minute,
+                                  0, 0, 0
+                              );
+                            }
 
                             /// Check for a valid end date
-                            if (expansionTiles.data[1].getHeaderDateValue() !=
-                                    null &&
-                                expansionTiles.data[1].getHeaderTimeValue() !=
-                                    null) {
-                              if (expansionTiles.data[1]
-                                          .getHeaderDateValue()
-                                          .difference(expansionTiles.data[0]
-                                              .getHeaderDateValue())
-                                          .inDays <
-                                      0 &&
-                                  expansionTiles.data[1]
-                                          .getHeaderDateValue()
-                                          .day !=
-                                      expansionTiles.data[0]
-                                          .getHeaderDateValue()
-                                          .day) {
-                                /// INVALID End Date is BEFORE the Start Date.
+                            if (formattedEndDateAndTime != null){
+                              if (formattedEndDateAndTime.isBefore(formattedStartDateAndTime)) {
                                 validData = false;
-
-                                /// Show snack with text saying the END date is BEFORE the START date and is invalid.
                                 final snackBar = formErrorSnackBar(context,
-                                    'The end date can\'t come before the start date');
+                                    'The event cannot end before the event starts');
                                 Scaffold.of(context).showSnackBar(snackBar);
-                              } else if (expansionTiles.data[1]
-                                          .getHeaderDateValue()
-                                          .difference(expansionTiles.data[0]
-                                              .getHeaderDateValue())
-                                          .inDays ==
-                                      0 &&
-                                  expansionTiles.data[1]
-                                          .getHeaderDateValue()
-                                          .day ==
-                                      expansionTiles.data[0]
-                                          .getHeaderDateValue()
-                                          .day) {
-                                /// Same Dates, now check the times.
-                                if (militaryEndTime <= militaryStartTime) {
-                                  /// INVALID End Time HOUR is BEFORE the Start Time HOUR.
-                                  validData = false;
-
-                                  /// Show snack bar with text saying the END Time is BEFORE the START time and is invalid.
-                                  final snackBar = formErrorSnackBar(context,
-                                      'The event end time must be after event start time.');
-                                  Scaffold.of(context).showSnackBar(snackBar);
-                                }
                               }
                             }
 
                             if (validData) {
-                              DateTime formattedEndDateAndTime;
-                              DateTime formattedStartDateAndTime;
-
-                              formattedStartDateAndTime = new DateTime(
-                                  expansionTiles.data[0].getHeaderDateValue().year,
-                                  expansionTiles.data[0].getHeaderDateValue().month,
-                                  expansionTiles.data[0].getHeaderDateValue().day,
-                                  expansionTiles.data[0].getHeaderTimeValue().hour,
-                                  expansionTiles.data[0].getHeaderTimeValue().minute,
-                                0, 0, 0
-                              );
-
-                              if(expansionTiles.data[1].getHeaderDateValue() != null) {
-                                formattedEndDateAndTime = new DateTime(
-                                    expansionTiles.data[1].getHeaderDateValue().year,
-                                    expansionTiles.data[1].getHeaderDateValue().month,
-                                    expansionTiles.data[1].getHeaderDateValue().day,
-                                    expansionTiles.data[1].getHeaderTimeValue().hour,
-                                    expansionTiles.data[1].getHeaderTimeValue().minute,
-                                    0, 0, 0
-                                );
-                              }
 
                               /// Get the Start Date
                               clubEventData.setRawStartDateAndTime(formattedStartDateAndTime);
@@ -196,7 +142,12 @@ class _NextOrCreateButtonState extends State<NextOrCreateButton> {
                                       .getCategoryPanels()[0]
                                       .categoryPicked);
 
-                              print(clubEventData.toString());
+
+                              /// Grab the image bytes and contain/cover
+                              if(pageViewState.formStepNum == 2) {
+                                clubEventData.setImagePath(clubEventData.getTitle+ clubEventData.getHost + clubEventData.getLocation);
+                                clubEventData.setImageFitCover(selectedImageModel.getCover());
+                              }
 
                               ///Close Keyboard
                               FocusScope.of(context).unfocus();
@@ -237,43 +188,58 @@ class _NextOrCreateButtonState extends State<NextOrCreateButton> {
 
                       /// Submitting the form
                       print(clubEventData.toString());
+                      var result;
+                      var otherResult;
+                      try {
+                        this.widget.uploadImageCallback();
+                        result = await _db.addEvent(newEvent: clubEventData);
+                        otherResult = await _db.addEventToSearchable(newEvent: clubEventData);
+                      } catch (e) {
+                        result = 10;
+                        otherResult = 10;
+                        print(e);
+                      }
 
-                      var result = await _db.addEvent(newEvent: clubEventData);
-                      print(result);
+                      /// If creating the event was successful close the add event, else don't.
+                      if (result == null|| otherResult == null) {
+                        /// CLOSING THE EXPANSION PANELS
+                        /// Resetting the cupertino time pickers' initial selected time.
+                        expansionTiles.setTempStartTime(null);
+                        expansionTiles.setTempEndTime(null);
 
-                      /// CLOSING THE EXPANSION PANELS
-                      /// Resetting the cupertino time pickers' initial selected time.
-                      expansionTiles.setTempStartTime(null);
-                      expansionTiles.setTempEndTime(null);
+                        /// Resetting the calender strip initial selected date.
+                        expansionTiles.setTempStartDate(null);
+                        expansionTiles.setTempEndDate(null);
+                        expansionTiles.data[1].setHeaderDateValue(null);
+                        expansionTiles.data[1].setHeaderTimeValue(null);
+                        expansionTiles.data[1]
+                            .setHeaderActionValue('Add End Time');
 
-                      /// Resetting the calender strip initial selected date.
-                      expansionTiles.setTempStartDate(null);
-                      expansionTiles.setTempEndDate(null);
-                      expansionTiles.data[1].setHeaderDateValue(null);
-                      expansionTiles.data[1].setHeaderTimeValue(null);
-                      expansionTiles.data[1]
-                          .setHeaderActionValue('Add End Time');
+                        _categoryPanelsModelAndController
+                            .getCategoryPanels()[0]
+                            .categoryPicked = 'Academic';
 
-                      _categoryPanelsModelAndController
-                          .getCategoryPanels()[0]
-                          .categoryPicked = 'Academic';
+                        /// Closing all expansion tiles
+                        expansionTiles.data[0].setIsExpanded(false);
+                        expansionTiles.data[1].setIsExpanded(false);
+                        _categoryPanelsModelAndController
+                            .getCategoryPanels()[0]
+                            .isExpanded = false;
+                        _categoryPanelsModelAndController
+                            .updateCategoryPanelState();
+                        expansionTiles.updateExpansionPanels();
 
-                      /// Closing all expansion tiles
-                      expansionTiles.data[0].setIsExpanded(false);
-                      expansionTiles.data[1].setIsExpanded(false);
-                      _categoryPanelsModelAndController
-                          .getCategoryPanels()[0]
-                          .isExpanded = false;
-                      _categoryPanelsModelAndController
-                          .updateCategoryPanelState();
-                      expansionTiles.updateExpansionPanels();
+                        /// Close sliding up panel and Reset the form step number
+                        pageViewState.setFormStepNum(1);
 
-                      /// Close sliding up panel and Reset the form step number
-                      pageViewState.setFormStepNum(1);
-
-                      /// Close the Sliding Up Panel.
-                      slidingUpPanelMetaData.setPanelIsClosed(true);
-                      slidingUpPanelMetaData.getPanelController.close();
+                        /// Close the Sliding Up Panel.
+                        slidingUpPanelMetaData.setPanelIsClosed(true);
+                        slidingUpPanelMetaData.getPanelController.close();
+                      } else {
+                        final snackBar = formErrorSnackBar(context,
+                            'Failed to upload new event!');
+                        Scaffold.of(context).showSnackBar(snackBar);
+                      }
                     },
                   ),
                   SizedBox(

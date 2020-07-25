@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 class ClubEventData extends ChangeNotifier {
   DateTime _rawStartDateAndTime;
   DateTime _rawEndDateAndTime;
@@ -14,7 +15,8 @@ class ClubEventData extends ChangeNotifier {
   String _myCategory;
   List<String> _myHighlights;
   String _mySummary;
-  String _image;
+  String _imagePath;
+  bool _imageFitCover;
 
   ClubEventData(
       {String newHost,
@@ -23,10 +25,11 @@ class ClubEventData extends ChangeNotifier {
       String newRoom,
       String newSummary,
       List<String> newHighlights,
-      String newImage,
+      String newImagePath,
       String newCategory,
       DateTime newRawStartDateAndTime,
-      DateTime newRawEndDateAndTime,}) {
+      DateTime newRawEndDateAndTime,
+      bool newImageFitCover}) {
 
     _myHost = newHost;
     _myTitle = newTitle;
@@ -38,10 +41,12 @@ class ClubEventData extends ChangeNotifier {
     _myRoom = newRoom;
     _mySummary = newSummary;
     _myHighlights = newHighlights;
-    _image = newImage;
+    _imagePath = newImagePath;
+    _imageFitCover = newImageFitCover;
     _myCategory = newCategory;
     _rawStartDateAndTime = newRawStartDateAndTime;
     _rawEndDateAndTime = newRawEndDateAndTime;
+    _imageFitCover = false;
   } //full constructor
 
   ClubEventData.nullConstructor() {
@@ -55,10 +60,12 @@ class ClubEventData extends ChangeNotifier {
     _myRoom = '';
     _mySummary = '';
     _myHighlights = [];
-    _image = 'images/AsianAllianceLanterns.jpg';
+    _imageFitCover = false;
+    _imagePath = '';
   } ////null constructor
 
-  String get getImage => _image;
+  bool get getImageFitCover => _imageFitCover;
+  String get getImagePath => _imagePath;
   String get getHost => _myHost;
   String get getSummary => _mySummary;
   String get getRoom => _myRoom;
@@ -73,6 +80,10 @@ class ClubEventData extends ChangeNotifier {
   DateTime get getRawStartDateAndTime => _rawStartDateAndTime;
   DateTime get getRawEndDateAndTime => _rawEndDateAndTime;
 
+  void setImageFitCover (bool newImageFitCover) {
+    _imageFitCover = newImageFitCover;
+  }
+
   void setRawStartDateAndTime(DateTime value) {
     _rawStartDateAndTime = value;
   }
@@ -81,8 +92,8 @@ class ClubEventData extends ChangeNotifier {
     _rawEndDateAndTime = value;
   }
 
-  void setImage(String value) {
-    _image = value;
+  void setImagePath(String value) {
+    _imagePath = value;
   }
 
   void setHighlights(List<String> value) {
@@ -131,3 +142,12 @@ class ClubEventData extends ChangeNotifier {
   }
 
 } //class
+
+
+class ArtsEventsData extends ClubEventData {}
+class SportsEventsData extends ClubEventData {}
+class DiversityEventsData extends ClubEventData {}
+class StudentEventsData extends ClubEventData {}
+class FoodEventsData extends ClubEventData {}
+class GreekEventsData extends ClubEventData {}
+class SuggestedEventsData extends ClubEventData {}

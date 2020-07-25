@@ -15,7 +15,6 @@ Widget clubCard(ClubEventData newEvent, context) {
   String _eventStartTime = _myEvent.getStartTime ?? '[Event Start Time]';
   String _eventEndDate = _myEvent.getEndDate ?? '[Event End Date]';
   String _eventEndTime = _myEvent.getEndTime ?? '[Event End Time]';
-  String _eventImage = _myEvent.getImage ?? 'images/AsianAllianceLanterns.jpg';
   return GestureDetector(
     onTap: () {
       Navigator.pushNamed(context, '/eventDetails',
@@ -112,10 +111,10 @@ Widget clubCard(ClubEventData newEvent, context) {
             flex: 2,
             child: Container(
               height: double.infinity,
-              child: Image(
-                image: AssetImage(_eventImage),
-                fit: BoxFit.fitHeight,
-              ),
+//              child: Image(
+//                image: AssetImage(_eventImage),
+//                fit: BoxFit.fitHeight,
+//              ),
             ),
           ),
         ],

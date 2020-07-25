@@ -21,7 +21,7 @@ class SlidingUpNavigationBar extends StatelessWidget {
         controller: _slidingUpPanelMetaData.getPanelController,
         minHeight: MediaQuery.of(context).size.height * .0625,
         maxHeight: MediaQuery.of(context).size.height,
-        collapsed: CollapsedWidget(),
+        collapsed: CollapsedWidget(namedRoute: this.namedRoute),
         isDraggable: false,
         panel: AddEventContent(),
         body: SlidingUpPanelBodyWrapper(namedRoute: this.namedRoute),
@@ -31,6 +31,8 @@ class SlidingUpNavigationBar extends StatelessWidget {
 }
 
 class CollapsedWidget extends StatelessWidget {
+  final String namedRoute;
+  CollapsedWidget({@required this.namedRoute});
   @override
   Widget build(BuildContext context) {
     ExpansionTiles _expansionPanels = Provider.of<ExpansionTiles>(context);
@@ -54,14 +56,18 @@ class CollapsedWidget extends StatelessWidget {
                         color: kHavenLightGray,
                         splashColor: kActiveHavenLightGray,
                         onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder: (context, animation1, animation2) =>
-                                  HomePage(),
-                            ),
-                          );
-                        },
+                          if (this.namedRoute != '/home') {
+                            Navigator.pushReplacement(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder: (context, animation1,
+                                    animation2) =>
+                                    HomePage(),
+                                maintainState: true
+                              ),
+                            );
+                          }
+                        }
                       ),
                       IconButton(
                           icon: Icon(Icons.add),
@@ -86,14 +92,18 @@ class CollapsedWidget extends StatelessWidget {
                         color: kHavenLightGray,
                         splashColor: kActiveHavenLightGray,
                         onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder: (context, animation1, animation2) =>
-                                  Account(),
-                            ),
-                          );
-                        },
+                          if (this.namedRoute != '/account') {
+                            Navigator.pushReplacement(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder: (context, animation1,
+                                    animation2) =>
+                                    Account(),
+                                  maintainState: true
+                              ),
+                            );
+                          }
+                        }
                       ),
                     ],
                   ),

@@ -1,5 +1,5 @@
 import 'package:communitytabs/buttons/previousOrCloseButton.dart';
-import 'package:communitytabs/buttons/nextOrCreateButton.dart';
+import 'package:communitytabs/components/imagePicker/imageUpload.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 
@@ -38,7 +38,7 @@ class _AddEventAppBarState extends State<AddEventAppBar> {
                     style: TextStyle(color: kHavenLightGray, fontSize: 18.0, fontWeight: FontWeight.bold),
                   ),
                 ),
-                NextOrCreateButton(),
+                UploadImage(),
               ],
             )
           ],

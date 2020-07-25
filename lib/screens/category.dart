@@ -1,9 +1,10 @@
 import 'package:communitytabs/components/category/singleCategoryList.dart';
+import 'package:communitytabs/data/homePageViewModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/services/search.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:communitytabs/wrappers.dart';
+import 'package:provider/provider.dart';
 
 ///CategoryContent Definition:
 ///  An abstraction of the multiple category pages. Instead of having multiple different files
@@ -35,6 +36,7 @@ class CategoryContent extends StatefulWidget {
 class _CategoryContentState extends State<CategoryContent> {
   @override
   Widget build(BuildContext context) {
+    HomePageViewModel _homePageViewModel = Provider.of<HomePageViewModel>(context);
     ///Temporary lists to allow for the dynamic building of Tabs and PageViews
     List<Widget> _tabs = [];
     List<Widget> _pageView = [];
@@ -46,7 +48,8 @@ class _CategoryContentState extends State<CategoryContent> {
 
     ///Dynamically Generating PageViews
     for (int i = 0; i < this.widget.tabNamesFromLtoR.length; ++i) {
-      _pageView.add(SingleCategoryView(eventType: this.widget.tabNamesFromLtoR[i]));
+      _pageView
+          .add(SingleCategoryView(eventType: this.widget.tabNamesFromLtoR[i]));
     } //for
     ///TODO: Account for only 1 sub-Category. Maybe just use a different special widget
     return SafeArea(
@@ -94,14 +97,11 @@ class _CategoryContentState extends State<CategoryContent> {
                 color: kHavenLightGray,
                 splashColor: kActiveHavenLightGray,
                 icon: Icon(Icons.chevron_left),
-                onPressed: () => Navigator.pushReplacement(
-                  context,
-                  //TODO: Add a Slide-In-Left to the Home Page.
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation1, animation2) =>
-                        HomePage(),
-                  ),
-                ),
+                onPressed: () =>
+                    _homePageViewModel.homePageViewController.animateToPage(
+                    0,
+                    duration: const Duration(milliseconds: 200),
+                    curve: Curves.easeIn),
               ),
               centerTitle: false,
               title: Text(this.widget.title,

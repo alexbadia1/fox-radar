@@ -21,6 +21,7 @@ class _PreviousOrCloseButtonState extends State<PreviousOrCloseButton> {
     ExpansionTiles expansionTiles = Provider.of<ExpansionTiles>(context);
     CategoryPanels categoryPanels = Provider.of<CategoryPanels>(context);
     ClubEventData clubEventData = Provider.of<ClubEventData>(context);
+
     return Consumer<PageViewMetaData>(
       builder: (context, pageViewState, child) {
         return Container(
@@ -32,7 +33,7 @@ class _PreviousOrCloseButtonState extends State<PreviousOrCloseButton> {
                     ),
                     GestureDetector(
                       child: Icon(Icons.chevron_left, color: kHavenLightGray),
-                      onTap: () {
+                      onTap: () async {
                         ///Close Keyboard
                         FocusScope.of(context).unfocus();
 
