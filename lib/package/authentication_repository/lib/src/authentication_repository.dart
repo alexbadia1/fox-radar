@@ -1,40 +1,41 @@
-import 'package:communitytabs/services/database.dart';
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:meta/meta.dart';
+import 'models/models.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'deprecated_user_model.dart';
 
 class AuthService {
-  //Create a firebase authentication object
+  /// Create a firebase authentication object
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  //Create our own user object
-  User _userFromFirebaseUser( user) {
-     return user != null ?
-      user.isAnonymous ?
-        new User(newUserId: user.uid, newEmail: null) : new User(newUserId: user.uid, newEmail: user.email)
-     : null;
+  /// Create our own user object
+  UserModel _createModelUserfromFirebaseCredentials({@required User user}) {
+    return UserModel(userID: user.uid, email: user.email);
   }//_userFromFirebaseUser
 
-  //Listening to the stream and mapping the user data to a local user intance
-  Stream<User> getUser() async* {
-    _auth.authStateChanges().listen((User user) {
-      if (user != null) {
-        return UserRepository(newUserId: user.uid, newEmail: user.email);
-      }// if
-
-      else {
-
-      }// else
-    });
-    return _auth.authStateChanges().map((User user) => _userFromFirebaseUser(user));
+  /// Listen to a firebase authentication stream and create a user model
+  Stream<UserModel> get user {
+      return _auth.authStateChanges().map((User user) {
+        if (user != null) {
+          return _createModelUserfromFirebaseCredentials(user: user);
+        } // if
+        else {
+          return UserModel.empty;
+        } // else
+      });
   }//user
-  
-  //Anonymous sign in
+
+  /// Try an anonymous sign in
   Future anonymousSignIn() async {
     try{
-      //Try to get an authentication result
-      AuthResult _result = await _auth.signInAnonymously();
-      FirebaseUser _user = _result.user;
-      return _userFromFirebaseUser(_user);
+      /// AuthResult changed to "UserCredential"
+      UserCredential _userCredential = await _auth.signInAnonymously();
+
+      /// FirebaseUser changed to "User"
+      User _user = _userCredential.user;
+
+      /// Create a model for the anonymous user
+      return _createModelUserfromFirebaseCredentials(_user);
     } catch (Exception) {
       print(Exception.toString());
       return null;
@@ -81,9 +82,13 @@ class AuthService {
   //sign out
   Future<void> signOut () async {
     try{
-      return await _auth.signOut();
-    } catch (error) {
-      return -1;
+      await Future.wait(
+          [_auth.signOut()]
+      );
+    } on Exception {
+      throw LogoutFailure();
     }
   }//signOut
 }
+
+class LogoutFailure implements Exception{}

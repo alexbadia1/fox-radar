@@ -17,7 +17,7 @@ import 'package:communitytabs/Screens/signUp.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
-import 'package:communitytabs/data/user.dart';
+import 'file:///C:/Users/alex.badia1/Github/Marist_Community_Tabs/lib/services/deprecated_user_model.dart';
 import 'package:communitytabs/data/slidingUpPanelMetadata.dart';
 import 'data/categoryPanels.dart';
 /*
