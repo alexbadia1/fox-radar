@@ -1,5 +1,0 @@
-abstract class FirebaseInitializationState {}
-
-class FirebaseInitializationStateError extends FirebaseInitializationState {}
-class FirebaseInitializationStateLoading extends FirebaseInitializationState {}
-class FirebaseInitializationStateConnected extends FirebaseInitializationState {}

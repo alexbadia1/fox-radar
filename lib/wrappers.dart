@@ -9,6 +9,7 @@ import 'package:communitytabs/screens/login.dart';
 import 'package:communitytabs/services/deprecated_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'components/customCalenderStrip.dart';
 import 'services/deprecated_user_model.dart';
@@ -77,7 +78,10 @@ class AuthWrapper extends StatelessWidget {
     //User _user = Provider.of<User>(context);
 
     //Depending on what we pick up from the stream show the home or login page
-    return Login();
+    return BlocListener<Object, object>(
+      cubit: ,
+        listener: (context, state) {}
+    );
     // if (_user == null) {
     //   return Login();
     // } else {

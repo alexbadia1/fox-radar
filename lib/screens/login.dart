@@ -1,4 +1,4 @@
-import 'package:communitytabs/Navigation/transitions.dart';
+import 'file:///C:/Users/alex.badia1/Github/marist_community_tabs/lib/presentation/transitions.dart';
 import 'package:communitytabs/services/deprecated_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

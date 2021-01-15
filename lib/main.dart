@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:communitytabs/Screens/error.dart';
 import 'package:communitytabs/Screens/login.dart';
 import 'package:communitytabs/Screens/signUp.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:communitytabs/data/slidingUpPanelMetadata.dart';
@@ -23,18 +24,13 @@ import 'package:firebase_core/firebase_core.dart';
 Author: Alex Badia
 Purpose: To learn Flutter Development
 Observations:
- 1.) Full Text Search: firebase recommends using a third party solution such as
-     'Algolia' to implement advanced search features like:
-     ~ Order by closest match first
-     ~ Geolocation searches
-     ~ Search speed and efficiency optimizations like start the search after the
-       user stopped typing for 300 milliseconds.
-2.) Minimal Read and Writes to Firebase: firebase reads are not free! Depending
-    on which service you are using writes may or may not be free.
-    ~ Cache solutions
+ 1.) Flutter recommends Algolia for more advanced search functions and queries
+ 2.) Implement an sql lite db as a cache
+ 3.) Implement state management and architecture... perhaps bloc/cubits?
  */
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   return runApp(
     MyApp(
       authenticationRepository: new AuthenticationRepository(),
@@ -43,82 +39,96 @@ void main() {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   final AuthenticationRepository authenticationRepository;
   final DatabaseRepository databaseRepository;
-  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
   MyApp(
       {@required this.authenticationRepository,
       @required this.databaseRepository});
-  // Future<Directory> _newCacheDir() async {
-  //   var cacheDir = await getTemporaryDirectory();
-  //   if (cacheDir.existsSync()) {
-  //     cacheDir.deleteSync(recursive: true);
-  //   }
-  //   return cacheDir = await getTemporaryDirectory();
-  // }
 
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    return FutureBuilder<FirebaseApp>(
-        future: _initialization,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Container();
-          }
-
-          if (snapshot.connectionState == ConnectionState.done) {
-            return MultiProvider(
-              providers: [
-                //FutureProvider<Directory>.value(value: _newCacheDir()),
-                //Provider<FirebaseStorage>.value(value: FirebaseStorage(storageBucket: 'gs://maristcommunitytabs.appspot.com')),
-                // StreamProvider<User>.value(value: AuthService().user),
-                // ChangeNotifierProvider<DatabaseService>(create: (context) => DatabaseService()),
-                ChangeNotifierProvider<SlidingUpPanelMetaData>(
-                    create: (context) => SlidingUpPanelMetaData()),
-                ChangeNotifierProvider<PageViewMetaData>(
-                  create: (context) => PageViewMetaData(),
-                ),
-                ChangeNotifierProvider<HomePageViewModel>(
-                    create: (context) => HomePageViewModel()),
-                ChangeNotifierProvider<ExpansionTiles>(
-                  create: (context) => ExpansionTiles(),
-                ),
-                ChangeNotifierProvider<CategoryPanels>(
-                  create: (context) => CategoryPanels(),
-                ),
-                ChangeNotifierProvider<AddHighlightButtonController>(
-                  create: (context) => AddHighlightButtonController(),
-                ),
-                ChangeNotifierProvider<SelectedImageModel>(
-                  create: (context) => SelectedImageModel(),
-                ),
-                ChangeNotifierProvider<CategoryContentModel>(
-                  create: (context) => CategoryContentModel(),
-                ),
-              ],
-              child: MaterialApp(
-                  debugShowCheckedModeBanner: false,
-                  initialRoute: '/',
-                  routes: <String, WidgetBuilder>{
-                    '/': (context) => Login(),
-                    '/home': (context) => HomePage(),
-                    '/login': (context) => Login(),
-                    '/signUp': (context) => SignUp(),
-                    '/eventDetails': (context) => EventDetails(),
-                    '/error': (context) => Error(),
-                    '/loading': (context) => LoadingWidget(),
-                    '/account': (context) => Account(),
-                  }),
-            );
-          } // if
-
-          return LoadingWidget();
-        });
+    return MultiProvider(
+      providers: [
+        //FutureProvider<Directory>.value(value: _newCacheDir()),
+        //Provider<FirebaseStorage>.value(value: FirebaseStorage(storageBucket: 'gs://maristcommunitytabs.appspot.com')),
+        // StreamProvider<User>.value(value: AuthService().user),
+        // ChangeNotifierProvider<DatabaseService>(create: (context) => DatabaseService()),
+        ChangeNotifierProvider<SlidingUpPanelMetaData>(
+            create: (context) => SlidingUpPanelMetaData()),
+        ChangeNotifierProvider<PageViewMetaData>(
+          create: (context) => PageViewMetaData(),
+        ),
+        ChangeNotifierProvider<HomePageViewModel>(
+            create: (context) => HomePageViewModel()),
+        ChangeNotifierProvider<ExpansionTiles>(
+          create: (context) => ExpansionTiles(),
+        ),
+        ChangeNotifierProvider<CategoryPanels>(
+          create: (context) => CategoryPanels(),
+        ),
+        ChangeNotifierProvider<AddHighlightButtonController>(
+          create: (context) => AddHighlightButtonController(),
+        ),
+        ChangeNotifierProvider<SelectedImageModel>(
+          create: (context) => SelectedImageModel(),
+        ),
+        ChangeNotifierProvider<CategoryContentModel>(
+          create: (context) => CategoryContentModel(),
+        ),
+      ],
+      child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          initialRoute: '/',
+          routes: <String, WidgetBuilder>{
+            '/': (context) => Login(),
+            '/home': (context) => HomePage(),
+            '/login': (context) => Login(),
+            '/signUp': (context) => SignUp(),
+            '/eventDetails': (context) => EventDetails(),
+            '/error': (context) => Error(),
+            '/loading': (context) => LoadingWidget(),
+            '/account': (context) => Account(),
+          }),
+    );
   }
 }
+
+// return MaterialApp(
+// theme: theme,
+// navigatorKey: _navigatorKey,
+// builder: (context, child) {
+// return BlocListener<AuthenticationBloc, AuthenticationState>(
+// listener: (context, state) {
+// switch (state.status) {
+// case AuthenticationStatus.authenticated:
+// _navigator.pushAndRemoveUntil<void>(
+// HomePage.route(),
+// (route) => false,
+// );
+// break;
+// case AuthenticationStatus.unauthenticated:
+// _navigator.pushAndRemoveUntil<void>(
+// LoginPage.route(),
+// (route) => false,
+// );
+// break;
+// default:
+// break;
+// }
+// },
+// child: child,
+// );
+// },
+// onGenerateRoute: (_) => SplashPage.route(),
+// );
 //StreamProvider<List<ArtsEventsData>>.value(value: DatabaseService().cachedArts),
 //StreamProvider<List<FoodEventsData>>.value(value: DatabaseService().cachedFood),
 //StreamProvider<List<GreekEventsData>>.value(value: DatabaseService().cachedGreek),

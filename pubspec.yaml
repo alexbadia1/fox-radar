@@ -26,6 +26,8 @@ dependencies:
   database_repository:
     path: packages/database_repository
 
+  flutter_bloc: ^6.1.1
+  equatable: ^1.2.5
   intl: ^0.16.1
   provider: ^4.0.5+1
   loading: ^1.0.2
