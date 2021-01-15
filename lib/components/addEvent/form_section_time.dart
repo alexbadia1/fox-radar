@@ -35,7 +35,8 @@ class _FormSectionTimeState extends State<FormSectionTime> {
       _expansionPanels.add(
         ExpansionPanel(
           headerBuilder: (BuildContext context, bool isExpanded) {
-            return SlidableExpansionPanelHeader(index: index);
+            return Container();
+            // return SlidableExpansionPanelHeader(index: index);
           },
           body: Column(
             children: <Widget>[

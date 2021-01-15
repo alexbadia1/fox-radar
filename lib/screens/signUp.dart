@@ -1,6 +1,6 @@
 import 'package:communitytabs/screens/loading.dart';
 import 'package:flutter/material.dart';
-import 'package:communitytabs/services/auth.dart';
+import 'package:communitytabs/services/deprecated_auth.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 
 class SignUp extends StatefulWidget {
@@ -10,7 +10,8 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   final GlobalKey<FormState> _loginFormKey = new GlobalKey<FormState>();
-  final AuthService _auth = new AuthService();
+  // final AuthService _auth = new AuthService();
+
   String myError = '';
   String myEmail = '';
   String myPassword = '';
@@ -247,35 +248,35 @@ class _SignUpState extends State<SignUp> {
                                     child: FlatButton(
                                       color: kHavenLightGray,
                                       onPressed: () async {
-                                        if (_loginFormKey.currentState
-                                            .validate()) {
-                                          setState(() {
-                                            loading = true;
-                                          });
-                                          dynamic result = await _auth
-                                              .registerWithEmailAndPassword(
-                                                  myEmail, myPassword);
-                                          if (result == null) {
-                                            setState(() {
-                                              loading = false;
-                                              failedLogin = true;
-                                              myError =
-                                                  '\u26A0 An existing account already uses that email.';
-                                            });
-                                          } else
-                                            failedLogin = false;
-                                          loading = false;
-                                          Navigator.of(context)
-                                              .pushAndRemoveUntil(
-                                                  PageRouteBuilder(
-                                                    pageBuilder: (context,
-                                                            animation1,
-                                                            animation2) =>
-                                                        LoadingScreen(),
-                                                  ),
-                                                  (Route<dynamic> route) =>
-                                                      false);
-                                        }
+                                        // if (_loginFormKey.currentState
+                                        //     .validate()) {
+                                        //   setState(() {
+                                        //     loading = true;
+                                        //   });
+                                        //   dynamic result = await _auth
+                                        //       .registerWithEmailAndPassword(
+                                        //           myEmail, myPassword);
+                                        //   if (result == null) {
+                                        //     setState(() {
+                                        //       loading = false;
+                                        //       failedLogin = true;
+                                        //       myError =
+                                        //           '\u26A0 An existing account already uses that email.';
+                                        //     });
+                                        //   } else
+                                        //     failedLogin = false;
+                                        //   loading = false;
+                                        //   Navigator.of(context)
+                                        //       .pushAndRemoveUntil(
+                                        //           PageRouteBuilder(
+                                        //             pageBuilder: (context,
+                                        //                     animation1,
+                                        //                     animation2) =>
+                                        //                 LoadingScreen(),
+                                        //           ),
+                                        //           (Route<dynamic> route) =>
+                                        //               false);
+                                        // }
                                       },
                                       child: Container(
                                         child: Text(

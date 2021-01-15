@@ -1,5 +1,5 @@
 import 'package:communitytabs/Navigation/transitions.dart';
-import 'package:communitytabs/services/auth.dart';
+import 'package:communitytabs/services/deprecated_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
@@ -12,7 +12,6 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final GlobalKey<FormState> _loginFormKey = new GlobalKey<FormState>();
-  final AuthService _auth = new AuthService();
 
   String myError = '';
   String myEmail = '';
@@ -217,27 +216,25 @@ class _LoginState extends State<Login> {
                                     child: FlatButton(
                                       color: kHavenLightGray,
                                       onPressed: () async {
-                                        if (_loginFormKey.currentState
-                                            .validate()) {
-                                          setState(() {
-                                            loading = true;
-                                          });
-                                          dynamic result = await _auth
-                                              .signInWithEmailAndPassword(
-                                                  myEmail, myPassword);
-                                          if (result == null) {
-                                            print('Error Signing In User.');
-                                            setState(() {
-                                              loading = false;
-                                              myError =
-                                                  "\u26A0 Incorrect email and/or password.";
-                                              failedLogin = true;
-                                            });
-                                          } else
-                                            setState(() {
-                                              failedLogin = false;
-                                            });
-                                        }
+                                        // if (_loginFormKey.currentState.validate()) {
+                                        //   setState(() {loading = true;});
+                                        //
+                                        //   dynamic result = await _auth.signInWithEmailAndPassword(myEmail, myPassword);
+                                        //
+                                        //   if (result == null) {
+                                        //     print('Error Signing In User.');
+                                        //     setState(() {
+                                        //       loading = false;
+                                        //       myError =
+                                        //           "\u26A0 Incorrect email and/or password.";
+                                        //       failedLogin = true;
+                                        //     });
+                                        //   } else {
+                                        //     setState(() {
+                                        //       failedLogin = false;
+                                        //     });
+                                        //   }
+                                        // }
                                       },
                                       child: Container(
                                         child: Text(
@@ -335,20 +332,20 @@ class _LoginState extends State<Login> {
                                   setState(() {
                                     loading = true;
                                   });
-                                  dynamic _result =
-                                      await _auth.anonymousSignIn();
-                                  if (_result == null) {
-                                    setState(() {
-                                      loading = false;
-                                    });
-                                    print('Error Signing In');
-                                  } else {
-                                    print('Sign in successful');
-                                    print(_result);
-                                    Navigator.pushReplacementNamed(
-                                        context, '/loading');
-                                    FocusScope.of(context).unfocus();
-                                  }
+                                //   dynamic _result =
+                                //       await _auth.anonymousSignIn();
+                                //   if (_result == null) {
+                                //     setState(() {
+                                //       loading = false;
+                                //     });
+                                //     print('Error Signing In');
+                                //   } else {
+                                //     print('Sign in successful');
+                                //     print(_result);
+                                //     Navigator.pushReplacementNamed(
+                                //         context, '/loading');
+                                //     FocusScope.of(context).unfocus();
+                                //   }
                                 },
                                 child: Text(
                                   'Continue as Guest',

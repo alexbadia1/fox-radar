@@ -15,10 +15,11 @@ class _AccountPageContentState extends State<AccountPageContent> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    User user = Provider.of<User>(context);
+    // User user = Provider.of<User>(context);
+
     String accountName = '';
 
-    user == null ? accountName = '' : accountName = user.getFirstName + ' ' + user.getLastName;
+    // user == null ? accountName = '' : accountName = user.getFirstName + ' ' + user.getLastName;
     return SafeArea(
       child: Scaffold(
         key: _scaffoldKey,

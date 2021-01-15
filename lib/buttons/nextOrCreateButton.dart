@@ -4,7 +4,7 @@ import 'package:communitytabs/data/club_event_data.dart';
 import 'package:communitytabs/data/expansionTileMetadata.dart';
 import 'package:communitytabs/data/selectedImageModel.dart';
 import 'package:communitytabs/data/slidingUpPanelMetadata.dart';
-import 'package:communitytabs/services/database.dart';
+import 'package:communitytabs/services/deprecated_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:communitytabs/data/pageViewMetadata.dart';
@@ -28,7 +28,7 @@ class _NextOrCreateButtonState extends State<NextOrCreateButton> {
     SlidingUpPanelMetaData slidingUpPanelMetaData =
         Provider.of<SlidingUpPanelMetaData>(context);
     SelectedImageModel selectedImageModel = Provider.of<SelectedImageModel>(context);
-    DatabaseService _db = new DatabaseService();
+    //DatabaseService _db = new DatabaseService();
 
     return Consumer<PageViewMetaData>(builder: (context, pageViewState, child) {
       bool noSelectedAnImage = false;
@@ -192,8 +192,8 @@ class _NextOrCreateButtonState extends State<NextOrCreateButton> {
                       var otherResult;
                       try {
                         this.widget.uploadImageCallback();
-                        result = await _db.addEvent(newEvent: clubEventData);
-                        otherResult = await _db.addEventToSearchable(newEvent: clubEventData);
+                        //result = await _db.addEvent(newEvent: clubEventData);
+                        //otherResult = await _db.addEventToSearchable(newEvent: clubEventData);
                       } catch (e) {
                         result = 10;
                         otherResult = 10;

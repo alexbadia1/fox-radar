@@ -1,15 +1,16 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 import 'models/models.dart';
+import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class AuthService {
+class AuthenticationRepository {
+
   /// Create a firebase authentication object
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   /// Create our own user object
-  UserModel _createModelUserfromFirebaseCredentials({@required User user}) {
+  UserModel _createModelUserFromFirebaseCredentials({@required user}) {
     return UserModel(userID: user.uid, email: user.email);
   }//_userFromFirebaseUser
 
@@ -17,7 +18,7 @@ class AuthService {
   Stream<UserModel> get user {
       return _auth.authStateChanges().map((User user) {
         if (user != null) {
-          return _createModelUserfromFirebaseCredentials(user: user);
+          return _createModelUserFromFirebaseCredentials(user: user);
         } // if
         else {
           return UserModel.empty;
@@ -32,22 +33,23 @@ class AuthService {
       UserCredential _userCredential = await _auth.signInAnonymously();
 
       /// FirebaseUser changed to "User"
-      User _user = _userCredential.user;
+      User user = _userCredential.user;
 
       /// Create a model for the anonymous user
-      return _createModelUserfromFirebaseCredentials(_user);
+      return _createModelUserFromFirebaseCredentials(user: user);
+
     } catch (Exception) {
       print(Exception.toString());
       return null;
     }
   }//anonymousSigIn
 
-  //Email password sign in
+  /// Email Password login
   Future signInWithEmailAndPassword(String newEmail, String newPassword) async {
     try{
-      AuthResult result = await _auth.signInWithEmailAndPassword(email: newEmail, password: newPassword);
-      FirebaseUser user = result.user;
-      return _userFromFirebaseUser(user);
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(email: newEmail, password: newPassword);
+      User user = userCredential.user;
+      return _createModelUserFromFirebaseCredentials(user: user);
     } catch (e) {
       print(e);
       return null;
@@ -59,21 +61,20 @@ class AuthService {
     try {
       //Contact Firebase to see if user exists
       print('Performing sign up task...');
-      AuthResult result = await _auth.createUserWithEmailAndPassword(email: newEmail, password: newPassword);
+      UserCredential result = await _auth.createUserWithEmailAndPassword(email: newEmail, password: newPassword);
 
-      print('Recieved user sign up task results...');
-      FirebaseUser user = result.user;
+      print('Received user sign up task results...');
+      User user = result.user;
 
-      //Create a new user account
-      print('Creating new user in database...');
-      await new DatabaseService(uid: user.uid).updateUserData(newEmail, newPassword);
+      /// TODO: Add new user to the database
+      /// await new DatabaseService(uid: user.uid).updateUserData(newEmail, newPassword);
 
       //Return user data received from Firebase
       print('Returning new firebase user');
-      return _userFromFirebaseUser(user);
+      return _createModelUserFromFirebaseCredentials(user: user);
 
     } catch (e) {
-      print('User returned null');
+      print('User received: $user');
       print(e.toString());
       return null;
     }

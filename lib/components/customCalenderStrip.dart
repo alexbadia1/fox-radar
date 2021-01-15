@@ -1,4 +1,4 @@
-import 'package:calendar_strip/calendar_strip.dart';
+//import 'package:calendar_strip/calendar_strip.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:communitytabs/data/expansionTileMetadata.dart';
 import 'package:flutter/material.dart';
@@ -100,27 +100,27 @@ class _CustomCalenderStripState extends State<CustomCalenderStrip> {
 
     return Column(
       children: <Widget>[
-        CalendarStrip(
-          containerHeight: MediaQuery.of(context).size.height * .175,
-          /// Depending on the Start Time make sure the start date is equal to t
-          startDate: startDate,
-          endDate: endDate,
-          selectedDate: this.widget.index == 0
-              ? _expansionTileState.getTempStartDate()
-              : _expansionTileState.getTempEndDate(),
-          onDateSelected: (data) {
-            ///Set the temp Date to the selected date
-            this.widget.index == 0
-                ? _expansionTileState.setTempStartDate(data)
-                : _expansionTileState.setTempEndDate(data);
-          },
-          dateTileBuilder: dateTileBuilder,
-          iconColor: cWhite70,
-          monthNameWidget: _monthNameWidget,
-          markedDates: markedDates,
-          containerDecoration: BoxDecoration(color: cBackground),
-          addSwipeGesture: true,
-        ),
+        // CalendarStrip(
+        //   containerHeight: MediaQuery.of(context).size.height * .175,
+        //   /// Depending on the Start Time make sure the start date is equal to t
+        //   startDate: startDate,
+        //   endDate: endDate,
+        //   selectedDate: this.widget.index == 0
+        //       ? _expansionTileState.getTempStartDate()
+        //       : _expansionTileState.getTempEndDate(),
+        //   onDateSelected: (data) {
+        //     ///Set the temp Date to the selected date
+        //     this.widget.index == 0
+        //         ? _expansionTileState.setTempStartDate(data)
+        //         : _expansionTileState.setTempEndDate(data);
+        //   },
+        //   dateTileBuilder: dateTileBuilder,
+        //   iconColor: cWhite70,
+        //   monthNameWidget: _monthNameWidget,
+        //   markedDates: markedDates,
+        //   containerDecoration: BoxDecoration(color: cBackground),
+        //   addSwipeGesture: true,
+        // ),
       ],
     );
   }

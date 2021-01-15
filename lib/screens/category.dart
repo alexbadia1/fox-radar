@@ -2,7 +2,7 @@ import 'package:communitytabs/components/category/singleCategoryList.dart';
 import 'package:communitytabs/data/homePageViewModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:communitytabs/services/search.dart';
+import 'file:///C:/Users/alex.badia1/Github/Marist_Community_Tabs/packages/search.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:provider/provider.dart';
 
@@ -108,14 +108,14 @@ class _CategoryContentState extends State<CategoryContent> {
                   style: TextStyle(
                       color: kHavenLightGray, fontWeight: FontWeight.bold)),
               actions: <Widget>[
-                IconButton(
-                  color: kHavenLightGray,
-                  splashColor: kActiveHavenLightGray,
-                  icon: Icon(Icons.search),
-                  onPressed: () async {
-                    await showSearch(context: context, delegate: Search());
-                  },
-                )
+                // IconButton(
+                //   color: kHavenLightGray,
+                //   splashColor: kActiveHavenLightGray,
+                //   icon: Icon(Icons.search),
+                //   onPressed: () async {
+                //     await showSearch(context: context, delegate: Search());
+                //   },
+                // )
               ],
               bottom: TabBar(
                 labelStyle: TextStyle(color: kActiveHavenLightGray),

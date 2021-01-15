@@ -1,5 +1,5 @@
 import 'package:communitytabs/components/clubCardBig.dart';
-import 'package:communitytabs/services/database.dart';
+import 'package:communitytabs/services/deprecated_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +8,8 @@ import 'package:communitytabs/buttons/customNavigationItem.dart';
 import 'package:communitytabs/buttons/maristFoxLogo.dart';
 import 'package:communitytabs/components/home/searchButton.dart';
 import 'package:communitytabs/components/home/homePageTitle.dart';
+
+import 'package:database_repository/database_repository.dart';
 
 
 class HomePageContent extends StatefulWidget {
@@ -96,7 +98,7 @@ class _HomePageContentState extends State<HomePageContent> with AutomaticKeepAli
                 ),
                 backgroundColor: Colors.transparent,
               ),
-              Consumer<DatabaseService>(
+              Consumer<DatabaseRepository>(
                 builder: (context, db, child) {
                   return StreamBuilder(
                     stream: db.streamSuggested,
