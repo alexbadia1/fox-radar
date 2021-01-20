@@ -1,4 +1,3 @@
-import 'file:///C:/Users/alex.badia1/Github/marist_community_tabs/lib/presentation/transitions.dart';
 import 'package:communitytabs/services/deprecated_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,13 +11,13 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final GlobalKey<FormState> _loginFormKey = new GlobalKey<FormState>();
-
   String myError = '';
   String myEmail = '';
   String myPassword = '';
   bool loading = false;
   bool failedLogin = false;
   bool _showPassword = false;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -286,7 +285,7 @@ class _LoginState extends State<Login> {
                                     ),
                                   ),
                                   onTap: () {
-                                    Navigator.of(context).push(slideInRight());
+                                    // Navigator.of(context).push(slideInRight());
                                   },
                                 ),
                               ],

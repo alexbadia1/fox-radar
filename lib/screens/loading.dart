@@ -1,6 +1,8 @@
+import 'package:communitytabs/logic/blocs/authentication_cubit.dart';
+import 'package:communitytabs/logic/blocs/authentication_event.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:communitytabs/wrappers.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -8,21 +10,10 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  void loading() async {
-    Future.delayed(Duration(seconds: 2), () {
-      Navigator.of(context).pushAndRemoveUntil(
-        PageRouteBuilder(
-          pageBuilder: (context, animation1, animation2) => HomePage(),
-        ), (Route<dynamic> route) => false
-      );
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    loading();
-  }
+  }// initState
 
   @override
   Widget build(BuildContext context) {

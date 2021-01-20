@@ -1,6 +1,5 @@
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:communitytabs/services/deprecated_database.dart';
-import 'file:///C:/Users/alex.badia1/Github/Marist_Community_Tabs/packages/search.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

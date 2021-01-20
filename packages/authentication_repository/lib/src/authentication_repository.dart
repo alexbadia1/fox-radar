@@ -43,6 +43,30 @@ class AuthenticationRepository {
       return null;
     }
   }//anonymousSigIn
+  bool isSignedIn () {
+    return _auth.currentUser != null;
+  }// isSignedIn
+
+  UserModel getUser() {
+    return _createModelUserFromFirebaseCredentials(user: _auth.currentUser);
+  }// getUser
+
+  /// Try an anonymous sign in
+  Future<UserModel> signIn() async {
+    try{
+      /// AuthResult changed to "UserCredential"
+      UserCredential _userCredential = await _auth.signInWithEmailAndPassword(email: '', password: '');
+      /// FirebaseUser changed to "User"
+      User user = _userCredential.user;
+
+      /// Create a model for the anonymous user
+      return _createModelUserFromFirebaseCredentials(user: user);
+
+    } catch (Exception) {
+      print(Exception.toString());
+      return null;
+    }
+  }//anonymousSigIn
 
   /// Email Password login
   Future signInWithEmailAndPassword(String newEmail, String newPassword) async {

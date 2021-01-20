@@ -2,7 +2,6 @@ import 'package:communitytabs/buttons/maristFoxLogo.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'file:///C:/Users/alex.badia1/Github/Marist_Community_Tabs/lib/services/deprecated_user_model.dart';
 import 'package:communitytabs/components/account/accountDrawerContents.dart';
 import 'package:communitytabs/components/account/accountPageTitle.dart';
 

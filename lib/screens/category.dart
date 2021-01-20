@@ -2,7 +2,6 @@ import 'package:communitytabs/components/category/singleCategoryList.dart';
 import 'package:communitytabs/data/homePageViewModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/alex.badia1/Github/Marist_Community_Tabs/packages/search.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:provider/provider.dart';
 

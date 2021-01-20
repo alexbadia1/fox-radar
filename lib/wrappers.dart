@@ -3,16 +3,13 @@ import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:communitytabs/data/expansionTileMetadata.dart';
 import 'package:communitytabs/data/homePageViewModel.dart';
 import 'package:communitytabs/screens/account.dart';
-import 'package:communitytabs/screens/category.dart';
 import 'package:communitytabs/screens/home.dart';
-import 'package:communitytabs/screens/login.dart';
-import 'package:communitytabs/services/deprecated_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'components/customCalenderStrip.dart';
-import 'services/deprecated_user_model.dart';
+import 'package:communitytabs/logic/blocs/blocs.dart';
 
 class Account extends StatelessWidget {
   @override
@@ -69,25 +66,6 @@ class HomePage extends StatelessWidget {
     return SafeArea(
       child: Material(child: SlidingUpNavigationBar(namedRoute: '/home')),
     );
-  }
-}
-
-class AuthWrapper extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    //User _user = Provider.of<User>(context);
-
-    //Depending on what we pick up from the stream show the home or login page
-    return BlocListener<Object, object>(
-      cubit: ,
-        listener: (context, state) {}
-    );
-    // if (_user == null) {
-    //   return Login();
-    // } else {
-    //   return HomePage();
-    // }
-    //Either return the authentication screen or home screen
   }
 }
 
