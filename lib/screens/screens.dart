@@ -1,6 +1,6 @@
 library screens;
 
-export 'login.dart';
+export '../presentation/screens/login/login.dart';
 export 'signUp.dart';
 export 'home.dart';
 export 'account.dart';

@@ -1,4 +1,4 @@
-import 'package:communitytabs/logic/blocs/authentication_cubit.dart';
+import 'package:communitytabs/logic/blocs/authentication_bloc.dart';
 import 'package:communitytabs/logic/blocs/authentication_event.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
