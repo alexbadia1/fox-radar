@@ -56,6 +56,7 @@ class AuthenticationRepository {
     try{
       /// AuthResult changed to "UserCredential"
       UserCredential _userCredential = await _auth.signInWithEmailAndPassword(email: '', password: '');
+
       /// FirebaseUser changed to "User"
       User user = _userCredential.user;
 

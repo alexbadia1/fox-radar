@@ -1,0 +1,3 @@
+enum LoginType {
+  emailAndPassword,
+}// loginType

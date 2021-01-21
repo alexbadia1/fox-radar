@@ -37,7 +37,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
     if (isSignedIn) {
       final UserModel firebaseUser = _authenticationRepository.getUser();
-      yield AuthenticationStateAuthenticated(user: firebaseUser );
+      yield AuthenticationStateAuthenticated(user: firebaseUser);
     }// if
     else {
       yield AuthenticationStateUnauthenticated();
@@ -56,7 +56,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 @override
   void onChange(Change<AuthenticationState> change) {
     // TODO: implement onChange
-    print('$change');
+    print('Authentication Bloc: $change');
     super.onChange(change);
   }
 }
