@@ -1,5 +1,7 @@
-import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:communitytabs/logic/cubits/cubits.dart';
+import 'package:communitytabs/constants/marist_color_scheme.dart';
 
 class LoginForm extends StatefulWidget {
   @override
@@ -11,13 +13,6 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   final GlobalKey<FormState> _loginFormKey = new GlobalKey<FormState>();
-
-  String myError = '';
-  String myEmail = '';
-  String myPassword = '';
-  bool loading = false;
-  bool failedLogin = false;
-  bool _showPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -33,66 +28,75 @@ class _LoginFormState extends State<LoginForm> {
               //////Email//////
               /////////////////
               Container(
-                  width: MediaQuery.of(context).size.width * .65,
-                  child: Focus(
-                      onFocusChange: (hasFocus) {
-                        if (hasFocus) {}
-                      },
-                      child: TextFormField(
-                          initialValue: myEmail,
-                          textInputAction: TextInputAction.done,
-                          decoration: customTextField.copyWith(
-                              labelText: 'Marist Email'),
-                          onChanged: (value) {
-                            setState(() {
-                              myEmail = value;
-                            });
-                          },
-                          validator: (String value) {
-                            value = value.trim();
-                            return value.isEmpty
-                                ? '\u26A0 Enter a MARIST email.'
-                                : null;
-                          }))),
+                width: MediaQuery.of(context).size.width * .65,
+                child: Focus(
+                  onFocusChange: (hasFocus) {
+                    if (hasFocus) {}
+                  },
+                  child: TextFormField(
+                    textInputAction: TextInputAction.done,
+                    decoration:
+                        customTextField.copyWith(labelText: 'Marist Email'),
+                    validator: (String value) {
+                      value = value.trim();
+                      return value.isEmpty
+                          ? '\u26A0 Enter a MARIST email.'
+                          : null;
+                    },
+                  ),
+                ),
+              ),
+              /// Error Message goes here
+              Container(
+                child: Center(child: Text('')),
+              ),
 
               ////////////////////
               //////Password//////
               ////////////////////
-              Container(
-                  width: MediaQuery.of(context).size.width * .65,
-                  child: Focus(
-                      onFocusChange: (hasFocus) {
-                        if (hasFocus) {}
-                      },
+              BlocProvider<PasswordCubit>(
+                create: (context) => PasswordCubit(),
+                child: Builder(
+                  builder: (context) {
+                    context.watch<PasswordCubit>();
+                    return Container(
+                      width: MediaQuery.of(context).size.width * .65,
                       child: TextFormField(
-                          textInputAction: TextInputAction.done,
-                          obscureText: !_showPassword,
-                          decoration: customTextField.copyWith(
-                            labelText: 'Password',
-                            suffixIcon: IconButton(
-                              icon: _showPassword
-                                  ? Icon(Icons.visibility)
-                                  : Icon(Icons.visibility_off),
-                              onPressed: () {
-                                setState(() {
-                                  _showPassword = !_showPassword;
-                                });
-                              },
-                            ),
+                        textInputAction: TextInputAction.done,
+                        obscureText: BlocProvider.of<PasswordCubit>(context)
+                            .obscurePassword,
+                        decoration: customTextField.copyWith(
+                          labelText: 'Password',
+                          suffixIcon: IconButton(
+                            icon: !BlocProvider.of<PasswordCubit>(context)
+                                    .obscurePassword
+                                ? Icon(Icons.visibility)
+                                : Icon(Icons.visibility_off),
+                            onPressed: () {
+                              BlocProvider.of<PasswordCubit>(context)
+                                      .obscurePassword
+                                  ? BlocProvider.of<PasswordCubit>(context)
+                                      .setPasswordVisible()
+                                  : BlocProvider.of<PasswordCubit>(context)
+                                      .setPasswordHidden();
+                            },
                           ),
-                          onChanged: (value) {
-                            setState(() {
-                              myPassword = value;
-                            });
-                          },
-                          validator: (String value) {
-                            value = value.trim();
-                            return value.isEmpty
-                                ? '\u26A0 Enter a password.'
-                                : null;
-                          }))),
+                        ),
+                        validator: (String value) {
+                          value = value.trim();
+                          return value.isEmpty
+                              ? '\u26A0 Enter a password.'
+                              : null;
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              /// Error Message goes here
               Container(
-                child: Center(child: Text(myError)),
+                child: Center(child: Text('')),
               ),
             ],
           ),
@@ -154,6 +158,6 @@ class _LoginFormState extends State<LoginForm> {
         ),
       ],
     );
-  }// build
+  } // build
 
 }
