@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:communitytabs/presentation/screens/screens.dart';
 import 'package:authentication_repository/authentication_repository.dart';
+
 /*
 Author: Alex Badia
 Purpose: To learn Flutter Development
@@ -18,9 +19,12 @@ void main() async {
   final AuthenticationRepository authenticationRepository =
       new AuthenticationRepository();
   return runApp(
-    BlocProvider(
-      create: (context) => AuthenticationBloc(authenticationRepository),
-      child: SplashScreen(),
+      RepositoryProvider<AuthenticationRepository>.value(
+      value: authenticationRepository,
+      child: BlocProvider(
+        create: (context) => AuthenticationBloc(authenticationRepository),
+        child: SplashScreen(),
+      ),
     ),
   );
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loading/indicator/ball_spin_fade_loader_indicator.dart';
-import 'package:loading/loading.dart';
+import 'package:loading_fixed/loading_fixed.dart';
 
 //Color Palette
 
@@ -110,15 +109,18 @@ const Decoration cAddEventBottomBorder =
 
 //Loading Widget
 class LoadingWidget extends StatelessWidget {
+  final double size;
+  final Color color;
+  LoadingWidget({this.size, this.color});
   @override
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width * .65,
       child: Center(
-        child: Loading(
+        child: FixedLoadingWidget(
           indicator: BallSpinFadeLoaderIndicator(),
-          size: 55.0,
-          color: Color.fromRGBO(255, 255, 255, .50),
+          size: size ?? 55.0,
+          color: color ?? Color.fromRGBO(255, 255, 255, .50),
         ),
       ),
     );

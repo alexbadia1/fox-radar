@@ -6,16 +6,12 @@ import 'package:communitytabs/logic/constants/enums.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final AuthenticationBloc authenticationBloc;
-  StreamSubscription _authenticationBlocSubscription;
   final AuthenticationRepository authenticationRepository;
+  String email = '';
 
-  LoginBloc(
-      {@required this.authenticationBloc,
-      @required this.authenticationRepository})
-      : assert(authenticationBloc != null),
-        assert(authenticationRepository != null),
-        super(LoginStateInitial());
+  LoginBloc({@required this.authenticationRepository})
+      : assert(authenticationRepository != null),
+        super(LoginStateLoggedOut());
 
   @override
   Stream<LoginState> mapEventToState(LoginEvent loginEvent) async* {
@@ -29,6 +25,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   } // mapEventToState
 
   Stream<LoginState> _mapLoginEventLoginToState({@required LoginEventLogin loginEvent}) async* {
+    // Emit state to let user know the form is being processed
+    // Probably should show a loading widget or something
+    yield LoginStateLoginSubmitted();
+
+    /// TODO: Remove artificial delay
+    await Future.delayed(Duration(milliseconds: 3000));
+
+    // Choose a sign in method to use...
     final UserModel user = await _mapLoginTypeToLoginMethod(loginEvent: loginEvent);
 
     // Ensure a firebase user was returned
@@ -53,19 +57,20 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     } // else
   } // mapLoginEventLogoutToState
 
-  Future<UserModel> _mapLoginTypeToLoginMethod({@required LoginEventLogin loginEvent}) async {
+  Future<UserModel> _mapLoginTypeToLoginMethod(
+      {@required LoginEventLogin loginEvent}) async {
     /// TODO: Map more login types to login methods from the authentication repository
-    if (loginEvent.loginType == LoginType.emailAndPassword){
+    if (loginEvent.loginType == LoginType.emailAndPassword) {
       // Returns UserModel on successful login
       // Returns null on failed login attempt
       return await this.authenticationRepository.signInWithEmailAndPassword(loginEvent.hashedEmail, loginEvent.hashedPassword);
-    }// if
+    } // if
 
     // No login methods are supported (or perhaps even exists) for this login type.
     else {
       return null;
-    }// else
-  }// _mapLoginTypeToLoginMethod
+    } // else
+  } // _mapLoginTypeToLoginMethod
 
   @override
   void onChange(Change<LoginState> change) {
@@ -75,7 +80,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   @override
   Future<void> close() {
-    this._authenticationBlocSubscription.cancel();
     return super.close();
   } // close
 } // LoginBloc

@@ -6,7 +6,7 @@ abstract class LoginState extends Equatable {
   const LoginState();
 }
 
-class LoginStateInitial extends LoginState {
+class LoginStateLoginSubmitted extends LoginState {
   @override
   List<Object> get props => [];
 }// LoginLoggedOut

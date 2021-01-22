@@ -1,11 +1,12 @@
 import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:flutter/widgets.dart';
-
 import 'login_form.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:communitytabs/logic/blocs/blocs.dart';
+import 'package:communitytabs/constants/marist_color_scheme.dart';
+import 'package:authentication_repository/authentication_repository.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -41,9 +42,7 @@ class _LoginState extends State<Login> {
                 Container(
                   height: screenHeight,
                   width: screenWidth,
-                  decoration: BoxDecoration(
-                    color: kHavenLightGray
-                  ),
+                  decoration: BoxDecoration(color: kHavenLightGray),
                   // child: Image(
                   //     image: AssetImage("images/image1.jpg"),
                   //     fit: BoxFit.cover),
@@ -60,22 +59,18 @@ class _LoginState extends State<Login> {
                     ),
                   ),
 
-                  /////////////////////
-                  /////Page Header/////
-                  /////////////////////
+                  /// Top Padding
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisAlignment: MainAxisAlignment.end,
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
                       Expanded(
-                        flex: 9,
+                        flex: 8,
                         child: SizedBox(),
                       ),
 
-                      ////////////////
-                      /////Title/////
-                      ///////////////
+                      /// Title
                       Container(
                         child: Text(
                           'MARIST',
@@ -90,9 +85,7 @@ class _LoginState extends State<Login> {
                         ),
                       ),
 
-                      ////////////////
-                      ////Subtitle////
-                      ////////////////
+                      /// Subtitle
                       Container(
                         child: Text(
                           'See What\'s Going On',
@@ -106,100 +99,135 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                       ),
-                       // Container(width: 100, height: 100),
-                      Expanded(flex: 17, child: LoginForm(controller: scrollController,)),
+                      // Container(width: 100, height: 100),
 
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * .015,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            'Don\'t have an account? ',
-                            style: TextStyle(
-                              fontSize: 12.0,
-                            ),
+                      Expanded(
+                        flex: 25,
+                        child: BlocProvider(
+                          create: (BuildContext context) => LoginBloc(
+                            authenticationRepository:
+                                RepositoryProvider.of<AuthenticationRepository>(
+                                    context),
                           ),
-                          InkWell(
-                            child: Text(
-                              'Sign Up',
-                              style: TextStyle(
-                                fontSize: 14.0,
-                                fontStyle: FontStyle.italic,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                            onTap: () {
-                              // Navigator.of(context).push(slideInRight());
+                          child: Builder(
+                            builder: (context) {
+                              final LoginState _loginState = context.watch<LoginBloc>().state;
+
+                              if (_loginState is LoginStateLoginSubmitted) {
+                                return LoadingWidget(size: 90.0, color: kHavenLightGray,);
+                              } // if
+
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Expanded(
+                                    flex: 21,
+                                    child: LoginForm(
+                                      controller: scrollController,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: MediaQuery.of(context).size.height *
+                                        .015,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(
+                                        'Don\'t have an account? ',
+                                        style: TextStyle(
+                                          fontSize: 12.0,
+                                        ),
+                                      ),
+                                      InkWell(
+                                        child: Text(
+                                          'Sign Up',
+                                          style: TextStyle(
+                                            fontSize: 14.0,
+                                            fontStyle: FontStyle.italic,
+                                            fontWeight: FontWeight.bold,
+                                            decoration:
+                                                TextDecoration.underline,
+                                          ),
+                                        ),
+                                        onTap: () {
+                                          // Navigator.of(context).push(slideInRight());
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                  Expanded(
+                                    child: SizedBox(),
+                                  ),
+                                  Container(
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                            child: Divider(
+                                          thickness: 1.5,
+                                        )),
+                                        Container(
+                                          child: Text(
+                                            " OR ",
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 15.0,
+                                              fontFamily: 'Lato',
+                                              color: kHavenLightGray,
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                            child: Divider(
+                                          thickness: 1.5,
+                                        )),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: SizedBox(),
+                                  ),
+                                  Container(
+                                    child: GestureDetector(
+                                      onTap: () async {
+                                        //   dynamic _result =
+                                        //       await _auth.anonymousSignIn();
+                                        //   if (_result == null) {
+                                        //     setState(() {
+                                        //       loading = false;
+                                        //     });
+                                        //     print('Error Signing In');
+                                        //   } else {
+                                        //     print('Sign in successful');
+                                        //     print(_result);
+                                        //     Navigator.pushReplacementNamed(
+                                        //         context, '/loading');
+                                        //     FocusScope.of(context).unfocus();
+                                        //   }
+                                      },
+                                      child: Text(
+                                        'Continue as Guest',
+                                        style: TextStyle(
+                                          fontSize: 17.0,
+                                          fontFamily: 'Lato',
+                                          fontWeight: FontWeight.w400,
+                                          color: kHavenLightGray,
+                                          decoration: TextDecoration.underline,
+                                          fontStyle: FontStyle.italic,
+                                        ),
+                                      ),
+                                    ),
+                                    alignment: Alignment.center,
+                                  ),
+                                ],
+                              );
                             },
                           ),
-                        ],
-                      ),
-                      Expanded(
-                        child: SizedBox(),
-                      ),
-                      Container(
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                                child: Divider(
-                              thickness: 1.5,
-                            )),
-                            Container(
-                              child: Text(
-                                " OR ",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 15.0,
-                                  fontFamily: 'Lato',
-                                  color: kHavenLightGray,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                                child: Divider(
-                              thickness: 1.5,
-                            )),
-                          ],
                         ),
                       ),
-                      Expanded(
-                        child: SizedBox(),
-                      ),
-                      Container(
-                        child: GestureDetector(
-                          onTap: () async {
-                            //   dynamic _result =
-                            //       await _auth.anonymousSignIn();
-                            //   if (_result == null) {
-                            //     setState(() {
-                            //       loading = false;
-                            //     });
-                            //     print('Error Signing In');
-                            //   } else {
-                            //     print('Sign in successful');
-                            //     print(_result);
-                            //     Navigator.pushReplacementNamed(
-                            //         context, '/loading');
-                            //     FocusScope.of(context).unfocus();
-                            //   }
-                          },
-                          child: Text(
-                            'Continue as Guest',
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              fontFamily: 'Lato',
-                              fontWeight: FontWeight.w400,
-                              color: kHavenLightGray,
-                              decoration: TextDecoration.underline,
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
-                        ),
-                        alignment: Alignment.center,
-                      ),
+
                       Expanded(
                         flex: 9,
                         child: SizedBox(),
