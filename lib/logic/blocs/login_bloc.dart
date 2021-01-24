@@ -7,11 +7,10 @@ import 'package:authentication_repository/authentication_repository.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AuthenticationRepository authenticationRepository;
-  String email = '';
 
   LoginBloc({@required this.authenticationRepository})
       : assert(authenticationRepository != null),
-        super(LoginStateLoggedOut());
+        super(LoginStateLoggedOut(msg: ''));
 
   @override
   Stream<LoginState> mapEventToState(LoginEvent loginEvent) async* {
@@ -40,7 +39,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield LoginStateLoggedIn(user: user);
     } // if
     else {
-      yield LoginStateLoggedOut();
+      yield LoginStateLoggedOut(msg: "\u26A0 Login failed: Invalid username or password");
     } // else
   } // mapLoginEventLoginToState
 
@@ -50,15 +49,15 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     // Ensure user is signed out before emitting logged out state
     if (this.authenticationRepository.isSignedIn()) {
-      yield LoginStateLoggedOut();
+      yield LoginStateLoggedOut(msg: '');
     } // if
     else {
       yield LoginStateLoggedIn();
     } // else
   } // mapLoginEventLogoutToState
 
-  Future<UserModel> _mapLoginTypeToLoginMethod(
-      {@required LoginEventLogin loginEvent}) async {
+  Future<UserModel> _mapLoginTypeToLoginMethod({@required LoginEventLogin loginEvent}) async {
+
     /// TODO: Map more login types to login methods from the authentication repository
     if (loginEvent.loginType == LoginType.emailAndPassword) {
       // Returns UserModel on successful login

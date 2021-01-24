@@ -5,17 +5,17 @@ import 'package:communitytabs/logic/cubits/cubits.dart';
 import 'package:communitytabs/logic/constants/enums.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 
-class LoginForm extends StatefulWidget {
+class SignUpForm extends StatefulWidget {
   @override
-  _LoginFormState createState() => _LoginFormState();
+  _SignUpFormState createState() => _SignUpFormState();
 
   final ScrollController controller;
-  LoginForm({@required this.controller});
-}
+  SignUpForm({@required this.controller});
+}// SignUpForm
 
-class _LoginFormState extends State<LoginForm> {
-  final GlobalKey<FormState> _loginFormKeyEmail = new GlobalKey<FormState>();
-  final GlobalKey<FormState> _loginFormKeyPassword = new GlobalKey<FormState>();
+class _SignUpFormState extends State<SignUpForm> {
+  final GlobalKey<FormState> _signUpFormKeyEmail = new GlobalKey<FormState>();
+  final GlobalKey<FormState> _signUpFormKeyPassword = new GlobalKey<FormState>();
   FocusNode emailFocusNode;
   FocusNode passwordFocusNode;
   TextEditingController emailTextEditingController;
@@ -27,14 +27,14 @@ class _LoginFormState extends State<LoginForm> {
     emailFocusNode = new FocusNode();
     emailFocusNode.addListener(() {
       if (!emailFocusNode.hasFocus) {
-        _loginFormKeyEmail.currentState.validate();
+        _signUpFormKeyEmail.currentState.validate();
       } // if
     });
 
     passwordFocusNode = new FocusNode();
     passwordFocusNode.addListener(() {
       if (!passwordFocusNode.hasFocus) {
-        _loginFormKeyPassword.currentState.validate();
+        _signUpFormKeyPassword.currentState.validate();
       } // if
     });
 
@@ -48,14 +48,14 @@ class _LoginFormState extends State<LoginForm> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Expanded(
-          flex: 3,
+          flex: 2,
           child: SizedBox(),
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             Form(
-              key: _loginFormKeyEmail,
+              key: _signUpFormKeyEmail,
               child: Container(
                 width: MediaQuery.of(context).size.width * .65,
                 child: TextFormField(
@@ -63,7 +63,7 @@ class _LoginFormState extends State<LoginForm> {
                   controller: emailTextEditingController,
                   textInputAction: TextInputAction.done,
                   decoration:
-                      customTextField.copyWith(labelText: 'Marist Email'),
+                  customTextField.copyWith(labelText: 'Marist Email'),
                   validator: (String email) {
                     // Missing password
                     if (email.isEmpty || email.contains(' ')) {
@@ -76,7 +76,7 @@ class _LoginFormState extends State<LoginForm> {
               ),
             ),
             Form(
-              key: _loginFormKeyPassword,
+              key: _signUpFormKeyPassword,
               child: BlocProvider<PasswordCubit>(
                 create: (context) => PasswordCubit(),
                 child: Builder(
@@ -94,16 +94,16 @@ class _LoginFormState extends State<LoginForm> {
                           labelText: 'Password',
                           suffixIcon: IconButton(
                             icon: !BlocProvider.of<PasswordCubit>(context)
-                                    .obscurePassword
+                                .obscurePassword
                                 ? Icon(Icons.visibility)
                                 : Icon(Icons.visibility_off),
                             onPressed: () {
                               BlocProvider.of<PasswordCubit>(context)
-                                      .obscurePassword
+                                  .obscurePassword
                                   ? BlocProvider.of<PasswordCubit>(context)
-                                      .setPasswordVisible()
+                                  .setPasswordVisible()
                                   : BlocProvider.of<PasswordCubit>(context)
-                                      .setPasswordHidden();
+                                  .setPasswordHidden();
                             },
                           ),
                         ),
@@ -127,16 +127,16 @@ class _LoginFormState extends State<LoginForm> {
           ],
         ),
         Expanded(
-          flex: 5,
+          flex: 3,
           child: Container(
             child: Center(
               child: Builder(
                 builder: (context) {
-                  final _loginState = context.watch<LoginBloc>().state;
+                  final _signUpState = context.watch<SignUpBloc>().state;
 
-                  // Failed login attempt
-                  if (_loginState is LoginStateLoggedOut) {
-                    return Text('${_loginState.msg}');
+                  // Sign up failed
+                  if (_signUpState is SignUpStateFailed) {
+                    return Text('${_signUpState.msg}');
                   }// if
 
                   // Normal logged out
@@ -173,14 +173,14 @@ class _LoginFormState extends State<LoginForm> {
                     side: BorderSide(color: kHavenLightGray),
                   ),
                   onPressed: () async {
-                    if (_loginFormKeyEmail.currentState.validate() &&
-                        _loginFormKeyPassword.currentState.validate()) {
-                      BlocProvider.of<LoginBloc>(context).add(
-                          LoginEventLogin(
-                            loginType: LoginType.emailAndPassword,
-                          hashedEmail: emailTextEditingController.text,
-                          hashedPassword: passwordTextEditingController.text,
-                      ));
+                    if (_signUpFormKeyEmail.currentState.validate() &&
+                        _signUpFormKeyPassword.currentState.validate()) {
+                      BlocProvider.of<SignUpBloc>(context).add(
+                          SignUpEventSignUp(
+                            signUpType: SignUpType.emailAndPassword,
+                            hashedEmail: emailTextEditingController.text,
+                            hashedPassword: passwordTextEditingController.text,
+                          ));
                     } // if
                   },
                 ),

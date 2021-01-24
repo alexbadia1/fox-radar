@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loading_fixed/loading_fixed.dart';
 
-//Color Palette
-
 /// Margins
 ///
 /// Horizontal Margins
@@ -84,6 +82,27 @@ LinearGradient cMaristGradientWashed = LinearGradient(
     cFullRedFaded,
   ],
 );
+
+class FullScreenGradient extends StatelessWidget {
+  final gradient;
+
+  FullScreenGradient({@required this.gradient});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[
+            cWashedRed,
+            cFullRed,
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 //Form Text Field Decoration
 const InputDecoration customTextField = InputDecoration(

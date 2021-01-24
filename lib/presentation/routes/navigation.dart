@@ -3,6 +3,7 @@ import 'package:database_repository/database_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/wrappers.dart';
 import 'package:communitytabs/screens/screens.dart';
+import 'package:communitytabs/presentation/screens/screens.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/logic/blocs/blocs.dart';
 
@@ -23,10 +24,24 @@ class RouteGenerator {
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case "/login":
-        return MaterialPageRoute(builder: (_) => Login());
+        return MaterialPageRoute(builder: (_) => LoginScreen());
         break;
-      case "/signUp":
-        return MaterialPageRoute(builder: (_) => SignUp());
+      case "/sign_up":
+        return PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => SignUpScreen(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            var begin = Offset(1.0, 0.0);
+            var end = Offset.zero;
+            var curve = Curves.ease;
+
+            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: child,
+            );
+          },
+        );
         break;
       case "/home":
         return MaterialPageRoute(builder: (_) => HomePage());
@@ -48,7 +63,7 @@ class RouteGenerator {
         return null;
         break;
     } // switch
-  }// onGenerateRoute
+  } // onGenerateRoute
 
   // Future<void> close() async {
   //     _authenticationBloc.close();
