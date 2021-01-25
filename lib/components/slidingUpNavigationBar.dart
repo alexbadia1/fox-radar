@@ -93,14 +93,9 @@ class CollapsedWidget extends StatelessWidget {
                         splashColor: kActiveHavenLightGray,
                         onPressed: () {
                           if (this.namedRoute != '/account') {
-                            Navigator.pushReplacement(
+                            Navigator.pushReplacementNamed(
                               context,
-                              PageRouteBuilder(
-                                pageBuilder: (context, animation1,
-                                    animation2) =>
-                                    Account(),
-                                  maintainState: true
-                              ),
+                              '/account'
                             );
                           }
                         }

@@ -29,7 +29,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     yield LoginStateLoginSubmitted();
 
     /// TODO: Remove artificial delay
-    await Future.delayed(Duration(milliseconds: 3000));
+    // await Future.delayed(Duration(milliseconds: 3000));
 
     // Choose a sign in method to use...
     final UserModel user = await _mapLoginTypeToLoginMethod(loginEvent: loginEvent);
@@ -47,13 +47,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     // logout
     await this.authenticationRepository.signOut();
 
-    // Ensure user is signed out before emitting logged out state
-    if (this.authenticationRepository.isSignedIn()) {
-      yield LoginStateLoggedOut(msg: '');
-    } // if
-    else {
-      yield LoginStateLoggedIn();
-    } // else
+    yield LoginStateLoggedOut(msg: '');
   } // mapLoginEventLogoutToState
 
   Future<UserModel> _mapLoginTypeToLoginMethod({@required LoginEventLogin loginEvent}) async {

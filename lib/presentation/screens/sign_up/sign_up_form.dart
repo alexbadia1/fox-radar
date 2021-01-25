@@ -8,11 +8,12 @@ import 'package:communitytabs/constants/marist_color_scheme.dart';
 class SignUpForm extends StatefulWidget {
   @override
   _SignUpFormState createState() => _SignUpFormState();
-}// SignUpForm
+} // SignUpForm
 
 class _SignUpFormState extends State<SignUpForm> {
   final GlobalKey<FormState> _signUpFormKeyEmail = new GlobalKey<FormState>();
-  final GlobalKey<FormState> _signUpFormKeyPassword = new GlobalKey<FormState>();
+  final GlobalKey<FormState> _signUpFormKeyPassword =
+      new GlobalKey<FormState>();
   FocusNode emailFocusNode;
   FocusNode passwordFocusNode;
   TextEditingController emailTextEditingController;
@@ -60,7 +61,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   controller: emailTextEditingController,
                   textInputAction: TextInputAction.done,
                   decoration:
-                  customTextField.copyWith(labelText: 'Marist Email'),
+                      customTextField.copyWith(labelText: 'Marist Email'),
                   validator: (String email) {
                     // Missing password
                     if (email.isEmpty || email.contains(' ')) {
@@ -91,16 +92,16 @@ class _SignUpFormState extends State<SignUpForm> {
                           labelText: 'Password',
                           suffixIcon: IconButton(
                             icon: !BlocProvider.of<PasswordCubit>(context)
-                                .obscurePassword
+                                    .obscurePassword
                                 ? Icon(Icons.visibility)
                                 : Icon(Icons.visibility_off),
                             onPressed: () {
                               BlocProvider.of<PasswordCubit>(context)
-                                  .obscurePassword
+                                      .obscurePassword
                                   ? BlocProvider.of<PasswordCubit>(context)
-                                  .setPasswordVisible()
+                                      .setPasswordVisible()
                                   : BlocProvider.of<PasswordCubit>(context)
-                                  .setPasswordHidden();
+                                      .setPasswordHidden();
                             },
                           ),
                         ),
@@ -134,7 +135,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   // Sign up failed
                   if (_signUpState is SignUpStateFailed) {
                     return Text('${_signUpState.msg}');
-                  }// if
+                  } // if
 
                   // Normal logged out
                   return Container();
@@ -173,11 +174,12 @@ class _SignUpFormState extends State<SignUpForm> {
                     if (_signUpFormKeyEmail.currentState.validate() &&
                         _signUpFormKeyPassword.currentState.validate()) {
                       BlocProvider.of<SignUpBloc>(context).add(
-                          SignUpEventSignUp(
-                            signUpType: SignUpType.emailAndPassword,
-                            hashedEmail: emailTextEditingController.text,
-                            hashedPassword: passwordTextEditingController.text,
-                          ));
+                        SignUpEventSignUp(
+                          signUpType: SignUpType.emailAndPassword,
+                          hashedEmail: emailTextEditingController.text,
+                          hashedPassword: passwordTextEditingController.text,
+                        ),
+                      );
                     } // if
                   },
                 ),

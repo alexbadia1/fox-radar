@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'authentication_event.dart';
 import 'authentication_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,9 +13,20 @@ import 'package:authentication_repository/authentication_repository.dart';
 ///   Authentication States
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   final AuthenticationRepository _authenticationRepository;
+  StreamSubscription _userSubscription;
 
   AuthenticationBloc(AuthenticationRepository authenticationRepository) :
-        _authenticationRepository = authenticationRepository, super(AuthenticationStateAuthenticating());
+        _authenticationRepository = authenticationRepository, super(AuthenticationStateAuthenticating()) {
+    _userSubscription = authenticationRepository.user.listen((UserModel user) {
+      if (user != UserModel.empty) {
+        this.add(AuthenticationLoggedIn());
+      }// if
+      else {
+
+        this.add(AuthenticationLoggedOut());
+      }// else
+    });
+  }
 
   @override
   Stream<AuthenticationState> mapEventToState(AuthenticationEvent event) async* {
@@ -22,7 +34,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       yield* _mapAuthenticationStartedToState();
     }// if
 
-    else if (event is AuthenticationLoggedIn) {
+    if (event is AuthenticationLoggedIn) {
       yield* _mapAuthenticationLoggedInToState();
     }// else-if
 
@@ -36,7 +48,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     final bool isSignedIn = _authenticationRepository.isSignedIn();
 
     if (isSignedIn) {
-      final UserModel firebaseUser = _authenticationRepository.getUser();
+      final UserModel firebaseUser = _authenticationRepository.getUserModel();
       yield AuthenticationStateAuthenticated(user: firebaseUser);
     }// if
     else {
@@ -50,13 +62,17 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   Stream<AuthenticationState> _mapAuthenticationLoggedOutToState() async* {
     yield AuthenticationStateUnauthenticated();
-    //_authenticationRepository.signOut();
   }// _mapAuthenticationEventToState
 
-@override
+  @override
   void onChange(Change<AuthenticationState> change) {
-    // TODO: implement onChange
     print('Authentication Bloc: $change');
     super.onChange(change);
-  }
+  }// onChange
+
+  @override
+  Future<void> close() {
+    _userSubscription.cancel();
+    return super.close();
+  }// close
 }

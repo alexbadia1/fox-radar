@@ -98,39 +98,39 @@ class _HomePageContentState extends State<HomePageContent> with AutomaticKeepAli
                 ),
                 backgroundColor: Colors.transparent,
               ),
-              Consumer<DatabaseRepository>(
-                builder: (context, db, child) {
-                  return StreamBuilder(
-                    stream: db.streamSuggested,
-                    builder: (context, snapshot) {
-                      int size;
-                      snapshot.hasData ? size = snapshot.data?.length : size = 0;
-                      return SliverList(
-                        delegate: !snapshot.hasData
-                            ? SliverChildListDelegate([
-                                Center(
-                                  child: Text('Welp, Nothings Going On', style: TextStyle(color: Colors.white),),
-                                )
-                              ],)
-                            : SliverChildBuilderDelegate(
-                                (BuildContext context, int index) {
-                                return index < size - 1
-                                    ? ClubBigCard(newEvent: snapshot.data[index])
-                                    : Column(
-                                        children: <Widget>[
-                                          ClubBigCard(newEvent: snapshot.data[index]),
-                                          SizedBox(
-                                            height: screenHeight * .1,
-                                            width: double.infinity,
-                                          ),
-                                        ],
-                                      );
-                              }, childCount: size),
-                      );
-                    }
-                  );
-                }
-              ),
+              // Consumer<DatabaseRepository>(
+              //   builder: (context, db, child) {
+              //     return StreamBuilder(
+              //       stream: db.streamSuggested,
+              //       builder: (context, snapshot) {
+              //         int size;
+              //         snapshot.hasData ? size = snapshot.data?.length : size = 0;
+              //         return SliverList(
+              //           delegate: !snapshot.hasData
+              //               ? SliverChildListDelegate([
+              //                   Center(
+              //                     child: Text('Welp, Nothings Going On', style: TextStyle(color: Colors.white),),
+              //                   )
+              //                 ],)
+              //               : SliverChildBuilderDelegate(
+              //                   (BuildContext context, int index) {
+              //                   return index < size - 1
+              //                       ? ClubBigCard(newEvent: snapshot.data[index])
+              //                       : Column(
+              //                           children: <Widget>[
+              //                             ClubBigCard(newEvent: snapshot.data[index]),
+              //                             SizedBox(
+              //                               height: screenHeight * .1,
+              //                               width: double.infinity,
+              //                             ),
+              //                           ],
+              //                         );
+              //                 }, childCount: size),
+              //         );
+              //       }
+              //     );
+              //   }
+              // ),
             ],
           ),
         );

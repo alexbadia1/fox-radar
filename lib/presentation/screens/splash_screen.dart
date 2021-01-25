@@ -1,3 +1,4 @@
+import 'package:communitytabs/wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/logic/blocs/blocs.dart';
@@ -9,39 +10,21 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Builder(builder: (context) {
-      final AuthenticationState authenticationBlocState =
-          context.watch<AuthenticationBloc>().state;
+      final _authenticationBlocState = context.watch<AuthenticationBloc>().state;
 
-      /// Unauthenticated, show login screen
-      if (authenticationBlocState is AuthenticationStateUnauthenticated) {
-        return MaristApp(
-          initialRoute: '/login',
-          routeGenerator: RouteGenerator(),
-        );
-      }// if
-
-      /// Authenticated, show home screen
-      else if (authenticationBlocState is AuthenticationStateAuthenticated) {
-        return MaristApp(
-          initialRoute: '/signUp',
-          routeGenerator: RouteGenerator(),
-        );
-      }// else-if
-
-      /// Authenticating
-      else if (authenticationBlocState is AuthenticationStateAuthenticating) {
-        BlocProvider.of<AuthenticationBloc>(context)
-            .add(AuthenticationStarted());
-        return MaterialApp(
-          home: LoadingScreen(),
-        );
-      } // else-if
-
-      /// Error in authentication states, dummy
-      return MaristApp(
-        initialRoute: '/error',
-        routeGenerator: RouteGenerator(),
-      );
+      if (_authenticationBlocState is AuthenticationStateAuthenticated) {
+        return HomePage();
+      } // if
+      else if (_authenticationBlocState is AuthenticationStateUnauthenticated) {
+        print('User is now unauthenticated, showing login');
+        return LoginScreen();
+      } // else if
+      else if (_authenticationBlocState is AuthenticationStateAuthenticating) {
+        return LoadingScreen();
+      } // else if
+      else {
+        return Error();
+      } // else
     });
-  }// build
-}// SplashScreen
+  } // build
+} // SplashScreen

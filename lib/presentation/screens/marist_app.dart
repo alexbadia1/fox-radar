@@ -12,11 +12,10 @@ import 'package:communitytabs/presentation/routes/navigation.dart';
 
 class MaristApp extends StatefulWidget {
   final RouteGenerator routeGenerator;
-  final String initialRoute;
+  final initial;
 
-  MaristApp({@required this.routeGenerator, @required this.initialRoute})
-      : assert(routeGenerator != null),
-        assert(initialRoute != null);
+  MaristApp({@required this.routeGenerator, this.initial})
+      : assert(routeGenerator != null);
 
   @override
   _MaristAppState createState() => _MaristAppState();
@@ -56,14 +55,16 @@ class _MaristAppState extends State<MaristApp> {
         ),
       ],
       child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          initialRoute: this.widget.initialRoute,
+        home: this.widget.initial,
+          debugShowCheckedModeBanner: true,
+          initialRoute: '/',
           onGenerateRoute: this.widget.routeGenerator.onGenerateRoute),
     );
   }
 
   @override
   void dispose() {
+    this.widget.routeGenerator.close();
     super.dispose();
   }// dispose
 }

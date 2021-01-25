@@ -1,3 +1,5 @@
+import 'package:communitytabs/presentation/routes/navigation.dart';
+
 import 'logic/blocs/blocs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,15 +18,17 @@ Observations:
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  final AuthenticationRepository authenticationRepository =
-      new AuthenticationRepository();
+  final AuthenticationRepository authenticationRepository = new AuthenticationRepository();
   return runApp(
       RepositoryProvider<AuthenticationRepository>.value(
       value: authenticationRepository,
-      child: BlocProvider(
-        create: (context) => AuthenticationBloc(authenticationRepository),
-        child: SplashScreen(),
-      ),
+      child: MaristApp(
+          routeGenerator: RouteGenerator(
+            authenticationRepository: authenticationRepository,
+            authenticationBloc: AuthenticationBloc(authenticationRepository),
+            loginBloc: LoginBloc(authenticationRepository: authenticationRepository),
+            ),
+          ),
     ),
   );
 }

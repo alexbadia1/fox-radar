@@ -8,30 +8,43 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/logic/blocs/blocs.dart';
 
 class RouteGenerator {
-  // final AuthenticationRepository authenticationRepository;
-  // final DatabaseRepository databaseRepository;
-  // AuthenticationBloc _authenticationBloc;
+  final AuthenticationRepository authenticationRepository;
+  final AuthenticationBloc authenticationBloc;
+  final LoginBloc loginBloc;
 
-  // RouteGenerator(
-  //     {@required this.authenticationRepository,
-  //     @required this.databaseRepository})
-  //     : assert(authenticationRepository != null),
-  //       assert(databaseRepository != null)
-  // {
-  //   _authenticationBloc = AuthenticationBloc(authenticationRepository);
-  // }
+  RouteGenerator(
+      {@required this.authenticationRepository,
+      @required this.authenticationBloc,
+      @required this.loginBloc})
+      : assert(authenticationRepository != null),
+        assert(authenticationBloc != null),
+        assert(loginBloc != null);
 
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case '/':
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider.value(
+            value: authenticationBloc,
+            child: SplashScreen(),
+          ),
+        );
       case "/login":
         return PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => LoginScreen(),
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: loginBloc),
+            ],
+            child: LoginScreen(),
+          ),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             var begin = Offset(-1.0, 0.0);
             var end = Offset.zero;
             var curve = Curves.ease;
 
-            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+            var tween =
+                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
             return SlideTransition(
               position: animation.drive(tween),
@@ -42,13 +55,15 @@ class RouteGenerator {
         break;
       case "/sign_up":
         return PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => SignUpScreen(),
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              SignUpScreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             var begin = Offset(1.0, 0.0);
             var end = Offset.zero;
             var curve = Curves.ease;
 
-            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+            var tween =
+                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
             return SlideTransition(
               position: animation.drive(tween),
@@ -61,7 +76,15 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => HomePage());
         break;
       case "/account":
-        return MaterialPageRoute(builder: (_) => Account());
+        return PageRouteBuilder(
+            pageBuilder: (context, animation1,
+                animation2) =>
+                BlocProvider.value(
+                  value: loginBloc,
+                  child: Account(),
+                ),
+            maintainState: true
+        );
         break;
       case "/event":
         return MaterialPageRoute(builder: (_) => EventDetails());
@@ -79,7 +102,8 @@ class RouteGenerator {
     } // switch
   } // onGenerateRoute
 
-  // Future<void> close() async {
-  //     _authenticationBloc.close();
-  // }// close
+  Future<void> close() async {
+    authenticationBloc.close();
+    loginBloc.close();
+  } // close
 }

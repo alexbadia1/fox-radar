@@ -17,6 +17,7 @@ class AuthenticationRepository {
   /// Listen to a firebase authentication stream and create a user model
   Stream<UserModel> get user {
       return _auth.authStateChanges().map((User user) {
+        print(user);
         if (user != null) {
           return _createModelUserFromFirebaseCredentials(user: user);
         } // if
@@ -47,7 +48,7 @@ class AuthenticationRepository {
     return _auth.currentUser != null;
   }// isSignedIn
 
-  UserModel getUser() {
+  UserModel getUserModel() {
     return _createModelUserFromFirebaseCredentials(user: _auth.currentUser);
   }// getUser
 
@@ -91,7 +92,7 @@ class AuthenticationRepository {
       print('Received user sign up task results...');
       User user = result.user;
 
-      /// TODO: Add new user to the database
+      /// TODO: Add new user to the database, move to bloc
       /// await new DatabaseService(uid: user.uid).updateUserData(newEmail, newPassword);
 
       //Return user data received from Firebase
