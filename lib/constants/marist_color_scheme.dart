@@ -85,11 +85,14 @@ LinearGradient cMaristGradientWashed = LinearGradient(
 
 class FullScreenGradient extends StatelessWidget {
   final gradient;
+  final height;
 
-  FullScreenGradient({@required this.gradient});
+  FullScreenGradient({@required this.gradient, @required this.height});
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: height,
+      width: double.infinity,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,

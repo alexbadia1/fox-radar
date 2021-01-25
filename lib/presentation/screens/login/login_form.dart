@@ -8,9 +8,6 @@ import 'package:communitytabs/constants/marist_color_scheme.dart';
 class LoginForm extends StatefulWidget {
   @override
   _LoginFormState createState() => _LoginFormState();
-
-  final ScrollController controller;
-  LoginForm({@required this.controller});
 }
 
 class _LoginFormState extends State<LoginForm> {

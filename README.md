@@ -1,3 +1,3 @@
 # Marist Community Tabs
 
-Keep tabs on the Marist community without having to be there in person.
+A bunch of introverts keeping tabs on the Marist Community without having to be there in person.

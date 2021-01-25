@@ -8,9 +8,6 @@ import 'package:communitytabs/constants/marist_color_scheme.dart';
 class SignUpForm extends StatefulWidget {
   @override
   _SignUpFormState createState() => _SignUpFormState();
-
-  final ScrollController controller;
-  SignUpForm({@required this.controller});
 }// SignUpForm
 
 class _SignUpFormState extends State<SignUpForm> {
@@ -159,7 +156,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   color: kHavenLightGray,
                   child: Container(
                     child: Text(
-                      'Login',
+                      'Sign Up',
                       style: TextStyle(
                         letterSpacing: 1.0,
                         color: Colors.white,

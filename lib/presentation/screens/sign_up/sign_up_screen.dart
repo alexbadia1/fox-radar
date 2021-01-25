@@ -11,8 +11,6 @@ class SignUpScreen extends StatefulWidget {
 }// SignUpScreen
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  ScrollController _scrollController = new ScrollController();
-
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -27,24 +25,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
         screenInsetsBottom;
 
     return SafeArea(
-      child: Scaffold(
-        backgroundColor: cFullRedFaded,
-        body: SingleChildScrollView(
-          controller: _scrollController,
-          child: Container(
-            height: height,
-            child: Stack(
-              clipBehavior: Clip.hardEdge,
-              children: <Widget>[
-                Container(
-                  height: screenHeight,
+      child: Container(
+        height: height + screenInsetsBottom,
+        width: screenWidth,
+        child: Stack(
+          children: [
+            Image(image: AssetImage("images/image1.jpg"), fit: BoxFit.none),
+            FullScreenGradient(gradient: cMaristGradientWashed, height: height + screenInsetsBottom),
+            Scaffold(
+              backgroundColor: Colors.transparent,
+              body: SingleChildScrollView(
+                physics: ClampingScrollPhysics(),
+                child: Container(
+                  height: height,
                   width: screenWidth,
-                  child: Image(
-                      image: AssetImage("images/image1.jpg"),
-                      fit: BoxFit.cover),
-                ),
-                FullScreenGradient(gradient: cMaristGradient),
-                Container(
                   child: BlocProvider<SignUpBloc>(
                     create: (BuildContext context) => SignUpBloc(authenticationRepository: RepositoryProvider.of<AuthenticationRepository>(context)),
                     child: Column(
@@ -76,12 +70,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     iconSize: 35.0,
                                     color: kHavenLightGray,
                                     onPressed: () {
+                                      FocusScope.of(context).unfocus();
                                       Navigator.pop(context);
                                     },
                                   ),
                                   Container(
                                     child: InkWell(
                                       onTap: () {
+                                        FocusScope.of(context).unfocus();
                                         Navigator.pop(context);
                                       },
                                       child: Text(
@@ -154,8 +150,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   Expanded(
+                                    flex: 20,
+                                    child: SignUpForm(),
+                                  ),
+                                  Expanded(
                                     flex: 1,
-                                    child: SignUpForm(controller: _scrollController),
+                                    child: SizedBox(),
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -178,6 +178,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           ),
                                         ),
                                         onTap: () {
+                                          FocusScope.of(context).unfocus();
                                           Navigator.pop(context);
                                         },
                                       ),
@@ -199,16 +200,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }// build
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }// dispose
 }// _SignUpScreenState

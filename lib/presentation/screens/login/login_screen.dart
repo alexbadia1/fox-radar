@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'login_form.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/logic/blocs/blocs.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
@@ -11,11 +10,9 @@ import 'package:authentication_repository/authentication_repository.dart';
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
-}// LoginScreen
+} // LoginScreen
 
 class _LoginScreenState extends State<LoginScreen> {
-  ScrollController _scrollController = new ScrollController();
-
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -30,219 +27,216 @@ class _LoginScreenState extends State<LoginScreen> {
         screenInsetsBottom;
 
     return SafeArea(
-      child: Scaffold(
-        backgroundColor: cFullRedFaded,
-        body: SingleChildScrollView(
-          controller: _scrollController,
-          child: Container(
-            height: height,
-            child: Stack(
-              clipBehavior: Clip.hardEdge,
-              children: <Widget>[
-                Container(
-                  height: screenHeight,
-                  width: screenWidth,
-                  decoration: BoxDecoration(color: kHavenLightGray),
-                  child: Image(
-                      image: AssetImage("images/image1.jpg"),
-                      fit: BoxFit.cover),
-                ),
-                FullScreenGradient(gradient: cMaristGradient),
-
-                /// Top Padding
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    Expanded(
-                      flex: 8,
-                      child: SizedBox(),
-                    ),
-
-                    /// Title
-                    Container(
-                      child: Text(
-                        'MARIST',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          fontWeight: FontWeight.w400,
-                          fontSize: 72.0,
-                          letterSpacing: 1.5,
-                          color: kHavenLightGray,
+      child: Container(
+        height: height + screenInsetsBottom,
+        width: screenWidth,
+        child: Stack(
+          children: [
+            Image(image: AssetImage("images/image1.jpg"), fit: BoxFit.none),
+            FullScreenGradient(gradient: cMaristGradientWashed, height: height + screenInsetsBottom),
+            Scaffold(
+              backgroundColor: Colors.transparent,
+              body: Listener(
+                onPointerDown: (_) => FocusScope.of(context).unfocus(),
+                child: SingleChildScrollView(
+                  physics: ClampingScrollPhysics(),
+                  child: Container(
+                    height: height,
+                    width: screenWidth,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Expanded(
+                          flex: 8,
+                          child: SizedBox(),
                         ),
-                      ),
-                    ),
 
-                    /// Subtitle
-                    Container(
-                      child: Text(
-                        'See What\'s Going On',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          fontWeight: FontWeight.w400,
-                          fontSize: 18.0,
-                          color: kHavenLightGray,
-                          fontStyle: FontStyle.italic,
+                        /// Title
+                        Container(
+                          child: Text(
+                            'MARIST',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.w400,
+                              fontSize: 72.0,
+                              letterSpacing: 1.5,
+                              color: kHavenLightGray,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    // Container(width: 100, height: 100),
 
-                    Expanded(
-                      flex: 25,
-                      child: BlocProvider(
-                        create: (BuildContext context) => LoginBloc(
-                          authenticationRepository:
-                              RepositoryProvider.of<AuthenticationRepository>(
-                                  context),
+                        /// Subtitle
+                        Container(
+                          child: Text(
+                            'See What\'s Going On',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: 'Lato',
+                              fontWeight: FontWeight.w400,
+                              fontSize: 18.0,
+                              color: kHavenLightGray,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
                         ),
-                        child: Builder(
-                          builder: (context) {
-                            final LoginState _loginState =
-                                context.watch<LoginBloc>().state;
+                        // Container(width: 100, height: 100),
 
-                            if (_loginState is LoginStateLoginSubmitted) {
-                              return LoadingWidget(
-                                size: 90.0,
-                                color: kHavenLightGray,
-                              );
-                            } // if
+                        Expanded(
+                          flex: 25,
+                          child: BlocProvider(
+                            create: (BuildContext context) => LoginBloc(
+                              authenticationRepository: RepositoryProvider.of<
+                                  AuthenticationRepository>(context),
+                            ),
+                            child: Builder(
+                              builder: (context) {
+                                final LoginState _loginState =
+                                    context.watch<LoginBloc>().state;
 
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Expanded(
-                                  flex: 21,
-                                  child: LoginForm(controller: _scrollController),
-                                ),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * .015,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                      'Don\'t have an account? ',
-                                      style: TextStyle(
-                                        fontSize: 12.0,
-                                      ),
+                                if (_loginState is LoginStateLoginSubmitted) {
+                                  return LoadingWidget(
+                                    size: 90.0,
+                                    color: kHavenLightGray,
+                                  );
+                                } // if
+
+                                return Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Expanded(
+                                      flex: 21,
+                                      child: LoginForm(),
                                     ),
-                                    InkWell(
-                                      child: Text(
-                                        'Sign Up',
-                                        style: TextStyle(
-                                          fontSize: 14.0,
-                                          fontStyle: FontStyle.italic,
-                                          fontWeight: FontWeight.bold,
-                                          decoration: TextDecoration.underline,
-                                        ),
-                                      ),
-                                      onTap: () {
-                                        Navigator.of(context)
-                                            .pushNamed('/sign_up');
-                                      },
+                                    SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              .015,
                                     ),
-                                  ],
-                                ),
-                                Expanded(
-                                  child: SizedBox(),
-                                ),
-                                Container(
-                                  child: Row(
-                                    children: <Widget>[
-                                      Expanded(
-                                          child: Divider(
-                                        thickness: 1.5,
-                                      )),
-                                      Container(
-                                        child: Text(
-                                          " OR ",
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text(
+                                          'Don\'t have an account? ',
                                           style: TextStyle(
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 15.0,
+                                            fontSize: 12.0,
+                                          ),
+                                        ),
+                                        InkWell(
+                                          child: Text(
+                                            'Sign Up',
+                                            style: TextStyle(
+                                              fontSize: 14.0,
+                                              fontStyle: FontStyle.italic,
+                                              fontWeight: FontWeight.bold,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                            ),
+                                          ),
+                                          onTap: () {
+                                            FocusScope.of(context).unfocus();
+                                            Navigator.of(context).pushNamed('/sign_up');
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    Expanded(
+                                      child: SizedBox(),
+                                    ),
+                                    Container(
+                                      child: Row(
+                                        children: <Widget>[
+                                          Expanded(
+                                              child: Divider(
+                                            thickness: 1.5,
+                                          )),
+                                          Container(
+                                            child: Text(
+                                              " OR ",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.normal,
+                                                fontSize: 15.0,
+                                                fontFamily: 'Lato',
+                                                color: kHavenLightGray,
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                              child: Divider(
+                                            thickness: 1.5,
+                                          )),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: SizedBox(),
+                                    ),
+                                    Container(
+                                      child: GestureDetector(
+                                        onTap: () async {
+                                          FocusScope.of(context).unfocus();
+                                          //   dynamic _result =
+                                          //       await _auth.anonymousSignIn();
+                                          //   if (_result == null) {
+                                          //     setState(() {
+                                          //       loading = false;
+                                          //     });
+                                          //     print('Error Signing In');
+                                          //   } else {
+                                          //     print('Sign in successful');
+                                          //     print(_result);
+                                          //     Navigator.pushReplacementNamed(
+                                          //         context, '/loading');
+                                          //     FocusScope.of(context).unfocus();
+                                          //   }
+                                        },
+                                        child: Text(
+                                          'Continue as Guest',
+                                          style: TextStyle(
+                                            fontSize: 17.0,
                                             fontFamily: 'Lato',
+                                            fontWeight: FontWeight.w400,
                                             color: kHavenLightGray,
+                                            decoration:
+                                                TextDecoration.underline,
+                                            fontStyle: FontStyle.italic,
                                           ),
                                         ),
                                       ),
-                                      Expanded(
-                                          child: Divider(
-                                        thickness: 1.5,
-                                      )),
-                                    ],
-                                  ),
-                                ),
-                                Expanded(
-                                  child: SizedBox(),
-                                ),
-                                Container(
-                                  child: GestureDetector(
-                                    onTap: () async {
-                                      //   dynamic _result =
-                                      //       await _auth.anonymousSignIn();
-                                      //   if (_result == null) {
-                                      //     setState(() {
-                                      //       loading = false;
-                                      //     });
-                                      //     print('Error Signing In');
-                                      //   } else {
-                                      //     print('Sign in successful');
-                                      //     print(_result);
-                                      //     Navigator.pushReplacementNamed(
-                                      //         context, '/loading');
-                                      //     FocusScope.of(context).unfocus();
-                                      //   }
-                                    },
-                                    child: Text(
-                                      'Continue as Guest',
-                                      style: TextStyle(
-                                        fontSize: 17.0,
-                                        fontFamily: 'Lato',
-                                        fontWeight: FontWeight.w400,
-                                        color: kHavenLightGray,
-                                        decoration: TextDecoration.underline,
-                                        fontStyle: FontStyle.italic,
-                                      ),
+                                      alignment: Alignment.center,
                                     ),
-                                  ),
-                                  alignment: Alignment.center,
-                                ),
-                              ],
-                            );
-                          },
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
 
-                    Expanded(
-                      flex: 9,
-                      child: SizedBox(),
+                        Expanded(
+                          flex: 9,
+                          child: SizedBox(),
+                        ),
+                        SizedBox(
+                          height: screenInsetsBottom,
+                        ),
+                      ],
                     ),
-                    SizedBox(
-                      height: screenInsetsBottom,
-                    ),
-                  ],
+                  ),
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
-  }// build
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }// dispose
-}// _LoginScreenState
+  } // build
+} // _LoginScreenState
 
 /// **Screen width** is easy: [MediaQuery.of(context).size.width]
 ///
