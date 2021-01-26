@@ -15,7 +15,6 @@ class _AccountDrawerContentsState extends State<AccountDrawerContents> {
         child: Text("Sign Out"),
         onPressed: () {
           BlocProvider.of<LoginBloc>(context).add(LoginEventLogout());
-          Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
         },
       ),
     );

@@ -71,14 +71,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     color: kHavenLightGray,
                                     onPressed: () {
                                       FocusScope.of(context).unfocus();
-                                      Navigator.pop(context);
+                                      Navigator.pushReplacementNamed(context, '/login');
                                     },
                                   ),
                                   Container(
                                     child: InkWell(
                                       onTap: () {
                                         FocusScope.of(context).unfocus();
-                                        Navigator.pop(context);
+                                        Navigator.pushReplacementNamed(context, '/login');
                                       },
                                       child: Text(
                                         'Back',
@@ -179,7 +179,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                         ),
                                         onTap: () {
                                           FocusScope.of(context).unfocus();
-                                          Navigator.pop(context);
+                                          Navigator.pushReplacementNamed(context, '/login');
                                         },
                                       ),
                                     ],

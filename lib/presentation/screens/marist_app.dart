@@ -8,13 +8,12 @@ import 'package:communitytabs/data/homePageViewModel.dart';
 import 'package:communitytabs/data/pageViewMetadata.dart';
 import 'package:communitytabs/data/selectedImageModel.dart';
 import 'package:communitytabs/data/categoryPanels.dart';
-import 'package:communitytabs/presentation/routes/navigation.dart';
+import 'package:communitytabs/presentation/routes/navigation_marist_app.dart';
 
 class MaristApp extends StatefulWidget {
   final RouteGenerator routeGenerator;
-  final initial;
 
-  MaristApp({@required this.routeGenerator, this.initial})
+  MaristApp({@required this.routeGenerator})
       : assert(routeGenerator != null);
 
   @override
@@ -55,7 +54,6 @@ class _MaristAppState extends State<MaristApp> {
         ),
       ],
       child: MaterialApp(
-        home: this.widget.initial,
           debugShowCheckedModeBanner: true,
           initialRoute: '/',
           onGenerateRoute: this.widget.routeGenerator.onGenerateRoute),
