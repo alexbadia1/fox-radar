@@ -1,4 +1,5 @@
 import 'package:communitytabs/buttons/maristFoxLogo.dart';
+import 'file:///C:/Users/alex.badia1/Github/marist_community_tabs/lib/presentation/components/sliver_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
@@ -48,7 +49,7 @@ class _AccountPageContentState extends State<AccountPageContent> {
                       Expanded(flex: 1, child: SizedBox()),
                       Expanded(flex: 4, child: MaristFoxLogo()),
                       Expanded(flex: 1, child: SizedBox()),
-                      Expanded(flex: 30, child: AccountPageTitle(username: accountName),),
+                      Expanded(flex: 30, child: MaristSliverAppBarTitle(title: accountName),),
                       Expanded(flex: 3, child: SizedBox()),
                       Expanded(flex: 2, child: SizedBox()),
                     ],

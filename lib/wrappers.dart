@@ -58,15 +58,6 @@ class _CustomCalenderStripWrapperState
   }
 }
 
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Material(child: SlidingUpNavigationBar(namedRoute: '/home')),
-    );
-  }
-}
-
 class SlidingUpPanelBodyWrapper extends StatelessWidget {
   final String namedRoute;
   SlidingUpPanelBodyWrapper({this.namedRoute});
@@ -87,7 +78,7 @@ class SlidingUpPanelBodyWrapper extends StatelessWidget {
           controller: _homePageViewModel.homePageViewController,
           physics: NeverScrollableScrollPhysics(),
           children: [
-            HomePageContent(),
+            HomeScreenBody(),
             CategoryPageWrapper(),
           ],
         );

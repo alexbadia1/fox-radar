@@ -1,4 +1,5 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:communitytabs/presentation/screens/home/home_screen.dart';
 import 'package:database_repository/database_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/wrappers.dart';
@@ -22,7 +23,7 @@ class RouteGenerator {
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case "/":
-        return MaterialPageRoute(builder: (_) => HomePage());
+        return MaterialPageRoute(builder: (_) => HomeScreen());
         break;
       case "/account":
         return PageRouteBuilder(
