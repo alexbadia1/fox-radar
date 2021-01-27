@@ -49,8 +49,4 @@ class RouteGenerator {
         break;
     } // switch
   } // onGenerateRoute
-
-  Future<void> close() async {
-    loginBloc.close();
-  } // close
 }

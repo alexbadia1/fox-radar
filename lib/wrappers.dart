@@ -2,14 +2,12 @@ import 'package:communitytabs/components/slidingUpNavigationBar.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:communitytabs/data/expansionTileMetadata.dart';
 import 'package:communitytabs/data/homePageViewModel.dart';
+import 'package:communitytabs/presentation/screens/screens.dart';
 import 'package:communitytabs/screens/account.dart';
-import 'package:communitytabs/screens/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'components/customCalenderStrip.dart';
-import 'package:communitytabs/logic/blocs/blocs.dart';
 
 class Account extends StatelessWidget {
   @override

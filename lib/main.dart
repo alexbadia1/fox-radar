@@ -1,5 +1,3 @@
-import 'package:communitytabs/presentation/routes/navigation_marist_app.dart';
-
 import 'logic/blocs/blocs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,18 +20,16 @@ void main() async {
   return runApp(
       RepositoryProvider<AuthenticationRepository>.value(
       value: authenticationRepository,
-      child: SplashScreen()
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => AuthenticationBloc(authenticationRepository)),
+          BlocProvider(create: (context) => LoginBloc(authenticationRepository: authenticationRepository)),
+        ],
+          child: SplashScreen(),
+      )
     ),
   );
-}
-
-// MaristApp(
-// routeGenerator: RouteGenerator(
-// authenticationRepository: authenticationRepository,
-// authenticationBloc: AuthenticationBloc(authenticationRepository),
-// loginBloc: LoginBloc(authenticationRepository: authenticationRepository),
-// ),
-// ),
+}// main
 // StreamProvider<List<ArtsEventsData>>.value(value: DatabaseService().cachedArts),
 //StreamProvider<List<FoodEventsData>>.value(value: DatabaseService().cachedFood),
 //StreamProvider<List<GreekEventsData>>.value(value: DatabaseService().cachedGreek),

@@ -16,8 +16,9 @@ class _MaristAppAuthenticationState extends State<MaristAppAuthentication> {
       onGenerateRoute: this.widget.routeGeneratorAuthentication.onGenerateRoute,
       initialRoute: '/login',
     );
-  }
-  @override
+  }// build
+
+@override
   void dispose() {
     this.widget.routeGeneratorAuthentication.close();
     super.dispose();

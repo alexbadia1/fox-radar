@@ -23,7 +23,24 @@ class RouteGeneratorAuthentication {
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case "/login":
-        return MaterialPageRoute(builder: (context) => BlocProvider.value(value: loginBloc, child: LoginScreen()));
+        return PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              BlocProvider.value(value: loginBloc, child: LoginScreen()),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            var begin = Offset(-1, 0.0);
+            var end = Offset.zero;
+            var curve = Curves.ease;
+
+            var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: child,
+            );
+          },
+        );
+        // return MaterialPageRoute(builder: (context) => BlocProvider.value(value: loginBloc, child: LoginScreen()));
         break;
       case "/sign_up":
         return PageRouteBuilder(
@@ -50,7 +67,7 @@ class RouteGeneratorAuthentication {
     } // switch
   } // onGenerateRoute
 
-  Future<void> close() async {
-    loginBloc.close();
-  } // close
+  Future<void> close () {
+      signUpBloc.close();
+  }// close
 } // RouteGeneratorAuthentication

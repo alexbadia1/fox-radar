@@ -10,17 +10,12 @@ import 'package:communitytabs/data/selectedImageModel.dart';
 import 'package:communitytabs/data/categoryPanels.dart';
 import 'package:communitytabs/presentation/routes/navigation_marist_app.dart';
 
-class MaristApp extends StatefulWidget {
+class MaristApp extends StatelessWidget {
   final RouteGenerator routeGenerator;
 
   MaristApp({@required this.routeGenerator})
       : assert(routeGenerator != null);
 
-  @override
-  _MaristAppState createState() => _MaristAppState();
-}
-
-class _MaristAppState extends State<MaristApp> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -56,13 +51,7 @@ class _MaristAppState extends State<MaristApp> {
       child: MaterialApp(
           debugShowCheckedModeBanner: true,
           initialRoute: '/',
-          onGenerateRoute: this.widget.routeGenerator.onGenerateRoute),
+          onGenerateRoute: this.routeGenerator.onGenerateRoute),
     );
   }
-
-  @override
-  void dispose() {
-    this.widget.routeGenerator.close();
-    super.dispose();
-  }// dispose
 }

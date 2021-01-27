@@ -28,7 +28,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     // Probably should show a loading widget or something
     yield LoginStateLoginSubmitted();
 
-    /// TODO: Remove artificial delay
+    // Remove artificial delay
     // await Future.delayed(Duration(milliseconds: 3000));
 
     // Choose a sign in method to use...
