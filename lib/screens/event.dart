@@ -1,15 +1,17 @@
 import 'dart:typed_data';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:communitytabs/data/club_event_data.dart';
+import 'package:database_repository/database_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 
 class EventDetails extends StatelessWidget {
-  final ClubEventData myEvent;
+  final EventModel myEvent;
   final Uint8List imageBytes;
   EventDetails({this.myEvent, this.imageBytes});
+
   @override
   Widget build(BuildContext context) {
     double _screenWidth = MediaQuery.of(context).size.width;

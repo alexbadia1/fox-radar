@@ -1,87 +1,49 @@
+import 'dart:typed_data';
+
+import 'models/models.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
-import 'models/models.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'models/models.dart';
 
 class DatabaseRepository {
   // final CollectionReference _eventsCollection = FirebaseFirestore.instance.collection('events');
 
-  final CollectionReference _searchEventsCollection =
-      FirebaseFirestore.instance.collection('searchEvents');
+  final CollectionReference _searchEventsCollection = FirebaseFirestore.instance.collection('searchEvents');
 
-  Future<List<EventModel>> getEventsWithPagination(
+  Future<List<QueryDocumentSnapshot>> getEventsWithPagination(
       {@required String category,
-      @required String lastEvent,
+      @required QueryDocumentSnapshot lastEvent,
       @required int limit}) async {
     print('Called: getSuggestedEventsWithPagination');
-    QuerySnapshot querySnap = await _searchEventsCollection
-        .where('category', isGreaterThanOrEqualTo: category)
-        .startAt([
-          {'title': '$lastEvent'}
-        ])
-        .limit(limit)
-        .get();
 
-    return querySnap.docs.map((doc) {
-      Timestamp tempRawStartDateAndTime = doc.get('rawStartDateAndTime');
-      Timestamp tempRawEndDateAndTime = doc.get('rawEndDateAndTime');
+    QuerySnapshot querySnap;
 
-      DateTime tempRawStartDateAndTimeToDateTime;
-      DateTime tempRawEndDateAndTimeToDateTime;
+    if (lastEvent != null) {
+      querySnap = await _searchEventsCollection
+          .where('category', isGreaterThanOrEqualTo: category)
+          .startAfterDocument(lastEvent)
+          .limit(limit)
+          .get();
+    }// if
 
-      if (tempRawStartDateAndTime != null)
-        tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(
-                tempRawStartDateAndTime.millisecondsSinceEpoch)
-            .toUtc()
-            .toLocal();
-      else
-        tempRawStartDateAndTimeToDateTime = null;
+    else {
+      querySnap = await _searchEventsCollection
+          .where('category', isGreaterThanOrEqualTo: category)
+          .limit(limit)
+          .get();
+    }// else
 
-      if (tempRawEndDateAndTime != null)
-        tempRawEndDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(
-                tempRawEndDateAndTime.millisecondsSinceEpoch)
-            .toUtc()
-            .toLocal();
-      else
-        tempRawEndDateAndTimeToDateTime = null;
+    return querySnap.docs;
+  }// getEventsWithPagination
 
-      return EventModel(
 
-          /// RawStartDate converted to [DATETIME] from [TIMESTAMP] in Firebase.
-          newRawStartDateAndTime: tempRawStartDateAndTimeToDateTime ?? null,
-
-          /// RawEndDate converted to [DATETIME] from [TIMESTAMP] in Firebase.
-          newRawEndDateAndTime: tempRawEndDateAndTimeToDateTime ?? null,
-
-          ///Category converted to [STRING] from [STRING] in Firebase.
-          newCategory: doc.get('category') ?? '',
-
-          ///Host converted to [STRING] from [STRING] in Firebase.
-          newHost: doc.get('host') ?? '',
-
-          ///Title converted to [STRING] from [STRING] in Firebase.
-          newTitle: doc.get('title') ?? '',
-
-          ///Location Converted to [] from [] in Firebase.
-          newLocation: doc.get('location') ?? '',
-
-          ///Room converted to [STRING] from [String] in Firebase.
-          newRoom: doc.get('room') ?? '',
-
-          ///Summary converted to [STRING] from [STRING] in Firebase.
-          newSummary: doc.get('summary') ?? '',
-
-          ///Highlights converted to [List<String>] from [List<dynamic>] in Firebase.
-          newHighlights:
-              List.from(doc.get('highlights')) ?? ['', '', '', '', ''],
-
-          ///Implement Firebase Images.
-          newImageFitCover: doc.get('imageFitCover') ?? true,
-          newImagePath: doc.get('imagePath') ?? '');
-    }).toList();
-  }
+  Future<Uint8List> getImageFromStorage({@required String path}) async {
+    return await FirebaseStorage.instance
+        .ref()
+        .child(path)
+        .getData(4194304);
+  }// getImageFromStorage
 
   // Future<List<SearchResultModel>> shallowFetchQuery(String query) async {
   //   print('shallowFetchQuery Called');

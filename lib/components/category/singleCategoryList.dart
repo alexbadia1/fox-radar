@@ -97,17 +97,18 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
               shrinkWrap: true,
               itemCount: size,
               itemBuilder: (context, index) {
-                return index < size - 1
-                    ? ClubBigCard(newEvent: tempList[index])
-                    : Column(
-                        children: <Widget>[
-                          ClubBigCard(newEvent: tempList[index]),
-                          SizedBox(
+                return
+                  // index < size - 1
+                    // ? ClubBigCard(newEvent: tempList[index])
+                    // : Column(
+                    //     children: <Widget>[
+                    //       ClubBigCard(newEvent: tempList[index]),
+                        SizedBox(
                             height: screenHeight * .1,
                             width: double.infinity,
-                          ),
-                        ],
-                      );
+                          );
+                      //   ],
+                      // );
               },
             );
           }),
