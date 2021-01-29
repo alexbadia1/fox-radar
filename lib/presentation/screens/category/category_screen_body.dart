@@ -1,9 +1,9 @@
 import 'package:communitytabs/components/category/singleCategoryList.dart';
-import 'package:communitytabs/data/homePageViewModel.dart';
+import 'package:communitytabs/logic/cubits/home_page_view_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 ///CategoryContent Definition:
 ///  An abstraction of the multiple category pages. Instead of having multiple different files
@@ -15,9 +15,10 @@ import 'package:provider/provider.dart';
 ///Used by:
 ///  SlidingUpPanelBodyWrapper Widget
 ///
-///Uses:
+/// Uses:
 ///  SuggestionsWrapper Widget
-class CategoryContent extends StatefulWidget {
+
+class CategoryBody extends StatefulWidget {
   ///Specifies the title each time this page is called
   final String title;
 
@@ -26,16 +27,15 @@ class CategoryContent extends StatefulWidget {
   ///equal to the List's value at the largest index (typically where, i = list.length - 1).
   final List<String> tabNamesFromLtoR;
 
-  CategoryContent({@required this.title, @required this.tabNamesFromLtoR});
+  CategoryBody({@required this.title, @required this.tabNamesFromLtoR});
 
   @override
-  _CategoryContentState createState() => _CategoryContentState();
+  _CategoryBodyState createState() => _CategoryBodyState();
 }
 
-class _CategoryContentState extends State<CategoryContent> {
+class _CategoryBodyState extends State<CategoryBody> {
   @override
   Widget build(BuildContext context) {
-    HomePageViewModel _homePageViewModel = Provider.of<HomePageViewModel>(context);
     ///Temporary lists to allow for the dynamic building of Tabs and PageViews
     List<Widget> _tabs = [];
     List<Widget> _pageView = [];
@@ -47,9 +47,10 @@ class _CategoryContentState extends State<CategoryContent> {
 
     ///Dynamically Generating PageViews
     for (int i = 0; i < this.widget.tabNamesFromLtoR.length; ++i) {
-      _pageView
-          .add(SingleCategoryView(eventType: this.widget.tabNamesFromLtoR[i]));
+      _pageView.add(SingleCategoryView(eventType: this.widget.tabNamesFromLtoR[i]));
     } //for
+
+
     ///TODO: Account for only 1 sub-Category. Maybe just use a different special widget
     return SafeArea(
       child: DefaultTabController(
@@ -97,10 +98,7 @@ class _CategoryContentState extends State<CategoryContent> {
                 splashColor: kActiveHavenLightGray,
                 icon: Icon(Icons.chevron_left),
                 onPressed: () =>
-                    _homePageViewModel.homePageViewController.animateToPage(
-                    0,
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.easeIn),
+                    BlocProvider.of<HomePageViewCubit>(context).animateToHomePage(),
               ),
               centerTitle: false,
               title: Text(this.widget.title,

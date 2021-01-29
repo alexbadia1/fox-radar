@@ -1,7 +1,7 @@
 import 'package:communitytabs/data/club_event_data.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'file:///C:/Users/18454/AndroidStudioProjects/Marist_Community_Tabs/lib/presentation/components/cards/event_card.dart';
+import 'package:communitytabs/presentation/components/cards/event_card.dart';
 
 class SingleCategoryView extends StatefulWidget {
   final String eventType;

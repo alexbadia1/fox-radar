@@ -1,9 +1,8 @@
-import 'package:database_repository/database_repository.dart';
-
 import 'logic/blocs/blocs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:database_repository/database_repository.dart';
 import 'package:communitytabs/presentation/screens/screens.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 

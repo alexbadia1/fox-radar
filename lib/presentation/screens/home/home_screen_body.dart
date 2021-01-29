@@ -1,11 +1,9 @@
-import 'file:///C:/Users/18454/AndroidStudioProjects/Marist_Community_Tabs/lib/presentation/components/cards/event_card.dart';
 import 'package:communitytabs/logic/blocs/blocs.dart';
 import 'package:communitytabs/presentation/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:communitytabs/buttons/customNavigationItem.dart';
+import 'package:communitytabs/presentation/buttons/buttons.dart';
 import 'package:database_repository/database_repository.dart';
 
 class HomeScreenBody extends StatefulWidget {
@@ -33,21 +31,21 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
             mainAxisSpacing: MediaQuery.of(context).size.height * .01,
             childAspectRatio: 4,
             children: <Widget>[
-              CustomNavigationItem(
+              CategoryNavigationItem(
                   option: 'Arts', icon: Icons.palette, nextPage: '/arts'),
-              CustomNavigationItem(
+              CategoryNavigationItem(
                   option: 'Sports', icon: Icons.flag, nextPage: '/sports'),
-              CustomNavigationItem(
+              CategoryNavigationItem(
                   option: 'Diversity',
                   icon: Icons.public,
                   nextPage: '/diversity'),
-              CustomNavigationItem(
+              CategoryNavigationItem(
                   option: 'Student',
                   icon: Icons.library_books,
                   nextPage: '/student'),
-              CustomNavigationItem(
+              CategoryNavigationItem(
                   option: 'Food', icon: Icons.local_dining, nextPage: '/food'),
-              CustomNavigationItem(
+              CategoryNavigationItem(
                   option: 'Greek',
                   icon: Icons.account_balance,
                   nextPage: '/greek'),
@@ -61,34 +59,40 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
               style: TextStyle(color: kHavenLightGray),
             ),
           ),
-
           BlocProvider(
-            create: (context) => SuggestedEventsBloc(db: RepositoryProvider.of<DatabaseRepository>(context))..add(SuggestedEventsEventFetch()),
+            create: (context) => SuggestedEventsBloc(
+                db: RepositoryProvider.of<DatabaseRepository>(context))
+              ..add(SuggestedEventsEventFetch()),
             child: Builder(
               builder: (context) {
-                final SuggestedEventsState _suggestedEventsState = context.watch<SuggestedEventsBloc>().state;
+                final SuggestedEventsState _suggestedEventsState =
+                    context.watch<SuggestedEventsBloc>().state;
                 if (_suggestedEventsState is SuggestedEventsStateSuccess) {
                   return SliverList(
                     delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                      if (index < _suggestedEventsState.eventModels.length - 1) {
-                        return EventCard(newEvent: _suggestedEventsState.eventModels.elementAt(index));
-                      } // if
-                      else {
-                        return Column(
-                          children: <Widget>[
-                            EventCard(newEvent: _suggestedEventsState.eventModels.elementAt(index)),
-                            SizedBox(
-                              height: screenHeight * .1,
-                              width: double.infinity,
-                            ),
-                          ],
-                        );
-                      } // else
-                    },
+                      (BuildContext context, int index) {
+                        if (index <
+                            _suggestedEventsState.eventModels.length - 1) {
+                          return EventCard(
+                              newEvent: _suggestedEventsState.eventModels
+                                  .elementAt(index));
+                        } // if
+                        else {
+                          return Column(
+                            children: <Widget>[
+                              EventCard(
+                                  newEvent: _suggestedEventsState.eventModels
+                                      .elementAt(index)),
+                              SizedBox(
+                                height: screenHeight * .1,
+                                width: double.infinity,
+                              ),
+                            ],
+                          );
+                        } // else
+                      },
                       childCount: _suggestedEventsState.eventModels.length,
                     ),
-
                   );
                 } // if
                 else if (_suggestedEventsState is SuggestedEventsStateFailed) {
@@ -101,14 +105,10 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
                       ],
                     ),
                   );
-                }
-                else {
+                } else {
                   return SliverList(
                     delegate: SliverChildListDelegate(
-                      [
-                        Center(
-                            child: LoadingWidget())
-                      ],
+                      [Center(child: LoadingWidget())],
                     ),
                   );
                 } // else

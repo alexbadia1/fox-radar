@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:communitytabs/data/slidingUpPanelMetadata.dart';
 import 'package:communitytabs/data/addHighlightButtonController.dart';
 import 'package:communitytabs/data/expansionTileMetadata.dart';
-import 'package:communitytabs/data/homePageViewModel.dart';
+import 'package:communitytabs/data/deprecated_home_page_view_model.dart';
 import 'package:communitytabs/data/pageViewMetadata.dart';
 import 'package:communitytabs/data/selectedImageModel.dart';
 import 'package:communitytabs/data/categoryPanels.dart';
@@ -30,8 +30,6 @@ class MaristApp extends StatelessWidget {
         ChangeNotifierProvider<PageViewMetaData>(
           create: (context) => PageViewMetaData(),
         ),
-        ChangeNotifierProvider<HomePageViewModel>(
-            create: (context) => HomePageViewModel()),
         ChangeNotifierProvider<ExpansionTiles>(
           create: (context) => ExpansionTiles(),
         ),
@@ -43,9 +41,6 @@ class MaristApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<SelectedImageModel>(
           create: (context) => SelectedImageModel(),
-        ),
-        ChangeNotifierProvider<CategoryContentModel>(
-          create: (context) => CategoryContentModel(),
         ),
       ],
       child: MaterialApp(

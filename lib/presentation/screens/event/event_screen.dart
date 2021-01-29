@@ -52,6 +52,7 @@ class EventScreen extends StatelessWidget {
                 scrollDirection: Axis.vertical,
                 slivers: [
                   SliverAppBar(
+                    backgroundColor: Colors.black,
                     automaticallyImplyLeading: false,
                     flexibleSpace: EventSliverAppBarFlexibleSpace(
                         imageBytes: this.imageBytes),

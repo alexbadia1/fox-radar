@@ -1,9 +1,11 @@
+import 'package:communitytabs/logic/cubits/cubits.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/data/categoryPanels.dart';
 import 'package:communitytabs/data/expansionTileMetadata.dart';
 import 'package:communitytabs/data/slidingUpPanelMetadata.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:communitytabs/presentation/screens/home/home_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class MaristBottomNavigationBar extends StatelessWidget {
@@ -13,6 +15,8 @@ class MaristBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     ExpansionTiles _expansionPanels = Provider.of<ExpansionTiles>(context);
     CategoryPanels categoryPanels = Provider.of<CategoryPanels>(context);
+    HomePageViewCubit _homePageViewCubit = BlocProvider.of<HomePageViewCubit>(context);
+
     return Consumer<SlidingUpPanelMetaData>(
       builder: (context, panelState, child) {
         return panelState.getPanelIsClosed
@@ -43,6 +47,13 @@ class MaristBottomNavigationBar extends StatelessWidget {
                           ),
                         );
                       }
+
+                      /// Allows home button to be used to close a category list
+                      ///
+                      /// Works by defaulting the page view index back to 0
+                      if (_homePageViewCubit.currentPage() == 0.0) {
+                        _homePageViewCubit.animateToHomePage();
+                      }// if
                     }
                 ),
                 IconButton(
