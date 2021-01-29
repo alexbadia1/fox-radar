@@ -1,9 +1,7 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:communitytabs/presentation/routes/navigation_arguments.dart';
-import 'package:communitytabs/presentation/screens/home/home_screen.dart';
-import 'package:database_repository/database_repository.dart';
+import 'package:communitytabs/presentation/screens/screens.dart';
 import 'package:flutter/material.dart';
-import 'package:communitytabs/wrappers.dart';
 import 'package:communitytabs/screens/screens.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/logic/blocs/blocs.dart';
@@ -32,7 +30,7 @@ class RouteGenerator {
                 animation2) =>
                 BlocProvider.value(
                   value: loginBloc,
-                  child: Account(),
+                  child: AccountScreen(),
                 ),
             maintainState: true
         );
