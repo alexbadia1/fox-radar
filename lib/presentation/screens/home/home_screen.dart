@@ -1,6 +1,6 @@
 import 'package:communitytabs/data/homePageViewModel.dart';
 import 'package:communitytabs/data/slidingUpPanelMetadata.dart';
-import 'file:///C:/Users/alex.badia1/Github/marist_community_tabs/lib/presentation/components/bottom_navigation_bar.dart';
+import 'package:communitytabs/presentation/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/screens/addEvent.dart';
 import 'package:provider/provider.dart';

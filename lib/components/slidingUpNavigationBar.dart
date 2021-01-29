@@ -2,7 +2,7 @@ import 'package:communitytabs/data/categoryPanels.dart';
 import 'package:communitytabs/data/expansionTileMetadata.dart';
 import 'package:communitytabs/data/slidingUpPanelMetadata.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'file:///C:/Users/alex.badia1/Github/marist_community_tabs/lib/presentation/components/bottom_navigation_bar.dart';
+import 'package:communitytabs/presentation/components/bottom_navigation_bar.dart';
 import 'package:communitytabs/presentation/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';

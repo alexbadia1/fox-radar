@@ -1,9 +1,8 @@
-import 'package:communitytabs/components/clubCardBig.dart';
+import 'file:///C:/Users/18454/AndroidStudioProjects/Marist_Community_Tabs/lib/presentation/components/cards/event_card.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:communitytabs/components/club_card.dart';
 import 'package:communitytabs/data/club_event_data.dart';
 import 'package:communitytabs/data/searchResult.dart';
-import 'package:communitytabs/services/deprecated_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

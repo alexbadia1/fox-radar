@@ -1,5 +1,5 @@
 import 'package:communitytabs/buttons/maristFoxLogo.dart';
-import 'file:///C:/Users/alex.badia1/Github/marist_community_tabs/lib/presentation/components/sliver_app_bar.dart';
+import 'package:communitytabs/presentation/components/sliver_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';

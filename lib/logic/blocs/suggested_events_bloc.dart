@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
-import 'package:database_repository/database_repository.dart';
 import 'suggested_events_event.dart';
 import 'suggested_events_state.dart';
 import 'package:flutter/material.dart';
-import 'package:communitytabs/logic/blocs/suggested_events_event.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:database_repository/database_repository.dart';
+import 'package:communitytabs/logic/blocs/suggested_events_event.dart';
 
 class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsState> {
   final DatabaseRepository db;
@@ -33,27 +32,32 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
         final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(lastEvent: null, limit: 1);
         final List<EventModel> _eventModels = _mapDocumentSnapshotsToEventModels(docs: _docs);
 
-        yield SuggestedEventsStateSuccess(eventModels: _eventModels, maxEvents: false);
+        yield SuggestedEventsStateSuccess(eventModels: _eventModels, maxEvents: false, lastEvent: _docs.last);
         return;
       } // if
 
       /// Some posts were fetched already, now fetch 20 more
       if (_currentState is SuggestedEventsStateSuccess) {
-        final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(lastEvent: _currentState.lastEvent, limit: 20);
+        final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(lastEvent: _currentState.lastEvent, limit: 50);
         final List<EventModel> _eventModels = _mapDocumentSnapshotsToEventModels(docs: _docs);
+
         /// No event models were returned from the database
         if (_eventModels.isEmpty) {
           yield SuggestedEventsStateSuccess(
             eventModels: _currentState.eventModels,
             maxEvents: true,
+              lastEvent: _docs.last ?? _currentState.lastEvent,
           );
         } // if
 
         /// At least 1 event was returned from the database
         else {
+          _eventModels.forEach((element) { _currentState.eventModels.add(element);});
+
           yield SuggestedEventsStateSuccess(
-            eventModels: _currentState.eventModels + _eventModels,
+            eventModels: _currentState.eventModels,
             maxEvents: false,
+            lastEvent: _docs.last ?? _currentState.lastEvent,
           );
         } // else
       } // if
@@ -64,43 +68,23 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
   } // _mapSuggestedEventsEventFetchToState
 
   Future<List<QueryDocumentSnapshot>> _fetchEventsWithPagination({@required QueryDocumentSnapshot lastEvent, @required int limit}) async {
-    return db.getEventsWithPagination(
-        category: 'Suggested',
+    return db.getEventsWithPaginationFromSearchEventsCollection(
+        category: 'Movies & Theatre',
         lastEvent: lastEvent,
         limit: limit);
   }// _fetchEventsWithPagination
 
   List<EventModel> _mapDocumentSnapshotsToEventModels({@required List<QueryDocumentSnapshot> docs}) {
     return docs.map((doc) {
-      Timestamp tempRawStartDateAndTime = doc.data()['rawStartDateAndTime'];
-      Timestamp tempRawEndDateAndTime = doc.data()['rawEndDateAndTime'];
-
-      DateTime tempRawStartDateAndTimeToDateTime;
-      DateTime tempRawEndDateAndTimeToDateTime;
-
-      if (tempRawStartDateAndTime != null)
-        tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(
-            tempRawStartDateAndTime.millisecondsSinceEpoch)
-            .toUtc()
-            .toLocal();
-      else
-        tempRawStartDateAndTimeToDateTime = null;
-
-      if (tempRawEndDateAndTime != null)
-        tempRawEndDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(
-            tempRawEndDateAndTime.millisecondsSinceEpoch)
-            .toUtc()
-            .toLocal();
-      else
-        tempRawEndDateAndTimeToDateTime = null;
-
       return EventModel(
+          /// DocumentId converted to [STRING] from [STRING] in firebase.
+          newId: doc.data()['id'] ?? '',
 
-        /// RawStartDate converted to [DATETIME] from [TIMESTAMP] in Firebase.
-          newRawStartDateAndTime: tempRawStartDateAndTimeToDateTime ?? null,
+          /// RawStartDate converted to [DATETIME] from [TIMESTAMP] in Firebase.
+          newRawStartDateAndTime: null,
 
           /// RawEndDate converted to [DATETIME] from [TIMESTAMP] in Firebase.
-          newRawEndDateAndTime: tempRawEndDateAndTimeToDateTime ?? null,
+          newRawEndDateAndTime: null,
 
           ///Category converted to [STRING] from [STRING] in Firebase.
           newCategory: doc.data()['category'] ?? '',

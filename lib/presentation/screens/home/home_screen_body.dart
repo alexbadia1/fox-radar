@@ -1,4 +1,4 @@
-import 'package:communitytabs/components/clubCardBig.dart';
+import 'file:///C:/Users/18454/AndroidStudioProjects/Marist_Community_Tabs/lib/presentation/components/cards/event_card.dart';
 import 'package:communitytabs/logic/blocs/blocs.dart';
 import 'package:communitytabs/presentation/components/components.dart';
 import 'package:flutter/material.dart';
@@ -72,12 +72,12 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
                     delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
                       if (index < _suggestedEventsState.eventModels.length - 1) {
-                        return ClubBigCard(newEvent: _suggestedEventsState.eventModels.elementAt(index));
+                        return EventCard(newEvent: _suggestedEventsState.eventModels.elementAt(index));
                       } // if
                       else {
                         return Column(
                           children: <Widget>[
-                            ClubBigCard(newEvent: _suggestedEventsState.eventModels.elementAt(index)),
+                            EventCard(newEvent: _suggestedEventsState.eventModels.elementAt(index)),
                             SizedBox(
                               height: screenHeight * .1,
                               width: double.infinity,
@@ -91,14 +91,23 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
 
                   );
                 } // if
-
-                else {
+                else if (_suggestedEventsState is SuggestedEventsStateFailed) {
                   return SliverList(
                     delegate: SliverChildListDelegate(
                       [
                         Center(
                             child: Text('Welp, Nothings Going On',
                                 style: TextStyle(color: Colors.white)))
+                      ],
+                    ),
+                  );
+                }
+                else {
+                  return SliverList(
+                    delegate: SliverChildListDelegate(
+                      [
+                        Center(
+                            child: LoadingWidget())
                       ],
                     ),
                   );

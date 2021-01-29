@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
 class EventModel extends ChangeNotifier {
+  String _id;
   DateTime _rawStartDateAndTime;
   DateTime _rawEndDateAndTime;
   String _myTitle;
@@ -29,8 +30,10 @@ class EventModel extends ChangeNotifier {
         String newCategory,
         DateTime newRawStartDateAndTime,
         DateTime newRawEndDateAndTime,
-        bool newImageFitCover}) {
+        bool newImageFitCover,
+      String newId}) {
 
+    _id = newId;
     _myHost = newHost;
     _myTitle = newTitle;
     newRawStartDateAndTime == null ? _myStartDate = '' : _myStartDate = DateFormat('E, MMMM d, y').format(newRawStartDateAndTime);
@@ -50,6 +53,7 @@ class EventModel extends ChangeNotifier {
   } //full constructor
 
   EventModel.nullConstructor() {
+    _id = '';
     _myHost = '';
     _myTitle = '';
     _myLocation = '';
@@ -75,6 +79,7 @@ class EventModel extends ChangeNotifier {
   String get getStartDate => _myStartDate;
   String get getStartTime => _myStartTime;
   String get getTitle => _myTitle;
+  String get id => _id;
   List<String> get getHighlights => _myHighlights;
   String get myCategory => _myCategory;
   DateTime get getRawStartDateAndTime => _rawStartDateAndTime;

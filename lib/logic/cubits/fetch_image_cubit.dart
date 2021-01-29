@@ -20,7 +20,7 @@ class FetchImageCubit extends Cubit<FetchImageState> {
     return;
   }// fetchImage
 
-@override
+  @override
   void onChange(Change<FetchImageState> change) {
     print('Fetch Image Cubit: $change');
     super.onChange(change);

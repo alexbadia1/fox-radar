@@ -4,7 +4,7 @@
 // import 'package:flutter/cupertino.dart';
 
 // class DatabaseService extends ChangeNotifier {
-//   /// TODO: Add Nearby Events Stream
+//   /// to do: Add Nearby Events Stream
 //
 //   /// Suggested
 //   Stream<List<ClubEventData>> streamSuggested;
