@@ -1,5 +1,5 @@
 import 'package:communitytabs/buttons/maristFoxLogo.dart';
-import 'package:communitytabs/components/home/searchButton.dart';
+import 'file:///C:/Users/18454/AndroidStudioProjects/Marist_Community_Tabs/lib/presentation/buttons/searchButton.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:flutter/material.dart';
 

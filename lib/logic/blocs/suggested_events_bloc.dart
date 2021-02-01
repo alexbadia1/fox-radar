@@ -13,8 +13,9 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
   SuggestedEventsBloc({@required this.db}) : super(SuggestedEventsStateFetching());
 
   @override
-  Stream<SuggestedEventsState> mapEventToState(
-      SuggestedEventsEvent suggestedEventsEvent) async* {
+  Stream<SuggestedEventsState> mapEventToState(SuggestedEventsEvent suggestedEventsEvent) async* {
+    //await Future.delayed(Duration(milliseconds: 1000));
+
     if (suggestedEventsEvent is SuggestedEventsEventFetch) {
       yield* _mapSuggestedEventsEventFetchToState();
     } // if
@@ -29,7 +30,7 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
     try {
       /// No posts were fetched yet
       if (_currentState is SuggestedEventsStateFetching) {
-        final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(lastEvent: null, limit: 1);
+        final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(lastEvent: null, limit: 2);
         final List<EventModel> _eventModels = _mapDocumentSnapshotsToEventModels(docs: _docs);
 
         yield SuggestedEventsStateSuccess(eventModels: _eventModels, maxEvents: false, lastEvent: _docs.last);
@@ -69,7 +70,7 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
 
   Future<List<QueryDocumentSnapshot>> _fetchEventsWithPagination({@required QueryDocumentSnapshot lastEvent, @required int limit}) async {
     return db.getEventsWithPaginationFromSearchEventsCollection(
-        category: 'Movies & Theatre',
+        category: 'Academic',
         lastEvent: lastEvent,
         limit: limit);
   }// _fetchEventsWithPagination

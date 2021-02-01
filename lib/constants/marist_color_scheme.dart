@@ -83,6 +83,16 @@ LinearGradient cMaristGradientWashed = LinearGradient(
   ],
 );
 
+//Gradients
+LinearGradient cShadowGradient = LinearGradient(
+  begin: Alignment.centerLeft,
+  end: Alignment.centerRight,
+  colors: <Color>[
+    Color.fromRGBO(31, 31, 31, .35),
+    Color.fromRGBO(61, 61, 61, .25),
+  ],
+);
+
 class FullScreenGradient extends StatelessWidget {
   final gradient;
   final height;

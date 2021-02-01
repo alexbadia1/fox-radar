@@ -45,73 +45,85 @@ class _EventCardState extends State<EventCard> {
                 documentId: _myEvent.id, imageBytes: _imageBytes),
           );
         },
-        child: Column(
-          children: <Widget>[
-            AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Container(
-                color: Colors.black,
-                child: Builder(
-                  builder: (context) {
-                    final FetchImageState _fetchImageState =
-                        context.watch<FetchImageCubit>().state;
-                    if (_fetchImageState is FetchImageSuccess) {
-                      _imageBytes = _fetchImageState.imageBytes;
-                      return Image.memory(
-                        _fetchImageState.imageBytes,
-                        fit:
-                            _eventImageFitCover ? BoxFit.cover : BoxFit.contain,
-                      );
-                    } // if
-
-                    else if (_fetchImageState is FetchImageFailure) {
-                      print('Looking for: $filePath');
-                      return Container(
-                        color: Colors.black,
-                      );
-                    } // else if
-
-                    else {
-                      return LoadingWidget();
-                    } // else
-                  },
-                ),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Color.fromRGBO(33, 33, 33, 1.0),
+            border: Border(
+              top: BorderSide(
+                color: Color.fromRGBO(61, 61, 61, 1.0),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-              child: ListTile(
-                leading: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    CircleAvatar(
-                      backgroundColor: Colors.redAccent,
-                    ),
-                  ],
+          ),
+          child: Column(
+            children: <Widget>[
+              AspectRatio(
+                aspectRatio: 16 / 9,
+                child: Container(
+                  color: Colors.black,
+                  child: Builder(
+                    builder: (context) {
+                      final FetchImageState _fetchImageState =
+                          context.watch<FetchImageCubit>().state;
+                      if (_fetchImageState is FetchImageSuccess) {
+                        _imageBytes = _fetchImageState.imageBytes;
+                        return Image.memory(
+                          _fetchImageState.imageBytes,
+                          fit:
+                              _eventImageFitCover ? BoxFit.cover : BoxFit.contain,
+                        );
+                      } // if
+
+                      else if (_fetchImageState is FetchImageFailure) {
+                        print('Looking for: $filePath');
+                        return Container(
+                          color: Colors.black,
+                        );
+                      } // else if
+
+                      else {
+                        return LoadingWidget(
+                          size: 75.0,
+                        );
+                      } // else
+                    },
+                  ),
                 ),
-                title: Text(
-                  _eventTitle,
-                  textAlign: TextAlign.start,
-                  style: TextStyle(color: cWhite100),
-                ),
-                subtitle: RichText(
-                  text: TextSpan(children: [
-                    TextSpan(
-                        text: _eventLocation + '\n',
-                        style: TextStyle(color: cWhite70, fontSize: 10.0)),
-                    TextSpan(
-                        text: _eventStartDate,
-                        style: TextStyle(color: cWhite70, fontSize: 10.0)),
-                    TextSpan(text: ' - '),
-                    TextSpan(
-                        text: _eventStartTime,
-                        style: TextStyle(color: cWhite70, fontSize: 10.0))
-                  ]),
-                ),
-                trailing: Icon(Icons.more_vert, color: cWhite70),
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                child: ListTile(
+                  leading: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      CircleAvatar(
+                        backgroundColor: Colors.redAccent,
+                      ),
+                    ],
+                  ),
+                  title: Text(
+                    _eventTitle,
+                    textAlign: TextAlign.start,
+                    style: TextStyle(color: cWhite100),
+                  ),
+                  subtitle: RichText(
+                    text: TextSpan(children: [
+                      TextSpan(
+                          text: _eventLocation + '\n',
+                          style: TextStyle(color: cWhite70, fontSize: 10.0)),
+                      TextSpan(
+                          text: _eventStartDate,
+                          style: TextStyle(color: cWhite70, fontSize: 10.0)),
+                      TextSpan(text: ' - '),
+                      TextSpan(
+                          text: _eventStartTime,
+                          style: TextStyle(color: cWhite70, fontSize: 10.0))
+                    ]),
+                  ),
+                  trailing: Icon(Icons.more_vert, color: cWhite70),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

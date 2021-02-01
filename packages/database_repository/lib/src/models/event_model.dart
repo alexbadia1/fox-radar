@@ -85,6 +85,10 @@ class EventModel extends ChangeNotifier {
   DateTime get getRawStartDateAndTime => _rawStartDateAndTime;
   DateTime get getRawEndDateAndTime => _rawEndDateAndTime;
 
+  void setId (String newId) {
+    _id = newId;
+  }
+
   void setImageFitCover (bool newImageFitCover) {
     _imageFitCover = newImageFitCover;
   }

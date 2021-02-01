@@ -5,59 +5,67 @@ import 'package:communitytabs/constants/marist_color_scheme.dart';
 
 class CategoryNavigationItem extends StatelessWidget {
   final String option;
+  final String gradient;
   final IconData icon;
   final String nextPage;
-  final LinearGradient gradient;
+  Image maristArtImage;
 
-  CategoryNavigationItem(
-      {@required this.nextPage, this.gradient, this.option, this.icon});
+  CategoryNavigationItem({@required this.nextPage, @required this.gradient, this.option, this.icon}) {
+    maristArtImage = Image.asset(gradient);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(4.0, 4.0, 4.0, 0),
-      child: Container(
-        child: Stack(
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                color: kHavenLightGray,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(5),
-                ),
+    precacheImage(maristArtImage.image, context);
+    return GestureDetector(
+      onTap: () {
+        BlocProvider.of<CategoryTitleCubit>(context).setCategory(nextPage);
+        BlocProvider.of<HomePageViewCubit>(context).animateToCategoryPage();
+      },
+      child: Stack(
+        children: [
+          Container(
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: maristArtImage.image,
+                fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(Color.fromRGBO(31, 31, 31, .2), BlendMode.darken),
+              ),
+              borderRadius: BorderRadius.all(
+                Radius.circular(5),
               ),
             ),
-            FlatButton(
-              onPressed: () {
-                BlocProvider.of<CategoryTitleCubit>(context)
-                    .setCategory(nextPage);
-                BlocProvider.of<HomePageViewCubit>(context)
-                    .animateToCategoryPage();
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Center(
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * .2,
-                      child: Text(
-                        option,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(color: Colors.white),
-                      ),
+          ),
+          // Container(
+          //   decoration: BoxDecoration(gradient: cShadowGradient),
+          // ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Expanded(flex: 5, child: SizedBox()),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Icon(icon, color: Colors.white),
+              ),
+              Expanded(flex: 3, child: SizedBox()),
+              Center(
+                child: Container(
+                  child: Text(
+                    option,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        color: Colors.white,
+                      fontSize: 16.0
                     ),
                   ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * .1,
-                  ),
-                  Container(
-                      child: Center(child: Icon(icon, color: Colors.white))),
-                ],
+                ),
               ),
-            )
-          ],
-        ),
+              Expanded(flex: 30, child: SizedBox()),
+            ],
+          ),
+        ],
       ),
     );
   } // build

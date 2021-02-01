@@ -22,7 +22,12 @@ class RouteGenerator {
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case "/":
-        return MaterialPageRoute(builder: (_) => HomeScreen());
+        return PageRouteBuilder(
+            pageBuilder: (context, animation1,
+                animation2) => HomeScreen(),
+            maintainState: true
+        );
+        // return MaterialPageRoute(builder: (_) => HomeScreen());
         break;
       case "/account":
         return PageRouteBuilder(

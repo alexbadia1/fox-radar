@@ -30,7 +30,7 @@ class AccountBottomNavigationBar extends StatelessWidget {
                     color: kHavenLightGray,
                     splashColor: kActiveHavenLightGray,
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/home');
+                      Navigator.pushReplacementNamed(context, '/');
                     }),
                 IconButton(
                     icon: Icon(Icons.add),

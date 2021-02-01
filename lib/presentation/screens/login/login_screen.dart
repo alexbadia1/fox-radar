@@ -12,7 +12,22 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 } // LoginScreen
 
+
 class _LoginScreenState extends State<LoginScreen> {
+  Image backgroundImage;
+
+  @override
+  void initState() {
+    super.initState();
+    backgroundImage = new Image.asset("images/image1.jpg");
+  }// initState
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    precacheImage(backgroundImage.image, context);
+  }// didChangeDependencies
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -32,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
         width: screenWidth,
         child: Stack(
           children: [
-            Image(image: AssetImage("images/image1.jpg"), fit: BoxFit.none),
+            backgroundImage,
             FullScreenGradient(gradient: cMaristGradientWashed, height: height + screenInsetsBottom),
             Scaffold(
               backgroundColor: Colors.transparent,

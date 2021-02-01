@@ -35,10 +35,3 @@ void main() async {
     ),
   );
 }// main
-// StreamProvider<List<ArtsEventsData>>.value(value: DatabaseService().cachedArts),
-//StreamProvider<List<FoodEventsData>>.value(value: DatabaseService().cachedFood),
-//StreamProvider<List<GreekEventsData>>.value(value: DatabaseService().cachedGreek),
-//StreamProvider<List<DiversityEventsData>>.value(value: DatabaseService().cachedDiversity),
-//StreamProvider<List<SportsEventsData>>.value(value: DatabaseService().cachedSports),
-//StreamProvider<List<StudentEventsData>>.value(value: DatabaseService().cachedStudent),
-//StreamProvider<List<SuggestedEventsData>>.value(value: DatabaseService().cachedSuggested),
