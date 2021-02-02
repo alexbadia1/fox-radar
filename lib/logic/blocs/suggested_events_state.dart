@@ -24,5 +24,5 @@ class SuggestedEventsStateSuccess extends SuggestedEventsState {
 
   SuggestedEventsStateSuccess({@required this.eventModels, @required this.lastEvent, @required this.maxEvents});
   @override
-  List<Object> get props => [eventModels,maxEvents];
+  List<Object> get props => [eventModels, maxEvents];
 }// SuggestedEventsStateFailed

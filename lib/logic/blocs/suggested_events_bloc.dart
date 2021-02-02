@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:rxdart/rxdart.dart';
 import 'suggested_events_event.dart';
 import 'suggested_events_state.dart';
 import 'package:flutter/material.dart';
@@ -7,13 +8,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:database_repository/database_repository.dart';
 import 'package:communitytabs/logic/blocs/suggested_events_event.dart';
 
-class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsState> {
+class SuggestedEventsBloc
+    extends Bloc<SuggestedEventsEvent, SuggestedEventsState> {
   final DatabaseRepository db;
+  final int paginationLimit = 2;
 
-  SuggestedEventsBloc({@required this.db}) : super(SuggestedEventsStateFetching());
+  SuggestedEventsBloc({@required this.db})
+      : super(SuggestedEventsStateFetching());
 
   @override
-  Stream<SuggestedEventsState> mapEventToState(SuggestedEventsEvent suggestedEventsEvent) async* {
+  Stream<Transition<SuggestedEventsEvent, SuggestedEventsState>>
+      transformEvents(Stream<SuggestedEventsEvent> events, transitionFn) {
+    return super.transformEvents(
+        events.debounceTime(const Duration(milliseconds: 500)),
+        transitionFn);
+  }// transformEvents
+
+  @override
+  Stream<SuggestedEventsState> mapEventToState(
+      SuggestedEventsEvent suggestedEventsEvent) async* {
     //await Future.delayed(Duration(milliseconds: 1000));
 
     if (suggestedEventsEvent is SuggestedEventsEventFetch) {
@@ -30,54 +43,59 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
     try {
       /// No posts were fetched yet
       if (_currentState is SuggestedEventsStateFetching) {
-        final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(lastEvent: null, limit: 2);
-        final List<EventModel> _eventModels = _mapDocumentSnapshotsToEventModels(docs: _docs);
+        final List<QueryDocumentSnapshot> _docs =
+            await _fetchEventsWithPagination(
+                lastEvent: null, limit: paginationLimit);
+        final List<EventModel> _eventModels =
+            _mapDocumentSnapshotsToEventModels(docs: _docs);
 
-        yield SuggestedEventsStateSuccess(eventModels: _eventModels, maxEvents: false, lastEvent: _docs.last);
+        yield SuggestedEventsStateSuccess(
+            eventModels: _eventModels, maxEvents: false, lastEvent: _docs.last);
         return;
       } // if
 
       /// Some posts were fetched already, now fetch 20 more
       if (_currentState is SuggestedEventsStateSuccess) {
-        final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(lastEvent: _currentState.lastEvent, limit: 50);
-        final List<EventModel> _eventModels = _mapDocumentSnapshotsToEventModels(docs: _docs);
+        final List<QueryDocumentSnapshot> _docs =
+            await _fetchEventsWithPagination(
+                lastEvent: _currentState.lastEvent, limit: paginationLimit);
 
         /// No event models were returned from the database
-        if (_eventModels.isEmpty) {
+        if (_docs.isEmpty) {
           yield SuggestedEventsStateSuccess(
             eventModels: _currentState.eventModels,
             maxEvents: true,
-              lastEvent: _docs.last ?? _currentState.lastEvent,
+            lastEvent: _currentState.lastEvent,
           );
         } // if
 
         /// At least 1 event was returned from the database
         else {
-          _eventModels.forEach((element) { _currentState.eventModels.add(element);});
-
+          final List<EventModel> _eventModels =
+              _mapDocumentSnapshotsToEventModels(docs: _docs);
           yield SuggestedEventsStateSuccess(
-            eventModels: _currentState.eventModels,
+            eventModels: _currentState.eventModels + _eventModels,
             maxEvents: false,
-            lastEvent: _docs.last ?? _currentState.lastEvent,
+            lastEvent: _docs?.last ?? _currentState.lastEvent,
           );
         } // else
       } // if
     } catch (e) {
-      print(e);
       yield SuggestedEventsStateFailed();
     } // catch
   } // _mapSuggestedEventsEventFetchToState
 
-  Future<List<QueryDocumentSnapshot>> _fetchEventsWithPagination({@required QueryDocumentSnapshot lastEvent, @required int limit}) async {
+  Future<List<QueryDocumentSnapshot>> _fetchEventsWithPagination(
+      {@required QueryDocumentSnapshot lastEvent, @required int limit}) async {
     return db.getEventsWithPaginationFromSearchEventsCollection(
-        category: 'Academic',
-        lastEvent: lastEvent,
-        limit: limit);
-  }// _fetchEventsWithPagination
+        category: 'Academic', lastEvent: lastEvent, limit: limit);
+  } // _fetchEventsWithPagination
 
-  List<EventModel> _mapDocumentSnapshotsToEventModels({@required List<QueryDocumentSnapshot> docs}) {
+  List<EventModel> _mapDocumentSnapshotsToEventModels(
+      {@required List<QueryDocumentSnapshot> docs}) {
     return docs.map((doc) {
       return EventModel(
+
           /// DocumentId converted to [STRING] from [STRING] in firebase.
           newId: doc.data()['id'] ?? '',
 
@@ -107,17 +125,24 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
 
           ///Highlights converted to [List<String>] from [List<dynamic>] in Firebase.
           newHighlights:
-          List.from(doc.data()['highlights'] ?? ['', '', '', '', '']),
+              List.from(doc.data()['highlights'] ?? ['', '', '', '', '']),
 
           ///Implement Firebase Images.
           newImageFitCover: doc.data()['imageFitCover'] ?? true,
           newImagePath: doc.data()['imagePath'] ?? '');
     }).toList();
-  }// _mapDocumentSnapshotsToEventModels
+  } // _mapDocumentSnapshotsToEventModels
 
-@override
+  @override
   void onChange(Change<SuggestedEventsState> change) {
     print('Suggestion Bloc: $change');
     super.onChange(change);
-  }// onChange
-}// SuggestedEventsBloc
+  } // onChange
+
+  @override
+  Future<void> close() {
+    print('Suggested bloc closed');
+    return super.close();
+  } // close
+
+} // SuggestedEventsBloc

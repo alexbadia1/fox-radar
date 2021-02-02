@@ -15,6 +15,22 @@ class HomeScreenBody extends StatefulWidget {
 
 class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAliveClientMixin {
   GlobalKey navigation = new GlobalKey();
+  ScrollController _sliverController = new ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Setup the listener.
+    _sliverController.addListener(() {
+      if (_sliverController.position.atEdge && _sliverController.position.pixels != 0) {
+        // Fetch more data...
+        BlocProvider.of<SuggestedEventsBloc>(context).add(SuggestedEventsEventFetch());
+        print("Fetching more events...");
+      }// if
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -29,180 +45,182 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
         screenPaddingBottom +
         screenInsetsBottom;
 
-    return BlocProvider(
-      create: (context) => SuggestedEventsBloc(
-          db: RepositoryProvider.of<DatabaseRepository>(context))
-        ..add(SuggestedEventsEventFetch()),
-      child: Container(
-        color: Color.fromRGBO(24, 24, 24, 1.0),
-        child: CustomScrollView(
-          slivers: [
-            MaristSliverAppBar(title: 'Marist'),
-            Builder(builder: (context) {
-              final SuggestedEventsState _suggestedEventsState =
-                  context.watch<SuggestedEventsBloc>().state;
-              if (_suggestedEventsState is SuggestedEventsStateFetching) {
-                return SliverToBoxAdapter(
-                  child: Container(
-                    height: 0,
-                    color: Color.fromRGBO(61, 61, 61, 1.0),
-                  ),
-                );
-              } // if
-              return SliverPadding(
-                padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 16.0),
-                sliver: SliverGrid.count(
-                  key: navigation,
-                  crossAxisCount: 2,
-                  crossAxisSpacing: MediaQuery.of(context).size.width * .05,
-                  mainAxisSpacing: MediaQuery.of(context).size.height * .015,
-                  childAspectRatio: 4,
-                  children: <Widget>[
-                    CategoryNavigationItem(
-                        option: 'Arts',
-                        icon: Icons.palette,
-                        nextPage: '/arts',
-                        gradient: "images/soft_red_banner.jpg"),
-                    CategoryNavigationItem(
-                        option: 'Sports',
-                        icon: Icons.flag,
-                        nextPage: '/sports',
-                        gradient: "images/soft_green_banner.png"),
-                    CategoryNavigationItem(
-                        option: 'Diversity',
-                        icon: Icons.public,
-                        nextPage: '/diversity',
-                        gradient: "images/fresh_milk_banner.png"),
-                    CategoryNavigationItem(
-                        option: 'Student',
-                        icon: Icons.library_books,
-                        nextPage: '/student',
-                        gradient: "images/sharp_blue_banner.png"),
-                    CategoryNavigationItem(
-                        option: 'Food',
-                        icon: Icons.local_dining,
-                        nextPage: '/food',
-                        gradient: "images/soft_yellow_banner.jpg"),
-                    CategoryNavigationItem(
-                        option: 'Greek',
-                        icon: Icons.account_balance,
-                        nextPage: '/greek',
-                        gradient: "images/everlasting_banner.png"),
-                  ],
-                ),
-              );
-            }),
-            Builder(builder: (context) {
-              final SuggestedEventsState _suggestedEventsState = context.watch<SuggestedEventsBloc>().state;
-              if (_suggestedEventsState is SuggestedEventsStateFetching) {
-                return SliverToBoxAdapter(
-                  child: Container(
-                    height: height - MediaQuery.of(context).size.height * .0625 - MediaQuery.of(context).size.height * 0.0725,
-                    child: Center(
-                      child: SizedBox(
-                        height: height * .05,
-                        width: screenWidth * .08,
-                        child: CircularProgressIndicator(
-                          backgroundColor: Colors.transparent,
-                          valueColor: AlwaysStoppedAnimation<Color>(cWhite70),
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              } // if
+    return Container(
+      color: Color.fromRGBO(24, 24, 24, 1.0),
+      child: CustomScrollView(
+        controller: _sliverController,
+        slivers: [
+          MaristSliverAppBar(title: 'Marist'),
+          Builder(builder: (context) {
+            final SuggestedEventsState _suggestedEventsState =
+                context.watch<SuggestedEventsBloc>().state;
+            if (_suggestedEventsState is SuggestedEventsStateFetching) {
               return SliverToBoxAdapter(
                 child: Container(
-                  height: screenHeight * .09,
-                  alignment: Alignment.centerLeft,
-                  decoration: BoxDecoration(
-                    color: Color.fromRGBO(33, 33, 33, 1.0),
-                    border: Border(
-                      top: BorderSide(
-                        color: Color.fromRGBO(61, 61, 61, 1.0),
+                  height: 0,
+                  color: Color.fromRGBO(61, 61, 61, 1.0),
+                ),
+              );
+            } // if
+            return SliverPadding(
+              padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 16.0),
+              sliver: SliverGrid.count(
+                key: navigation,
+                crossAxisCount: 2,
+                crossAxisSpacing: MediaQuery.of(context).size.width * .05,
+                mainAxisSpacing: MediaQuery.of(context).size.height * .015,
+                childAspectRatio: 4,
+                children: <Widget>[
+                  CategoryNavigationItem(
+                      option: 'Arts',
+                      icon: Icons.palette,
+                      nextPage: '/arts',
+                      gradient: "images/soft_red_banner.jpg"),
+                  CategoryNavigationItem(
+                      option: 'Sports',
+                      icon: Icons.flag,
+                      nextPage: '/sports',
+                      gradient: "images/soft_green_banner.png"),
+                  CategoryNavigationItem(
+                      option: 'Diversity',
+                      icon: Icons.public,
+                      nextPage: '/diversity',
+                      gradient: "images/fresh_milk_banner.png"),
+                  CategoryNavigationItem(
+                      option: 'Student',
+                      icon: Icons.library_books,
+                      nextPage: '/student',
+                      gradient: "images/sharp_blue_banner.png"),
+                  CategoryNavigationItem(
+                      option: 'Food',
+                      icon: Icons.local_dining,
+                      nextPage: '/food',
+                      gradient: "images/soft_yellow_banner.jpg"),
+                  CategoryNavigationItem(
+                      option: 'Greek',
+                      icon: Icons.account_balance,
+                      nextPage: '/greek',
+                      gradient: "images/everlasting_banner.png"),
+                ],
+              ),
+            );
+          }),
+          Builder(builder: (context) {
+            final SuggestedEventsState _suggestedEventsState = context.watch<SuggestedEventsBloc>().state;
+            if (_suggestedEventsState is SuggestedEventsStateFetching) {
+              return SliverToBoxAdapter(
+                child: Container(
+                  height: height - MediaQuery.of(context).size.height * .0625 - MediaQuery.of(context).size.height * 0.0725,
+                  child: Center(
+                    child: SizedBox(
+                      height: height * .05,
+                      width: screenWidth * .08,
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.transparent,
+                        valueColor: AlwaysStoppedAnimation<Color>(cWhite70),
                       ),
                     ),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: SizedBox(),
-                      ),
-                      Text(
-                        'Suggestions',
-                        style: TextStyle(color: cWhite100, fontSize: 16.5),
-                      ),
-                      Expanded(
-                        flex: 20,
-                        child: SizedBox(),
-                      ),
-                    ],
                   ),
                 ),
               );
-            }),
-            Builder(
-              builder: (context) {
-                final SuggestedEventsState _suggestedEventsState = context.watch<SuggestedEventsBloc>().state;
-                if (_suggestedEventsState is SuggestedEventsStateSuccess) {
-                  return SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                        if (index <
-                            _suggestedEventsState.eventModels.length - 1) {
-                          return EventCard(
-                              newEvent: _suggestedEventsState.eventModels
-                                  .elementAt(index));
-                        } // if
-                        else {
-                          return Column(
-                            children: <Widget>[
-                              EventCard(
-                                  newEvent: _suggestedEventsState.eventModels
-                                      .elementAt(index)),
-                              SizedBox(
-                                height: screenHeight * .1,
-                                width: double.infinity,
-                              ),
-                            ],
-                          );
-                        } // else
-                      },
-                      childCount: _suggestedEventsState.eventModels.length,
+            } // if
+            return SliverToBoxAdapter(
+              child: Container(
+                height: screenHeight * .09,
+                alignment: Alignment.centerLeft,
+                decoration: BoxDecoration(
+                  color: Color.fromRGBO(33, 33, 33, 1.0),
+                  border: Border(
+                    top: BorderSide(
+                      color: Color.fromRGBO(61, 61, 61, 1.0),
                     ),
-                  );
-                } // if
-                else if (_suggestedEventsState is SuggestedEventsStateFailed) {
-                  return SliverList(
-                    delegate: SliverChildListDelegate(
-                      [
-                        Center(
-                            child: Text('Welp, Nothings Going On',
-                                style: TextStyle(color: Colors.white)))
-                      ],
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: SizedBox(),
                     ),
-                  );
-                } else {
-                  return SliverList(
-                    delegate: SliverChildListDelegate(
-                      [
-                        Center(
-                            child: Container(
-                          color: Colors.red,
-                        ))
-                      ],
+                    Text(
+                      'Suggestions',
+                      style: TextStyle(color: cWhite100, fontSize: 16.5),
                     ),
-                  );
-                } // else
-              },
-            )
-          ],
-        ),
+                    Expanded(
+                      flex: 20,
+                      child: SizedBox(),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }),
+          Builder(
+            builder: (context) {
+              final SuggestedEventsState _suggestedEventsState = context.watch<SuggestedEventsBloc>().state;
+              if (_suggestedEventsState is SuggestedEventsStateSuccess) {
+                return SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      if (index <
+                          _suggestedEventsState.eventModels.length - 1) {
+                        return EventCard(
+                            newEvent: _suggestedEventsState.eventModels
+                                .elementAt(index));
+                      } // if
+                      else {
+                        return Column(
+                          children: <Widget>[
+                            EventCard(
+                                newEvent: _suggestedEventsState.eventModels
+                                    .elementAt(index)),
+                            SizedBox(
+                              height: screenHeight * .1,
+                              width: double.infinity,
+                            ),
+                          ],
+                        );
+                      } // else
+                    },
+                    addAutomaticKeepAlives: true,
+                    childCount: _suggestedEventsState.eventModels.length,
+                  ),
+                );
+              } // if
+              else if (_suggestedEventsState is SuggestedEventsStateFailed) {
+                return SliverList(
+                  delegate: SliverChildListDelegate(
+                    [
+                      Center(
+                          child: Text('Welp, Nothings Going On',
+                              style: TextStyle(color: Colors.white)))
+                    ],
+                  ),
+                );
+              } else {
+                return SliverList(
+                  delegate: SliverChildListDelegate(
+                    [
+                      Center(
+                          child: Container(
+                        color: Colors.red,
+                      ))
+                    ],
+                  ),
+                );
+              } // else
+            },
+          )
+        ],
       ),
     );
   }
 
+  @override
+  void dispose() {
+    _sliverController.dispose();
+    super.dispose();
+  }// dispose
   @override
   bool get wantKeepAlive => true;
 }

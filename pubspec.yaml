@@ -32,6 +32,9 @@ dependencies:
   flutter_bloc: ^6.1.1
   equatable: ^1.2.5
 
+  # Better Stream Control
+  rxdart: ^0.25.0
+
   # Encryption
   crypto: ^2.1.5
 

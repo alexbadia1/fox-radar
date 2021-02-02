@@ -14,20 +14,20 @@ class EventCard extends StatefulWidget {
   _EventCardState createState() => _EventCardState();
 } // ClubBigCard
 
-class _EventCardState extends State<EventCard> {
+class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixin{
   Uint8List _imageBytes;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     EventModel _myEvent = this.widget.newEvent;
     String _eventTitle = _myEvent.getTitle ?? '[Event Title]';
     String _eventLocation = _myEvent.getLocation ?? '[Event Location]';
     String _eventStartDate = _myEvent.getStartDate ?? '[Event Start Date]';
     String _eventStartTime = _myEvent.getStartTime ?? '[Event Start Time]';
     bool _eventImageFitCover = _myEvent.getImageFitCover ?? true;
-    String pathVariable = widget.newEvent.getTitle +
-        widget.newEvent.getHost +
-        widget.newEvent.getLocation;
+    String pathVariable = _myEvent.id ?? '';
     String filePath = 'events/$pathVariable.jpg';
 
     /// TODO: REMOVE THIS LINE
@@ -128,4 +128,7 @@ class _EventCardState extends State<EventCard> {
       ),
     );
   }
-} //
+
+  @override
+  bool get wantKeepAlive => true;
+} // _EventCardState

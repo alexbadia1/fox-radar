@@ -1,5 +1,8 @@
 import 'package:communitytabs/data/slidingUpPanelMetadata.dart';
+import 'package:communitytabs/logic/blocs/suggested_events_bloc.dart';
+import 'package:communitytabs/logic/blocs/suggested_events_event.dart';
 import 'package:communitytabs/logic/cubits/cubits.dart';
+import 'package:database_repository/database_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/screens/addEvent.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,10 +33,19 @@ class HomeScreen extends StatelessWidget {
                 create: (context) => CategoryTitleCubit(),
                 child: Builder(builder: (context) {
                   return PageView(
-                    controller: BlocProvider.of<HomePageViewCubit>(context).homePageViewController,
+                    controller: BlocProvider.of<HomePageViewCubit>(context)
+                        .homePageViewController,
                     physics: NeverScrollableScrollPhysics(),
                     children: [
-                      HomeScreenBody(),
+                      BlocProvider(
+                        create: (context) => SuggestedEventsBloc(
+                          db: RepositoryProvider.of<DatabaseRepository>(
+                              context),
+                        )..add(
+                            SuggestedEventsEventFetch(),
+                          ),
+                        child: HomeScreenBody(),
+                      ),
                       CategoryScreen(),
                     ],
                   );
