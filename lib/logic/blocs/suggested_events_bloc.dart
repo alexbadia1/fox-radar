@@ -26,8 +26,8 @@ class SuggestedEventsBloc
   @override
   Stream<SuggestedEventsState> mapEventToState(
       SuggestedEventsEvent suggestedEventsEvent) async* {
-    // print("Event Added to Suggested Bloc");
-    // await Future.delayed(Duration(milliseconds: 1000));
+    print("Event Added to Suggested Bloc");
+    // await Future.delayed(Duration(milliseconds: 5000));
 
     /// Fetch some events
     if (suggestedEventsEvent is SuggestedEventsEventFetch) {
@@ -60,9 +60,6 @@ class SuggestedEventsBloc
       );
     } // if
 
-    /// TODO: Remove artificial delay!
-    await Future.delayed(Duration(milliseconds: 1000));
-
     try {
       /// No posts were fetched yet
       final List<QueryDocumentSnapshot> _docs =
@@ -75,6 +72,8 @@ class SuggestedEventsBloc
         _maxEvents = true;
       } // if
 
+      print('yielding');
+      print('$_maxEvents');
       yield SuggestedEventsStateSuccess(
           eventModels: _eventModels,
           maxEvents: _maxEvents,

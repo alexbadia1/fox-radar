@@ -1,6 +1,5 @@
 import 'package:communitytabs/data/slidingUpPanelMetadata.dart';
-import 'package:communitytabs/logic/blocs/suggested_events_bloc.dart';
-import 'package:communitytabs/logic/blocs/suggested_events_event.dart';
+import 'package:communitytabs/logic/blocs/blocs.dart';
 import 'package:communitytabs/logic/cubits/cubits.dart';
 import 'package:database_repository/database_repository.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +13,9 @@ import 'home_bottom_navigation.dart';
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    SlidingUpPanelMetaData _slidingUpPanelMetaData =
-        Provider.of<SlidingUpPanelMetaData>(context);
+
+    // TODO: Refactor into a cubit or bloc
+    SlidingUpPanelMetaData _slidingUpPanelMetaData = Provider.of<SlidingUpPanelMetaData>(context);
 
     return SafeArea(
       child: Material(
@@ -39,12 +39,11 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       BlocProvider(
                         create: (context) => SuggestedEventsBloc(
-                          db: RepositoryProvider.of<DatabaseRepository>(
-                              context),
-                        )..add(
-                            SuggestedEventsEventFetch(),
-                          ),
-                        child: HomeScreenBody(),
+                            db: RepositoryProvider.of<DatabaseRepository>(
+                                context))
+                          ..add(SuggestedEventsEventFetch()),
+                        child:
+                            HomeScreenBody(),
                       ),
                       CategoryScreen(),
                     ],

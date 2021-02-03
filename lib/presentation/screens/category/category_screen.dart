@@ -7,37 +7,37 @@ class CategoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     switch (BlocProvider.of<CategoryTitleCubit>(context).category) {
-      case '/sports':
+      case 'Sports':
         return CategoryBody(
           title: 'Sports',
           tabNamesFromLtoR: ['Intramural', 'College', 'Club'],
         );
         break;
-      case '/arts':
+      case 'Arts':
         return CategoryBody(
           title: 'Arts',
           tabNamesFromLtoR: ['Music & Dance', 'Movies & Theatre'],
         );
         break;
-      case '/diversity':
+      case 'Diversity':
         return CategoryBody(
           title: 'Diversity',
           tabNamesFromLtoR: ['Culture', 'Religion', 'Spiritual'],
         );
         break;
-      case '/student':
+      case 'Student':
         return CategoryBody(
           title: 'Student Interest',
           tabNamesFromLtoR: ['Academic', 'Political', 'Media'],
         );
         break;
-      case '/food':
+      case 'Food':
         return CategoryBody(
           title: 'Marist Food',
           tabNamesFromLtoR: ['Marist Dining', 'Occasions', 'Free Food'],
         );
         break;
-      case '/greek':
+      case 'Greek':
         return CategoryBody(
           title: 'Greek Life',
           tabNamesFromLtoR: ['Fraternity', 'Sorority', 'Rushes'],

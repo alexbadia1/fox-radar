@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/logic/cubits/cubits.dart';
-import 'package:communitytabs/constants/marist_color_scheme.dart';
 
-class CategoryNavigationItem extends StatelessWidget {
-  final String option;
-  final String gradient;
+class CategoryNavigationButton extends StatelessWidget {
+  final String category;
+  final String imagePath;
   final IconData icon;
-  final String nextPage;
   Image maristArtImage;
 
-  CategoryNavigationItem({@required this.nextPage, @required this.gradient, this.option, this.icon}) {
-    maristArtImage = Image.asset(gradient);
-  }
+  CategoryNavigationButton({@required this.category, @required this.imagePath, @required this.icon}) {
+    maristArtImage = Image.asset(imagePath);
+  }// CategoryNavigationButton
 
   @override
   Widget build(BuildContext context) {
     precacheImage(maristArtImage.image, context);
     return GestureDetector(
       onTap: () {
-        BlocProvider.of<CategoryTitleCubit>(context).setCategory(nextPage);
+        BlocProvider.of<CategoryTitleCubit>(context).setCategory(category);
         BlocProvider.of<HomePageViewCubit>(context).animateToCategoryPage();
       },
       child: Stack(
@@ -37,9 +35,6 @@ class CategoryNavigationItem extends StatelessWidget {
               ),
             ),
           ),
-          // Container(
-          //   decoration: BoxDecoration(gradient: cShadowGradient),
-          // ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -53,7 +48,7 @@ class CategoryNavigationItem extends StatelessWidget {
               Center(
                 child: Container(
                   child: Text(
-                    option,
+                    category,
                     textAlign: TextAlign.left,
                     style: TextStyle(
                         color: Colors.white,
