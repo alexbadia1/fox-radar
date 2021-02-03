@@ -20,26 +20,78 @@ class SuggestedEventsBloc
   Stream<Transition<SuggestedEventsEvent, SuggestedEventsState>>
       transformEvents(Stream<SuggestedEventsEvent> events, transitionFn) {
     return super.transformEvents(
-        events.debounceTime(const Duration(milliseconds: 500)),
-        transitionFn);
-  }// transformEvents
+        events.debounceTime(const Duration(milliseconds: 0)), transitionFn);
+  } // transformEvents
 
   @override
   Stream<SuggestedEventsState> mapEventToState(
       SuggestedEventsEvent suggestedEventsEvent) async* {
-    //await Future.delayed(Duration(milliseconds: 1000));
+    // print("Event Added to Suggested Bloc");
+    // await Future.delayed(Duration(milliseconds: 1000));
 
+    /// Fetch some events
     if (suggestedEventsEvent is SuggestedEventsEventFetch) {
       yield* _mapSuggestedEventsEventFetchToState();
     } // if
 
+    /// Reload the events list
+    else if (suggestedEventsEvent is SuggestedEventsEventReload) {
+      yield* _mapSuggestedEventsEventReloadToState();
+    } // else if
+
+    /// The event added to the bloc has not associated state
+    /// either create one, or check all the available SuggestedEvents
     else {
       yield SuggestedEventsStateFailed();
     } // else
   } // mapEventToState
 
-  Stream<SuggestedEventsState> _mapSuggestedEventsEventFetchToState() async* {
+  Stream<SuggestedEventsState> _mapSuggestedEventsEventReloadToState() async* {
+    /// Get the current state for later use...
     final _currentState = this.state;
+    bool _maxEvents = false;
+
+    if (_currentState is SuggestedEventsStateSuccess) {
+      yield SuggestedEventsStateSuccess(
+          eventModels: _currentState.eventModels,
+          maxEvents: _currentState.maxEvents,
+          lastEvent: _currentState.lastEvent,
+        isFetching: true,
+      );
+    } // if
+
+    /// TODO: Remove artificial delay!
+    await Future.delayed(Duration(milliseconds: 1000));
+
+    try {
+      /// No posts were fetched yet
+      final List<QueryDocumentSnapshot> _docs =
+          await _fetchEventsWithPagination(
+              lastEvent: null, limit: paginationLimit);
+      final List<EventModel> _eventModels =
+          _mapDocumentSnapshotsToEventModels(docs: _docs);
+
+      if (_eventModels.length != this.paginationLimit) {
+        _maxEvents = true;
+      } // if
+
+      yield SuggestedEventsStateSuccess(
+          eventModels: _eventModels,
+          maxEvents: _maxEvents,
+          lastEvent: _docs.last,
+        isFetching: false,
+      );
+    } // try
+    catch (e) {
+      yield SuggestedEventsStateFailed();
+    } // catch
+  } // _mapSuggestedEventsEventReloadToState
+
+  Stream<SuggestedEventsState> _mapSuggestedEventsEventFetchToState() async* {
+    /// Get the current state for later use...
+    final _currentState = this.state;
+    bool _maxEvents = false;
+
     try {
       /// No posts were fetched yet
       if (_currentState is SuggestedEventsStateFetching) {
@@ -49,13 +101,20 @@ class SuggestedEventsBloc
         final List<EventModel> _eventModels =
             _mapDocumentSnapshotsToEventModels(docs: _docs);
 
+        if (_eventModels.length != this.paginationLimit) {
+          _maxEvents = true;
+        } // if
+
         yield SuggestedEventsStateSuccess(
-            eventModels: _eventModels, maxEvents: false, lastEvent: _docs.last);
-        return;
+            eventModels: _eventModels,
+            maxEvents: _maxEvents,
+            lastEvent: _docs.last,
+          isFetching: false,
+        );
       } // if
 
       /// Some posts were fetched already, now fetch 20 more
-      if (_currentState is SuggestedEventsStateSuccess) {
+      else if (_currentState is SuggestedEventsStateSuccess) {
         final List<QueryDocumentSnapshot> _docs =
             await _fetchEventsWithPagination(
                 lastEvent: _currentState.lastEvent, limit: paginationLimit);
@@ -66,6 +125,7 @@ class SuggestedEventsBloc
             eventModels: _currentState.eventModels,
             maxEvents: true,
             lastEvent: _currentState.lastEvent,
+            isFetching: false,
           );
         } // if
 
@@ -73,10 +133,16 @@ class SuggestedEventsBloc
         else {
           final List<EventModel> _eventModels =
               _mapDocumentSnapshotsToEventModels(docs: _docs);
+
+          if (_eventModels.length != this.paginationLimit) {
+            _maxEvents = true;
+          } // if
+
           yield SuggestedEventsStateSuccess(
             eventModels: _currentState.eventModels + _eventModels,
-            maxEvents: false,
+            maxEvents: _maxEvents,
             lastEvent: _docs?.last ?? _currentState.lastEvent,
+            isFetching: false,
           );
         } // else
       } // if

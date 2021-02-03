@@ -8,3 +8,8 @@ class SuggestedEventsEventFetch extends SuggestedEventsEvent {
   @override
   List<Object> get props => [];
 }// SuggestedEventsFetch
+
+class SuggestedEventsEventReload extends SuggestedEventsEvent {
+  @override
+  List<Object> get props => [];
+}// SuggestedEventsFetch

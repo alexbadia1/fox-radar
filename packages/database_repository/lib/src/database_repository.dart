@@ -82,7 +82,7 @@ class DatabaseRepository {
       return _documentReferenceId;
     } // try
     catch (e) {
-      print(e);
+      // print(e);
       return null;
     } // catch
   } // insertNewEvent
@@ -109,7 +109,7 @@ class DatabaseRepository {
       return _documentReferenceId;
     } // try
     catch (e) {
-      print(e);
+      // print(e);
       return null;
     } // catch
   } // insertNewEventToSearchableCollection
