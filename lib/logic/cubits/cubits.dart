@@ -12,8 +12,8 @@ export 'fetch_image_cubit.dart';
 export 'fetch_image_state.dart';
 
 // Categories
-export 'category_title_cubit.dart';
-export 'category_title_state.dart';
+export 'category_page_cubit.dart';
+export 'category_page_state.dart';
 
 // Page View State Controllers
 export 'home_page_view_cubit.dart';

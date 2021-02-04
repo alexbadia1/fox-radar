@@ -19,3 +19,7 @@ export 'sign_up_state.dart';
 export 'suggested_events_bloc.dart';
 export 'suggested_events_event.dart';
 export 'suggested_events_state.dart';
+
+export 'category_events_bloc.dart';
+export 'category_events_event.dart';
+export 'category_events_state.dart';

@@ -30,11 +30,10 @@ class HomeScreen extends StatelessWidget {
               isDraggable: false,
               panel: AddEventContent(),
               body: BlocProvider(
-                create: (context) => CategoryTitleCubit(),
+                create: (context) => CategoryPageCubit(),
                 child: Builder(builder: (context) {
                   return PageView(
-                    controller: BlocProvider.of<HomePageViewCubit>(context)
-                        .homePageViewController,
+                    controller: BlocProvider.of<HomePageViewCubit>(context).homePageViewController,
                     physics: NeverScrollableScrollPhysics(),
                     children: [
                       BlocProvider(

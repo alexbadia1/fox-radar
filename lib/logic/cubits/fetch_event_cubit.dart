@@ -36,7 +36,7 @@ class FetchFullEventCubit extends Cubit<FetchFullEventState> {
   EventModel _mapQueryDocumentSnapshotToEventModel(
       {@required DocumentSnapshot documentSnapshot}) {
 
-    print('Firebase data: ${documentSnapshot.data()}');
+    // print('Firebase data: ${documentSnapshot.data()}');
 
     Timestamp _startTimestamp = documentSnapshot.data()['rawStartDateAndTime'];
     Timestamp _endTimestamp = documentSnapshot.data()['rawEndDateAndTime'];

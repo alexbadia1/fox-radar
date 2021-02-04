@@ -17,7 +17,7 @@ class CategoryNavigationButton extends StatelessWidget {
     precacheImage(maristArtImage.image, context);
     return GestureDetector(
       onTap: () {
-        BlocProvider.of<CategoryTitleCubit>(context).setCategory(category);
+        BlocProvider.of<CategoryPageCubit>(context).setCategory(category);
         BlocProvider.of<HomePageViewCubit>(context).animateToCategoryPage();
       },
       child: Stack(

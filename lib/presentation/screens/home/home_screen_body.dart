@@ -201,12 +201,26 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                                       _suggestedEventsState
                                           .eventModels.length) {
                                     return EventCard(
-                                        newEvent: _suggestedEventsState
+                                        newSearchResult: _suggestedEventsState
                                             .eventModels
                                             .elementAt(index));
                                   } // if
                                   else {
-                                    return BottomLoadingWidget();
+                                    return Builder(builder: (context) {
+                                      final SuggestedEventsState
+                                      _nestedSuggestedEventsState = context.watch<SuggestedEventsBloc>().state;
+                                      if (_nestedSuggestedEventsState is SuggestedEventsStateSuccess) {
+                                        if (!_nestedSuggestedEventsState.maxEvents) {
+                                          return BottomLoadingWidget();
+                                        } // if
+                                        else {
+                                          return Container(height: _realHeight * .1);
+                                        } // else
+                                      } // if
+                                      else {
+                                        return Container();
+                                      }// else
+                                    });
                                   } // else
                                 },
                                 addAutomaticKeepAlives: true,

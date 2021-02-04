@@ -1,30 +1,33 @@
-import 'package:communitytabs/components/category/singleCategoryList.dart';
-import 'package:communitytabs/logic/cubits/home_page_view_cubit.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:communitytabs/constants/marist_color_scheme.dart';
+import 'category_screen_body_list.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:communitytabs/logic/blocs/blocs.dart';
+import 'package:communitytabs/logic/cubits/cubits.dart';
+import 'package:database_repository/database_repository.dart';
+import 'package:communitytabs/constants/marist_color_scheme.dart';
 
-///CategoryContent Definition:
-///  An abstraction of the multiple category pages. Instead of having multiple different files
-///  to display the contents of each category [Arts, Diversity, Food, Sports, Clubs, Greek],
-///  this Widget receives arguments to dynamically display: different page AppBar titles, a
-///  different number of tabs, different names for each tab, a different number of PageViews
-///  that are each linked to a corresponding tab, and different content in each PageView.
-///
-///Used by:
-///  SlidingUpPanelBodyWrapper Widget
-///
-/// Uses:
-///  SuggestionsWrapper Widget
+/*
+category_screen_body.dart
+
+  An abstraction of the multiple category pages.
+
+  Instead of having multiple different files to display the contents of each category
+  [Arts, Diversity, Food, Sports, Clubs, Greek, etc]...
+
+  This Widget receives arguments to dynamically display:
+    Varying AppBar titles.
+    Varying Number of tabs and their names .
+    Varying number of PageViews linked to each corresponding tab.
+    And different content (provided by a unique instance of the same bloc) in each PageView.
+ */
 
 class CategoryBody extends StatefulWidget {
-  ///Specifies the title each time this page is called
+  /// Specifies the title each time this page is called
   final String title;
 
-  ///Specifies the name of each tab from Left to Right. This means the Left-Most Tab's name is
-  ///equal to the List's value at the smallest index (typically where, i = 0) and the Right-Most Tab's name is
-  ///equal to the List's value at the largest index (typically where, i = list.length - 1).
+  /// Specifies the name of each tab from Left to Right. This means the Left-Most Tab's name is
+  /// equal to the List's value at the smallest index (typically where, i = 0) and the Right-Most Tab's name is
+  /// equal to the List's value at the largest index (typically where, i = list.length - 1).
   final List<String> tabNamesFromLtoR;
 
   CategoryBody({@required this.title, @required this.tabNamesFromLtoR});
@@ -36,18 +39,25 @@ class CategoryBody extends StatefulWidget {
 class _CategoryBodyState extends State<CategoryBody> {
   @override
   Widget build(BuildContext context) {
-    ///Temporary lists to allow for the dynamic building of Tabs and PageViews
+    /// Temporary lists to allow for the dynamic building of Tabs and PageViews
     List<Widget> _tabs = [];
     List<Widget> _pageView = [];
 
-    ///Dynamically Generating Tabs
+    /// Dynamically Generating Tabs
+    print('Generating Tabs');
     for (int i = 0; i < this.widget.tabNamesFromLtoR.length; ++i) {
       _tabs.add(Tab(text: this.widget.tabNamesFromLtoR[i]));
     } //for
 
-    ///Dynamically Generating PageViews
+    /// Dynamically Generating PageViews
+    /// Each PageView has its own instance of a Category Bloc to fetch events
+    print('Generating Page Views');
     for (int i = 0; i < this.widget.tabNamesFromLtoR.length; ++i) {
-      _pageView.add(SingleCategoryView(eventType: this.widget.tabNamesFromLtoR[i]));
+      _pageView.add(
+          BlocProvider(
+            create: (context) => CategoryEventsBloc(db: RepositoryProvider.of<DatabaseRepository>(context), category: this.widget.tabNamesFromLtoR[i])..add(CategoryEventsEventFetch()),
+            child:SingleCategoryView(),
+      ));
     } //for
 
 

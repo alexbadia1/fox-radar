@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EventCard extends StatefulWidget {
-  final EventModel newEvent;
-  EventCard({this.newEvent});
+  final SearchResultModel newSearchResult;
+  EventCard({@required this.newSearchResult}) : assert(newSearchResult != null);
 
   @override
   _EventCardState createState() => _EventCardState();
@@ -20,15 +20,7 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
   @override
   Widget build(BuildContext context) {
     super.build(context);
-
-    EventModel _myEvent = this.widget.newEvent;
-    String _eventTitle = _myEvent.getTitle ?? '[Event Title]';
-    String _eventLocation = _myEvent.getLocation ?? '[Event Location]';
-    String _eventStartDate = _myEvent.getStartDate ?? '[Event Start Date]';
-    String _eventStartTime = _myEvent.getStartTime ?? '[Event Start Time]';
-    bool _eventImageFitCover = _myEvent.getImageFitCover ?? true;
-    String pathVariable = _myEvent.id ?? '';
-    String filePath = 'events/$pathVariable.jpg';
+    String filePath = 'events/${this.widget.newSearchResult.eventId}.jpg';
 
     /// TODO: REMOVE THIS LINE
     //filePath = 'events/Meet The CommutersColin McCannCommuter Lounge.jpg';
@@ -41,8 +33,7 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
         onTap: () {
           Navigator.of(context).pushNamed(
             '/event',
-            arguments: EventScreenArguments(
-                documentId: _myEvent.id, imageBytes: _imageBytes),
+            arguments: EventScreenArguments(documentId: this.widget.newSearchResult.eventId, imageBytes: _imageBytes),
           );
         },
         child: Container(
@@ -69,7 +60,7 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
                         return Image.memory(
                           _fetchImageState.imageBytes,
                           fit:
-                              _eventImageFitCover ? BoxFit.cover : BoxFit.contain,
+                          this.widget.newSearchResult.getImageFitCover ? BoxFit.cover : BoxFit.contain,
                         );
                       } // if
 
@@ -101,21 +92,21 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
                     ],
                   ),
                   title: Text(
-                    _eventTitle,
+                    this.widget.newSearchResult.getTitle,
                     textAlign: TextAlign.start,
                     style: TextStyle(color: cWhite100),
                   ),
                   subtitle: RichText(
                     text: TextSpan(children: [
                       TextSpan(
-                          text: _eventLocation + '\n',
+                          text: this.widget.newSearchResult.getLocation + '\n',
                           style: TextStyle(color: cWhite70, fontSize: 10.0)),
                       TextSpan(
-                          text: _eventStartDate,
+                          text: this.widget.newSearchResult.myStartDate,
                           style: TextStyle(color: cWhite70, fontSize: 10.0)),
                       TextSpan(text: ' - '),
                       TextSpan(
-                          text: _eventStartTime,
+                          text: this.widget.newSearchResult.myStartTime,
                           style: TextStyle(color: cWhite70, fontSize: 10.0))
                     ]),
                   ),
@@ -127,7 +118,7 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
         ),
       ),
     );
-  }
+  }// build
 
   @override
   bool get wantKeepAlive => true;
