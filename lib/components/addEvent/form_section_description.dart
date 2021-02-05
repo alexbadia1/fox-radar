@@ -1,7 +1,9 @@
 import 'package:communitytabs/data/club_event_data.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:communitytabs/logic/blocs/blocs.dart';
 
 class FormSectionDescription extends StatefulWidget {
   @override
@@ -15,12 +17,13 @@ class _FormSectionDescriptionState extends State<FormSectionDescription> {
   void initState() {
     super.initState();
     focusNodeDescription = new FocusNode();
-    final newEvent = Provider.of<ClubEventData>(context, listen: false);
+    // final CreateEventState _createEventState = BlocProvider.of<CreateEventBloc>(context).state;
+
     focusNodeDescription.addListener((){
       if (!focusNodeDescription.hasFocus) {
-        tempDescription.trim().isEmpty
-            ? newEvent.setSummary('')
-            : newEvent.setSummary(tempDescription);
+        // tempDescription.trim().isEmpty
+        //     ? newEvent.setSummary('')
+        //     : newEvent.setSummary(tempDescription);
         //newEvent.applyChanges();
       }
     });
@@ -30,9 +33,9 @@ class _FormSectionDescriptionState extends State<FormSectionDescription> {
   Widget build(BuildContext context) {
     double _formSectionDescriptionWidth = MediaQuery.of(context).size.width;
     double _formSectionDescriptionHeight = MediaQuery.of(context).size.height * .2;
-    ClubEventData newEvent = Provider.of<ClubEventData>(context);
-    TextEditingController _controllerDescription = new TextEditingController(text: newEvent.getSummary);
-    tempDescription = newEvent.getSummary;
+    // ClubEventData newEvent = Provider.of<ClubEventData>(context);
+    // TextEditingController _controllerDescription = new TextEditingController(text: newEvent.getSummary);
+    // tempDescription = newEvent.getSummary;
     return Container(
       width: _formSectionDescriptionWidth,
       height: _formSectionDescriptionHeight,
@@ -43,17 +46,17 @@ class _FormSectionDescriptionState extends State<FormSectionDescription> {
           cLeftMarginSmall(context),
           Expanded(
             child: TextFormField(
-              controller: _controllerDescription,
+              // controller: _controllerDescription,
               focusNode: focusNodeDescription,
               style: TextStyle(color: Colors.white),
               textInputAction: TextInputAction.done,
               maxLines: 5,
               decoration: cAddEventTextFormFieldDecoration.copyWith(hintText: 'Description'),
               onEditingComplete: () {
-                _controllerDescription.text.trim().isEmpty
-                    ? newEvent.setSummary('')
-                    : newEvent.setSummary(_controllerDescription.text);
-                newEvent.applyChanges();
+                // _controllerDescription.text.trim().isEmpty
+                //     ? newEvent.setSummary('')
+                //     : newEvent.setSummary(_controllerDescription.text);
+                // newEvent.applyChanges();
                 focusNodeDescription.unfocus();
               },
               onChanged: (value) {

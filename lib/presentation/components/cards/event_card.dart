@@ -72,9 +72,12 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
                       } // else if
 
                       else {
-                        return LoadingWidget(
-                          size: 75.0,
+                        return Container(
+                          color: Colors.black,
                         );
+                        // return LoadingWidget(
+                        //   size: 75.0,
+                        // );
                       } // else
                     },
                   ),

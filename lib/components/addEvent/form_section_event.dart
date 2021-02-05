@@ -24,13 +24,13 @@ class _FormSectionEventState extends State<FormSectionEvent> {
   @override
   void initState(){
     super.initState();
-    final newEvent = Provider.of<ClubEventData>(context, listen: false);
+    //final newEvent = Provider.of<ClubEventData>(context, listen: false);
     focusNodeTitle = new FocusNode();
     focusNodeTitle.addListener((){
       if(!focusNodeTitle.hasFocus){
-        tempTitle.trim().isEmpty
-            ? newEvent.setTitle('')
-            : newEvent.setTitle(tempTitle);
+       // tempTitle.trim().isEmpty
+           // ? newEvent.setTitle('')
+            //: newEvent.setTitle(tempTitle);
         //newEvent.applyChanges();
       }
     });
@@ -38,9 +38,9 @@ class _FormSectionEventState extends State<FormSectionEvent> {
     focusNodeHost = new FocusNode();
     focusNodeHost.addListener((){
       if(!focusNodeHost.hasFocus){
-        tempHost.trim().isEmpty
-            ? newEvent.setHost('')
-            : newEvent.setHost(tempHost);
+        //tempHost.trim().isEmpty
+            //? newEvent.setHost('')
+           // : newEvent.setHost(tempHost);
         //newEvent.applyChanges();
       }
     });
@@ -48,9 +48,9 @@ class _FormSectionEventState extends State<FormSectionEvent> {
     focusNodeLocation = new FocusNode();
     focusNodeLocation.addListener((){
       if(!focusNodeLocation.hasFocus){
-        tempLocation.trim().isEmpty
-            ? newEvent.setLocation('')
-            : newEvent.setLocation(tempLocation);
+        //tempLocation.trim().isEmpty
+           // ? newEvent.setLocation('')
+            //: newEvent.setLocation(tempLocation);
         //newEvent.applyChanges();
       }
     });
@@ -58,9 +58,9 @@ class _FormSectionEventState extends State<FormSectionEvent> {
     focusNodeRoom = new FocusNode();
     focusNodeRoom.addListener((){
       if(!focusNodeRoom.hasFocus){
-        tempRoom.trim().isEmpty
-            ? newEvent.setRoom('')
-            : newEvent.setRoom(tempRoom);
+       // tempRoom.trim().isEmpty
+           // ? newEvent.setRoom('')
+            //: newEvent.setRoom(tempRoom);
         //newEvent.applyChanges();
       }
     });
@@ -71,16 +71,16 @@ class _FormSectionEventState extends State<FormSectionEvent> {
     double _formSectionOneWidth = MediaQuery.of(context).size.width;
     double _textFormFieldWidth = MediaQuery.of(context).size.width;
     double _textFormFieldHeight = MediaQuery.of(context).size.height * .07;
-    ClubEventData newEvent = Provider.of<ClubEventData>(context);
-    TextEditingController _controllerTitle = new TextEditingController(text:newEvent.getTitle);
-    TextEditingController _controllerHost = new TextEditingController(text:newEvent.getHost);
-    TextEditingController _controllerLocation = new TextEditingController(text:newEvent.getLocation);
-    TextEditingController _controllerRoom = new TextEditingController(text:newEvent.getRoom);
+    //ClubEventData newEvent = Provider.of<ClubEventData>(context);
+    // TextEditingController _controllerTitle = new TextEditingController(text:newEvent.getTitle);
+    // TextEditingController _controllerHost = new TextEditingController(text:newEvent.getHost);
+    // TextEditingController _controllerLocation = new TextEditingController(text:newEvent.getLocation);
+    // TextEditingController _controllerRoom = new TextEditingController(text:newEvent.getRoom);
 
-     tempTitle = newEvent.getTitle;
-     tempHost = newEvent.getHost;
-     tempLocation = newEvent.getLocation;
-     tempRoom = newEvent.getRoom;
+     //tempTitle = newEvent.getTitle;
+     //tempHost = newEvent.getHost;
+     //tempLocation = newEvent.getLocation;
+     //tempRoom = newEvent.getRoom;
 
     return Container(
       width: _formSectionOneWidth,
@@ -98,17 +98,17 @@ class _FormSectionEventState extends State<FormSectionEvent> {
                 cLeftMarginSmall(context),
                 Expanded(
                   child: TextFormField(
-                    controller: _controllerTitle,
+                    // controller: _controllerTitle,
                     focusNode: focusNodeTitle,
                     style: TextStyle(color: cWhite100),
                     textInputAction: TextInputAction.done,
                     decoration: cAddEventTextFormFieldDecoration.copyWith(
                         hintText: 'Title (Required)'),
                     onEditingComplete: () {
-                      _controllerTitle.text.trim().isEmpty
-                          ? newEvent.setTitle('')
-                          : newEvent.setTitle(_controllerTitle.text);
-                      newEvent.applyChanges();
+                      //_controllerTitle.text.trim().isEmpty
+                      //     ? newEvent.setTitle('')
+                      //     : newEvent.setTitle(_controllerTitle.text);
+                      // newEvent.applyChanges();
                       focusNodeTitle.unfocus();
                     },
                     onChanged: (value) {
@@ -131,18 +131,18 @@ class _FormSectionEventState extends State<FormSectionEvent> {
                 cLeftMarginSmall(context),
                 Expanded(
                   child: TextFormField(
-                    controller: _controllerHost,
+                    // controller: _controllerHost,
                     focusNode: focusNodeHost,
                     style: TextStyle(color: cWhite100),
                     textInputAction: TextInputAction.done,
                     decoration: cAddEventTextFormFieldDecoration.copyWith(
                         hintText: 'Host (Required)'),
                     onEditingComplete: () {
-                      _controllerHost.text.trim().isEmpty
-                          ? newEvent.setHost('')
-                          : newEvent.setHost(_controllerHost.text);
-                      newEvent.applyChanges();
-                      focusNodeHost.unfocus();
+                      // _controllerHost.text.trim().isEmpty
+                      //     ? newEvent.setHost('')
+                      //     : newEvent.setHost(_controllerHost.text);
+                      // newEvent.applyChanges();
+                      // focusNodeHost.unfocus();
                     },
                     onChanged: (value) {
                       tempHost = value;
@@ -165,18 +165,18 @@ class _FormSectionEventState extends State<FormSectionEvent> {
                 Expanded(
                   flex: 7,
                   child: TextFormField(
-                    controller: _controllerLocation,
+                    // controller: _controllerLocation,
                     focusNode: focusNodeLocation,
                     style: TextStyle(color: cWhite100),
                     textInputAction: TextInputAction.done,
                     decoration: cAddEventTextFormFieldDecoration.copyWith(
                         hintText: 'Location (Required)'),
                     onEditingComplete: () {
-                      _controllerLocation.text.trim().isEmpty
-                          ? newEvent.setLocation('')
-                          : newEvent.setLocation(_controllerLocation.text);
-                      newEvent.applyChanges();
-                      focusNodeLocation.unfocus();
+                      // _controllerLocation.text.trim().isEmpty
+                      //     ? newEvent.setLocation('')
+                      //     : newEvent.setLocation(_controllerLocation.text);
+                      // newEvent.applyChanges();
+                      // focusNodeLocation.unfocus();
                     },
                     onChanged: (value) {
                       tempLocation = value;
@@ -187,17 +187,17 @@ class _FormSectionEventState extends State<FormSectionEvent> {
                 Expanded(
                   flex: 3,
                   child: TextFormField(
-                    controller: _controllerRoom,
+                    // controller: _controllerRoom,
                     focusNode: focusNodeRoom,
                     style: TextStyle(color: cWhite100),
                     textInputAction: TextInputAction.done,
                     decoration: cAddEventTextFormFieldDecoration.copyWith(
                         hintText: 'Room'),
                     onEditingComplete: () {
-                      _controllerRoom.text.trim().isEmpty
-                          ? newEvent.setRoom('')
-                          : newEvent.setRoom(_controllerRoom.text);
-                      newEvent.applyChanges();
+                      // _controllerRoom.text.trim().isEmpty
+                      //     ? newEvent.setRoom('')
+                      //     : newEvent.setRoom(_controllerRoom.text);
+                      // newEvent.applyChanges();
                       focusNodeRoom.unfocus();
                     },
                     onChanged: (value) {

@@ -18,3 +18,6 @@ export 'category_page_state.dart';
 // Page View State Controllers
 export 'home_page_view_cubit.dart';
 export 'home_page_view_state.dart';
+
+export 'sliding_up_panel_cubit.dart';
+export 'sliding_up_panel_state.dart';

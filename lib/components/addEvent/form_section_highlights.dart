@@ -10,16 +10,16 @@ class FormSectionHighlights extends StatelessWidget {
   Widget build(BuildContext context) {
     double _formSectionHighlightsWidth = MediaQuery.of(context).size.width;
     double _textFormFieldHeight = MediaQuery.of(context).size.height * .07;
-    ClubEventData newEvent = Provider.of<ClubEventData>(context);
+    // ClubEventData newEvent = Provider.of<ClubEventData>(context);
     AddHighlightButtonController highlightButton = Provider.of<AddHighlightButtonController>(context);
-    List<String> tempList = newEvent.getHighlights;
+    // List<String> tempList = newEvent.getHighlights;
     bool hasAnEmptyHighlight = false;
     int i = 0;
-    while (i < tempList.length && !hasAnEmptyHighlight) {
-      if(tempList[i].trim().isEmpty) {
-        hasAnEmptyHighlight = true;
-      } else i++;
-    }
+    // while (i < tempList.length && !hasAnEmptyHighlight) {
+    //   if(tempList[i].trim().isEmpty) {
+    //     hasAnEmptyHighlight = true;
+    //   } else i++;
+    // }
     highlightButton.setAddHighlightButtonEnabled(!hasAnEmptyHighlight);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -42,25 +42,25 @@ class FormSectionHighlights extends StatelessWidget {
                   ),
                 ],
               ),
-              newEvent.getHighlights.length < 6
-                  ? Consumer<AddHighlightButtonController>(
-                      builder: (context, highlightButton, child) {
-                        return IconButton(
-                          icon: Icon(
-                            Icons.add,
-                            color: highlightButton.getAddHighlightButtonEnabled() ? Colors.blueAccent : Colors.grey,
-                          ),
-                          onPressed: highlightButton.getAddHighlightButtonEnabled() ? () {
-                            if (tempList.length < 6) {
-                              tempList.add('');
-                              newEvent.setHighlights(tempList);
-                              newEvent.applyChanges();
-                            }
-                          } : () => null,
-                        );
-                      },
-                    )
-                  : Container(),
+              // newEvent.getHighlights.length < 6
+              //     ? Consumer<AddHighlightButtonController>(
+              //         builder: (context, highlightButton, child) {
+              //           return IconButton(
+              //             icon: Icon(
+              //               Icons.add,
+              //               color: highlightButton.getAddHighlightButtonEnabled() ? Colors.blueAccent : Colors.grey,
+              //             ),
+              //             onPressed: highlightButton.getAddHighlightButtonEnabled() ? () {
+              //               if (tempList.length < 6) {
+              //                 tempList.add('');
+              //                 newEvent.setHighlights(tempList);
+              //                 newEvent.applyChanges();
+              //               }
+              //             } : () => null,
+              //           );
+              //         },
+              //       )
+              //     : Container(),
             ],
           ),
         ),

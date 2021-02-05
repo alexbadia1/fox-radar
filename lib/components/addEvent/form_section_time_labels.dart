@@ -3,12 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:communitytabs/data/expansionTileMetadata.dart';
+import 'package:communitytabs/logic/cubits/cubits.dart';
 
 class AddStartOrEndTimeLabel extends StatelessWidget {
   final int index;
   AddStartOrEndTimeLabel({this.index});
+
   @override
   Widget build(BuildContext context) {
+    //final SlidingUpPanelState _slidingUpPanelState = context.watch<SlidingUpPanelCubit>().state;
+
     return Consumer<ExpansionTiles>(
         builder: (context, expansionPanelState, child) {
       return Text(

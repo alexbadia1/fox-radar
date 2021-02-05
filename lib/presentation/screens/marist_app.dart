@@ -1,7 +1,8 @@
+import 'package:communitytabs/logic/cubits/cubits.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
-import 'package:communitytabs/data/slidingUpPanelMetadata.dart';
 import 'package:communitytabs/data/addHighlightButtonController.dart';
 import 'package:communitytabs/data/expansionTileMetadata.dart';
 import 'package:communitytabs/data/pageViewMetadata.dart';
@@ -20,12 +21,11 @@ class MaristApp extends StatelessWidget {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return MultiProvider(
       providers: [
+        BlocProvider<SlidingUpPanelCubit>(create: (context) => SlidingUpPanelCubit()),
         //FutureProvider<Directory>.value(value: _newCacheDir()),
         //Provider<FirebaseStorage>.value(value: FirebaseStorage(storageBucket: 'gs://maristcommunitytabs.appspot.com')),
         // StreamProvider<User>.value(value: AuthService().user),
         // ChangeNotifierProvider<DatabaseService>(create: (context) => DatabaseService()),
-        ChangeNotifierProvider<SlidingUpPanelMetaData>(
-            create: (context) => SlidingUpPanelMetaData()),
         ChangeNotifierProvider<PageViewMetaData>(
           create: (context) => PageViewMetaData(),
         ),
