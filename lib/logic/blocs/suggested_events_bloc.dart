@@ -6,12 +6,13 @@ import 'suggested_events_state.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:database_repository/database_repository.dart';
+import 'package:communitytabs/logic/constants/constants.dart';
 import 'package:communitytabs/logic/blocs/suggested_events_event.dart';
 
 class SuggestedEventsBloc
     extends Bloc<SuggestedEventsEvent, SuggestedEventsState> {
   final DatabaseRepository db;
-  final int paginationLimit = 2;
+  final int paginationLimit = PAGINATION_LIMIT;
 
   SuggestedEventsBloc({@required this.db})
       : super(SuggestedEventsStateFetching());

@@ -1,7 +1,7 @@
-import 'package:communitytabs/logic/cubits/cubits.dart';
+import 'category_screen_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'category_screen_body.dart';
+import 'package:communitytabs/logic/cubits/cubits.dart';
 
 class CategoryScreen extends StatelessWidget {
   @override

@@ -6,12 +6,13 @@ import 'category_events_state.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:communitytabs/logic/blocs/blocs.dart';
+import 'package:communitytabs/logic/constants/constants.dart';
 import 'package:database_repository/database_repository.dart';
 
 class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> {
   final DatabaseRepository db;
   final String category;
-  final int paginationLimit = 2;
+  final int paginationLimit = PAGINATION_LIMIT;
 
   CategoryEventsBloc({@required this.db, @required this.category}) : assert(db != null), assert(category != null), super(CategoryEventsStateFetching());
 
