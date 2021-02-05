@@ -13,9 +13,9 @@ import 'home_bottom_navigation.dart';
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     // TODO: Refactor into a cubit or bloc
-    SlidingUpPanelMetaData _slidingUpPanelMetaData = Provider.of<SlidingUpPanelMetaData>(context);
+    SlidingUpPanelMetaData _slidingUpPanelMetaData =
+        Provider.of<SlidingUpPanelMetaData>(context);
 
     return SafeArea(
       child: Material(
@@ -33,7 +33,8 @@ class HomeScreen extends StatelessWidget {
                 create: (context) => CategoryPageCubit(),
                 child: Builder(builder: (context) {
                   return PageView(
-                    controller: BlocProvider.of<HomePageViewCubit>(context).homePageViewController,
+                    controller: BlocProvider.of<HomePageViewCubit>(context)
+                        .homePageViewController,
                     physics: NeverScrollableScrollPhysics(),
                     children: [
                       BlocProvider(
@@ -41,8 +42,7 @@ class HomeScreen extends StatelessWidget {
                             db: RepositoryProvider.of<DatabaseRepository>(
                                 context))
                           ..add(SuggestedEventsEventFetch()),
-                        child:
-                            HomeScreenBody(),
+                        child: HomeScreenBody(),
                       ),
                       CategoryScreen(),
                     ],

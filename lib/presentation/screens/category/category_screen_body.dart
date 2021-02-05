@@ -21,7 +21,7 @@ category_screen_body.dart
     And different content (provided by a unique instance of the same bloc) in each PageView.
  */
 
-class CategoryBody extends StatefulWidget {
+class CategoryBody extends StatelessWidget {
   /// Specifies the title each time this page is called
   final String title;
 
@@ -33,11 +33,6 @@ class CategoryBody extends StatefulWidget {
   CategoryBody({@required this.title, @required this.tabNamesFromLtoR});
 
   @override
-  _CategoryBodyState createState() => _CategoryBodyState();
-}
-
-class _CategoryBodyState extends State<CategoryBody> {
-  @override
   Widget build(BuildContext context) {
     /// Temporary lists to allow for the dynamic building of Tabs and PageViews
     List<Widget> _tabs = [];
@@ -45,17 +40,22 @@ class _CategoryBodyState extends State<CategoryBody> {
 
     /// Dynamically Generating Tabs
     print('Generating Tabs');
-    for (int i = 0; i < this.widget.tabNamesFromLtoR.length; ++i) {
-      _tabs.add(Tab(text: this.widget.tabNamesFromLtoR[i]));
+    for (int i = 0; i < this.tabNamesFromLtoR.length; ++i) {
+      _tabs.add(Tab(text: this.tabNamesFromLtoR[i]));
     } //for
 
     /// Dynamically Generating PageViews
-    /// Each PageView has its own instance of a Category Bloc to fetch events
+    /// Each PageView has its own instance of a Category Bloc Provider
+    /// that has a uniquely generated key to to ensure each Bloc Provider instance is unique.
     print('Generating Page Views');
-    for (int i = 0; i < this.widget.tabNamesFromLtoR.length; ++i) {
+    for (int i = 0; i < this.tabNamesFromLtoR.length; ++i) {
       _pageView.add(
           BlocProvider(
-            create: (context) => CategoryEventsBloc(db: RepositoryProvider.of<DatabaseRepository>(context), category: this.widget.tabNamesFromLtoR[i])..add(CategoryEventsEventFetch()),
+            key: UniqueKey(),
+            create: (context) => CategoryEventsBloc(
+                db: RepositoryProvider.of<DatabaseRepository>(context),
+                category: this.tabNamesFromLtoR[i])..add(CategoryEventsEventFetch(),
+            ),
             child:SingleCategoryView(),
       ));
     } //for
@@ -64,7 +64,7 @@ class _CategoryBodyState extends State<CategoryBody> {
     ///TODO: Account for only 1 sub-Category. Maybe just use a different special widget
     return SafeArea(
       child: DefaultTabController(
-        length: this.widget.tabNamesFromLtoR.length,
+        length: this.tabNamesFromLtoR.length,
         child: Scaffold(
           appBar: PreferredSize(
             preferredSize:
@@ -111,7 +111,7 @@ class _CategoryBodyState extends State<CategoryBody> {
                     BlocProvider.of<HomePageViewCubit>(context).animateToHomePage(),
               ),
               centerTitle: false,
-              title: Text(this.widget.title,
+              title: Text(this.title,
                   style: TextStyle(
                       color: kHavenLightGray, fontWeight: FontWeight.bold)),
               actions: <Widget>[

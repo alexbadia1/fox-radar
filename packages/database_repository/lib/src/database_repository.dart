@@ -44,7 +44,12 @@ class DatabaseRepository {
   } // getEventsFromEventsCollection
 
   Future<Uint8List> getImageFromStorage({@required String path}) async {
-    return await FirebaseStorage.instance.ref().child(path).getData(4194304);
+    try {
+      return await FirebaseStorage.instance.ref().child(path).getData(4194304);
+    }// try
+    catch (e) {
+      return null;
+    }// catch
   } // getImageFromStorage
 
   // Creates an empty document in the firestore cloud storage

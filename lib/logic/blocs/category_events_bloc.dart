@@ -177,7 +177,7 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
 
   @override
   void onChange(Change<CategoryEventsState> change) {
-    print('Category Events Bloc: $change');
+    print('${this.category} Category Events Bloc: $change');
     super.onChange(change);
   } // onChange
 

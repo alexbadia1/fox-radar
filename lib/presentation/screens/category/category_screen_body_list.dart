@@ -13,6 +13,7 @@ category_screen_body_list.dart
   Each List View is able to be refreshed and lazily retrieve events of a specified category.
  */
 class SingleCategoryView extends StatefulWidget {
+  const SingleCategoryView({Key key}) : super(key: key);
   @override
   _SingleCategoryViewState createState() => _SingleCategoryViewState();
 } // SingleCategoryView
@@ -50,7 +51,6 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    ;
     final screenPaddingBottom = MediaQuery.of(context).padding.bottom;
     final screenInsetsBottom = MediaQuery.of(context).viewInsets.bottom;
     final screenPaddingTop = MediaQuery.of(context).padding.top;

@@ -12,7 +12,13 @@ class FetchImageCubit extends Cubit<FetchImageState> {
     Uint8List _bytes;
     try {
       _bytes = await db.getImageFromStorage(path: path);
-      emit(FetchImageSuccess(imageBytes: _bytes));
+
+      if (_bytes != null) {
+        emit(FetchImageSuccess(imageBytes: _bytes));
+      }// if
+      else {
+        emit(FetchImageFailure());
+      }// else
     }// try
     catch (error) {
       emit(FetchImageFailure());
