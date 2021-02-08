@@ -66,6 +66,8 @@ class EventModel extends ChangeNotifier {
     _myHighlights = [];
     _imageFitCover = false;
     _imagePath = '';
+    _rawStartDateAndTime = null;
+    _rawEndDateAndTime = null;
   } ////null constructor
 
   bool get getImageFitCover => _imageFitCover;

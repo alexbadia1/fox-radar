@@ -1,5 +1,4 @@
 import 'package:communitytabs/data/categoryPanels.dart';
-import 'package:communitytabs/data/club_event_data.dart';
 import 'package:communitytabs/data/expansionTileMetadata.dart';
 import 'package:communitytabs/data/slidingUpPanelMetadata.dart';
 import 'package:flutter/cupertino.dart';

@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:communitytabs/data/club_event_data.dart';
 import 'package:communitytabs/data/expansionTileMetadata.dart';
 import 'package:communitytabs/data/selectedImageModel.dart';
 import 'package:flutter/cupertino.dart';

@@ -1,4 +1,4 @@
-import 'blocs.dart';
+import 'authentication_blocs.dart';
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';

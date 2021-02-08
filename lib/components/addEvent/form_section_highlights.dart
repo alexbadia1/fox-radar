@@ -1,7 +1,6 @@
 import 'package:communitytabs/components/addEvent/slidable_highlight_text_form_field.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:communitytabs/data/addHighlightButtonController.dart';
-import 'package:communitytabs/data/club_event_data.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

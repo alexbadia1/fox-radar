@@ -29,6 +29,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0-nullsafety.3"
+  calender_strip_fixed:
+    dependency: "direct main"
+    description:
+      path: "packages/calender_strip_fixed"
+      relative: true
+    source: path
+    version: "1.0.7"
   characters:
     dependency: transitive
     description:
@@ -195,6 +202,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "6.1.1"
+  flutter_slidable:
+    dependency: "direct main"
+    description:
+      name: flutter_slidable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.7"
   flutter_test:
     dependency: "direct dev"
     description: flutter

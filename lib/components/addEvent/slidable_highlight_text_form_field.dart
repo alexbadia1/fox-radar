@@ -1,5 +1,4 @@
 import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:communitytabs/data/club_event_data.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

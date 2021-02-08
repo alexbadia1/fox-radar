@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
+import 'package:database_repository/database_repository.dart';
 
 @immutable
-abstract class CreateEventState extends Equatable{}
+abstract class CreateEventState extends Equatable{
+  final EventModel eventModel;
+  CreateEventState(this.eventModel);
 
-class CreateEventInitial extends CreateEventState {
   @override
-  List<Object> get props => [];
-}// CreateEventInitial
+  List<Object> get props => [eventModel];
+}// CreateEventState
 
-class CreateEventSubmitted extends CreateEventState {
-  @override
-  List<Object> get props => [];
-}// CreateEventInitial
+class CreateEventValid extends CreateEventState {
+  CreateEventValid(EventModel eventModel) : super(eventModel);
 
-class CreateEventSuccess extends CreateEventState {
   @override
-  List<Object> get props => [];
-}// CreateEventInitial
+  List<Object> get props => [super.eventModel];
+}// CreateEventValid
 
-class CreateEventFailure extends CreateEventState {
+class CreateEventInvalid extends CreateEventState {
+  CreateEventInvalid(EventModel eventModel) : super(eventModel);
+
   @override
-  List<Object> get props => [];
-}// CreateEventInitial
+  List<Object> get props => [super.eventModel];
+}// CreateEventInvalid

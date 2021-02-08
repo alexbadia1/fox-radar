@@ -16,7 +16,8 @@ class HomeScreen extends StatelessWidget {
           child: BlocProvider(
             create: (context) => HomePageViewCubit(),
             child: SlidingUpPanel(
-              controller: BlocProvider.of<SlidingUpPanelCubit>(context).slidingUpPanelControl,
+              controller: BlocProvider.of<SlidingUpPanelCubit>(context)
+                  .slidingUpPanelControl,
               minHeight: MediaQuery.of(context).size.height * .0625,
               maxHeight: MediaQuery.of(context).size.height,
               collapsed: HomeBottomNavigationBar(),
@@ -24,23 +25,25 @@ class HomeScreen extends StatelessWidget {
               panel: CreateEventScreen(),
               body: BlocProvider(
                 create: (context) => CategoryPageCubit(),
-                child: Builder(builder: (context) {
-                  return PageView(
-                    controller: BlocProvider.of<HomePageViewCubit>(context)
-                        .homePageViewController,
-                    physics: NeverScrollableScrollPhysics(),
-                    children: [
-                      BlocProvider(
-                        create: (context) => SuggestedEventsBloc(
-                            db: RepositoryProvider.of<DatabaseRepository>(
-                                context))
-                          ..add(SuggestedEventsEventFetch()),
-                        child: HomeScreenBody(),
-                      ),
-                      CategoryScreen(),
-                    ],
-                  );
-                }),
+                child: Builder(
+                  builder: (context) {
+                    return PageView(
+                      controller: BlocProvider.of<HomePageViewCubit>(context)
+                          .homePageViewController,
+                      physics: NeverScrollableScrollPhysics(),
+                      children: [
+                        BlocProvider(
+                          create: (context) => SuggestedEventsBloc(
+                              db: RepositoryProvider.of<DatabaseRepository>(
+                                  context))
+                            ..add(SuggestedEventsEventFetch()),
+                          child: HomeScreenBody(),
+                        ),
+                        CategoryScreen(),
+                      ],
+                    );
+                  },
+                ),
               ),
             ),
           ),

@@ -27,6 +27,8 @@ dependencies:
     path: packages/database_repository
   loading_fixed:
     path: packages/loading_fixed
+  calender_strip_fixed:
+    path: packages/calender_strip_fixed
 
   # Bloc Architecture
   flutter_bloc: ^6.1.1
@@ -38,6 +40,9 @@ dependencies:
   # Encryption
   crypto: ^2.1.5
 
+  # UI utilities
+  flutter_slidable: ^0.5.7
+
   intl: ^0.16.1
   sliding_up_panel: ^1.0.2
   step_progress_indicator: ^0.2.3+6
@@ -45,9 +50,6 @@ dependencies:
 
   # Slowly replacing this with Bloc
   provider: ^4.0.5+1
-
-#  calendar_strip: ^1.0.7
-#  flutter_slidable: ^0.5.4
 
   # Camera access
 #  image_picker: ^0.6.7+1

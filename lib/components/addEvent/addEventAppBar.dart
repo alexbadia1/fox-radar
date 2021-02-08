@@ -38,7 +38,7 @@ class _AddEventAppBarState extends State<AddEventAppBar> {
                     style: TextStyle(color: kHavenLightGray, fontSize: 18.0, fontWeight: FontWeight.bold),
                   ),
                 ),
-                UploadImage(),
+                // UploadImage(),
               ],
             )
           ],

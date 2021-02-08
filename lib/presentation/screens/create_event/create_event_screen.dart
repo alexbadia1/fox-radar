@@ -1,4 +1,4 @@
-import 'package:communitytabs/components/addEvent/formPart1.dart';
+import 'form/form.dart';
 import 'package:communitytabs/components/imagePicker/addImage.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:communitytabs/logic/cubits/cubits.dart';
@@ -6,8 +6,8 @@ import 'package:communitytabs/logic/blocs/blocs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:communitytabs/data/pageViewMetadata.dart';
 import 'package:communitytabs/components/addEvent/addEventAppBar.dart';
+import 'package:database_repository/database_repository.dart';
 
 class CreateEventScreen extends StatelessWidget {
   @override
@@ -30,33 +30,42 @@ class CreateEventScreen extends StatelessWidget {
     else if (_slidingUpPanelState is SlidingUpPanelOpen) {
       return SafeArea(
         child: Scaffold(
+          backgroundColor: Color.fromRGBO(24, 24, 24, 1.0),
           body: BlocProvider<CreateEventBloc>(
-            create: (context) => CreateEventBloc(),
+            create: (context) => CreateEventBloc(
+                db: RepositoryProvider.of<DatabaseRepository>(context))
+              ..add(CreateEventSetRawStartDateTime(
+                  newRawStartDateTime: DateTime.now())),
             child: Container(
-              color: cBackground,
+              color: Colors.transparent,
               height: MediaQuery.of(context).size.height,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   AddEventAppBar(),
                   Expanded(
-                    child: Consumer<PageViewMetaData>(
-                      builder: (context, pageViewState, child) {
-                        return PageView(
-                          controller: pageViewState.pageViewController,
-                          physics: NeverScrollableScrollPhysics(),
-                          children: <Widget>[
-                            FormPart1(),
-                            AddImage(),
-                            Container(
-                              color: Colors.blueAccent,
-                              child: Center(
-                                child: Text('3'),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
+                    child: MultiBlocProvider(
+                      providers: [
+                        BlocProvider<CreateEventPageViewCubit>(
+                            create: (context) => CreateEventPageViewCubit()),
+                        BlocProvider<ExpansionPanelCubit>(
+                            create: (context) => ExpansionPanelCubit()),
+                      ],
+                      child: Builder(
+                        builder: (context) {
+                          return PageView(
+                            controller:
+                                BlocProvider.of<CreateEventPageViewCubit>(
+                                        context)
+                                    .createEventPageViewController,
+                            physics: NeverScrollableScrollPhysics(),
+                            children: <Widget>[
+                              CreateEventForm(),
+                              AddImage(),
+                            ],
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ],

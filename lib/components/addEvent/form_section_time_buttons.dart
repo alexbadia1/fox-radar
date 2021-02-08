@@ -114,7 +114,7 @@ class DateAndTimeButtons extends StatelessWidget {
       if (index == 1)
         expansionTileState.data[index].setHeaderActionValue('End');
 
-      ///Set showTrashCanIcon to true
+      /// Set showTrashCanIcon to true
       /// expansionTileState.data[index].setShowTrashIcon(true);
 
       /// HeaderTimeValue is used to set the expansion panel's time label.

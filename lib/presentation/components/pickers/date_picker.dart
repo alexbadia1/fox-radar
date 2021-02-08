@@ -1,19 +1,25 @@
-//import 'package:calendar_strip/calendar_strip.dart';
-import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:communitytabs/data/expansionTileMetadata.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:calender_strip_fixed/calendar_strip.dart';
+import 'package:communitytabs/constants/marist_color_scheme.dart';
 
-class CustomCalenderStrip extends StatefulWidget {
-  final int index;
-  CustomCalenderStrip({this.index, Key key}) : super(key: key);
+typedef OnDateSelectedCallback = void Function(DateTime dateTime);
+typedef UpdateBlocCallback = void Function(DateTime dateTime);
 
+class DatePicker extends StatefulWidget {
+  final DateTime initialSelectedDate;
+  final UpdateBlocCallback updateBlocCallback;
+  final OnDateSelectedCallback onDateSelectedCallback;
+
+  const DatePicker({Key key, @required this.initialSelectedDate, @required this.onDateSelectedCallback, this.updateBlocCallback}) : super(key: key);
   @override
-  _CustomCalenderStripState createState() => _CustomCalenderStripState();
-}
+  _DatePickerState createState() => _DatePickerState();
+}// DatePicker
 
-class _CustomCalenderStripState extends State<CustomCalenderStrip> {
-  DateTime startDate = DateTime.now().subtract(Duration(days: 365));
+class _DatePickerState extends State<DatePicker> {
+  /// Start date should be set when the user opens the panel. However, you
+  /// are able to change the start date using add or subtract functions:
+  ///   DateTime.now().subtract(Duration(days: 365));
+  DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now().add(Duration(days: 365));
   DateTime selectedDate = DateTime.now();
   List<DateTime> markedDates = [];
@@ -84,43 +90,31 @@ class _CustomCalenderStripState extends State<CustomCalenderStrip> {
 
   @override
   Widget build(BuildContext context) {
-    ExpansionTiles _expansionTileState = Provider.of<ExpansionTiles>(context);
 
-    if (this.widget.index == 0) {
-      if (_expansionTileState.getTempStartDate() == null)
-        _expansionTileState.setTempStartDate(
-            _expansionTileState.data[this.widget.index].getHeaderDateValue() ??
-                DateTime.now());
-    } else {
-      if (_expansionTileState.getTempEndDate() == null)
-        _expansionTileState.setTempEndDate(
-            _expansionTileState.data[this.widget.index].getHeaderDateValue() ??
-                DateTime.now());
-    }
+    /// Remember to update the start date, every time the date picker is constructed,
+    /// Since a user can technically open this widget at 11:59pm and then open it again at 12:00am
+    /// and the day must update then.
+    if (this.widget.initialSelectedDate != null) {
+      this.widget.updateBlocCallback(this.widget.initialSelectedDate);
+    }// if
 
     return Column(
       children: <Widget>[
-        // CalendarStrip(
-        //   containerHeight: MediaQuery.of(context).size.height * .175,
-        //   /// Depending on the Start Time make sure the start date is equal to t
-        //   startDate: startDate,
-        //   endDate: endDate,
-        //   selectedDate: this.widget.index == 0
-        //       ? _expansionTileState.getTempStartDate()
-        //       : _expansionTileState.getTempEndDate(),
-        //   onDateSelected: (data) {
-        //     ///Set the temp Date to the selected date
-        //     this.widget.index == 0
-        //         ? _expansionTileState.setTempStartDate(data)
-        //         : _expansionTileState.setTempEndDate(data);
-        //   },
-        //   dateTileBuilder: dateTileBuilder,
-        //   iconColor: cWhite70,
-        //   monthNameWidget: _monthNameWidget,
-        //   markedDates: markedDates,
-        //   containerDecoration: BoxDecoration(color: cBackground),
-        //   addSwipeGesture: true,
-        // ),
+        CalendarStrip(
+          containerHeight: MediaQuery.of(context).size.height * .175,
+          startDate: startDate,
+          endDate: endDate,
+          selectedDate: this.widget.initialSelectedDate,
+          onDateSelected: (dateTime) {
+            this.widget.onDateSelectedCallback(dateTime);
+          },
+          dateTileBuilder: dateTileBuilder,
+          iconColor: cWhite70,
+          monthNameWidget: _monthNameWidget,
+          markedDates: markedDates,
+          containerDecoration: BoxDecoration(color: Color.fromRGBO(24, 24, 24, 1.0)),
+          addSwipeGesture: true,
+        ),
       ],
     );
   }
