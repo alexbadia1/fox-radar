@@ -48,8 +48,8 @@ class CreateEventScreen extends StatelessWidget {
                       providers: [
                         BlocProvider<CreateEventPageViewCubit>(
                             create: (context) => CreateEventPageViewCubit()),
-                        BlocProvider<ExpansionPanelCubit>(
-                            create: (context) => ExpansionPanelCubit()),
+                        // BlocProvider<ExpansionPanelCubit>(
+                        //     create: (context) => ExpansionPanelCubit()),
                       ],
                       child: Builder(
                         builder: (context) {

@@ -94,9 +94,9 @@ class _DatePickerState extends State<DatePicker> {
     /// Remember to update the start date, every time the date picker is constructed,
     /// Since a user can technically open this widget at 11:59pm and then open it again at 12:00am
     /// and the day must update then.
-    if (this.widget.initialSelectedDate != null) {
-      this.widget.updateBlocCallback(this.widget.initialSelectedDate);
-    }// if
+    // if (this.widget.initialSelectedDate != null) {
+    //   this.widget?.updateBlocCallback(this.widget.initialSelectedDate);
+    // }// if
 
     return Column(
       children: <Widget>[

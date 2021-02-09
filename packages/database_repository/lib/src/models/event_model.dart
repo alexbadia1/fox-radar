@@ -70,6 +70,40 @@ class EventModel extends ChangeNotifier {
     _rawEndDateAndTime = null;
   } ////null constructor
 
+  copyWith({
+    String id,
+    DateTime rawStartDateAndTime,
+    DateTime rawEndDateAndTime,
+    String title,
+    String host,
+    String location,
+    String room,
+    String startDate,
+    String startTime,
+    String endDate,
+    String endTime,
+    String category,
+    List<String> highlights,
+    String summary,
+    String imagePath,
+    bool imageFitCover,
+   }) {
+    return EventModel(
+      newId: id ?? this._id,
+      newRawStartDateAndTime: rawStartDateAndTime ?? this._rawStartDateAndTime,
+      newRawEndDateAndTime: rawEndDateAndTime ?? this._rawEndDateAndTime,
+      newTitle: title ?? this._myTitle,
+      newHost: host ?? this._myHost,
+      newLocation: location ?? this._myLocation,
+      newCategory: category ?? this._myCategory,
+      newHighlights: highlights ?? this._myHighlights,
+      newImageFitCover: imageFitCover ?? this._imageFitCover,
+      newImagePath: imagePath ?? this._imagePath,
+      newRoom: room ?? this._myRoom,
+      newSummary: summary ?? this._mySummary,
+    );
+  }// copyWith
+
   bool get getImageFitCover => _imageFitCover;
   String get getImagePath => _imagePath;
   String get getHost => _myHost;

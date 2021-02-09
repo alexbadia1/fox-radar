@@ -66,7 +66,7 @@ class ExpansionPanelTitle extends StatelessWidget {
 
         else{
           return Text(this.hintText,
-              style: TextStyle(fontSize: 12.0, color: cWhite65));
+              style: TextStyle(fontSize: 14.0, color: cWhite65));
         }// else
       },
     );
@@ -125,7 +125,7 @@ class DateLabel extends StatelessWidget {
           _date = DateFormat('E, MMMM d, y').format(_rawDate);
         } // if
 
-        return Text(_date, style: TextStyle(color: cWhite100));
+        return Text(_date, style: TextStyle(fontSize: 15.0, color: cWhite100));
       }, // Listener
     );
   } // build
@@ -182,7 +182,7 @@ class TimeLabel extends StatelessWidget {
           _timeOfDay = DateFormat.jm().format(_rawTimeOfDay);
         } // if
 
-        return Text(_timeOfDay, style: TextStyle(color: cWhite100));
+        return Text(_timeOfDay, style: TextStyle(fontSize: 15.0, color: cWhite100));
       },
     );
   } // build

@@ -19,12 +19,12 @@ class CreateEventFormDescription extends StatelessWidget {
           Expanded(
            child: CreateEventFormTextField(
                initialTextValue:
-               _currentCreateEventBlocState.eventModel.getTitle,
+               _currentCreateEventBlocState.eventModel.getSummary,
                hintText: 'Description',
                height: _width,
                width: _height,
                addEventCallback: (eventDetail) {
-                 BlocProvider.of<CreateEventBloc>(context).add(CreateEventSetTitle(newTitle: eventDetail));
+                 BlocProvider.of<CreateEventBloc>(context).add(CreateEventSetDescription(newDescription: eventDetail));
                }),
           ),
           cRightMarginSmall(context),

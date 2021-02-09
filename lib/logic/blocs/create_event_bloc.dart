@@ -37,9 +37,15 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
           createEventSetDescription: event);
     } // else-if
 
-    else if (event is CreateEventSetRawStartDateTime){
-      yield* _mapCreateEventSetRawStartDateTimeToState(createEventSetRawStartDateTime: event);
-    }
+    else if (event is CreateEventSetRawStartDateTime) {
+      yield* _mapCreateEventSetRawStartDateTimeToState(
+          createEventSetRawStartDateTime: event);
+    } // else-if
+
+    else if (event is CreateEventSetRawEndDateTime) {
+      yield* _mapCreateEventSetRawEndDateTimeToState(
+          createEventSetRawEndDateTime: event);
+    } // else-if
 
     else {
       yield CreateEventInvalid(this._eventModel);
@@ -49,15 +55,15 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
   /// Sets the event title
   Stream<CreateEventState> _mapCreateEventSetTitleToState(
       {@required CreateEventSetTitle createEventSetTitle}) async* {
+
     /// Empty Title, set title to empty
     if (createEventSetTitle.newTitle.trim().isEmpty) {
-      this._eventModel = new EventModel.nullConstructor()..setTitle('');
+      this._eventModel = this._eventModel.copyWith(title: '');
     } // if
 
     /// Not empty title, so update the _event
     else {
-      this._eventModel = new EventModel.nullConstructor()
-        ..setTitle(createEventSetTitle.newTitle.trim());
+      this._eventModel = this._eventModel.copyWith(title: createEventSetTitle.newTitle.trim());
     } // else
 
     yield isValid();
@@ -66,15 +72,14 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
   /// Sets the event host
   Stream<CreateEventState> _mapCreateEventSetHostToState(
       {@required CreateEventSetHost createEventSetHost}) async* {
-    /// Empty Title, set title to empty
+    /// Empty host, set title to empty
     if (createEventSetHost.newHost.trim().isEmpty) {
-      this._eventModel = new EventModel.nullConstructor()..setHost('');
+      this._eventModel = this._eventModel.copyWith(host: '');
     } // if
 
-    /// Not empty title, so update the _event
+    /// Not empty host, so update the _event
     else {
-      this._eventModel = new EventModel.nullConstructor()
-        ..setHost(createEventSetHost.newHost.trim());
+      this._eventModel = this._eventModel.copyWith(host: createEventSetHost.newHost.trim());
     } // else
 
     yield isValid();
@@ -83,15 +88,14 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
   /// Sets the event location
   Stream<CreateEventState> _mapCreateEventSetLocationToState(
       {@required CreateEventSetLocation createEventSetLocation}) async* {
-    /// Empty Title, set title to empty
+    /// Empty location, set title to empty
     if (createEventSetLocation.newLocation.trim().isEmpty) {
-      this._eventModel = new EventModel.nullConstructor()..setLocation('');
+      this._eventModel = this._eventModel.copyWith(location: '');
     } // if
 
-    /// Not empty title, so update the _event
+    /// Not empty location, so update the _event
     else {
-      this._eventModel = new EventModel.nullConstructor()
-        ..setLocation(createEventSetLocation.newLocation.trim());
+      this._eventModel = this._eventModel.copyWith(location: createEventSetLocation.newLocation.trim());
     } // else
 
     yield isValid();
@@ -100,15 +104,14 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
   /// Sets the event room
   Stream<CreateEventState> _mapCreateEventSetRoomToState(
       {@required CreateEventSetRoom createEventSetRoom}) async* {
-    /// Empty Title, set title to empty
+    /// Empty room, set title to empty
     if (createEventSetRoom.newRoom.trim().isEmpty) {
-      this._eventModel = new EventModel.nullConstructor()..setRoom('');
+      this._eventModel = this._eventModel.copyWith(room: '');
     } // if
 
-    /// Not empty title, so update the _event
+    /// Not empty room, so update the _event
     else {
-      this._eventModel = new EventModel.nullConstructor()
-        ..setRoom(createEventSetRoom.newRoom.trim());
+      this._eventModel = this._eventModel.copyWith(room: createEventSetRoom.newRoom.trim());
     } // else
 
     yield isValid();
@@ -117,41 +120,58 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
   /// Sets the event description
   Stream<CreateEventState> _mapCreateEventSetDescriptionToState(
       {@required CreateEventSetDescription createEventSetDescription}) async* {
-    /// Empty Title, set title to empty
+
+    /// Empty description, set title to empty
     if (createEventSetDescription.newDescription.trim().isEmpty) {
-      this._eventModel = new EventModel.nullConstructor()..setSummary('');
+      this._eventModel = this._eventModel.copyWith(summary: '');
     } // if
 
-    /// Not empty title, so update the _event
+    /// Not empty description, so update the _event
     else {
-      this._eventModel = new EventModel.nullConstructor()
-        ..setSummary(createEventSetDescription.newDescription.trim());
+      this._eventModel = this._eventModel.copyWith(
+          summary: createEventSetDescription.newDescription.trim());
     } // else
 
     yield isValid();
   } // _mapCreateEventSetDescriptionToState
 
-  /// Sets the event description
+  /// Sets the event start DateTime
   Stream<CreateEventState> _mapCreateEventSetRawStartDateTimeToState(
-      {@required
-          CreateEventSetRawStartDateTime
-              createEventSetRawStartDateTime}) async* {
-    /// Empty Title, set title to empty
+      {@required CreateEventSetRawStartDateTime createEventSetRawStartDateTime}) async* {
+
+    /// Not empty rawStartDateAndTime, so update the _event
     if (createEventSetRawStartDateTime.newRawStartDateTime != null) {
-      this._eventModel = new EventModel.nullConstructor()
-        ..setRawStartDateAndTime(
-            DateTime.now());
+      this._eventModel = this._eventModel.copyWith(
+          rawStartDateAndTime: createEventSetRawStartDateTime.newRawStartDateTime);
     } // if
 
-    /// Not empty title, so update the _event
+    /// Empty rawStartDateAndTime
     else {
-      this._eventModel = new EventModel.nullConstructor()
-        ..setRawStartDateAndTime(
-            createEventSetRawStartDateTime.newRawStartDateTime);
+      this._eventModel = this._eventModel.copyWith(
+          rawStartDateAndTime: DateTime.now());
     } // else
 
     yield isValid();
   } // _mapCreateEventSetRawStartDateTimeToState
+
+  /// Sets the event end DateTime
+  Stream<CreateEventState> _mapCreateEventSetRawEndDateTimeToState(
+      {@required CreateEventSetRawEndDateTime createEventSetRawEndDateTime}) async* {
+
+    /// Not empty newRawEndDateTime, so update the _event
+    if (createEventSetRawEndDateTime.newRawEndDateTime != null) {
+      this._eventModel = this._eventModel.copyWith(
+          rawEndDateAndTime: createEventSetRawEndDateTime.newRawEndDateTime);
+    } // if
+
+    /// Empty rawEndDateAndTime
+    else {
+      this._eventModel =
+          this._eventModel.copyWith(rawEndDateAndTime: DateTime.now());
+    } // else
+
+    yield isValid();
+  } // _mapCreateEventSetRawEndDateTimeToState
 
   /// Checks if the created event meets the minimal requirements:
   ///   title,
