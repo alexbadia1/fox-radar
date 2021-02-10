@@ -35,7 +35,7 @@ class _DatePickerState extends State<DatePicker> {
           fontStyle: FontStyle.italic,
         ),
       ),
-      padding: EdgeInsets.only(top: 8, bottom: 4),
+      padding: EdgeInsets.only(top: 8, bottom: 24),
     );
   }
 
@@ -94,6 +94,8 @@ class _DatePickerState extends State<DatePicker> {
     /// Remember to update the start date, every time the date picker is constructed,
     /// Since a user can technically open this widget at 11:59pm and then open it again at 12:00am
     /// and the day must update then.
+    ///
+    /// Or let the user choose a previous date, maybe the event started and they forgot to create it?
     // if (this.widget.initialSelectedDate != null) {
     //   this.widget?.updateBlocCallback(this.widget.initialSelectedDate);
     // }// if

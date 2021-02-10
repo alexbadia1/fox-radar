@@ -23,7 +23,7 @@ class CreateEventFormRequired extends StatelessWidget {
               hintText: 'Title (Required)',
               height: _textFormFieldHeight,
               width: _textFormFieldWidth,
-              addEventCallback: (eventDetail) {
+              onEditingCompleteOrLostFocus: (eventDetail) {
                 BlocProvider.of<CreateEventBloc>(context)
                     .add(CreateEventSetTitle(newTitle: eventDetail));
               }),
@@ -34,7 +34,7 @@ class CreateEventFormRequired extends StatelessWidget {
               hintText: 'Host (Required)',
               height: _textFormFieldHeight,
               width: _textFormFieldWidth,
-              addEventCallback: (eventDetail) {
+              onEditingCompleteOrLostFocus: (eventDetail) {
                 BlocProvider.of<CreateEventBloc>(context)
                     .add(CreateEventSetHost(newHost: eventDetail));
               }),
@@ -53,7 +53,7 @@ class CreateEventFormRequired extends StatelessWidget {
                   hintText: 'Location (Required)',
                   height: _textFormFieldHeight,
                   width: _textFormFieldWidth,
-                  addEventCallback: (eventDetail) {
+                  onEditingCompleteOrLostFocus: (eventDetail) {
                     BlocProvider.of<CreateEventBloc>(context)
                         .add(CreateEventSetLocation(newLocation: eventDetail));
                   },
@@ -70,7 +70,7 @@ class CreateEventFormRequired extends StatelessWidget {
                   hintText: 'Room',
                   height: _textFormFieldHeight,
                   width: _textFormFieldWidth,
-                  addEventCallback: (eventDetail) {
+                  onEditingCompleteOrLostFocus: (eventDetail) {
                     BlocProvider.of<CreateEventBloc>(context)
                         .add(CreateEventSetRoom(newRoom: eventDetail));
                   },

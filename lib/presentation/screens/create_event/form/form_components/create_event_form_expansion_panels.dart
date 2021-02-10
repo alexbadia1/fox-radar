@@ -8,21 +8,48 @@ import 'package:flutter/material.dart';
 
 typedef DateLabelCallback = DateTime Function(CreateEventState state);
 typedef TimeLabelCallback = DateTime Function(CreateEventState state);
-typedef ConfirmButtonCallback = void Function(DateTime dateTime);
+typedef OnConfirmButtonPressedCallback = void Function(DateTime dateTime);
 typedef TitleLabelCallback = DateTime Function(CreateEventState state);
 typedef OnHeaderTapCallback = void Function();
 
-/// Returns an Expansion Panel,
-/// While it goes against dart conventions, keep function
-/// name Capitalized as this function basically serves as a Widget.
+/// An Animated Container that listens to a bloc/cubit and animates changes in the UI.
+/// Specifically, meant to mimic the function of the Flutter defined [ExpansionPanel]
 class ExpansionPanelDateTime extends StatelessWidget {
   final double height;
+
+  /// Text positioned in the leading left side of the widget when a non-null value is returned from the bloc
   final String title;
+
+  /// Text positioned in the leading left side of the widget when a null value is returned from the bloc.
   final String hintText;
+
+  /// A callback function that receives a CreateEventBloc State and returns a DateTime.
+  ///
+  /// The [ExpansionPanelTitle] listens to the DateTime value returned by the callback in order to
+  /// display text with the correct [title] or [hintText]. NOTE: The DateTime should be retrieved from the CreateEventBloc State argument!
   final TitleLabelCallback titleLabelCallback;
+
+
+  /// A callback function that receives a CreateEventBloc State and returns a DateTime.
+  ///
+  /// The [ExpansionPanelDateLabel] listens to the DateTime value returned by the callback function in order to
+  /// display text with the correct Date. NOTE: The DateTime should be retrieved from the CreateEventBloc State argument!
   final DateLabelCallback dateLabelCallback;
+
+
+  /// A callback function that receives a CreateEventBloc State and returns a DateTime.
+  ///
+  /// The [ExpansionPanelTimeLabel] listens to the DateTime value returned by the callback function in order to
+  /// display text with the correct time. NOTE: The DateTime should be retrieved from the CreateEventBloc State argument!
   final TimeLabelCallback timeLabelCallback;
-  final ConfirmButtonCallback confirmButtonCallback;
+
+  /// A void callback that triggers from the Flutter defined Button onPressed() property.
+  ///
+  /// The argument passed back during the callback is the current temporary DateTime (stored in the ExpansionPanelCubit).
+  /// You should use this "temporary DateTime" to update the CreateEventBloc.
+  final OnConfirmButtonPressedCallback onConfirmButtonPressed;
+
+  /// A void callback that triggers from the Flutter defined GestureDetector onTap() property.
   final OnHeaderTapCallback onTap;
 
   ExpansionPanelDateTime({
@@ -32,13 +59,16 @@ class ExpansionPanelDateTime extends StatelessWidget {
     @required this.titleLabelCallback,
     @required this.dateLabelCallback,
     @required this.timeLabelCallback,
-    @required this.confirmButtonCallback,
+    @required this.onConfirmButtonPressed,
     @required this.onTap,
   });
   @override
   Widget build(BuildContext context) {
+
+    /// TODO: Make Animation look like the Expansion Tile Animation
+    /// Probably involves manipulating the height of the container.
     return AnimatedContainer(
-      duration: Duration(milliseconds: 10000),
+      duration: Duration(milliseconds: 300),
       child: Column(
         children: [
           GestureDetector(
@@ -51,7 +81,7 @@ class ExpansionPanelDateTime extends StatelessWidget {
                 children: <Widget>[
                   cLeftMarginSmall(context),
 
-                  /// Leading text, for hint text
+                  // Leading text, for hint text
                   ExpansionPanelTitle(
                     title: this.title,
                     hintText: this.hintText,
@@ -62,11 +92,10 @@ class ExpansionPanelDateTime extends StatelessWidget {
 
                   Expanded(child: SizedBox()),
 
-                  /// Trailing text for date and time label
+                  // Trailing text for date and time label
                   Row(
                     children: <Widget>[
-                      /// Date
-                      DateLabel(
+                      ExpansionPanelDateLabel(
                         retrieveDateTimeFromBlocCallback:
                             (CreateEventState state) {
                           return this.dateLabelCallback(state);
@@ -75,9 +104,7 @@ class ExpansionPanelDateTime extends StatelessWidget {
 
                       Container(
                           width: MediaQuery.of(context).size.width * .03225),
-
-                      /// Time
-                      TimeLabel(
+                      ExpansionPanelTimeLabel(
                         retrieveDateTimeFromBlocCallback:
                             (CreateEventState state) {
                           return this.timeLabelCallback(state);
@@ -96,7 +123,7 @@ class ExpansionPanelDateTime extends StatelessWidget {
                 final ExpansionPanelState _expansionPanelCubitState =
                     context.watch<ExpansionPanelCubit>().state;
 
-                /// Show DatePicker
+                // Show DatePicker
                 if (_expansionPanelCubitState
                     is ExpansionPanelOpenShowDatePicker) {
                   return DatePicker(
@@ -110,7 +137,7 @@ class ExpansionPanelDateTime extends StatelessWidget {
                   );
                 } // if
 
-                /// Show TimePicker
+                // Show TimePicker
                 else if (_expansionPanelCubitState
                     is ExpansionPanelOpenShowTimePicker) {
                   return TimePicker(
@@ -123,13 +150,13 @@ class ExpansionPanelDateTime extends StatelessWidget {
                   );
                 } // else-if
 
-                /// Show empty container, this may not be necessary
+                // Show empty container, this may not be necessary
                 else {
                   return Container(height: 0, width: 0);
                 } // else
               }),
 
-              /// DateTime navigation buttons
+              // DateTime navigation buttons
               Container(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -167,8 +194,8 @@ class ExpansionPanelDateTime extends StatelessWidget {
                         else if (_expansionPanelCubitState
                             is ExpansionPanelOpenShowTimePicker) {
                           return ExpansionPanelConfirmButton(
-                            addEventBlocCallBloc: (DateTime dateTime) {
-                              this.confirmButtonCallback(dateTime);
+                            onPressedCallback: (DateTime dateTime) {
+                              this.onConfirmButtonPressed(dateTime);
                             },
                           );
                         } // else if

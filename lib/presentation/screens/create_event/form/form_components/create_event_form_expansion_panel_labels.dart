@@ -4,122 +4,112 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/logic/blocs/blocs.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 
-typedef RetrieveDateTimeFromBlocCallback = DateTime Function(
-    CreateEventState currentState);
+/// Callback function used to return a DateTime from a CreateEventBloc State.
+typedef RetrieveDateTimeFromBlocCallback = DateTime Function(CreateEventState currentState);
+
+/// Determines if the DateTime property of two CreateEventBloc states are equal or not.
+///
+/// Returns true if the two DateTimes are not equal,
+/// since that means the DateTime changed between the two CreateEventBloc states.
+bool _didDateChanged({
+  @required DateTime previousDateTime,
+  @required DateTime nextDateTime,
+}) {
+  // Null check, do not rebuild widget if both DateTimes are null.
+  //
+  // The End DateTime is optional and can technically be deleted, thus do not rebuild
+  // this Text() widget if a non-existent [null] end DateTime is "deleted".
+  if (previousDateTime == null && nextDateTime == null) {
+    return false;
+  } // if
+
+  // User created a new DateTime, update Text() widget.
+  else if (previousDateTime == null && nextDateTime != null) {
+    return true;
+  } // else if
+
+  // User deleted a DateTime, update Text() widget.
+  else if (previousDateTime != null && nextDateTime == null) {
+    return true;
+  } // else-if
+
+  // User changed an existing DateTime to a different DateTime, update Text() widget.
+  else {
+    return previousDateTime != nextDateTime;
+  } // else
+}// didDateChanged
 
 class ExpansionPanelTitle extends StatelessWidget {
-  /// Text shown, when the DateTime is NOT null
+  /// Text positioned in the leading left side of the
+  /// widget when a non-null DateTime is returned from the bloc.
   final String title;
 
-  /// Text shown, when the DateTime IS null
+  /// Text positioned in the leading left side of the
+  /// widget when a null DateTime is returned from the bloc.
   final String hintText;
 
-  /// A function that returns a DateTime.
-  /// The ExpansionPanelTitle only updates when the returned
-  /// DateTime from the RetrieveDateTimeFromBlocCallback function changes.
+  /// A function that receives a Bloc and returns a DateTime.
+  ///
+  /// Based on the DateTime received, this widget will rebuild itself showing the
+  /// title [title] if [retrieveDateTimeFromBlocCallback] returns a non-null DateTime
+  /// or the [hintText] if [retrieveDateTimeFromBlocCallback] returns a null DateTime value
   final RetrieveDateTimeFromBlocCallback retrieveDateTimeFromBlocCallback;
 
   const ExpansionPanelTitle(
       {Key key,
-        @required this.title,
-        @required this.hintText,
-        @required this.retrieveDateTimeFromBlocCallback})
+      @required this.title,
+      @required this.hintText,
+      @required this.retrieveDateTimeFromBlocCallback})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // ExpansionPanelTitle listens to the the CreateEventBloc and rebuilds itself according to
+    // the DateTime property of the CreateEventState
     return BlocBuilder<CreateEventBloc, CreateEventState>(
-      /// Only rebuild when the a date time is added or removed
       buildWhen: (previousState, currentState) {
-
-        print(previousState.eventModel.getRawStartDateAndTime);
-        print(currentState.eventModel.getRawStartDateAndTime);
-        if (this.retrieveDateTimeFromBlocCallback(previousState) == null &&
-            this.retrieveDateTimeFromBlocCallback(currentState) == null) {
-          return false;
-        }// if
-
-        /// Null check on previous state, since the End Date is optional
-        else if (retrieveDateTimeFromBlocCallback(previousState) == null &&
-            retrieveDateTimeFromBlocCallback(currentState) != null) {
-          return true;
-        } // else if
-
-        /// Null check on current state, since the End Date is optional
-        else if (retrieveDateTimeFromBlocCallback(previousState) != null &&
-            retrieveDateTimeFromBlocCallback(currentState) == null) {
-          return true;
-        } // else-if
-
-        else {
-          return false;
-        } // else
+        return _didDateChanged(
+          previousDateTime: this.retrieveDateTimeFromBlocCallback(previousState),
+          nextDateTime: this.retrieveDateTimeFromBlocCallback(currentState),
+        );
       }, // ListenWhen
 
-      /// Leading text, for hint text
       builder: (BuildContext context, createEventState) {
         if (retrieveDateTimeFromBlocCallback(createEventState) != null) {
           return Text(this.title,
               style: TextStyle(fontSize: 16.0, color: cWhite100));
-
         } // if
-
-        else{
+        else {
           return Text(this.hintText,
               style: TextStyle(fontSize: 14.0, color: cWhite65));
-        }// else
+        } // else
       },
     );
-  }// build
-}// ExpansionPanelTitle
+  } // build
+} // ExpansionPanelTitle
 
-class DateLabel extends StatelessWidget {
-  /// A function that returns a DateTime.
-  /// The Date Label only updates when the returned
-  /// DateTime from the RetrieveDateTimeFromBlocCallback function changes.
+class ExpansionPanelDateLabel extends StatelessWidget {
+  /// A function that receives a Bloc and returns a DateTime.
+  ///
+  /// Based on the DateTime received, this widget will rebuild itself showing the
+  /// formatted DateTime [DateTime] returned by the callback [retrieveDateTimeFromBlocCallback] if non-null.
   final RetrieveDateTimeFromBlocCallback retrieveDateTimeFromBlocCallback;
 
-  const DateLabel({Key key, @required this.retrieveDateTimeFromBlocCallback})
+  const ExpansionPanelDateLabel({Key key, @required this.retrieveDateTimeFromBlocCallback})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CreateEventBloc, CreateEventState>(
-      /// Only rebuild when the event date changes
       buildWhen: (previousState, currentState) {
-        if (this.retrieveDateTimeFromBlocCallback(previousState) == null &&
-            this.retrieveDateTimeFromBlocCallback(currentState) == null) {
-          return false;
-        }// if
-
-        /// Null check on previous state, since the End Date is optional
-        else if (this.retrieveDateTimeFromBlocCallback(previousState) == null &&
-            this.retrieveDateTimeFromBlocCallback(currentState) != null) {
-          return true;
-        } // else if
-
-        /// Null check on current state, since the End Date is optional
-        else if (this.retrieveDateTimeFromBlocCallback(previousState) != null &&
-            this.retrieveDateTimeFromBlocCallback(currentState) == null) {
-          return true;
-        } // else-if
-
-        /// Check if the time was changed
-        else {
-          return (DateFormat('E, MMMM d, y').format(
-              this.retrieveDateTimeFromBlocCallback(previousState)) !=
-              DateFormat('E, MMMM d, y')
-                  .format(this.retrieveDateTimeFromBlocCallback(currentState)));
-        } // else
-
-        /// Null check on previous state, since the End Date is optional
+        return _didDateChanged(
+            previousDateTime: this.retrieveDateTimeFromBlocCallback(previousState),
+            nextDateTime: this.retrieveDateTimeFromBlocCallback(currentState),
+        );
       }, // ListenWhen
-
-      /// Shows the current chosen date by the user
       builder: (BuildContext context, createEventBlocState) {
         String _date = '';
-        DateTime _rawDate =
-        this.retrieveDateTimeFromBlocCallback(createEventBlocState);
+        DateTime _rawDate = this.retrieveDateTimeFromBlocCallback(createEventBlocState);
 
         if (_rawDate != null) {
           _date = DateFormat('E, MMMM d, y').format(_rawDate);
@@ -131,57 +121,33 @@ class DateLabel extends StatelessWidget {
   } // build
 } // DateLabel
 
-class TimeLabel extends StatelessWidget {
-  /// A function that returns a DateTime.
-  /// The TimeLabel Label only updates when the returned
-  /// DateTime from the RetrieveDateTimeFromBlocCallback function changes.
+class ExpansionPanelTimeLabel extends StatelessWidget {
+  /// A function that receives a Bloc and returns a DateTime.
+  ///
+  /// Based on the DateTime received, this widget will rebuild itself showing the
+  /// formatted DateTime [DateTime] returned by the callback [retrieveDateTimeFromBlocCallback] if non-null.
   final RetrieveDateTimeFromBlocCallback retrieveDateTimeFromBlocCallback;
 
-  const TimeLabel({Key key, this.retrieveDateTimeFromBlocCallback})
+  const ExpansionPanelTimeLabel({Key key, this.retrieveDateTimeFromBlocCallback})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CreateEventBloc, CreateEventState>(
-      /// Only rebuild when the event time changes
       buildWhen: (previousState, currentState) {
-        if (this.retrieveDateTimeFromBlocCallback(previousState) == null &&
-            this.retrieveDateTimeFromBlocCallback(currentState) == null) {
-          return false;
-        }// if
-
-        /// Null check on previous state, since the End Time is optional
-        else if (this.retrieveDateTimeFromBlocCallback(previousState) == null &&
-            this.retrieveDateTimeFromBlocCallback(currentState) != null) {
-          return true;
-        } // else-if
-
-        /// Null check on current state, since the End Time is optional
-        else if (this.retrieveDateTimeFromBlocCallback(previousState) != null &&
-            this.retrieveDateTimeFromBlocCallback(currentState) == null) {
-          return true;
-        } // else-if
-
-        /// Check if the time was changed
-        else {
-          return (DateFormat.jm().format(
-              this.retrieveDateTimeFromBlocCallback(previousState)) !=
-              DateFormat.jm()
-                  .format(this.retrieveDateTimeFromBlocCallback(currentState)));
-        } // else
+        return _didDateChanged(
+          previousDateTime: this.retrieveDateTimeFromBlocCallback(previousState),
+          nextDateTime: this.retrieveDateTimeFromBlocCallback(currentState),
+        );
       }, // ListenWhen
 
-      /// Shows the current chosen time by the user
       builder: (BuildContext context, createEventBlocState) {
         String _timeOfDay = '';
-
         DateTime _rawTimeOfDay =
-        this.retrieveDateTimeFromBlocCallback(createEventBlocState);
-
+            this.retrieveDateTimeFromBlocCallback(createEventBlocState);
         if (_rawTimeOfDay != null) {
           _timeOfDay = DateFormat.jm().format(_rawTimeOfDay);
         } // if
-
         return Text(_timeOfDay, style: TextStyle(fontSize: 15.0, color: cWhite100));
       },
     );

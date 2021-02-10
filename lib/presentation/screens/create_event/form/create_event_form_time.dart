@@ -42,7 +42,7 @@ class CreateEventFormTime extends StatelessWidget {
                 dateLabelCallback: (CreateEventState state) {
                   return state.eventModel.getRawStartDateAndTime;
                 },
-                confirmButtonCallback: (DateTime dateTime) {
+                onConfirmButtonPressed: (DateTime dateTime) {
                   BlocProvider.of<CreateEventBloc>(context).add(
                       CreateEventSetRawStartDateTime(
                           newRawStartDateTime: dateTime));
@@ -81,7 +81,7 @@ class CreateEventFormTime extends StatelessWidget {
                 dateLabelCallback: (CreateEventState state) {
                   return state.eventModel.getRawEndDateAndTime;
                 },
-                confirmButtonCallback: (DateTime dateTime) {
+                onConfirmButtonPressed: (DateTime dateTime) {
                   BlocProvider.of<CreateEventBloc>(context).add(
                       CreateEventSetRawEndDateTime(
                           newRawEndDateTime: dateTime));

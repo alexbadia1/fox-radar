@@ -1,14 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 
-typedef AddEventCallback = void Function(String eventDetail);
 
+typedef OnEditingCompleteOrLostFocusCallBack = void Function(String eventDetail);
+
+/// A custom abstraction of the Form Field that implements a FocusNode with a listener
+/// and a TextEditingController in order to create a form behavior that trims() user input
+/// typical to that of normal web form behavior.
+///
+/// Also combines the onEditingComplete callback
+/// and loss focus callback in one callback function onEditingCompleteOrLostFocus.
 class CreateEventFormTextField extends StatefulWidget {
+
+  /// Text that appears in the TextFormField
   final String initialTextValue;
+
+  /// Text that suggests what sort of input the field accepts.
+  ///
+  /// Displayed on top of the InputDecorator.child (i.e., at the same location
+  /// on the screen where text may be entered in the InputDecorator.child) when
+  /// the input isEmpty and either (a) labelText is null or (b) the input has the focus
   final String hintText;
+
+  /// Height of the of input field
+  ///
+  /// Default height: null
   final double height;
+
+  /// Width of the of input field
+  ///
+  /// Default width: null
   final double width;
-  final AddEventCallback addEventCallback;
+
+  /// A void callback that triggers when either the Form Field loses focus or on Editing Complete.
+  ///
+  /// Implemented with a _focusNode.addListener() to detect focus changes and the dart defined FormField
+  /// property [onEditingComplete]. The argument passed back during the callback is the current FormFieldValue.
+  final OnEditingCompleteOrLostFocusCallBack onEditingCompleteOrLostFocus;
 
   const CreateEventFormTextField({
     Key key,
@@ -16,7 +44,7 @@ class CreateEventFormTextField extends StatefulWidget {
     @required this.hintText,
     @required this.height,
     @required this.width,
-    @required this.addEventCallback,
+    @required this.onEditingCompleteOrLostFocus,
   }) : super(key: key);
 
   @override
@@ -33,19 +61,20 @@ class _CreateEventFormTextFieldState extends State<CreateEventFormTextField> {
   void initState() {
     super.initState();
 
-    /// OnEditing Complete does not trigger when the user changes focus
-    /// without hitting the keyboard done button. Thus, a listener is required
-    /// to do the same form validation as when the
     _focusNode = FocusNode();
+
+    // Clear empty text when form loses focus
+    //
+    // The user can technically click to different form fields without actually pressing the
+    // keyboard 'complete' button. So in order to ensure the form field function is triggered
+    // a focus listener is added.
     _focusNode.addListener(() {
       if (!_focusNode.hasFocus) {
-
-        /// Automatically clear empty text fields
         if (temporaryTextFieldValue.trim().isEmpty) {
-          this.widget.addEventCallback('');
+          this.widget.onEditingCompleteOrLostFocus('');
         } // if
         else {
-          this.widget.addEventCallback(temporaryTextFieldValue);
+          this.widget.onEditingCompleteOrLostFocus(temporaryTextFieldValue);
         } // else
       } // if
     });
@@ -70,14 +99,16 @@ class _CreateEventFormTextFieldState extends State<CreateEventFormTextField> {
               style: TextStyle(color: cWhite100),
               textInputAction: TextInputAction.done,
               decoration: cAddEventTextFormFieldDecoration.copyWith(hintText: this.widget.hintText),
-              onEditingComplete: () {
 
-                /// Automatically clear empty text fields
+              // Clear empty text when form editing is completed
+              //
+              // onEditingComplete ONLY triggers when the keyboard 'complete' button is pressed by the user
+              onEditingComplete: () {
                 if (temporaryTextFieldValue.trim().isEmpty) {
-                  this.widget.addEventCallback('');
+                  this.widget.onEditingCompleteOrLostFocus('');
                 } // if
                 else {
-                  this.widget.addEventCallback(_textEditingController.text);
+                  this.widget.onEditingCompleteOrLostFocus(_textEditingController.text);
                 } // else
                 _focusNode.unfocus();
               },

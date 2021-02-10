@@ -23,7 +23,7 @@ class CreateEventFormDescription extends StatelessWidget {
                hintText: 'Description',
                height: _width,
                width: _height,
-               addEventCallback: (eventDetail) {
+               onEditingCompleteOrLostFocus: (eventDetail) {
                  BlocProvider.of<CreateEventBloc>(context).add(CreateEventSetDescription(newDescription: eventDetail));
                }),
           ),
