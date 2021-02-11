@@ -14,8 +14,8 @@ class CreateEventFormTime extends StatelessWidget {
       children: [
         Container(
           width: _formSectionTimeWidth,
-          child: BlocProvider<ExpansionPanelCubit>(
-            create: (context) => ExpansionPanelCubit(),
+          child: BlocProvider<DateTimePickerCubit>(
+            create: (context) => DateTimePickerCubit(),
             child: Builder(builder: (context) {
               return ExpansionPanelDateTime(
                 height: _textFormFieldHeight,
@@ -23,13 +23,13 @@ class CreateEventFormTime extends StatelessWidget {
                 hintText: 'Add Start Time',
                 onTap: () {
                   final bool _expansionPanelIsOpen =
-                      BlocProvider.of<ExpansionPanelCubit>(context)
+                      BlocProvider.of<DateTimePickerCubit>(context)
                           .state
                           .isOpen;
 
                   /// Only open the expansion panel when the panel is closed
                   if (!_expansionPanelIsOpen) {
-                    BlocProvider.of<ExpansionPanelCubit>(context)
+                    BlocProvider.of<DateTimePickerCubit>(context)
                         .openExpansionPanelToDatePicker();
                   } //
                 },
@@ -53,8 +53,8 @@ class CreateEventFormTime extends StatelessWidget {
         ),
         Container(
           width: _formSectionTimeWidth,
-          child: BlocProvider<ExpansionPanelCubit>(
-            create: (context) => ExpansionPanelCubit(),
+          child: BlocProvider<DateTimePickerCubit>(
+            create: (context) => DateTimePickerCubit(),
             child: Builder(builder: (context) {
               return ExpansionPanelDateTime(
                 height: _textFormFieldHeight,
@@ -62,13 +62,13 @@ class CreateEventFormTime extends StatelessWidget {
                 hintText: 'Add End Time',
                 onTap: () {
                   final bool _expansionPanelIsOpen =
-                      BlocProvider.of<ExpansionPanelCubit>(context)
+                      BlocProvider.of<DateTimePickerCubit>(context)
                           .state
                           .isOpen;
 
                   /// Only open the expansion panel when the panel is closed
                   if (!_expansionPanelIsOpen) {
-                    BlocProvider.of<ExpansionPanelCubit>(context)
+                    BlocProvider.of<DateTimePickerCubit>(context)
                         .openExpansionPanelToDatePicker();
                   } //
                 },

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class ExpansionPanelState extends Equatable {
+abstract class DateTimePickerState extends Equatable {
   /// ExpansionPanels require a boolean value
   /// for the isExpanded and canTapOnHeader properties
   final bool isOpen;
@@ -10,11 +10,11 @@ abstract class ExpansionPanelState extends Equatable {
   /// to allow the user to undo their edits to the Start or End Date with the 'cancel' button.
   final DateTime tempDateTime;
 
-  const ExpansionPanelState(this.isOpen, this.tempDateTime);
+  const DateTimePickerState(this.isOpen, this.tempDateTime);
 } // ExpansionPanelState
 
-class ExpansionPanelClosed extends ExpansionPanelState {
-  ExpansionPanelClosed(
+class DateTimePickerClosed extends DateTimePickerState {
+  DateTimePickerClosed(
       {@required bool isOpen,
       @required DateTime tempDateTime})
       : super(isOpen, tempDateTime);
@@ -23,8 +23,8 @@ class ExpansionPanelClosed extends ExpansionPanelState {
   List<Object> get props => [super.isOpen, this.tempDateTime];
 } // ExpansionPanelClosed
 
-class ExpansionPanelOpenShowDatePicker extends ExpansionPanelState {
-  ExpansionPanelOpenShowDatePicker(
+class DateTimePickerOpenShowDatePicker extends DateTimePickerState {
+  DateTimePickerOpenShowDatePicker(
       {@required bool isOpen,
       @required DateTime tempDateTime})
       : super(isOpen, tempDateTime);
@@ -33,8 +33,8 @@ class ExpansionPanelOpenShowDatePicker extends ExpansionPanelState {
   List<Object> get props => [super.isOpen, this.tempDateTime];
 } // ExpansionPanelOpenShowDatePicker
 
-class ExpansionPanelOpenShowTimePicker extends ExpansionPanelState {
-  ExpansionPanelOpenShowTimePicker(
+class DateTimePickerOpenShowTimePicker extends DateTimePickerState {
+  DateTimePickerOpenShowTimePicker(
       {@required bool isOpen,
       @required DateTime tempDateTime})
       : super(isOpen, tempDateTime);

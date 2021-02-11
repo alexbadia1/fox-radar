@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
-import 'expansion_panel_state.dart';
+import 'date_time_picker_state.dart';
 import 'package:flutter/material.dart';
 
-class ExpansionPanelCubit extends Cubit<ExpansionPanelState> {
-  ExpansionPanelCubit()
-      : super(ExpansionPanelClosed(
+class DateTimePickerCubit extends Cubit<DateTimePickerState> {
+  DateTimePickerCubit()
+      : super(DateTimePickerClosed(
           isOpen: false,
           tempDateTime: DateTime.now(),
         ));
@@ -19,7 +19,7 @@ class ExpansionPanelCubit extends Cubit<ExpansionPanelState> {
       tempDateTime = _setDate(currentDateTime: state.tempDateTime, newDate: tempDateTime);
     }// else
 
-    emit(ExpansionPanelOpenShowDatePicker(
+    emit(DateTimePickerOpenShowDatePicker(
         isOpen: true, tempDateTime: tempDateTime));
   } // open
 
@@ -34,14 +34,14 @@ class ExpansionPanelCubit extends Cubit<ExpansionPanelState> {
       tempDateTime = _setTime(currentDateTime: state.tempDateTime, newTime: tempDateTime);
     }// else
 
-    emit(ExpansionPanelOpenShowTimePicker(
+    emit(DateTimePickerOpenShowTimePicker(
         isOpen: true, tempDateTime: tempDateTime));
   } // open
 
   void closeExpansionPanel() {
     final _currentState = this.state;
 
-    emit(ExpansionPanelClosed(
+    emit(DateTimePickerClosed(
         isOpen: false, tempDateTime: _currentState.tempDateTime));
   } // close
 
@@ -72,7 +72,7 @@ class ExpansionPanelCubit extends Cubit<ExpansionPanelState> {
   } // _setDate
 
   @override
-  void onChange(Change<ExpansionPanelState> change) {
+  void onChange(Change<DateTimePickerState> change) {
     print('Expansion Panel Cubit $change');
     super.onChange(change);
   } // onChange
