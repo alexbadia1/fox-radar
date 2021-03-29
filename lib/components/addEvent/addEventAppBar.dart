@@ -31,14 +31,14 @@ class _AddEventAppBarState extends State<AddEventAppBar> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                PreviousOrCloseButton(),
+                // PreviousOrCloseButton(),
                 Center(
                   child: Text(
                     'Add Event',
                     style: TextStyle(color: kHavenLightGray, fontSize: 18.0, fontWeight: FontWeight.bold),
                   ),
                 ),
-                UploadImage(),
+                // UploadImage(),
               ],
             )
           ],

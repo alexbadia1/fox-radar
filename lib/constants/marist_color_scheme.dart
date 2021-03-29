@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:loading/indicator/ball_spin_fade_loader_indicator.dart';
-import 'package:loading/loading.dart';
-
-//Color Palette
+import 'package:loading_fixed/loading_fixed.dart';
 
 /// Margins
 ///
@@ -86,6 +83,40 @@ LinearGradient cMaristGradientWashed = LinearGradient(
   ],
 );
 
+//Gradients
+LinearGradient cShadowGradient = LinearGradient(
+  begin: Alignment.centerLeft,
+  end: Alignment.centerRight,
+  colors: <Color>[
+    Color.fromRGBO(31, 31, 31, .35),
+    Color.fromRGBO(61, 61, 61, .25),
+  ],
+);
+
+class FullScreenGradient extends StatelessWidget {
+  final gradient;
+  final height;
+
+  FullScreenGradient({@required this.gradient, @required this.height});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: height,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: <Color>[
+            cWashedRed,
+            cFullRed,
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 //Form Text Field Decoration
 const InputDecoration customTextField = InputDecoration(
   errorStyle: TextStyle(color: Colors.black),
@@ -105,20 +136,95 @@ const InputDecoration cAddEventTextFormFieldDecoration = InputDecoration(
   border: InputBorder.none,
 );
 
+class BorderTop extends StatelessWidget {
+  final Widget child;
+
+  const BorderTop({Key key, @required this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            width: 1.25,
+            color: Color.fromRGBO(61, 61, 61, 1.0),
+          ),
+        ),
+      ),
+      child: child,
+    );
+  }// build
+}// BorderTop
+
+class BorderBottom extends StatelessWidget {
+  final Widget child;
+
+  const BorderBottom({Key key, @required this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            width: 1.25,
+            color: Color.fromRGBO(61, 61, 61, 1.0),
+          ),
+        ),
+      ),
+      child: child,
+    );
+  }// build
+}// BorderTop
+
+class BorderTopBottom extends StatelessWidget {
+  final Widget child;
+  final double width;
+  final double height;
+
+  const BorderTopBottom({Key key, @required this.child, this.width, this.height}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: this.height,
+      width: this.width,
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            width: 1.25,
+            color: Color.fromRGBO(61, 61, 61, 1.0),
+          ),
+          bottom: BorderSide(
+            width: 1.25,
+            color: Color.fromRGBO(61, 61, 61, 1.0),
+          ),
+        ),
+      ),
+      child: child,
+    );
+  }// build
+}// BorderTop
+
+
 const Decoration cAddEventBottomBorder =
     BoxDecoration(border: Border(bottom: cBorder));
 
 //Loading Widget
 class LoadingWidget extends StatelessWidget {
+  final double size;
+  final Color color;
+  LoadingWidget({this.size, this.color});
   @override
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width * .65,
       child: Center(
-        child: Loading(
+        child: FixedLoadingWidget(
           indicator: BallSpinFadeLoaderIndicator(),
-          size: 55.0,
-          color: Color.fromRGBO(255, 255, 255, .50),
+          size: size ?? 55.0,
+          color: color ?? Color.fromRGBO(255, 255, 255, .50),
         ),
       ),
     );
@@ -138,3 +244,4 @@ SnackBar formErrorSnackBar(BuildContext context, String message) {
     ),
   );
 }
+

@@ -1,0 +1,10 @@
+name: loading_fixed
+description: This package contains a fix for the error when stop() is called after the dispose method. Additionally, this package only contains two of the loading progress indicators from the entire package.
+version: 1.0.2
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter

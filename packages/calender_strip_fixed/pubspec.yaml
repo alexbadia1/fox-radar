@@ -1,0 +1,10 @@
+name: calender_strip_fixed
+description: Original package class DateUtils conflicts with darts material package due to naming.
+version: 1.0.7
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter

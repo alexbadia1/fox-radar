@@ -19,27 +19,53 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  # Local packages
+  authentication_repository:
+    path: packages/authentication_repository
+  database_repository:
+    path: packages/database_repository
+  loading_fixed:
+    path: packages/loading_fixed
+  calender_strip_fixed:
+    path: packages/calender_strip_fixed
+
+  # Bloc Architecture
+  flutter_bloc: ^6.1.1
+  equatable: ^1.2.5
+
+  # Better Stream Control
+  rxdart: ^0.25.0
+
+  # Encryption
+  crypto: ^2.1.5
+
+  # UI utilities
+  flutter_slidable: ^0.5.7
+
   intl: ^0.16.1
-  firebase_auth: ^0.14.0+5
-  cloud_firestore: ^0.13.6
-  provider: ^4.0.5+1
-  loading: ^1.0.2
   sliding_up_panel: ^1.0.2
   step_progress_indicator: ^0.2.3+6
   url_launcher: ^5.4.10
-  calendar_strip: ^1.0.6
-  flutter_slidable: "^0.5.4"
-  image_picker: ^0.6.7+1
-  photo_manager: ^0.5.3+1
-  image_cropper: ^1.2.3
-  firebase_storage: ^3.1.6
-  flutter_cache_manager: ^1.4.1
-  path_provider: ^1.6.11
+
+  # Slowly replacing this with Bloc
+  provider: ^4.0.5+1
+
+  # Camera access
+  # image_picker >= 0.7.0 conflicts with firebase
+  # Shouldn't be a problem when switching backend to sql.
+  image_picker: ^0.6.7+22
+  photo_manager: ^1.0.6
+  image_cropper: ^1.4.0
+
+#  # Local storage
+#  flutter_cache_manager: ^1.4.1
+#  path_provider: ^1.6.11
 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.2
+  cupertino_icons:
 
 dev_dependencies:
   flutter_test:
