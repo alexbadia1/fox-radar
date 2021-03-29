@@ -26,25 +26,30 @@ If Git for Windows is already installed, make sure you can run git commands from
 
 2. Don't forget to run `C:\src>git clone https://github.com/flutter/flutter.git -b stable`
 
-3. Tips for the PATH variable.
+3. Tips for the PATH variable (**I RECOMMEND READING THIS**)
 
-  - MAKE SURE YOU ARE UNDER THE 'USER VARIABLES' NOT 'SYSTEM VARIABLES'
-  - **DO NOT** REPLACE THE USER 'PATH' VARIABLE. 
+  - Make sure you are under 'USER VARIABLES' not 'SYSTEM VARIABLES'
+  - **DO NOT** _**REPLACE**_ the **USER PATH VARIABLE**. 
   - **Instead DOUBLE CLICK on the 'PATH' variable to add more**
   - **READ THAT TWICE**
-  - **IF YOU MESSED UP** Recovery is not easy, as you will have to create a path variable and add paths to gitbash.exe, powershell.exe, and some more windows default ones (trust me, I did it by accident)
+  - **IF YOU MESSED UP** Recovery is not easy:
+    - Create a path variable
+    - Add path to the flutter bin
+    - Add path(s) to gitbash.exe
+    - Add path(s) to powershell.exe (may also need x86)
+    - Some more windows default ones (You'll have to google those)
   - **READ THAT A THIRD TIME**
 
 4. If you are to scared to run path variables, you can always just copy and paste the file path to the flutter.bat file everytime you want to run a flutter command
 
 ## Tips For Setting Up The Emulator
 
-The emulator may go up easily (most likely not), here's a few tips that may help.
+The emulator may go up easily (most likely not), here's a few tips that may help ADB not found:
 
 1. Make sure you have VM enabled in BIOS
 2. Check under project structure to make sure your "Project Structure" is an Android SDK
 3. Make sure you have platform tools enabled
-4. Google's your friend, stack overflow too
+5. Google's your friend, stack overflow too
 
 ## Running the tests
   TBD
