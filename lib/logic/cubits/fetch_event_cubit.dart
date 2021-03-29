@@ -99,8 +99,7 @@ class FetchFullEventCubit extends Cubit<FetchFullEventState> {
             documentSnapshot.data()['highlights'] ?? ['', '', '', '', '']),
 
         ///Implement Firebase Images.
-        newImageFitCover: documentSnapshot.data()['imageFitCover'] ?? true,
-        newImagePath: documentSnapshot.data()['imagePath'] ?? '');
+        newImageFitCover: documentSnapshot.data()['imageFitCover'] ?? true,);
   } // _mapQueryDocumentSnaphshotToEventModel
 
   @override

@@ -1,8 +1,6 @@
 import 'package:communitytabs/logic/cubits/cubits.dart';
 import 'package:flutter/material.dart';
-import 'package:communitytabs/data/categoryPanels.dart';
 import 'package:communitytabs/data/expansionTileMetadata.dart';
-import 'package:communitytabs/data/slidingUpPanelMetadata.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +9,6 @@ class HomeBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ExpansionTiles _expansionPanels = Provider.of<ExpansionTiles>(context);
-    CategoryPanels categoryPanels = Provider.of<CategoryPanels>(context);
     HomePageViewCubit _homePageViewCubit = BlocProvider.of<HomePageViewCubit>(context);
 
     final SlidingUpPanelState _slidingUpPanelState =
@@ -20,7 +17,7 @@ class HomeBottomNavigationBar extends StatelessWidget {
     /// Sliding panel is open
     /// Show an empty container to make room for the Create Event Screens App Bar
     if (_slidingUpPanelState is SlidingUpPanelOpen) {
-      return Container();
+      return SizedBox();
     } // if
 
     /// Sliding Panel is closed
@@ -57,12 +54,6 @@ class HomeBottomNavigationBar extends StatelessWidget {
                     _expansionPanels.data[0].setHeaderDateValue(currentTime);
                     _expansionPanels.data[0].setHeaderTimeValue(currentTime);
                     _expansionPanels.updateExpansionPanels();
-
-                    /// Remember the original category
-                    categoryPanels
-                            .getCategoryPanels()[0]
-                            .defaultCategoryPicked =
-                        categoryPanels.getCategoryPanels()[0].categoryPicked;
 
                     /// Remember the original Start Date and Time
                     _expansionPanels.originalStartDateAndTime = currentTime;

@@ -19,11 +19,20 @@ class SlidingUpPanelCubit extends Cubit<SlidingUpPanelState> {
 
   void closePanel() {
     _slidingUpPanelControl.close();
+
+    emit(SlidingUpPanelClosed());
   } // closePanel
 
   @override
+  void onChange(Change<SlidingUpPanelState> change) {
+    print('SlidingUp Panel Cubit Change $change');
+    super.onChange(change);
+  }// onChange
+
+  @override
   Future<void> close() {
-    /// TODO: Find our how the Sliding Up Panel Controller is disposed
+    print('SlidingUp Panel Cubit Closed!');
+    _slidingUpPanelControl.close();
     return super.close();
   }// close
 }// SlidingUpPanelCubit

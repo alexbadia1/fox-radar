@@ -1,18 +1,21 @@
 import 'package:bloc/bloc.dart';
+import 'package:communitytabs/logic/cubits/cubits.dart';
 import 'package:flutter/material.dart';
 import 'create_event_page_view_state.dart';
 
 class CreateEventPageViewCubit extends Cubit<CreateEventPageViewState> {
   final PageController _createEventPageViewController = new PageController(initialPage: 0, keepPage: true);
 
-  CreateEventPageViewCubit() : super(CreateEventPageViewInitial());
+  CreateEventPageViewCubit() : super(CreateEventPageViewEventDetails());
 
-  void animateToHomePage() {
+  void animateToEventForm() {
     _createEventPageViewController.animateToPage(0, duration: const Duration(milliseconds: 150), curve: Curves.easeIn);
+    emit(CreateEventPageViewEventDetails());
   } // animateToNextPage
 
-  void animateToCategoryPage() {
+  void animateToEventPhoto() {
     _createEventPageViewController.animateToPage(1, duration: const Duration(milliseconds: 150), curve: Curves.easeIn);
+    emit(CreateEventPageViewEventPhoto());
   } // animateToNextPage
 
   double currentPage () {
@@ -22,7 +25,14 @@ class CreateEventPageViewCubit extends Cubit<CreateEventPageViewState> {
   get createEventPageViewController => _createEventPageViewController;
 
   @override
+  void onChange(Change<CreateEventPageViewState> change) {
+    print('Create Event Page View Cubit Change $change');
+    super.onChange(change);
+  }// onChange
+
+  @override
   Future<void> close() {
+    print('Create Event Page View Cubit Change Closed!');
     _createEventPageViewController.dispose();
     return super.close();
   }// close

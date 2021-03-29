@@ -10,10 +10,15 @@ class DatePicker extends StatefulWidget {
   final UpdateBlocCallback updateBlocCallback;
   final OnDateSelectedCallback onDateSelectedCallback;
 
-  const DatePicker({Key key, @required this.initialSelectedDate, @required this.onDateSelectedCallback, this.updateBlocCallback}) : super(key: key);
+  const DatePicker(
+      {Key key,
+      @required this.initialSelectedDate,
+      @required this.onDateSelectedCallback,
+      this.updateBlocCallback})
+      : super(key: key);
   @override
   _DatePickerState createState() => _DatePickerState();
-}// DatePicker
+} // DatePicker
 
 class _DatePickerState extends State<DatePicker> {
   /// Start date should be set when the user opens the panel. However, you
@@ -90,18 +95,21 @@ class _DatePickerState extends State<DatePicker> {
 
   @override
   Widget build(BuildContext context) {
-
-    /// Remember to update the start date, every time the date picker is constructed,
-    /// Since a user can technically open this widget at 11:59pm and then open it again at 12:00am
-    /// and the day must update then.
-    ///
-    /// Or let the user choose a previous date, maybe the event started and they forgot to create it?
+    // Remember to update the start date, every time the date picker is constructed,
+    // Since a user can technically open this widget at 11:59pm and then open it again at 12:00am
+    // and the day must update then.
+    //
+    // Or let the user choose a previous date, maybe the event started and they forgot to create it?
     // if (this.widget.initialSelectedDate != null) {
     //   this.widget?.updateBlocCallback(this.widget.initialSelectedDate);
     // }// if
 
     return Column(
       children: <Widget>[
+        Container(
+          color: Color.fromRGBO(33, 33, 33, 1.0),
+          height: MediaQuery.of(context).size.height * .0225,
+        ),
         CalendarStrip(
           containerHeight: MediaQuery.of(context).size.height * .175,
           startDate: startDate,
@@ -114,7 +122,9 @@ class _DatePickerState extends State<DatePicker> {
           iconColor: cWhite70,
           monthNameWidget: _monthNameWidget,
           markedDates: markedDates,
-          containerDecoration: BoxDecoration(color: Color.fromRGBO(24, 24, 24, 1.0)),
+          containerDecoration: BoxDecoration(
+            color: Color.fromRGBO(33, 33, 33, 1.0),
+          ),
           addSwipeGesture: true,
         ),
       ],

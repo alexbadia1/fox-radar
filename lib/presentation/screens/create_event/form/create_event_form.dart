@@ -10,28 +10,30 @@ class CreateEventForm extends StatefulWidget {
   @override
   _CreateEventFormState createState() => _CreateEventFormState();
 }
+
 class _CreateEventFormState extends State<CreateEventForm> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      physics: AlwaysScrollableScrollPhysics(),
       child: Form(
         key: _formKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            cVerticalMarginSmall(context),
-            CreateEventFormRequired(),
-            cVerticalMarginSmall(context),
-            CreateEventFormTime(),
-            // cVerticalMarginSmall(context),
-            // Category(),
-            // cVerticalMarginSmall(context),
-            // FormSectionHighlights(),
-            // cVerticalMarginSmall(context),
-            CreateEventFormDescription(),
-            // cVerticalMarginSmall(context),
+            SizedBox(height: MediaQuery.of(context).size.height * .05),
+            Required(),
+            SizedBox(height: MediaQuery.of(context).size.height * .05),
+            Time(),
+            SizedBox(height: MediaQuery.of(context).size.height * .05),
+            Category(),
+            SizedBox(height: MediaQuery.of(context).size.height * .05),
+            Highlights(),
+            SizedBox(height: MediaQuery.of(context).size.height * .05),
+            Description(),
+            SizedBox(height: MediaQuery.of(context).size.height * .05),
           ],
         ),
       ),

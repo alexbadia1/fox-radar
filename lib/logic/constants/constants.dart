@@ -1,4 +1,3 @@
-
 /// Event Categories
 const String ACADEMIC = 'Academic';
 const String CLUB_SPORTS = 'Club Sports';
@@ -17,6 +16,26 @@ const String RELIGION = 'Religion';
 const String RUSHES = 'Rushes';
 const String SPIRITUAL = 'Spiritual';
 const String SORORITY = 'Sorority';
+
+const List<String> CATEGORIES = [
+  ACADEMIC,
+  CLUB_SPORTS,
+  COLLEGE_SPORTS,
+  CULTURE,
+  FRATERNITY,
+  FREE_FOOD,
+  INTRAMURAL,
+  MARIST_DINING,
+  MEDIA_PUBLICATION,
+  MOVIES_THEATRE,
+  MUSIC_AND_DANCE,
+  OCCASIONS,
+  POLITICAL,
+  RELIGION,
+  RUSHES,
+  SPIRITUAL,
+  SORORITY,
+];
 
 /// Pagination Limit
 const int PAGINATION_LIMIT = 3;

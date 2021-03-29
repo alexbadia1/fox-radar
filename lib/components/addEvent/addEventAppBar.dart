@@ -31,7 +31,7 @@ class _AddEventAppBarState extends State<AddEventAppBar> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                PreviousOrCloseButton(),
+                // PreviousOrCloseButton(),
                 Center(
                   child: Text(
                     'Add Event',

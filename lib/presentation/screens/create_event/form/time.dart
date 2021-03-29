@@ -1,10 +1,12 @@
+import 'package:communitytabs/constants/marist_color_scheme.dart';
+
 import 'form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/logic/blocs/blocs.dart';
 import 'package:communitytabs/logic/cubits/cubits.dart';
 
-class CreateEventFormTime extends StatelessWidget {
+class Time extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double _formSectionTimeWidth = MediaQuery.of(context).size.width;
@@ -12,8 +14,7 @@ class CreateEventFormTime extends StatelessWidget {
 
     return Column(
       children: [
-        Container(
-          width: _formSectionTimeWidth,
+        BorderTopBottom(
           child: BlocProvider<DateTimePickerCubit>(
             create: (context) => DateTimePickerCubit(),
             child: Builder(builder: (context) {
@@ -22,12 +23,13 @@ class CreateEventFormTime extends StatelessWidget {
                 title: 'Starts',
                 hintText: 'Add Start Time',
                 onTap: () {
+                  FocusScope.of(context).unfocus();
                   final bool _expansionPanelIsOpen =
                       BlocProvider.of<DateTimePickerCubit>(context)
                           .state
                           .isOpen;
 
-                  /// Only open the expansion panel when the panel is closed
+                  // Only open the expansion panel when the panel is closed
                   if (!_expansionPanelIsOpen) {
                     BlocProvider.of<DateTimePickerCubit>(context)
                         .openExpansionPanelToDatePicker();
@@ -51,8 +53,7 @@ class CreateEventFormTime extends StatelessWidget {
             }),
           ),
         ),
-        Container(
-          width: _formSectionTimeWidth,
+        BorderBottom(
           child: BlocProvider<DateTimePickerCubit>(
             create: (context) => DateTimePickerCubit(),
             child: Builder(builder: (context) {
@@ -61,12 +62,13 @@ class CreateEventFormTime extends StatelessWidget {
                 title: 'Ends',
                 hintText: 'Add End Time',
                 onTap: () {
+                  FocusScope.of(context).unfocus();
                   final bool _expansionPanelIsOpen =
                       BlocProvider.of<DateTimePickerCubit>(context)
                           .state
                           .isOpen;
 
-                  /// Only open the expansion panel when the panel is closed
+                  // Only open the expansion panel when the panel is closed
                   if (!_expansionPanelIsOpen) {
                     BlocProvider.of<DateTimePickerCubit>(context)
                         .openExpansionPanelToDatePicker();

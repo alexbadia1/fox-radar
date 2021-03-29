@@ -2,22 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/logic/cubits/cubits.dart';
 
-class CategoryNavigationButton extends StatelessWidget {
+class CategoryNavigationButton extends StatefulWidget {
   final String category;
   final String imagePath;
   final IconData icon;
+
+  CategoryNavigationButton({@required this.category, @required this.imagePath, @required this.icon});
+  @override
+  _CategoryNavigationButtonState createState() => _CategoryNavigationButtonState();
+}
+
+class _CategoryNavigationButtonState extends State<CategoryNavigationButton> {
   Image maristArtImage;
 
-  CategoryNavigationButton({@required this.category, @required this.imagePath, @required this.icon}) {
-    maristArtImage = Image.asset(imagePath);
-  }// CategoryNavigationButton
+  @override
+  void initState() {
+    super.initState();
+    maristArtImage = Image.asset(this.widget.imagePath);
+  }// initState
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    precacheImage(maristArtImage.image, context);
+  }// didChangeDependencies
 
   @override
   Widget build(BuildContext context) {
-    precacheImage(maristArtImage.image, context);
     return GestureDetector(
       onTap: () {
-        BlocProvider.of<CategoryPageCubit>(context).setCategory(category);
+        BlocProvider.of<CategoryPageCubit>(context).setCategory(widget.category);
         BlocProvider.of<HomePageViewCubit>(context).animateToCategoryPage();
       },
       child: Stack(
@@ -42,13 +56,13 @@ class CategoryNavigationButton extends StatelessWidget {
               Expanded(flex: 5, child: SizedBox()),
               Container(
                 alignment: Alignment.centerLeft,
-                child: Icon(icon, color: Colors.white),
+                child: Icon(widget.icon, color: Colors.white),
               ),
               Expanded(flex: 3, child: SizedBox()),
               Center(
                 child: Container(
                   child: Text(
-                    category,
+                    widget.category,
                     textAlign: TextAlign.left,
                     style: TextStyle(
                         color: Colors.white,
@@ -63,5 +77,4 @@ class CategoryNavigationButton extends StatelessWidget {
         ],
       ),
     );
-  } // build
-} // CategoryNavigationItem
+  } } // CategoryNavigationItem

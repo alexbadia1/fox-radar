@@ -32,6 +32,15 @@ class CreateEventFormTextField extends StatefulWidget {
   /// Default width: null
   final double width;
 
+  /// Creates a FormField that contains a TextField.
+  /// When a controller is specified, initialValue must be null (the default). If controller is null, then a TextEditingController will be constructed automatically and its text will be initialized to initialValue or the empty string.
+  /// For documentation about the various parameters, see the TextField class and new TextField, the constructor.
+  final TextInputType keyboardType;
+
+  final int maxLines;
+
+  final int minLines;
+
   /// A void callback that triggers when either the Form Field loses focus or on Editing Complete.
   ///
   /// Implemented with a _focusNode.addListener() to detect focus changes and the dart defined FormField
@@ -44,7 +53,7 @@ class CreateEventFormTextField extends StatefulWidget {
     @required this.hintText,
     @required this.height,
     @required this.width,
-    @required this.onEditingCompleteOrLostFocus,
+    @required this.onEditingCompleteOrLostFocus, this.keyboardType, this.maxLines, this.minLines,
   }) : super(key: key);
 
   @override
@@ -89,11 +98,15 @@ class _CreateEventFormTextFieldState extends State<CreateEventFormTextField> {
     return Container(
       height: this.widget.height,
       width: this.widget.width,
+      color: Color.fromRGBO(33, 33, 33, 1.0),
       child: Row(
         children: <Widget>[
           cLeftMarginSmall(context),
           Expanded(
             child: TextFormField(
+              keyboardType: this.widget.keyboardType,
+              maxLines: this.widget.maxLines ?? 1,
+              minLines: this.widget.minLines ?? 1,
               controller: _textEditingController,
               focusNode: _focusNode,
               style: TextStyle(color: cWhite100),
@@ -103,17 +116,20 @@ class _CreateEventFormTextFieldState extends State<CreateEventFormTextField> {
               // Clear empty text when form editing is completed
               //
               // onEditingComplete ONLY triggers when the keyboard 'complete' button is pressed by the user
-              onEditingComplete: () {
-                if (temporaryTextFieldValue.trim().isEmpty) {
-                  this.widget.onEditingCompleteOrLostFocus('');
-                } // if
-                else {
-                  this.widget.onEditingCompleteOrLostFocus(_textEditingController.text);
-                } // else
-                _focusNode.unfocus();
-              },
+              // onEditingComplete: () {
+              //   if (temporaryTextFieldValue.trim().isEmpty) {
+              //     this.widget.onEditingCompleteOrLostFocus('');
+              //   } // if
+              //   else {
+              //     this.widget.onEditingCompleteOrLostFocus(_textEditingController.text);
+              //   } // else
+              //   _focusNode.unfocus();
+              // },
               onChanged: (value) {
                 temporaryTextFieldValue = value;
+
+                // Prevents the user from hitting next while editing a text field
+                this.widget.onEditingCompleteOrLostFocus(temporaryTextFieldValue);
               },
             ),
           ),
@@ -126,6 +142,7 @@ class _CreateEventFormTextFieldState extends State<CreateEventFormTextField> {
   @override
   void dispose() {
     _focusNode.dispose();
+    _textEditingController.dispose();
     super.dispose();
   } // dispose
 } // _CreateEventFormTextFieldState

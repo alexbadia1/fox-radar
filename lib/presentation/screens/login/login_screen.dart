@@ -12,7 +12,6 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 } // LoginScreen
 
-
 class _LoginScreenState extends State<LoginScreen> {
   Image backgroundImage;
 
@@ -20,13 +19,13 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     backgroundImage = new Image.asset("images/image1.jpg");
-  }// initState
+  } // initState
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     precacheImage(backgroundImage.image, context);
-  }// didChangeDependencies
+  } // didChangeDependencies
 
   @override
   Widget build(BuildContext context) {
@@ -48,28 +47,35 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Stack(
           children: [
             backgroundImage,
-            FullScreenGradient(gradient: cMaristGradientWashed, height: height + screenInsetsBottom),
+            FullScreenGradient(
+                gradient: cMaristGradientWashed,
+                height: height + screenInsetsBottom),
             Scaffold(
               backgroundColor: Colors.transparent,
-              body: Listener(
-                onPointerDown: (_) => FocusScope.of(context).unfocus(),
-                child: SingleChildScrollView(
-                  physics: ClampingScrollPhysics(),
-                  child: Container(
-                    height: height,
-                    width: screenWidth,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Expanded(
-                          flex: 8,
-                          child: SizedBox(),
-                        ),
+              body: SingleChildScrollView(
+                physics: ClampingScrollPhysics(),
+                child: Container(
+                  height: height,
+                  width: screenWidth,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Expanded(
+                        flex: 8,
+                        child: Listener(
+                            onPointerDown: (_) =>
+                                FocusScope.of(context).unfocus(),
+                            behavior: HitTestBehavior.opaque,
+                            child: SizedBox()),
+                      ),
 
-                        /// Title
-                        Container(
+                      /// Title
+                      Listener(
+                        onPointerDown: (_) => FocusScope.of(context).unfocus(),
+                        behavior: HitTestBehavior.opaque,
+                        child: Container(
                           child: Text(
                             'MARIST',
                             textAlign: TextAlign.center,
@@ -82,9 +88,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
+                      ),
 
-                        /// Subtitle
-                        Container(
+                      /// Subtitle
+                      Listener(
+                        onPointerDown: (_) => FocusScope.of(context).unfocus(),
+                        behavior: HitTestBehavior.opaque,
+                        child: Container(
                           child: Text(
                             'See What\'s Going On',
                             textAlign: TextAlign.center,
@@ -97,43 +107,54 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                        // Container(width: 100, height: 100),
+                      ),
+                      // Container(width: 100, height: 100),
 
-                        Expanded(
-                          flex: 25,
-                          child: BlocProvider(
-                            create: (BuildContext context) => LoginBloc(
-                              authenticationRepository: RepositoryProvider.of<
-                                  AuthenticationRepository>(context),
-                            ),
-                            child: Builder(
-                              builder: (context) {
-                                final LoginState _loginState =
-                                    context.watch<LoginBloc>().state;
+                      Expanded(
+                        flex: 25,
+                        child: BlocProvider(
+                          create: (BuildContext context) => LoginBloc(
+                            authenticationRepository:
+                                RepositoryProvider.of<AuthenticationRepository>(
+                                    context),
+                          ),
+                          child: Builder(
+                            builder: (context) {
+                              final LoginState _loginState =
+                                  context.watch<LoginBloc>().state;
 
-                                if (_loginState is LoginStateLoginSubmitted) {
-                                  return LoadingWidget(
-                                    size: 90.0,
-                                    color: kHavenLightGray,
-                                  );
-                                } // if
+                              if (_loginState is LoginStateLoginSubmitted) {
+                                return LoadingWidget(
+                                  size: 90.0,
+                                  color: kHavenLightGray,
+                                );
+                              } // if
 
-                                return Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Expanded(
-                                      flex: 21,
-                                      child: LoginForm(),
-                                    ),
-                                    SizedBox(
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Expanded(
+                                    flex: 21,
+                                    child: LoginForm(),
+                                    // LoginForm
+                                  ),
+                                  Listener(
+                                    onPointerDown: (_) =>
+                                        FocusScope.of(context).unfocus(),
+                                    behavior: HitTestBehavior.opaque,
+                                    child: SizedBox(
                                       height:
                                           MediaQuery.of(context).size.height *
                                               .015,
                                     ),
-                                    Row(
+                                  ),
+                                  Listener(
+                                    onPointerDown: (_) =>
+                                        FocusScope.of(context).unfocus(),
+                                    behavior: HitTestBehavior.opaque,
+                                    child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: <Widget>[
@@ -156,15 +177,25 @@ class _LoginScreenState extends State<LoginScreen> {
                                           ),
                                           onTap: () {
                                             FocusScope.of(context).unfocus();
-                                            Navigator.of(context).pushNamed('/sign_up');
+                                            Navigator.of(context)
+                                                .pushNamed('/sign_up');
                                           },
                                         ),
                                       ],
                                     ),
-                                    Expanded(
-                                      child: SizedBox(),
-                                    ),
-                                    Container(
+                                  ),
+                                  Expanded(
+                                    child: Listener(
+                                        onPointerDown: (_) =>
+                                            FocusScope.of(context).unfocus(),
+                                        behavior: HitTestBehavior.opaque,
+                                        child: SizedBox()),
+                                  ),
+                                  Listener(
+                                    onPointerDown: (_) =>
+                                        FocusScope.of(context).unfocus(),
+                                    behavior: HitTestBehavior.opaque,
+                                    child: Container(
                                       child: Row(
                                         children: <Widget>[
                                           Expanded(
@@ -189,27 +220,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                         ],
                                       ),
                                     ),
-                                    Expanded(
-                                      child: SizedBox(),
-                                    ),
-                                    Container(
+                                  ),
+                                  Expanded(
+                                    child: Listener(
+                                        onPointerDown: (_) =>
+                                            FocusScope.of(context).unfocus(),
+                                        behavior: HitTestBehavior.opaque,
+                                        child: SizedBox()),
+                                  ),
+                                  Listener(
+                                    onPointerDown: (_) =>
+                                        FocusScope.of(context).unfocus(),
+                                    behavior: HitTestBehavior.opaque,
+                                    child: Container(
                                       child: GestureDetector(
                                         onTap: () async {
                                           FocusScope.of(context).unfocus();
-                                          //   dynamic _result =
-                                          //       await _auth.anonymousSignIn();
-                                          //   if (_result == null) {
-                                          //     setState(() {
-                                          //       loading = false;
-                                          //     });
-                                          //     print('Error Signing In');
-                                          //   } else {
-                                          //     print('Sign in successful');
-                                          //     print(_result);
-                                          //     Navigator.pushReplacementNamed(
-                                          //         context, '/loading');
-                                          //     FocusScope.of(context).unfocus();
-                                          //   }
                                         },
                                         child: Text(
                                           'Continue as Guest',
@@ -226,22 +252,30 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                       alignment: Alignment.center,
                                     ),
-                                  ],
-                                );
-                              },
-                            ),
+                                  ),
+                                ],
+                              );
+                            },
                           ),
                         ),
+                      ),
 
-                        Expanded(
-                          flex: 9,
-                          child: SizedBox(),
-                        ),
-                        SizedBox(
+                      Expanded(
+                        flex: 9,
+                        child: Listener(
+                            onPointerDown: (_) =>
+                                FocusScope.of(context).unfocus(),
+                            behavior: HitTestBehavior.opaque,
+                            child: SizedBox()),
+                      ),
+                      Listener(
+                        onPointerDown: (_) => FocusScope.of(context).unfocus(),
+                        behavior: HitTestBehavior.opaque,
+                        child: SizedBox(
                           height: screenInsetsBottom,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),

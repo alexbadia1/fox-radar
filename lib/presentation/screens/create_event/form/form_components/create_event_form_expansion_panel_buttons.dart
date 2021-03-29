@@ -43,7 +43,7 @@ class ExpansionPanelBackButton extends StatelessWidget {
 class ExpansionPanelContinueButton extends StatelessWidget {
   /// A void callback that triggers from the Flutter defined Button onPressed() property.
   final OnPressedCallback onPressedCallback;
-  const ExpansionPanelContinueButton({Key key, @required this.onPressedCallback}) : super(key: key);
+  const ExpansionPanelContinueButton({Key key, this.onPressedCallback}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

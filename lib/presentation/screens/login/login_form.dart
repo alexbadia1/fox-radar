@@ -46,7 +46,10 @@ class _LoginFormState extends State<LoginForm> {
       children: [
         Expanded(
           flex: 3,
-          child: SizedBox(),
+          child: Listener(
+              onPointerDown: (_) => FocusScope.of(context).unfocus(),
+              behavior: HitTestBehavior.opaque,
+              child: SizedBox()),
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -125,65 +128,78 @@ class _LoginFormState extends State<LoginForm> {
         ),
         Expanded(
           flex: 5,
-          child: Container(
-            child: Center(
-              child: Builder(
-                builder: (context) {
-                  final _loginState = context.watch<LoginBloc>().state;
+          child: Listener(
+            onPointerDown: (_) => FocusScope.of(context).unfocus(),
+            behavior: HitTestBehavior.opaque,
+            child: Container(
+              child: Center(
+                child: Builder(
+                  builder: (context) {
+                    final _loginState = context.watch<LoginBloc>().state;
 
-                  // Failed login attempt
-                  if (_loginState is LoginStateLoggedOut) {
-                    return Text('${_loginState.msg}');
-                  }// if
+                    // Failed login attempt
+                    if (_loginState is LoginStateLoggedOut) {
+                      return Text('${_loginState.msg}');
+                    } // if
 
-                  // Normal logged out
-                  return Container();
-                },
+                    // Normal logged out
+                    return Container();
+                  },
+                ),
               ),
             ),
           ),
         ),
-        Container(
-          height: MediaQuery.of(context).size.height * .0475,
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: SizedBox(),
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width * .535,
-                child: FlatButton(
-                  color: kHavenLightGray,
-                  child: Container(
-                    child: Text(
-                      'Login',
-                      style: TextStyle(
-                        letterSpacing: 1.0,
-                        color: Colors.white,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w400,
+        Listener(
+          onPointerDown: (_) => FocusScope.of(context).unfocus(),
+          behavior: HitTestBehavior.opaque,
+          child: Container(
+            height: MediaQuery.of(context).size.height * .0475,
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: SizedBox(),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width * .535,
+                  child: FlatButton(
+                    color: kHavenLightGray,
+                    child: Container(
+                      child: Text(
+                        'Login',
+                        style: TextStyle(
+                          letterSpacing: 1.0,
+                          color: Colors.white,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     ),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(10.0),
-                    side: BorderSide(color: kHavenLightGray),
-                  ),
-                  onPressed: () async {
-                    if (_loginFormKeyEmail.currentState.validate() &&
-                        _loginFormKeyPassword.currentState.validate()) {
-                      BlocProvider.of<LoginBloc>(context).add(
-                          LoginEventLogin(
-                            loginType: LoginType.emailAndPassword,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(10.0),
+                      side: BorderSide(color: kHavenLightGray),
+                    ),
+                    onPressed: () async {
+                      if (_loginFormKeyEmail.currentState.validate() &&
+                          _loginFormKeyPassword.currentState.validate()) {
+                        BlocProvider.of<LoginBloc>(context).add(LoginEventLogin(
+                          loginType: LoginType.emailAndPassword,
                           hashedEmail: emailTextEditingController.text,
                           hashedPassword: passwordTextEditingController.text,
-                      ));
-                    } // if
-                  },
+                        ));
+                      } // if
+                    },
+                  ),
                 ),
-              ),
-              Expanded(child: SizedBox())
-            ],
+                Expanded(
+                  child: Listener(
+                    onPointerDown: (_) => FocusScope.of(context).unfocus(),
+                    behavior: HitTestBehavior.opaque,
+                    child: SizedBox(),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ],

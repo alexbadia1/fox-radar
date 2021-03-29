@@ -13,6 +13,9 @@ class AccountScreen extends StatelessWidget {
       child: Material(
         child: SafeArea(
           child: SlidingUpPanel(
+            onPanelOpened: () {
+              BlocProvider.of<SlidingUpPanelCubit>(context).openPanel();
+            },
             controller: BlocProvider.of<SlidingUpPanelCubit>(context).slidingUpPanelControl,
             minHeight: MediaQuery.of(context).size.height * .0625,
             maxHeight: MediaQuery.of(context).size.height,

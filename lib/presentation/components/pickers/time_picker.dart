@@ -23,7 +23,7 @@ class TimePicker extends StatelessWidget {
           ),
         ),
         child: CupertinoDatePicker(
-          backgroundColor: Color.fromRGBO(24, 24, 24, 1.0),
+          backgroundColor: Colors.transparent,
           mode: CupertinoDatePickerMode.time,
           initialDateTime: initialDateTime,
           onDateTimeChanged: onDateTimeChangedCallback,

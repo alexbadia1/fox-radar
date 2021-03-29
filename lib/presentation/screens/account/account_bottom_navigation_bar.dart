@@ -1,6 +1,5 @@
 import 'package:communitytabs/logic/cubits/cubits.dart';
 import 'package:flutter/material.dart';
-import 'package:communitytabs/data/categoryPanels.dart';
 import 'package:communitytabs/data/expansionTileMetadata.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +9,6 @@ class AccountBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ExpansionTiles _expansionPanels = Provider.of<ExpansionTiles>(context);
-    CategoryPanels categoryPanels = Provider.of<CategoryPanels>(context);
 
     final SlidingUpPanelState _slidingUpPanelState =
         context.watch<SlidingUpPanelCubit>().state;
@@ -56,12 +54,6 @@ class AccountBottomNavigationBar extends StatelessWidget {
                     _expansionPanels.data[0].setHeaderDateValue(currentTime);
                     _expansionPanels.data[0].setHeaderTimeValue(currentTime);
                     _expansionPanels.updateExpansionPanels();
-
-                    /// Remember the original category
-                    categoryPanels
-                            .getCategoryPanels()[0]
-                            .defaultCategoryPicked =
-                        categoryPanels.getCategoryPanels()[0].categoryPicked;
 
                     /// Remember the original Start Date and Time
                     _expansionPanels.originalStartDateAndTime = currentTime;

@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
+import 'package:communitytabs/logic/constants/constants.dart';
 import 'create_event_event.dart';
 import 'create_event_state.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +49,36 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
           createEventSetRawEndDateTime: event);
     } // else-if
 
+    else if (event is CreateEventSetCategory) {
+      yield* _mapCreateEventSetCategoryToState(createEventSetCategory: event);
+    } // else-if
+
+    else if (event is CreateEventAddHighlight) {
+      yield* _mapCreateEventAddHighlightToState(createEventAddHighlight: event);
+    } // else if
+
+    else if (event is CreateEventRemoveHighlight) {
+      yield* _mapCreateEventRemoveHighlightToState(
+          createEventRemoveHighlight: event);
+    } // else if
+
+    else if (event is CreateEventSetHighlight) {
+      yield* _mapCreateEventSetHighlightToState(createEventSetHighlight: event);
+    } // if
+
+    else if (event is CreateEventSetImage) {
+      yield* _mapCreateEventSetImageToState(createEventSetImage: event);
+    } // else-if
+
+    else if (event is CreateEventSetImageFitCover) {
+      yield* _mapCreateEventSetImageFitCoverToState(
+          createEventSetImageFitCover: event);
+    } // else-if
+
+    else if (event is CreateEventSetImagePath) {
+      yield* _mapCreateEventSetImagePathToState(createEventSetImagePath: event);
+    } // else-if
+
     else {
       yield CreateEventInvalid(this._eventModel);
     } // else
@@ -55,7 +87,6 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
   /// Sets the event title
   Stream<CreateEventState> _mapCreateEventSetTitleToState(
       {@required CreateEventSetTitle createEventSetTitle}) async* {
-
     /// Empty Title, set title to empty
     if (createEventSetTitle.newTitle.trim().isEmpty) {
       this._eventModel = this._eventModel.copyWith(title: '');
@@ -63,7 +94,8 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
 
     /// Not empty title, so update the _event
     else {
-      this._eventModel = this._eventModel.copyWith(title: createEventSetTitle.newTitle.trim());
+      this._eventModel =
+          this._eventModel.copyWith(title: createEventSetTitle.newTitle.trim());
     } // else
 
     yield isValid();
@@ -79,7 +111,8 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
 
     /// Not empty host, so update the _event
     else {
-      this._eventModel = this._eventModel.copyWith(host: createEventSetHost.newHost.trim());
+      this._eventModel =
+          this._eventModel.copyWith(host: createEventSetHost.newHost.trim());
     } // else
 
     yield isValid();
@@ -95,7 +128,9 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
 
     /// Not empty location, so update the _event
     else {
-      this._eventModel = this._eventModel.copyWith(location: createEventSetLocation.newLocation.trim());
+      this._eventModel = this
+          ._eventModel
+          .copyWith(location: createEventSetLocation.newLocation.trim());
     } // else
 
     yield isValid();
@@ -111,7 +146,8 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
 
     /// Not empty room, so update the _event
     else {
-      this._eventModel = this._eventModel.copyWith(room: createEventSetRoom.newRoom.trim());
+      this._eventModel =
+          this._eventModel.copyWith(room: createEventSetRoom.newRoom.trim());
     } // else
 
     yield isValid();
@@ -120,7 +156,6 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
   /// Sets the event description
   Stream<CreateEventState> _mapCreateEventSetDescriptionToState(
       {@required CreateEventSetDescription createEventSetDescription}) async* {
-
     /// Empty description, set title to empty
     if (createEventSetDescription.newDescription.trim().isEmpty) {
       this._eventModel = this._eventModel.copyWith(summary: '');
@@ -128,8 +163,9 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
 
     /// Not empty description, so update the _event
     else {
-      this._eventModel = this._eventModel.copyWith(
-          summary: createEventSetDescription.newDescription.trim());
+      this._eventModel = this
+          ._eventModel
+          .copyWith(summary: createEventSetDescription.newDescription.trim());
     } // else
 
     yield isValid();
@@ -137,18 +173,20 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
 
   /// Sets the event start DateTime
   Stream<CreateEventState> _mapCreateEventSetRawStartDateTimeToState(
-      {@required CreateEventSetRawStartDateTime createEventSetRawStartDateTime}) async* {
-
+      {@required
+          CreateEventSetRawStartDateTime
+              createEventSetRawStartDateTime}) async* {
     /// Not empty rawStartDateAndTime, so update the _event
     if (createEventSetRawStartDateTime.newRawStartDateTime != null) {
       this._eventModel = this._eventModel.copyWith(
-          rawStartDateAndTime: createEventSetRawStartDateTime.newRawStartDateTime);
+          rawStartDateAndTime:
+              createEventSetRawStartDateTime.newRawStartDateTime);
     } // if
 
     /// Empty rawStartDateAndTime
     else {
-      this._eventModel = this._eventModel.copyWith(
-          rawStartDateAndTime: DateTime.now());
+      this._eventModel =
+          this._eventModel.copyWith(rawStartDateAndTime: DateTime.now());
     } // else
 
     yield isValid();
@@ -156,15 +194,15 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
 
   /// Sets the event end DateTime
   Stream<CreateEventState> _mapCreateEventSetRawEndDateTimeToState(
-      {@required CreateEventSetRawEndDateTime createEventSetRawEndDateTime}) async* {
-
-    /// Not empty newRawEndDateTime, so update the _event
+      {@required
+          CreateEventSetRawEndDateTime createEventSetRawEndDateTime}) async* {
+    // Not empty newRawEndDateTime, so update the _event
     if (createEventSetRawEndDateTime.newRawEndDateTime != null) {
       this._eventModel = this._eventModel.copyWith(
           rawEndDateAndTime: createEventSetRawEndDateTime.newRawEndDateTime);
     } // if
 
-    /// Empty rawEndDateAndTime
+    // Empty rawEndDateAndTime
     else {
       this._eventModel =
           this._eventModel.copyWith(rawEndDateAndTime: DateTime.now());
@@ -173,17 +211,139 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
     yield isValid();
   } // _mapCreateEventSetRawEndDateTimeToState
 
+  /// Sets the event category
+  Stream<CreateEventState> _mapCreateEventSetCategoryToState(
+      {@required CreateEventSetCategory createEventSetCategory}) async* {
+    // Not empty category, so update the _event
+    if (createEventSetCategory.category != null) {
+      this._eventModel =
+          this._eventModel.copyWith(category: createEventSetCategory.category);
+    } // if
+
+    // Empty category
+    else {
+      this._eventModel = this._eventModel.copyWith(category: ACADEMIC);
+    } // else
+
+    yield isValid();
+  } // _mapCreateEventSetCategoryToState
+
+  /// Add Highlight
+  Stream<CreateEventState> _mapCreateEventAddHighlightToState(
+      {@required CreateEventAddHighlight createEventAddHighlight}) async* {
+    // Dart passes array's like objects, thus you need to "clone" the array
+    // in order to ensure the array being used to create the new event model object is "new"
+    List<String> _highlightList = [];
+    _highlightList.addAll(this._eventModel.getHighlights);
+
+    // Not empty highlight
+    if (createEventAddHighlight.highlight != null) {
+      // TODO: Use a constant for the number of highlights limit, preferably defined in the event model
+      if (_highlightList.length < 6) {
+        _highlightList.add(createEventAddHighlight.highlight);
+        this._eventModel =
+            this._eventModel.copyWith(highlights: _highlightList);
+      } // if
+    } // if
+
+    // Empty highlight
+    else {
+      this._eventModel = this._eventModel.copyWith(highlights: _highlightList);
+    } // else
+
+    yield isValid();
+  } // _mapCreateEventAddHighlightToState
+
+  /// Remove Highlight
+  Stream<CreateEventState> _mapCreateEventRemoveHighlightToState(
+      {@required
+          CreateEventRemoveHighlight createEventRemoveHighlight}) async* {
+    // Dart passes array's like objects, thus you need to "clone" the array
+    // in order to ensure the array being used to create the new event model object is "new"
+    List<String> _highlightList = [];
+    _highlightList.addAll(this._eventModel.getHighlights);
+
+    // Not empty highlight
+    if (createEventRemoveHighlight.index != null) {
+      // TODO: Use a constant for the number of highlights limit, preferably defined in the event model
+      if (_highlightList.length > 0) {
+        _highlightList.removeAt(createEventRemoveHighlight.index);
+        this._eventModel =
+            this._eventModel.copyWith(highlights: _highlightList);
+      } // if
+    } // if
+
+    // Empty highlight
+    else {
+      this._eventModel = this._eventModel.copyWith(highlights: _highlightList);
+    } // else
+
+    yield isValid();
+  } // _mapCreateEventRemoveHighlightToState
+
+  /// Set Highlight
+  Stream<CreateEventState> _mapCreateEventSetHighlightToState(
+      {@required CreateEventSetHighlight createEventSetHighlight}) async* {
+    final List<String> _highlightList = this._eventModel.getHighlights ?? [];
+
+    // Not empty highlight
+    if (createEventSetHighlight.index != null) {
+      _highlightList[createEventSetHighlight.index] =
+          createEventSetHighlight.highlight ?? '';
+      this._eventModel = this._eventModel.copyWith(highlights: _highlightList);
+    } // if
+
+    yield isValid();
+  } // _mapCreateEventSetHighlightToState
+
+  /// Set Image
+  Stream<CreateEventState> _mapCreateEventSetImageToState(
+      {@required CreateEventSetImage createEventSetImage}) async* {
+    final Uint8List _bytes = createEventSetImage.imageBytes;
+
+    // Not empty highlight
+    if (_bytes != null) {
+      this._eventModel = this._eventModel.copyWith(imageBytes: _bytes);
+    } // if
+
+    yield isValid();
+  } // _mapCreateEventSetImageToState
+
+  /// Set Image Fit Cover
+  Stream<CreateEventState> _mapCreateEventSetImageFitCoverToState(
+      {@required
+          CreateEventSetImageFitCover createEventSetImageFitCover}) async* {
+    this._eventModel = this
+        ._eventModel
+        .copyWith(imageFitCover: createEventSetImageFitCover.fitCover);
+
+    yield isValid();
+  } // _mapCreateEventSetImageFitCoverToState
+
+  Stream<CreateEventState> _mapCreateEventSetImagePathToState(
+      {@required CreateEventSetImagePath createEventSetImagePath}) async* {
+    if (createEventSetImagePath.imagePath != null) {
+      this._eventModel = this
+          ._eventModel
+          .copyWith(imagePath: createEventSetImagePath.imagePath);
+    } // if
+
+    yield isValid();
+  } // _mapCreateEventSetImagePathToState
+
   /// Checks if the created event meets the minimal requirements:
   ///   title,
   ///   host,
   ///   location,
   ///   start time.
+  ///   category
   CreateEventState isValid() {
     /// Valid
-    if (this._eventModel.getTitle.trim().isNotEmpty &&
+    if (this._eventModel.myCategory.trim().isNotEmpty &&
+        this._eventModel.getTitle.trim().isNotEmpty &&
         this._eventModel.getHost.trim().isNotEmpty &&
         this._eventModel.getLocation.trim().isNotEmpty &&
-        (this._eventModel.getRawEndDateAndTime != null)) {
+        (this._eventModel.getRawStartDateAndTime != null)) {
       return CreateEventValid(this._eventModel);
     } // if
 
@@ -193,9 +353,30 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
     } // else
   } // isValid
 
+  bool isValidEndDate() {
+    if (this._eventModel.getRawEndDateAndTime == null) {
+      return true;
+    }
+    if (this._eventModel.getRawEndDateAndTime != null) {
+      if (this
+          ._eventModel
+          .getRawStartDateAndTime
+          .isBefore(this._eventModel.getRawEndDateAndTime)) {
+        return true;
+      } // if
+    } // if
+    return false;
+  } // isValidEndDate
+
   @override
   void onChange(Change<CreateEventState> change) {
     print('Create Event Bloc $change');
     super.onChange(change);
   } // onChange
+
+  @override
+  Future<void> close() {
+    print('Create Event Bloc Closed!');
+    return super.close();
+  }
 } // CreateEventBloc

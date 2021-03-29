@@ -1,8 +1,8 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:communitytabs/presentation/routes/navigation_arguments.dart';
 import 'package:communitytabs/presentation/screens/screens.dart';
 import 'package:flutter/material.dart';
-import 'package:communitytabs/screens/screens.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/logic/blocs/blocs.dart';
 
@@ -63,10 +63,34 @@ class RouteGenerator {
         // return MaterialPageRoute(builder: (_) => EventScreen());
         break;
       case "/loading":
-        return MaterialPageRoute(builder: (_) => LoadingScreen());
+        return MaterialPageRoute(builder: (_) => Scaffold(
+          body: SafeArea(
+            child: Container(
+              width: double.infinity,
+              height: double.infinity,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: <Color>[
+                    cWashedRed,
+                    cFullRed,
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),);
         break;
       case "/error":
-        return MaterialPageRoute(builder: (_) => Error());
+        return MaterialPageRoute(builder: (_) => Scaffold(
+            appBar: AppBar(
+              title: Text('Error'),
+            ),
+            body: Center(
+              child: Text('ERROR'),
+            )
+        ));
         break;
       default:
         return null;

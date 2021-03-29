@@ -80,7 +80,6 @@ class DatabaseRepository {
         'summary': newEvent.getSummary ?? '',
         'rawStartDateAndTime': newEvent.getRawStartDateAndTime ?? null,
         'rawEndDateAndTime': newEvent.getRawEndDateAndTime ?? null,
-        'imagePath': newEvent.getImagePath ?? '',
         'imageFitCover': newEvent.getImageFitCover ?? true,
       });
 

@@ -47,7 +47,10 @@ class _SignUpFormState extends State<SignUpForm> {
       children: [
         Expanded(
           flex: 2,
-          child: SizedBox(),
+          child: Listener(
+              onPointerDown: (_) => FocusScope.of(context).unfocus(),
+              behavior: HitTestBehavior.opaque,
+              child: SizedBox()),
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -126,66 +129,76 @@ class _SignUpFormState extends State<SignUpForm> {
         ),
         Expanded(
           flex: 3,
-          child: Container(
-            child: Center(
-              child: Builder(
-                builder: (context) {
-                  final _signUpState = context.watch<SignUpBloc>().state;
+          child: Listener(
+            onPointerDown: (_) =>
+                FocusScope.of(context).unfocus(),
+            behavior: HitTestBehavior.opaque,
+            child: Container(
+              child: Center(
+                child: Builder(
+                  builder: (context) {
+                    final _signUpState = context.watch<SignUpBloc>().state;
 
-                  // Sign up failed
-                  if (_signUpState is SignUpStateFailed) {
-                    return Text('${_signUpState.msg}');
-                  } // if
+                    // Sign up failed
+                    if (_signUpState is SignUpStateFailed) {
+                      return Text('${_signUpState.msg}');
+                    } // if
 
-                  // Normal logged out
-                  return Container();
-                },
+                    // Normal logged out
+                    return Container();
+                  },
+                ),
               ),
             ),
           ),
         ),
-        Container(
-          height: MediaQuery.of(context).size.height * .0475,
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: SizedBox(),
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width * .535,
-                child: FlatButton(
-                  color: kHavenLightGray,
-                  child: Container(
-                    child: Text(
-                      'Sign Up',
-                      style: TextStyle(
-                        letterSpacing: 1.0,
-                        color: Colors.white,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w400,
+        Listener(
+          onPointerDown: (_) =>
+              FocusScope.of(context).unfocus(),
+          behavior: HitTestBehavior.opaque,
+          child: Container(
+            height: MediaQuery.of(context).size.height * .0475,
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: SizedBox(),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width * .535,
+                  child: FlatButton(
+                    color: kHavenLightGray,
+                    child: Container(
+                      child: Text(
+                        'Sign Up',
+                        style: TextStyle(
+                          letterSpacing: 1.0,
+                          color: Colors.white,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(10.0),
+                      side: BorderSide(color: kHavenLightGray),
+                    ),
+                    onPressed: () async {
+                      if (_signUpFormKeyEmail.currentState.validate() &&
+                          _signUpFormKeyPassword.currentState.validate()) {
+                        BlocProvider.of<SignUpBloc>(context).add(
+                          SignUpEventSignUp(
+                            signUpType: SignUpType.emailAndPassword,
+                            hashedEmail: emailTextEditingController.text,
+                            hashedPassword: passwordTextEditingController.text,
+                          ),
+                        );
+                      } // if
+                    },
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(10.0),
-                    side: BorderSide(color: kHavenLightGray),
-                  ),
-                  onPressed: () async {
-                    if (_signUpFormKeyEmail.currentState.validate() &&
-                        _signUpFormKeyPassword.currentState.validate()) {
-                      BlocProvider.of<SignUpBloc>(context).add(
-                        SignUpEventSignUp(
-                          signUpType: SignUpType.emailAndPassword,
-                          hashedEmail: emailTextEditingController.text,
-                          hashedPassword: passwordTextEditingController.text,
-                        ),
-                      );
-                    } // if
-                  },
                 ),
-              ),
-              Expanded(child: SizedBox())
-            ],
+                Expanded(child: SizedBox())
+              ],
+            ),
           ),
         ),
       ],

@@ -48,7 +48,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       children: <Widget>[
                         Expanded(
                           flex: 4,
-                          child: SizedBox(),
+                          child: Listener(onPointerDown: (_) =>
+                              FocusScope.of(context).unfocus(),
+                              behavior: HitTestBehavior.opaque,child: SizedBox()),
                         ),
 
                         Builder(
@@ -59,71 +61,86 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               return Container(height: height * .10);
                             } // if
 
-                            return Container(
-                              height: height * .10,
-                              width: screenWidth * .75,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  IconButton(
-                                    icon: Icon(Icons.chevron_left),
-                                    iconSize: 35.0,
-                                    color: kHavenLightGray,
-                                    onPressed: () {
-                                      FocusScope.of(context).unfocus();
-                                      Navigator.pushReplacementNamed(context, '/login');
-                                    },
-                                  ),
-                                  Container(
-                                    child: InkWell(
-                                      onTap: () {
+                            return Listener(
+                              onPointerDown: (_) =>
+                                  FocusScope.of(context).unfocus(),
+                              behavior: HitTestBehavior.opaque,
+                              child: Container(
+                                height: height * .10,
+                                width: screenWidth * .75,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    IconButton(
+                                      icon: Icon(Icons.chevron_left),
+                                      iconSize: 35.0,
+                                      color: kHavenLightGray,
+                                      onPressed: () {
                                         FocusScope.of(context).unfocus();
                                         Navigator.pushReplacementNamed(context, '/login');
                                       },
-                                      child: Text(
-                                        'Back',
-                                        style: TextStyle(
-                                            fontSize: 22.0,
-                                            color: kHavenLightGray),
+                                    ),
+                                    Container(
+                                      child: InkWell(
+                                        onTap: () {
+                                          FocusScope.of(context).unfocus();
+                                          Navigator.pushReplacementNamed(context, '/login');
+                                        },
+                                        child: Text(
+                                          'Back',
+                                          style: TextStyle(
+                                              fontSize: 22.0,
+                                              color: kHavenLightGray),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             );
                           },
                         ),
 
                         /// Title
-                        Center(
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * .775,
-                            child: Text(
-                              'Sign Up',
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                fontWeight: FontWeight.w400,
-                                fontSize: 44.0,
-                                color: kHavenLightGray,
+                        Listener(
+                          onPointerDown: (_) =>
+                              FocusScope.of(context).unfocus(),
+                          behavior: HitTestBehavior.opaque,
+                          child: Center(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * .775,
+                              child: Text(
+                                'Sign Up',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 44.0,
+                                  color: kHavenLightGray,
+                                ),
                               ),
                             ),
                           ),
                         ),
 
                         /// Subtitle
-                        Center(
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * .75,
-                            child: Text(
-                              'See the latest events!',
-                              textAlign: TextAlign.start,
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16.0,
-                                color: kHavenLightGray,
-                                fontStyle: FontStyle.italic,
+                        Listener(
+                          onPointerDown: (_) =>
+                              FocusScope.of(context).unfocus(),
+                          behavior: HitTestBehavior.opaque,
+                          child: Center(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * .75,
+                              child: Text(
+                                'See the latest events!',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16.0,
+                                  color: kHavenLightGray,
+                                  fontStyle: FontStyle.italic,
+                                ),
                               ),
                             ),
                           ),
@@ -155,34 +172,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   ),
                                   Expanded(
                                     flex: 1,
-                                    child: SizedBox(),
+                                    child: Listener(onPointerDown: (_) =>
+                                        FocusScope.of(context).unfocus(),
+                                        behavior: HitTestBehavior.opaque,child: SizedBox()),
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Text(
-                                        'Already have an account? ',
-                                        style: TextStyle(
-                                          fontSize: 12.0,
-                                        ),
-                                      ),
-                                      InkWell(
-                                        child: Text(
-                                          'Sign In',
+                                  Listener(
+                                    onPointerDown: (_) =>
+                                        FocusScope.of(context).unfocus(),
+                                    behavior: HitTestBehavior.opaque,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text(
+                                          'Already have an account? ',
                                           style: TextStyle(
-                                            fontSize: 14.0,
-                                            fontStyle: FontStyle.italic,
-                                            fontWeight: FontWeight.bold,
-                                            decoration:
-                                                TextDecoration.underline,
+                                            fontSize: 12.0,
                                           ),
                                         ),
-                                        onTap: () {
-                                          FocusScope.of(context).unfocus();
-                                          Navigator.pushReplacementNamed(context, '/login');
-                                        },
-                                      ),
-                                    ],
+                                        InkWell(
+                                          child: Text(
+                                            'Sign In',
+                                            style: TextStyle(
+                                              fontSize: 14.0,
+                                              fontStyle: FontStyle.italic,
+                                              fontWeight: FontWeight.bold,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                            ),
+                                          ),
+                                          onTap: () {
+                                            FocusScope.of(context).unfocus();
+                                            Navigator.pushReplacementNamed(context, '/login');
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               );
@@ -191,10 +215,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         Expanded(
                           flex: 8,
-                          child: SizedBox(),
+                          child: Listener(onPointerDown: (_) =>
+                              FocusScope.of(context).unfocus(),
+                              behavior: HitTestBehavior.opaque,child: SizedBox()),
                         ),
-                        SizedBox(
-                          height: screenInsetsBottom,
+                        Listener(
+                          onPointerDown: (_) =>
+                              FocusScope.of(context).unfocus(),
+                          behavior: HitTestBehavior.opaque,
+                          child: SizedBox(
+                            height: screenInsetsBottom,
+                          ),
                         ),
                       ],
                     ),

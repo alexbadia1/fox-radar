@@ -29,7 +29,16 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     final UserModel user = await _mapSignUpEventSignUpToSignUpMethod(signUpEventSignUp: signUpEvent);
 
     if (user != null) {
-      yield SignUpStateSuccessful();
+
+      UserModel loggedInUser = await authenticationRepository.signInWithEmailAndPassword(signUpEvent.hashedEmail, signUpEvent.hashedPassword);
+
+      if (loggedInUser != null) {
+        yield SignUpStateSuccessful();
+      }// if
+
+      else {
+        yield SignUpStateFailed(msg: 'Sign Up Successful!');
+      }// else
     }// if
     else {
       /// TODO: Indicate if the email already is in use!

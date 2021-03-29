@@ -1,3 +1,6 @@
+import 'dart:ffi';
+import 'dart:typed_data';
+
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
@@ -16,8 +19,9 @@ class EventModel extends ChangeNotifier {
   String _myCategory;
   List<String> _myHighlights;
   String _mySummary;
-  String _imagePath;
+  Uint8List _imageBytes;
   bool _imageFitCover;
+  String _imagePath;
 
   EventModel(
       {String newHost,
@@ -26,12 +30,13 @@ class EventModel extends ChangeNotifier {
         String newRoom,
         String newSummary,
         List<String> newHighlights,
-        String newImagePath,
+        Uint8List newImageBytes,
         String newCategory,
         DateTime newRawStartDateAndTime,
         DateTime newRawEndDateAndTime,
         bool newImageFitCover,
-      String newId}) {
+      String newId,
+      String newImagePath}) {
 
     _id = newId;
     _myHost = newHost;
@@ -44,12 +49,12 @@ class EventModel extends ChangeNotifier {
     _myRoom = newRoom;
     _mySummary = newSummary;
     _myHighlights = newHighlights;
-    _imagePath = newImagePath;
+    _imageBytes = newImageBytes;
     _imageFitCover = newImageFitCover;
     _myCategory = newCategory;
     _rawStartDateAndTime = newRawStartDateAndTime;
     _rawEndDateAndTime = newRawEndDateAndTime;
-    _imageFitCover = false;
+    _imagePath = newImagePath;
   } //full constructor
 
   EventModel.nullConstructor() {
@@ -62,12 +67,14 @@ class EventModel extends ChangeNotifier {
     _myStartTime = '';
     _myEndTime = '';
     _myRoom = '';
+    _myCategory = '';
     _mySummary = '';
     _myHighlights = [];
     _imageFitCover = false;
-    _imagePath = '';
-    _rawStartDateAndTime = null;
+    _imageBytes = null;
+    _rawStartDateAndTime = DateTime.now();
     _rawEndDateAndTime = null;
+    _imagePath = '';
   } ////null constructor
 
   copyWith({
@@ -85,8 +92,9 @@ class EventModel extends ChangeNotifier {
     String category,
     List<String> highlights,
     String summary,
-    String imagePath,
+    Uint8List imageBytes,
     bool imageFitCover,
+    String imagePath,
    }) {
     return EventModel(
       newId: id ?? this._id,
@@ -98,14 +106,15 @@ class EventModel extends ChangeNotifier {
       newCategory: category ?? this._myCategory,
       newHighlights: highlights ?? this._myHighlights,
       newImageFitCover: imageFitCover ?? this._imageFitCover,
-      newImagePath: imagePath ?? this._imagePath,
+      newImageBytes: imageBytes ?? this._imageBytes,
       newRoom: room ?? this._myRoom,
       newSummary: summary ?? this._mySummary,
+      newImagePath: imagePath ?? this._imagePath,
     );
   }// copyWith
 
   bool get getImageFitCover => _imageFitCover;
-  String get getImagePath => _imagePath;
+  Uint8List get getImageBytes => _imageBytes;
   String get getHost => _myHost;
   String get getSummary => _mySummary;
   String get getRoom => _myRoom;
@@ -115,6 +124,7 @@ class EventModel extends ChangeNotifier {
   String get getStartDate => _myStartDate;
   String get getStartTime => _myStartTime;
   String get getTitle => _myTitle;
+  String get getImagePath => _imagePath;
   String get id => _id;
   List<String> get getHighlights => _myHighlights;
   String get myCategory => _myCategory;
@@ -135,6 +145,10 @@ class EventModel extends ChangeNotifier {
 
   void setRawEndDateAndTime(DateTime value) {
     _rawEndDateAndTime = value;
+  }
+
+  void setImageBytes(Uint8List value) {
+    _imageBytes = value;
   }
 
   void setImagePath(String value) {
@@ -184,15 +198,6 @@ class EventModel extends ChangeNotifier {
         "Category: $_myCategory\n"
         "Highlights: $_myHighlights\n"
         "Summary: $_mySummary";
-  }
+  }// toString
 
 } //class
-
-
-class ArtsEventsData extends EventModel {}
-class SportsEventsData extends EventModel {}
-class DiversityEventsData extends EventModel {}
-class StudentEventsData extends EventModel {}
-class FoodEventsData extends EventModel {}
-class GreekEventsData extends EventModel {}
-class SuggestedEventsData extends EventModel {}

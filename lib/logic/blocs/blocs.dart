@@ -3,6 +3,11 @@ library blocs;
 // Authentication
 export 'authentication_blocs/authentication_blocs.dart';
 
+// Device images/photo album
+export 'device_images_bloc.dart';
+export 'device_images_event.dart';
+export 'device_images_state.dart';
+
 // Events
 export 'suggested_events_bloc.dart';
 export 'suggested_events_event.dart';

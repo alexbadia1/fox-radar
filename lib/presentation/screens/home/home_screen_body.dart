@@ -63,15 +63,15 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
             child: Builder(builder: (context) {
               final _suggestedEventsBlocState = context.watch<SuggestedEventsBloc>().state;
 
-              /// Completer will complete when a new SuggestedEventsStateSuccess state is emitted by the bloc.
-              /// Refresh indicator will stay loading until this state changed is observed. Once the Completer
-              /// is completed, a new instance of the Completer is created for the user next reload.
+              // Completer will complete when a new SuggestedEventsStateSuccess state is emitted by the bloc.
+              // Refresh indicator will stay loading until this state changed is observed. Once the Completer
+              // is completed, a new instance of the Completer is created for the user next reload.
               if (_suggestedEventsBlocState is SuggestedEventsStateSuccess) {
                   _refreshCompleter.complete();
                   _refreshCompleter = Completer();
               } // if
 
-              /// Refresh indicator adds a fetch event to the SuggestedEventsBloc then waits for a "Completer" to complete.
+              // Refresh indicator adds a fetch event to the SuggestedEventsBloc then waits for a "Completer" to complete.
               return RefreshIndicator(
                 color: cWhite70,
                 displacement: 15,
@@ -83,7 +83,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                   return _future;
                 },
 
-                /// Scrollbar is placed around the nested scrollview to prevent the scroll bar from overlapping the Appbar.
+                // Scrollbar is placed around the nested scrollview to prevent the scroll bar from overlapping the Appbar.
                 child: Scrollbar(
                   radius: Radius.circular(50.0),
                   child: CustomScrollView(
@@ -91,8 +91,8 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                     physics: AlwaysScrollableScrollPhysics(),
                     slivers: [
 
-                      /// On "App Startup", Make the loading widget take up the whole screen
-                      /// Otherwise, the loading widget should be hidden
+                      // On "App Startup", Make the loading widget take up the whole screen
+                      // Otherwise, the loading widget should be hidden
                       Builder(
                         builder: (context) {
                           final SuggestedEventsState _suggestedEventsState =
@@ -123,12 +123,12 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                         },
                       ),
 
-                      /// A list of buttons that trigger the PageView to go to the next page
-                      /// in the page view and show the appropriate list views
+                      // A list of buttons that trigger the PageView to go to the next page
+                      // in the page view and show the appropriate list views
                       Builder(builder: (context) {
                         final SuggestedEventsState _suggestedEventsState = context.watch<SuggestedEventsBloc>().state;
 
-                        /// Don't show the Category Navigation Menu while retrieving events
+                        // Don't show the Category Navigation Menu while retrieving events
                         if (_suggestedEventsState is SuggestedEventsStateFetching) {
                           return SliverToBoxAdapter(
                             child: Container(
@@ -137,9 +137,9 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                           );
                         } // if
 
-                        /// The Category Navigation Menu is implemented with a SliverGrid wrapped in Sliver Padding.
-                        /// Currently there are 6 Navigation Widgets, however if more categories are to be added,
-                        /// make the SliverGrid scroll horizontally.
+                        // The Category Navigation Menu is implemented with a SliverGrid wrapped in Sliver Padding.
+                        // Currently there are 6 Navigation Widgets, however if more categories are to be added,
+                        // make the SliverGrid scroll horizontally.
                         return SliverPadding(
                           padding: const EdgeInsets.all(12.0),
                           sliver: SliverGrid.count(
@@ -150,11 +150,11 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                             childAspectRatio: 4,
                             children: <Widget>[
 
-                              /// The Navigation Item is a re-usable button
-                              /// Arguments:
-                              ///   [option]: sets the title of the next PageView
-                              ///   [icon]: sets the current icon of the navigation button
-                              ///   [gradient]: an image that sets the background for the navigation button
+                              // The Navigation Item is a re-usable button
+                              // Arguments:
+                              //   [option]: sets the title of the next PageView
+                              //   [icon]: sets the current icon of the navigation button
+                              //   [gradient]: an image that sets the background for the navigation button
                               CategoryNavigationButton(
                                   category: 'Arts',
                                   icon: Icons.palette,
@@ -186,9 +186,9 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
 
                       SliverListHeader(),
 
-                      /// List of events implemented with SliverList.
-                      /// Sliver List receives data from the SuggestedEventsBloc and builds "Event Cards"
-                      /// for each event, with the last widget being a loading widget if necessary
+                      // List of events implemented with SliverList.
+                      // Sliver List receives data from the SuggestedEventsBloc and builds "Event Cards"
+                      // for each event, with the last widget being a loading widget if necessary
                       Builder(
                         builder: (context) {
                           final _suggestedEventsState = context.watch<SuggestedEventsBloc>().state;
@@ -207,8 +207,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                                   } // if
                                   else {
                                     return Builder(builder: (context) {
-                                      final SuggestedEventsState
-                                      _nestedSuggestedEventsState = context.watch<SuggestedEventsBloc>().state;
+                                      final SuggestedEventsState _nestedSuggestedEventsState = context.watch<SuggestedEventsBloc>().state;
                                       if (_nestedSuggestedEventsState is SuggestedEventsStateSuccess) {
                                         if (!_nestedSuggestedEventsState.maxEvents) {
                                           return BottomLoadingWidget();
@@ -229,12 +228,12 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                             );
                           } // if
 
-                          /// Kindly tell the user there are no events
+                          // Kindly tell the user there are no events
                           else if (_suggestedEventsState is SuggestedEventsStateFailed) {
                             return SliverFillRemaining(child: Center(child: Text('Looks Like Nothing\'s Going On?')));
                           }// if
 
-                          /// Something went wrong
+                          // Something went wrong
                           else {
                             return SliverFillRemaining(child: Center(child: Text('Something Went Wrong Oops!')));
                           } // else

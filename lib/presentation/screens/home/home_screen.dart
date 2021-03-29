@@ -16,6 +16,9 @@ class HomeScreen extends StatelessWidget {
           child: BlocProvider(
             create: (context) => HomePageViewCubit(),
             child: SlidingUpPanel(
+              onPanelOpened: () {
+                BlocProvider.of<SlidingUpPanelCubit>(context).openPanel();
+              },
               controller: BlocProvider.of<SlidingUpPanelCubit>(context)
                   .slidingUpPanelControl,
               minHeight: MediaQuery.of(context).size.height * .0625,

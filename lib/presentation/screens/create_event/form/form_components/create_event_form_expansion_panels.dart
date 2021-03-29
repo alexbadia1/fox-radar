@@ -64,56 +64,57 @@ class ExpansionPanelDateTime extends StatelessWidget {
   Widget build(BuildContext context) {
     /// TODO: Make Animation look like the Expansion Tile Animation
     /// Probably involves manipulating the height of the container.
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 300),
-      child: Column(
-        children: [
-          GestureDetector(
-            onTap: this.onTap,
-            child: Container(
-              height: this.height,
-              width: double.infinity,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  cLeftMarginSmall(context),
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: this.onTap,
+          child: Container(
+            height: this.height,
+            width: double.infinity,
+            color: Color.fromRGBO(33, 33, 33, 1.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                cLeftMarginSmall(context),
 
-                  // Leading text, for hint text
-                  ExpansionPanelTitle(
-                    title: this.title,
-                    hintText: this.hintText,
-                    retrieveDateTimeFromBlocCallback: (CreateEventState state) {
-                      return this.titleLabelCallback(state);
-                    },
-                  ),
+                // Leading text, for hint text
+                ExpansionPanelDateTimeTitle(
+                  title: this.title,
+                  hintText: this.hintText,
+                  retrieveDateTimeFromBlocCallback: (CreateEventState state) {
+                    return this.titleLabelCallback(state);
+                  },
+                ),
 
-                  Expanded(child: SizedBox()),
+                Expanded(child: SizedBox()),
 
-                  // Trailing text for date and time label
-                  Row(
-                    children: <Widget>[
-                      ExpansionPanelDateLabel(
-                        retrieveDateTimeFromBlocCallback:
-                            (CreateEventState state) {
-                          return this.dateLabelCallback(state);
-                        },
-                      ),
-                      Container(
-                          width: MediaQuery.of(context).size.width * .03225),
-                      ExpansionPanelTimeLabel(
-                        retrieveDateTimeFromBlocCallback:
-                            (CreateEventState state) {
-                          return this.timeLabelCallback(state);
-                        },
-                      ),
-                    ],
-                  ),
-                  cRightMarginSmall(context),
-                ],
-              ),
+                // Trailing text for date and time label
+                Row(
+                  children: <Widget>[
+                    ExpansionPanelDateLabel(
+                      retrieveDateTimeFromBlocCallback:
+                          (CreateEventState state) {
+                        return this.dateLabelCallback(state);
+                      },
+                    ),
+                    Container(
+                        width: MediaQuery.of(context).size.width * .03225),
+                    ExpansionPanelTimeLabel(
+                      retrieveDateTimeFromBlocCallback:
+                          (CreateEventState state) {
+                        return this.timeLabelCallback(state);
+                      },
+                    ),
+                  ],
+                ),
+                cRightMarginSmall(context),
+              ],
             ),
           ),
-          Column(
+        ),
+        Container(
+          color: Color.fromRGBO(33, 33, 33, 1.0),
+          child: Column(
             children: <Widget>[
               Builder(builder: (context) {
                 final DateTimePickerState _expansionPanelCubitState =
@@ -154,6 +155,7 @@ class ExpansionPanelDateTime extends StatelessWidget {
 
               // DateTime navigation buttons
               Container(
+                color: Color.fromRGBO(33, 33, 33, 1.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
@@ -216,8 +218,8 @@ class ExpansionPanelDateTime extends StatelessWidget {
               ),
             ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   } // build
 } //

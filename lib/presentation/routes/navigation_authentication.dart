@@ -62,7 +62,14 @@ class RouteGeneratorAuthentication {
         );
         break;
       default:
-        return null;
+        return MaterialPageRoute(builder: (_) => Scaffold(
+            appBar: AppBar(
+              title: Text('Error'),
+            ),
+            body: Center(
+              child: Text('ERROR'),
+            )
+        ));;
         break;
     } // switch
   } // onGenerateRoute
