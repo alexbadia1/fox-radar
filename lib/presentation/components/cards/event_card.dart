@@ -107,7 +107,7 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
                       TextSpan(
                           text: this.widget.newSearchResult.myStartDate,
                           style: TextStyle(color: cWhite70, fontSize: 10.0)),
-                      TextSpan(text: ' - '),
+                      TextSpan(text: ' '),
                       TextSpan(
                           text: this.widget.newSearchResult.myStartTime,
                           style: TextStyle(color: cWhite70, fontSize: 10.0))

@@ -43,7 +43,8 @@ class MaristSliverAppBar extends StatelessWidget {
         height: MediaQuery.of(context).size.height * 0.0725,
         child: Stack(
           children: <Widget>[
-            _backgroundImage,
+            /// TODO: Figure out how to load this faster!
+            // _backgroundImage,
             Container(
               decoration: BoxDecoration(gradient: cMaristGradientWashed),
             ),

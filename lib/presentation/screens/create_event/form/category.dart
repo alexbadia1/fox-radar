@@ -38,7 +38,7 @@ class Category extends StatelessWidget {
                           // Leading text, for hint text
                           ExpansionPanelCategoryTitle(
                             title: 'Category',
-                            hintText: 'Add Category',
+                            hintText: 'Add Category (Required)',
                             retrieveCategoryFromBlocCallback: (state) {
                               return state.eventModel.myCategory;
                             },

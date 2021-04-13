@@ -71,14 +71,14 @@ class FetchFullEventSuccess extends FetchFullEventState {
       if (this.end != null) {
         if (myCurrent.isBefore(this.end)) {
           startSubtitle =
-              'Started since ${event.getStartTime} $this.formattedStartDate';
+              'Started since ${event.getStartTime} ${this.formattedStartDate}';
           endSubtitle = 'Ends at ${event.getEndTime} $formattedEndDate';
         } else {
           startSubtitle = 'Ended since ${event.getEndTime} $formattedEndDate ';
         }
       } else {
         startSubtitle =
-            'Started since ${event.getStartTime} $this.formattedStartDate';
+            'Started since ${event.getStartTime} ${this.formattedStartDate}';
       }
     } else {
       startSubtitle = 'Ended since ${event.getEndTime} $formattedEndDate ';

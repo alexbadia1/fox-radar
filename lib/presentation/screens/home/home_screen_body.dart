@@ -78,7 +78,6 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                 backgroundColor: Colors.transparent,
                 onRefresh: () async {
                   BlocProvider.of<SuggestedEventsBloc>(context).add(SuggestedEventsEventReload());
-                  print('Added Event');
                   final _future = await _refreshCompleter.future;
                   return _future;
                 },

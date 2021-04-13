@@ -26,11 +26,6 @@ class EventScreen extends StatelessWidget {
     final screenInsetsBottom = MediaQuery.of(context).viewInsets.bottom;
     final screenPaddingTop = MediaQuery.of(context).padding.top;
 
-    final height = screenHeight -
-        screenPaddingTop -
-        screenPaddingBottom +
-        screenInsetsBottom;
-
     return BlocProvider(
       create: (context) => FetchFullEventCubit(
           db: RepositoryProvider.of<DatabaseRepository>(context))
