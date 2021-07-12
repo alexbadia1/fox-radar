@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:typed_data';
 
 import 'package:intl/intl.dart';
@@ -77,6 +76,17 @@ class EventModel extends ChangeNotifier {
     _imagePath = '';
   } ////null constructor
 
+  /// Name: copyWith
+  ///
+  /// Description: copies all of the objects attributes
+  ///              into a new instance of the object, allowing
+  ///              specified attributes to be changed while copying.
+  ///
+  /// Design Notes: Null values are used to indicate to copy
+  ///               previous attributes to the new object instance
+  ///
+  ///               Pass in empty strings to end date and end time, to set
+  ///               rawEndDateAndTime to null.
   copyWith({
     String id,
     DateTime rawStartDateAndTime,
@@ -96,10 +106,23 @@ class EventModel extends ChangeNotifier {
     bool imageFitCover,
     String imagePath,
    }) {
+
+
+    // Use previous rawEndDateAndTime
+    if (rawEndDateAndTime == null) {
+      rawEndDateAndTime = this._rawEndDateAndTime;
+    }// if
+
+    // If the endDate and endTime are set to empty string
+    // Override the rawEndDateAndTime to 'null'
+    if (endDate == '' && endTime == '') {
+      rawEndDateAndTime = null;
+    }// if
+
     return EventModel(
       newId: id ?? this._id,
       newRawStartDateAndTime: rawStartDateAndTime ?? this._rawStartDateAndTime,
-      newRawEndDateAndTime: rawEndDateAndTime ?? this._rawEndDateAndTime,
+      newRawEndDateAndTime: rawEndDateAndTime,
       newTitle: title ?? this._myTitle,
       newHost: host ?? this._myHost,
       newLocation: location ?? this._myLocation,
