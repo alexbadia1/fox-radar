@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:communitytabs/data/pageViewMetadata.dart';
 
 // class PreviousOrCloseButton extends StatefulWidget {
 //   @override

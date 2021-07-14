@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
-import 'package:communitytabs/data/expansionTileMetadata.dart';
 import 'package:communitytabs/data/selectedImageModel.dart';
 import 'package:communitytabs/presentation/routes/navigation_marist_app.dart';
 
@@ -19,16 +18,6 @@ class MaristApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         BlocProvider<SlidingUpPanelCubit>(create: (context) => SlidingUpPanelCubit()),
-        //FutureProvider<Directory>.value(value: _newCacheDir()),
-        //Provider<FirebaseStorage>.value(value: FirebaseStorage(storageBucket: 'gs://maristcommunitytabs.appspot.com')),
-        // StreamProvider<User>.value(value: AuthService().user),
-        // ChangeNotifierProvider<DatabaseService>(create: (context) => DatabaseService()),
-        // ChangeNotifierProvider<PageViewMetaData>(
-        //   create: (context) => PageViewMetaData(),
-        // ),
-        ChangeNotifierProvider<ExpansionTiles>(
-          create: (context) => ExpansionTiles(),
-        ),
         ChangeNotifierProvider<SelectedImageModel>(
           create: (context) => SelectedImageModel(),
         ),

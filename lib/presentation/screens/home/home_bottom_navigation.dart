@@ -1,6 +1,5 @@
 import 'package:communitytabs/logic/cubits/cubits.dart';
 import 'package:flutter/material.dart';
-import 'package:communitytabs/data/expansionTileMetadata.dart';
 import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +7,6 @@ import 'package:provider/provider.dart';
 class HomeBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    ExpansionTiles _expansionPanels = Provider.of<ExpansionTiles>(context);
     HomePageViewCubit _homePageViewCubit = BlocProvider.of<HomePageViewCubit>(context);
 
     final SlidingUpPanelState _slidingUpPanelState =
@@ -30,6 +28,7 @@ class HomeBottomNavigationBar extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
+              /// This does nothing, since this is the Home Screen
               IconButton(
                   icon: Icon(Icons.home),
                   color: kHavenLightGray,
@@ -41,23 +40,18 @@ class HomeBottomNavigationBar extends StatelessWidget {
                       _homePageViewCubit.animateToHomePage();
                     } // if
                   }),
+
+              /// This button opens the sliding up panel
               IconButton(
                   icon: Icon(Icons.add),
                   color: kHavenLightGray,
                   splashColor: kActiveHavenLightGray,
                   onPressed: () {
-                    DateTime currentTime = DateTime.now();
-
-                    /// Open the panel
                     BlocProvider.of<SlidingUpPanelCubit>(context).openPanel();
+                  },
+              ),
 
-                    _expansionPanels.data[0].setHeaderDateValue(currentTime);
-                    _expansionPanels.data[0].setHeaderTimeValue(currentTime);
-                    _expansionPanels.updateExpansionPanels();
-
-                    /// Remember the original Start Date and Time
-                    _expansionPanels.originalStartDateAndTime = currentTime;
-                  }),
+              /// This button navigates to the Account Screen
               IconButton(
                   icon: Icon(Icons.person),
                   color: kHavenLightGray,
@@ -76,7 +70,9 @@ class HomeBottomNavigationBar extends StatelessWidget {
       return Container(
           child: Center(
               child: Text(
-                  'Sliding Up Panel Cubit did not return a state that is either open or closed!')));
+                  'Sliding Up Panel Cubit did not return a state that is either open or closed!'),
+          ),
+      );
     } // else
   }
 }
