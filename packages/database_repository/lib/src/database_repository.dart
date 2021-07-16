@@ -52,6 +52,15 @@ class DatabaseRepository {
     }// catch
   } // getImageFromStorage
 
+  Future<TaskSnapshot> uploadImageToStorage({@required String path, @required Uint8List imageBytes}) async {
+    try {
+      return await FirebaseStorage.instance.ref().child(path).putData(imageBytes);
+    }// try
+    catch (e) {
+      return null;
+    }// catch
+  } // uploadImageToStorage
+
   // Creates an empty document in the firestore cloud storage
   // Retrieves the id of the new empty document for later use
   // Uses the retrieve key to update the empty doc with the new data

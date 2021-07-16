@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 import 'package:calender_strip_fixed/calendar_strip.dart';
-import 'package:communitytabs/constants/marist_color_scheme.dart';
 
 typedef OnDateSelectedCallback = void Function(DateTime dateTime);
 typedef UpdateBlocCallback = void Function(DateTime dateTime);

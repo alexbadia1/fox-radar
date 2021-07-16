@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'category_screen_body_list.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:communitytabs/logic/blocs/blocs.dart';
-import 'package:communitytabs/logic/cubits/cubits.dart';
+import 'package:communitytabs/logic/logic.dart';
 import 'package:database_repository/database_repository.dart';
-import 'package:communitytabs/constants/marist_color_scheme.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 
 /*
 category_screen_body.dart

@@ -1,8 +1,5 @@
-import 'package:communitytabs/buttons/maristFoxLogo.dart';
-import 'package:communitytabs/components/account/accountDrawerContents.dart';
-import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:communitytabs/presentation/components/sliver_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 
 class AccountScreenBody extends StatefulWidget {
   @override

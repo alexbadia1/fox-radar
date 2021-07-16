@@ -212,15 +212,18 @@ class EventModel extends ChangeNotifier {
 
   @override
   String toString() {
-    return "Title: $_myTitle\n"
-        "Host: $_myHost\n"
-        "Location: $_myLocation\n"
-        "Room: $_myRoom\n"
-        "Start: $_rawStartDateAndTime\n"
-        "End: $_rawEndDateAndTime\n"
-        "Category: $_myCategory\n"
-        "Highlights: $_myHighlights\n"
-        "Summary: $_mySummary";
+    return "Id: $_id"
+        "\nTitle: $_myTitle"
+        "\nHost: $_myHost"
+        "\nLocation: $_myLocation"
+        "\nRoom: $_myRoom"
+        "\nStart: $_rawStartDateAndTime"
+        "\nEnd: $_rawEndDateAndTime"
+        "\nCategory: $_myCategory"
+        "\nHighlights: $_myHighlights"
+        "\nSummary: $_mySummary"
+        "\nImage Path: $_imagePath"
+        "\nImage Bytes $_imageBytes";
   }// toString
 
 } //class

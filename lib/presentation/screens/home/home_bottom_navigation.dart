@@ -1,8 +1,7 @@
-import 'package:communitytabs/logic/cubits/cubits.dart';
 import 'package:flutter/material.dart';
-import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
+import 'package:communitytabs/logic/logic.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 
 class HomeBottomNavigationBar extends StatelessWidget {
   @override

@@ -1,12 +1,11 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:communitytabs/logic/blocs/blocs.dart';
-import 'package:communitytabs/presentation/screens/create_event/image/selected_image.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:communitytabs/logic/logic.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 
 class CreateEventImage extends StatefulWidget {
   @override

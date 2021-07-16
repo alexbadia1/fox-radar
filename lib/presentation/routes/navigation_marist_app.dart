@@ -1,10 +1,8 @@
-import 'package:authentication_repository/authentication_repository.dart';
-import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:communitytabs/presentation/routes/navigation_arguments.dart';
-import 'package:communitytabs/presentation/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:communitytabs/logic/blocs/blocs.dart';
+import 'package:communitytabs/logic/logic.dart';
+import 'package:communitytabs/presentation/presentation.dart';
+import 'package:authentication_repository/authentication_repository.dart';
 
 class RouteGenerator {
   final AuthenticationRepository authenticationRepository;

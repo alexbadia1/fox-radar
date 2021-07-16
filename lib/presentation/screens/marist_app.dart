@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
-import 'package:communitytabs/data/selectedImageModel.dart';
 import 'package:communitytabs/presentation/routes/navigation_marist_app.dart';
 
 class MaristApp extends StatelessWidget {
@@ -18,9 +17,6 @@ class MaristApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         BlocProvider<SlidingUpPanelCubit>(create: (context) => SlidingUpPanelCubit()),
-        ChangeNotifierProvider<SelectedImageModel>(
-          create: (context) => SelectedImageModel(),
-        ),
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: true,

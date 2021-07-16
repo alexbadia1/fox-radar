@@ -1,7 +1,8 @@
-import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:communitytabs/logic/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:communitytabs/logic/logic.dart';
+import 'package:communitytabs/presentation/presentation.dart';
+
 
 /// An option callback when the currently centered item changes.
 ///

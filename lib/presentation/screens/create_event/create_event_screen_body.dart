@@ -1,12 +1,8 @@
-import 'file:///C:/Users/18454/AndroidStudioProjects/Marist_Community_Tabs/lib/presentation/screens/create_event/image/create_event_image.dart';
-import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:communitytabs/logic/cubits/create_event_page_view_cubit.dart';
-import 'form/form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/logic/logic.dart';
 import 'package:database_repository/database_repository.dart';
-import 'package:communitytabs/presentation/buttons/buttons.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 
 class CreateEventBody extends StatelessWidget {
   @override
@@ -59,7 +55,8 @@ class CreateEventBody extends StatelessWidget {
                               final createEventState = context
                                   .watch<CreateEventPageViewCubit>()
                                   .state;
-                              if (createEventState is CreateEventPageViewEventPhoto) {
+                              if (createEventState
+                                  is CreateEventPageViewEventPhoto) {
                                 return CustomBackButton(
                                     onBack: () => BlocProvider.of<
                                             CreateEventPageViewCubit>(context)
@@ -163,6 +160,45 @@ class CreateEventBody extends StatelessWidget {
                           ),
                           // UploadImage(),
                           Builder(builder: (context) {
+                            final createEventState =
+                                context.watch<CreateEventPageViewCubit>().state;
+
+                            /// Currently on the Event Photo Page
+                            /// Show a "post" button in the top right.
+                            if (createEventState
+                                is CreateEventPageViewEventPhoto) {
+                              return CustomCreateButton(
+                                onCreate: () async {
+                                  // Show loading widget
+
+                                  // Get database reference and event object from create event BloC
+                                  DatabaseRepository db = BlocProvider.of<CreateEventBloc>(context).db;
+                                  EventModel newEventModel = BlocProvider.of<CreateEventBloc>(context).state.eventModel;
+                                  print("Submitting Event: ${newEventModel.toString()}");
+
+                                  String createEventId = await db.insertNewEventToEventsCollection(newEvent: newEventModel);
+                                  print('events/$createEventId.jpg');
+
+                                  // Upload new event data to the firebase cloud search events document
+                                  if (createEventId != null) {
+                                    db.insertNewEventToSearchableCollection(newEvent: newEventModel);
+                                  } // if
+
+                                  // Upload image bytes to firebase storage bucket using
+                                  // the new event's document id as a the name for the image.
+                                  if (createEventId != null) {
+                                    String filePath = 'events/$createEventId.jpg';
+                                    db.uploadImageToStorage(
+                                        path: filePath,
+                                        imageBytes: newEventModel.getImageBytes
+                                    );
+                                  } // if
+                                }, // onCreate
+                              );
+                            } // if
+
+                            /// Currently on the Event Form Page
+                            /// Show a "next" button in the top right.
                             return CustomNextButton(
                               onClose: () {
                                 FocusScope.of(context).unfocus();
@@ -205,7 +241,6 @@ class CreateEventBody extends StatelessWidget {
                 Expanded(
                   child: Builder(
                     builder: (context) {
-
                       // Logic for controlling the Create Event Page View
                       // is stored in the "CreateEventPageViewBlock"
                       return PageView(

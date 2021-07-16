@@ -1,13 +1,9 @@
 import 'dart:typed_data';
-import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:communitytabs/logic/cubits/fetch_event_cubit.dart';
-import 'package:communitytabs/logic/cubits/fetch_event_state.dart';
-import 'package:database_repository/database_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
+import 'package:communitytabs/logic/logic.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'event.dart';
+import 'package:database_repository/database_repository.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 
 class EventScreen extends StatelessWidget {
   final String eventId;

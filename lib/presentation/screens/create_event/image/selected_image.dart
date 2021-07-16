@@ -1,15 +1,15 @@
-import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:communitytabs/logic/blocs/blocs.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:communitytabs/logic/logic.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 
 class SelectedImage extends StatefulWidget {
   @override
   _SelectedImageState createState() => _SelectedImageState();
-}
+}// SelectedImage
 
 class _SelectedImageState extends State<SelectedImage> {
   ImagePicker picker;

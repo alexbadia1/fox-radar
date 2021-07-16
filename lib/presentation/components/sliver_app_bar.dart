@@ -1,7 +1,6 @@
-import 'package:communitytabs/buttons/maristFoxLogo.dart';
-import 'package:communitytabs/presentation/buttons/searchButton.dart';
-import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:communitytabs/presentation/presentation.dart';
+
 
 class MaristSliverAppBarTitle extends StatelessWidget {
   final String title;

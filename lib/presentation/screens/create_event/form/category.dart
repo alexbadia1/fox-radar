@@ -1,13 +1,7 @@
-import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:communitytabs/logic/blocs/blocs.dart';
-import 'package:communitytabs/logic/constants/constants.dart';
-import 'package:communitytabs/presentation/components/pickers/category_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:communitytabs/logic/cubits/cubits.dart';
-
-import 'form_components/create_event_form_expansion_panel_buttons.dart';
-import 'form_components/create_event_form_expansion_panel_labels.dart';
+import 'package:communitytabs/logic/logic.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 
 class Category extends StatelessWidget {
   @override

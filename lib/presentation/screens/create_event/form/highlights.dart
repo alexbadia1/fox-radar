@@ -1,10 +1,9 @@
 import 'package:collection/collection.dart';
-import 'form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:communitytabs/logic/blocs/blocs.dart';
+import 'package:communitytabs/logic/logic.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:communitytabs/constants/marist_color_scheme.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 
 class Highlights extends StatelessWidget {
   @override
