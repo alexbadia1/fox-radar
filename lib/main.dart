@@ -1,20 +1,14 @@
-import 'package:photo_manager/photo_manager.dart';
-
-import 'logic/blocs/blocs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:communitytabs/logic/logic.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:database_repository/database_repository.dart';
-import 'package:communitytabs/presentation/screens/screens.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 
 /*
-Author: Alex Badia
-Purpose: To learn Flutter Development
-Observations:
  1.) Flutter recommends Algolia for more advanced search functions and queries
  2.) Implement an sql lite db as a cache
- 3.) Implement state management and architecture... perhaps bloc/cubits?
  */
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

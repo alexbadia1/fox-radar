@@ -10,7 +10,7 @@ import 'package:communitytabs/presentation/presentation.dart';
 class CreateEventImage extends StatefulWidget {
   @override
   _CreateEventImageState createState() => _CreateEventImageState();
-}
+} // CreateEventImage
 
 class _CreateEventImageState extends State<CreateEventImage> {
   File pickedImage;
@@ -92,13 +92,14 @@ class _CreateEventImageState extends State<CreateEventImage> {
           child: NotificationListener<ScrollNotification>(
             onNotification: (ScrollNotification scroll) {
               final state = BlocProvider.of<DeviceImagesBloc>(context).state;
-              if (scroll.metrics.pixels / scroll.metrics.maxScrollExtent > 0.33) {
+              if (scroll.metrics.pixels / scroll.metrics.maxScrollExtent >
+                  0.33) {
                 if (state is DeviceImagesStateSuccess) {
                   if (!state.maxImages) {
-                    BlocProvider.of<DeviceImagesBloc>(context).add(
-                        DeviceImagesEventFetch());
-                  }// if
-                }// if
+                    BlocProvider.of<DeviceImagesBloc>(context)
+                        .add(DeviceImagesEventFetch());
+                  } // if
+                } // if
               } // if
               return;
             },
@@ -128,12 +129,18 @@ class _CreateEventImageState extends State<CreateEventImage> {
                       childAspectRatio: 1.1,
                     ),
                     itemBuilder: (BuildContext context, int index) {
-                      final Uint8List _imageBytes = deviceImagesBlocState.images[index].readAsBytesSync();
+                      final Uint8List _imageBytes =
+                          deviceImagesBlocState.images[index].readAsBytesSync();
                       return GestureDetector(
                         onTap: () {
-                          BlocProvider.of<CreateEventBloc>(context).add(CreateEventSetImage(imageBytes: _imageBytes));
-                          BlocProvider.of<CreateEventBloc>(context).add(CreateEventSetImageFitCover(fitCover: false));
-                          BlocProvider.of<CreateEventBloc>(context).add(CreateEventSetImagePath(imagePath: deviceImagesBlocState.images[index].path));
+                          BlocProvider.of<CreateEventBloc>(context).add(
+                              CreateEventSetImage(imageBytes: _imageBytes));
+                          BlocProvider.of<CreateEventBloc>(context).add(
+                              CreateEventSetImageFitCover(fitCover: false));
+                          BlocProvider.of<CreateEventBloc>(context).add(
+                              CreateEventSetImagePath(
+                                  imagePath: deviceImagesBlocState
+                                      .images[index].path));
                         },
                         child: Image.memory(
                           _imageBytes,
@@ -157,20 +164,22 @@ class _CreateEventImageState extends State<CreateEventImage> {
             onPressed: () {
               FocusScope.of(context).unfocus();
             },
-            child: Text('Gallery',
-                style: TextStyle(color: true ? cWhite100 : cWhite70)),
+            child: Text('Gallery', style: TextStyle(color: cWhite100)),
           ),
           RawMaterialButton(
-            child: Text('Camera',
-                style: TextStyle(color: false ? cWhite100 : cWhite70)),
+            child: Text('Camera', style: TextStyle(color: cWhite70)),
             onPressed: () async {
               FocusScope.of(context).unfocus();
-              PickedFile image = await picker.getImage(source: ImageSource.camera);
+              PickedFile image =
+                  await picker.getImage(source: ImageSource.camera);
               if (image != null) {
                 final bytes = await image.readAsBytes();
-                BlocProvider.of<CreateEventBloc>(context).add(CreateEventSetImage(imageBytes: bytes));
-                BlocProvider.of<CreateEventBloc>(context).add(CreateEventSetImagePath(imagePath: image.path));
-                BlocProvider.of<CreateEventBloc>(context).add(CreateEventSetImageFitCover(fitCover: false));
+                BlocProvider.of<CreateEventBloc>(context)
+                    .add(CreateEventSetImage(imageBytes: bytes));
+                BlocProvider.of<CreateEventBloc>(context)
+                    .add(CreateEventSetImagePath(imagePath: image.path));
+                BlocProvider.of<CreateEventBloc>(context)
+                    .add(CreateEventSetImageFitCover(fitCover: false));
               } // if
             },
           ),
@@ -180,5 +189,5 @@ class _CreateEventImageState extends State<CreateEventImage> {
         height: MediaQuery.of(context).size.height * .0325,
       ),
     ]);
-  }
-}
+  } // build
+} // _CreateEventImageState

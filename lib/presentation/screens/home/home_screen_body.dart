@@ -96,7 +96,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                               context.watch<SuggestedEventsBloc>().state;
                           if (_suggestedEventsState
                               is SuggestedEventsStateFetching) {
-                            return SliverToBoxAdapter(
+                            return SliverFillRemaining(
                               child: Container(
                                 height: _realHeight -
                                     MediaQuery.of(context).size.height * .0625 -

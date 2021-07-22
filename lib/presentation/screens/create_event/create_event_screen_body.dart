@@ -168,31 +168,26 @@ class CreateEventBody extends StatelessWidget {
                             if (createEventState
                                 is CreateEventPageViewEventPhoto) {
                               return CustomCreateButton(
-                                onCreate: () async {
-                                  // Show loading widget
+                                onCreate: () {
+                                  // Close keyboard
+                                  FocusScope.of(context).unfocus();
 
-                                  // Get database reference and event object from create event BloC
-                                  DatabaseRepository db = BlocProvider.of<CreateEventBloc>(context).db;
-                                  EventModel newEventModel = BlocProvider.of<CreateEventBloc>(context).state.eventModel;
-                                  print("Submitting Event: ${newEventModel.toString()}");
+                                  // Close the sliding up panel, and destroy CreateEventBloc
+                                  BlocProvider.of<SlidingUpPanelCubit>(context).closePanel();
 
-                                  String createEventId = await db.insertNewEventToEventsCollection(newEvent: newEventModel);
-                                  print('events/$createEventId.jpg');
+                                  // Navigate to the account screen
+                                  Navigator.pushNamed(context, '/account');
 
-                                  // Upload new event data to the firebase cloud search events document
-                                  if (createEventId != null) {
-                                    db.insertNewEventToSearchableCollection(newEvent: newEventModel);
-                                  } // if
-
-                                  // Upload image bytes to firebase storage bucket using
-                                  // the new event's document id as a the name for the image.
-                                  if (createEventId != null) {
-                                    String filePath = 'events/$createEventId.jpg';
-                                    db.uploadImageToStorage(
-                                        path: filePath,
-                                        imageBytes: newEventModel.getImageBytes
-                                    );
-                                  } // if
+                                  // Add an upload event to upload event bloc
+                                  BlocProvider.of<UploadEventBloc>(context).add(
+                                    UploadEventUpload(
+                                      newEventModel:
+                                          BlocProvider.of<CreateEventBloc>(
+                                                  context)
+                                              .state
+                                              .eventModel,
+                                    ),
+                                  );
                                 }, // onCreate
                               );
                             } // if

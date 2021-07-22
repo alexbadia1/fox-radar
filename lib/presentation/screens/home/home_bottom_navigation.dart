@@ -56,7 +56,7 @@ class HomeBottomNavigationBar extends StatelessWidget {
                   color: kHavenLightGray,
                   splashColor: kActiveHavenLightGray,
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/account');
+                    Navigator.pushNamed(context, '/account');
                   }),
             ],
           ),

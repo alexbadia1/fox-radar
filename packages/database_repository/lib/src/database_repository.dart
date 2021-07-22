@@ -52,9 +52,15 @@ class DatabaseRepository {
     }// catch
   } // getImageFromStorage
 
-  Future<TaskSnapshot> uploadImageToStorage({@required String path, @required Uint8List imageBytes}) async {
+  /// Name: uploadImageToStorage
+  ///
+  /// Description: Attempts to upload an image to firebase storage using the
+  ///              document id of the event.
+  ///
+  /// Returns: an listenable upload task
+  UploadTask uploadImageToStorage({@required String path, @required Uint8List imageBytes}) {
     try {
-      return await FirebaseStorage.instance.ref().child(path).putData(imageBytes);
+      return FirebaseStorage.instance.ref().child(path).putData(imageBytes);
     }// try
     catch (e) {
       return null;

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:communitytabs/logic/logic.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/presentation/presentation.dart';
 
 class AccountScreenBody extends StatefulWidget {
@@ -20,7 +22,8 @@ class _AccountScreenBodyState extends State<AccountScreenBody> {
         key: _scaffoldKey,
         endDrawer: AccountDrawerContents(),
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * .0725),
+          preferredSize:
+              Size.fromHeight(MediaQuery.of(context).size.height * .0725),
           child: AppBar(
             iconTheme: IconThemeData(color: kHavenLightGray),
             backgroundColor: Colors.transparent,
@@ -38,13 +41,18 @@ class _AccountScreenBodyState extends State<AccountScreenBody> {
                         height: 100,
                       ),
                       fit: BoxFit.fill),
-                  Container(decoration: BoxDecoration(gradient: cMaristGradientWashed)),
+                  Container(
+                      decoration:
+                          BoxDecoration(gradient: cMaristGradientWashed)),
                   Row(
                     children: <Widget>[
                       Expanded(flex: 1, child: SizedBox()),
                       Expanded(flex: 4, child: MaristFoxLogo()),
                       Expanded(flex: 1, child: SizedBox()),
-                      Expanded(flex: 30, child: MaristSliverAppBarTitle(title: accountName),),
+                      Expanded(
+                        flex: 30,
+                        child: MaristSliverAppBarTitle(title: accountName),
+                      ),
                       Expanded(flex: 3, child: SizedBox()),
                       Expanded(flex: 2, child: SizedBox()),
                     ],
@@ -56,9 +64,23 @@ class _AccountScreenBodyState extends State<AccountScreenBody> {
         ),
         body: Container(
           color: cBackground,
-          child: Center(
-            child: Text('Account Content TBA', style: TextStyle(color: Colors.white)),
-          ),
+          child: Builder(builder: (context) {
+            UploadEventState uploadState =
+                context.watch<UploadEventBloc>().state;
+
+            /// Show upload progress, instead of event details
+            if (uploadState is UploadEventStateUploading) {
+              return ImageUploadProgress();
+            } // if
+
+            /// Show the event details, instead of the upload progress
+            return Center(
+              child: Text(
+                'Account Content TBD',
+                style: TextStyle(color: cWhite70),
+              ),
+            );
+          }),
         ),
       ),
     );

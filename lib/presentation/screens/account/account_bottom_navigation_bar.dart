@@ -31,7 +31,7 @@ class AccountBottomNavigationBar extends StatelessWidget {
                   color: kHavenLightGray,
                   splashColor: kActiveHavenLightGray,
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/');
+                    Navigator.pop(context);
                   }),
 
               /// This button opens the sliding up panel
