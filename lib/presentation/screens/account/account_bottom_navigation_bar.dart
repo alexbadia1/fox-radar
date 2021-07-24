@@ -31,7 +31,7 @@ class AccountBottomNavigationBar extends StatelessWidget {
                   color: kHavenLightGray,
                   splashColor: kActiveHavenLightGray,
                   onPressed: () {
-                    Navigator.pop(context);
+                    BlocProvider.of<AppPageViewCubit>(context).jumpToHomePage();
                   }),
 
               /// This button opens the sliding up panel

@@ -1,3 +1,7 @@
+/// Page Views
+const int HOME_PAGE_VIEW_INDEX = 0;
+const int ACCOUNT_PAGE_VIEW_INDEX = 1;
+
 /// Event Categories
 const String ACADEMIC = 'Academic';
 const String CLUB_SPORTS = 'Club Sports';

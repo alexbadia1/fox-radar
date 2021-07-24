@@ -22,13 +22,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
         /// Authenticated
         if (_authenticationBlocState is AuthenticationStateAuthenticated) {
-          print('Showing Marist App');
           return MaristApp(
-            routeGenerator: RouteGenerator(
-              authenticationRepository: _authenticationRepository,
-              authenticationBloc: BlocProvider.of<AuthenticationBloc>(context),
-              loginBloc: BlocProvider.of<LoginBloc>(context),
-            ),
+            routeGeneratorMain: RouteGeneratorMain(),
           );
         } // if
 

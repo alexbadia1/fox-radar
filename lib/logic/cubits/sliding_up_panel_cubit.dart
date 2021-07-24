@@ -12,15 +12,19 @@ class SlidingUpPanelCubit extends Cubit<SlidingUpPanelState> {
   get slidingUpPanelControl => _slidingUpPanelControl;
 
   void openPanel() {
-    _slidingUpPanelControl.open();
+    if (_slidingUpPanelControl.isAttached) {
+      _slidingUpPanelControl.open();
 
-    emit(SlidingUpPanelOpen());
+      emit(SlidingUpPanelOpen());
+    }// if
   } // openPanel
 
   void closePanel() {
-    _slidingUpPanelControl.close();
+    if (_slidingUpPanelControl.isAttached) {
+      _slidingUpPanelControl.close();
 
-    emit(SlidingUpPanelClosed());
+      emit(SlidingUpPanelClosed());
+    }// if
   } // closePanel
 
   @override
@@ -32,7 +36,6 @@ class SlidingUpPanelCubit extends Cubit<SlidingUpPanelState> {
   @override
   Future<void> close() {
     print('SlidingUp Panel Cubit Closed!');
-    _slidingUpPanelControl.close();
     return super.close();
   }// close
 }// SlidingUpPanelCubit

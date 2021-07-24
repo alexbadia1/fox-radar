@@ -1,4 +1,4 @@
-import 'package:communitytabs/presentation/routes/navigation_authentication.dart';
+import 'package:communitytabs/presentation/routes/authentication_routes.dart';
 import 'package:flutter/material.dart';
 
 class MaristAppAuthentication extends StatefulWidget {

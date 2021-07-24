@@ -4,6 +4,12 @@ import 'package:communitytabs/logic/blocs/blocs.dart';
 import 'package:communitytabs/presentation/screens/screens.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 
+/// Name: RouteGenerator
+///
+/// Description: This is the route generator for authentication screens:
+///                - Login
+///                - Sign Up
+///
 class RouteGeneratorAuthentication {
   final AuthenticationRepository authenticationRepository;
   final AuthenticationBloc authenticationBloc;
@@ -20,8 +26,16 @@ class RouteGeneratorAuthentication {
         assert(loginBloc != null),
         assert(signUpBloc != null);
 
+  /// Name: onGenerateRoute
+  ///
+  /// Description: maps each named route to a page route builder
+  ///              during each navigation, route settings can be used
+  ///              to pass data between routes.
+  /// params: settings: are used to pass arguments to the route
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
+
+      // Don't care about saving login screen state, so its ok to use navigator
       case "/login":
         return PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>
@@ -32,7 +46,7 @@ class RouteGeneratorAuthentication {
             var curve = Curves.ease;
 
             var tween =
-            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
             return SlideTransition(
               position: animation.drive(tween),
@@ -40,8 +54,9 @@ class RouteGeneratorAuthentication {
             );
           },
         );
-        // return MaterialPageRoute(builder: (context) => BlocProvider.value(value: loginBloc, child: LoginScreen()));
         break;
+
+      // Don't care about saving sign up screen state, so its ok to use navigator
       case "/sign_up":
         return PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>
@@ -61,20 +76,22 @@ class RouteGeneratorAuthentication {
           },
         );
         break;
+
       default:
-        return MaterialPageRoute(builder: (_) => Scaffold(
-            appBar: AppBar(
-              title: Text('Error'),
-            ),
-            body: Center(
-              child: Text('ERROR'),
-            )
-        ));;
+        return MaterialPageRoute(
+          builder: (_) => Scaffold(
+              appBar: AppBar(
+                title: Text('Error'),
+              ),
+              body: Center(
+                child: Text('ERROR'),
+              )),
+        );
         break;
     } // switch
   } // onGenerateRoute
 
-  Future<void> close () {
-      signUpBloc.close();
-  }// close
+  Future<void> close() {
+    signUpBloc.close();
+  } // close
 } // RouteGeneratorAuthentication

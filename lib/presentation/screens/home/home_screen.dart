@@ -13,40 +13,32 @@ class HomeScreen extends StatelessWidget {
     return SafeArea(
       child: Material(
         child: SafeArea(
-          child: BlocProvider(
-            create: (context) => HomePageViewCubit(),
-            child: SlidingUpPanel(
-              onPanelOpened: () {
-                BlocProvider.of<SlidingUpPanelCubit>(context).openPanel();
-              },
-              controller: BlocProvider.of<SlidingUpPanelCubit>(context)
-                  .slidingUpPanelControl,
-              minHeight: MediaQuery.of(context).size.height * .0625,
-              maxHeight: MediaQuery.of(context).size.height,
-              collapsed: HomeBottomNavigationBar(),
-              isDraggable: false,
-              panel: CreateEventScreen(),
-              body: BlocProvider(
-                create: (context) => CategoryPageCubit(),
-                child: Builder(
-                  builder: (context) {
-                    return PageView(
-                      controller: BlocProvider.of<HomePageViewCubit>(context)
-                          .homePageViewController,
-                      physics: NeverScrollableScrollPhysics(),
-                      children: [
-                        BlocProvider(
-                          create: (context) => SuggestedEventsBloc(
-                              db: RepositoryProvider.of<DatabaseRepository>(
-                                  context))
-                            ..add(SuggestedEventsEventFetch()),
-                          child: HomeScreenBody(),
-                        ),
-                        CategoryScreen(),
-                      ],
-                    );
-                  },
-                ),
+          child: SlidingUpPanel(
+            onPanelOpened: () {
+              BlocProvider.of<SlidingUpPanelCubit>(context).openPanel();
+            },
+            controller: BlocProvider.of<SlidingUpPanelCubit>(context)
+                .slidingUpPanelControl,
+            minHeight: MediaQuery.of(context).size.height * .0625,
+            maxHeight: MediaQuery.of(context).size.height,
+            collapsed: HomeBottomNavigationBar(),
+            isDraggable: false,
+            panel: CreateEventScreen(),
+            body: BlocProvider(
+              create: (context) => CategoryPageCubit(),
+              child: PageView(
+                controller: BlocProvider.of<HomePageViewCubit>(context).homePageViewController,
+                physics: NeverScrollableScrollPhysics(),
+                children: [
+                  BlocProvider(
+                    create: (context) => SuggestedEventsBloc(
+                        db: RepositoryProvider.of<DatabaseRepository>(
+                            context))
+                      ..add(SuggestedEventsEventFetch()),
+                    child: HomeScreenBody(),
+                  ),
+                  CategoryScreen(),
+                ],
               ),
             ),
           ),
