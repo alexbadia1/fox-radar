@@ -6,9 +6,10 @@ class MaristFoxLogo extends StatelessWidget {
     const url = 'https://my.marist.edu/';
     if (await canLaunch(url)) {
       await launch(url);
-    } else {
+    }// if
+    else {
       throw 'Could not launch $url';
-    }
+    }// else
   } //_launchURL
 
   @override
@@ -25,5 +26,5 @@ class MaristFoxLogo extends StatelessWidget {
         ),
       ),
     );
-  }
-}
+  }// build
+}// MaristFoxLogo

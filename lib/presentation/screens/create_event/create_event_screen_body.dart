@@ -1,17 +1,14 @@
-import 'file:///C:/Users/18454/AndroidStudioProjects/Marist_Community_Tabs/lib/presentation/screens/create_event/image/create_event_image.dart';
-import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:communitytabs/logic/cubits/create_event_page_view_cubit.dart';
-import 'form/form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/logic/logic.dart';
 import 'package:database_repository/database_repository.dart';
-import 'package:communitytabs/presentation/buttons/buttons.dart';
+import 'package:communitytabs/presentation/presentation.dart';
+import 'package:authentication_repository/authentication_repository.dart';
 
 class CreateEventBody extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
+  Widget build(BuildContext parentContext) {
+    final double height = MediaQuery.of(parentContext).size.height;
 
     return SafeArea(
       child: Scaffold(
@@ -19,23 +16,25 @@ class CreateEventBody extends StatelessWidget {
         body: MultiBlocProvider(
           providers: [
             BlocProvider<CreateEventBloc>(
-              create: (context) => CreateEventBloc(
-                  db: RepositoryProvider.of<DatabaseRepository>(context)),
+              create: (parentContext) => CreateEventBloc(
+                  db: RepositoryProvider.of<DatabaseRepository>(parentContext),
+                  accountID: RepositoryProvider.of<AuthenticationRepository>(parentContext).getUserModel().userID,
+              ),
             ),
             BlocProvider<CreateEventPageViewCubit>(
-                create: (context) => CreateEventPageViewCubit()),
+                create: (parentContext) => CreateEventPageViewCubit()),
             BlocProvider<DeviceImagesBloc>(
-                create: (context) => DeviceImagesBloc()),
+                create: (parentContext) => DeviceImagesBloc()),
           ],
           child: Container(
             color: Colors.transparent,
-            height: MediaQuery.of(context).size.height,
+            height: MediaQuery.of(parentContext).size.height,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Container(
                   width: double.infinity,
-                  height: MediaQuery.of(context).size.height * .0725,
+                  height: MediaQuery.of(parentContext).size.height * .0725,
                   child: Stack(
                     children: <Widget>[
                       Image(
@@ -59,7 +58,8 @@ class CreateEventBody extends StatelessWidget {
                               final createEventState = context
                                   .watch<CreateEventPageViewCubit>()
                                   .state;
-                              if (createEventState is CreateEventPageViewEventPhoto) {
+                              if (createEventState
+                                  is CreateEventPageViewEventPhoto) {
                                 return CustomBackButton(
                                     onBack: () => BlocProvider.of<
                                             CreateEventPageViewCubit>(context)
@@ -72,7 +72,7 @@ class CreateEventBody extends StatelessWidget {
 
                                   // Confirm discarding event...
                                   showModalBottomSheet(
-                                    context: context,
+                                    context: parentContext,
                                     builder: (context) => Container(
                                       color: Color.fromRGBO(31, 31, 31, 1.0),
                                       height:
@@ -103,10 +103,10 @@ class CreateEventBody extends StatelessWidget {
                                             child: FlatButton(
                                               minWidth: double.infinity,
                                               onPressed: () {
-                                                Navigator.of(context).pop();
+                                                Navigator.of(parentContext).pop();
                                                 BlocProvider.of<
                                                             SlidingUpPanelCubit>(
-                                                        context)
+                                                    parentContext)
                                                     .closePanel();
                                               },
                                               child: Align(
@@ -126,7 +126,7 @@ class CreateEventBody extends StatelessWidget {
                                             child: FlatButton(
                                               minWidth: double.infinity,
                                               onPressed: () {
-                                                Navigator.of(context).pop();
+                                                Navigator.of(parentContext).pop();
                                               },
                                               child: Align(
                                                 alignment: Alignment.centerLeft,
@@ -163,9 +163,43 @@ class CreateEventBody extends StatelessWidget {
                           ),
                           // UploadImage(),
                           Builder(builder: (context) {
+                            final createEventState =
+                                context.watch<CreateEventPageViewCubit>().state;
+
+                            /// Currently on the Event Photo Page
+                            /// Show a "post" button in the top right.
+                            if (createEventState
+                                is CreateEventPageViewEventPhoto) {
+                              return CustomCreateButton(
+                                onCreate: () {
+                                  // Close keyboard
+                                  FocusScope.of(parentContext).unfocus();
+
+                                  // Navigate to the account screen
+                                  BlocProvider.of<AppPageViewCubit>(parentContext).jumpToAccountPage();
+
+                                  // Close the sliding up panel, and destroy CreateEventBloc
+                                  BlocProvider.of<SlidingUpPanelCubit>(parentContext).closePanel();
+
+                                  // Add an upload event to upload event bloc
+                                  BlocProvider.of<UploadEventBloc>(context).add(
+                                    UploadEventUpload(
+                                      newEventModel:
+                                          BlocProvider.of<CreateEventBloc>(
+                                                  context)
+                                              .state
+                                              .eventModel,
+                                    ),
+                                  );
+                                }, // onCreate
+                              );
+                            } // if
+
+                            /// Currently on the Event Form Page
+                            /// Show a "next" button in the top right.
                             return CustomNextButton(
                               onClose: () {
-                                FocusScope.of(context).unfocus();
+                                FocusScope.of(parentContext).unfocus();
                                 if (!BlocProvider.of<CreateEventBloc>(context)
                                     .isValidEndDate()) {
                                   // Show error message for invalid end date
@@ -205,7 +239,6 @@ class CreateEventBody extends StatelessWidget {
                 Expanded(
                   child: Builder(
                     builder: (context) {
-
                       // Logic for controlling the Create Event Page View
                       // is stored in the "CreateEventPageViewBlock"
                       return PageView(

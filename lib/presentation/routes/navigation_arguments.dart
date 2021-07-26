@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:communitytabs/logic/cubits/cubits.dart';
+import 'package:communitytabs/logic/logic.dart';
 
 class EventScreenArguments {
   final String documentId;

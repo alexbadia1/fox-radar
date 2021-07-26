@@ -1,8 +1,8 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:communitytabs/logic/blocs/blocs.dart';
-import 'package:communitytabs/constants/marist_color_scheme.dart';
+import 'package:communitytabs/logic/logic.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 
 /// Callback function used to return a DateTime from a CreateEventBloc State.
 typedef RetrieveDateTimeFromBlocCallback = DateTime Function(
@@ -239,11 +239,11 @@ class ExpansionPanelCategoryTitle extends StatelessWidget {
         if (_category != null) {
           if (_category.isNotEmpty) {
             return Text(this.title,
-                style: TextStyle(fontSize: 16.0, color: cWhite100));
+                style: TextStyle(fontSize: 15.0, color: cWhite100));
           } // if
         } // if
         return Text(this.hintText,
-            style: TextStyle(fontSize: 14.0, color: cWhite65));
+            style: TextStyle(fontSize: 15.0, color: cWhite65));
       },
     );
   } // build

@@ -1,8 +1,7 @@
-import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:communitytabs/logic/blocs/blocs.dart';
-import 'package:communitytabs/presentation/screens/create_event/form/form.dart';
+import 'package:communitytabs/logic/logic.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 
 class Required extends StatelessWidget {
   @override
@@ -22,7 +21,7 @@ class Required extends StatelessWidget {
           BorderTopBottom(
             child: CreateEventFormTextField(
                 initialTextValue:
-                    _currentCreateEventBlocState.eventModel.getTitle,
+                    _currentCreateEventBlocState.eventModel.title,
                 hintText: 'Title (Required)',
                 height: _textFormFieldHeight,
                 width: _textFormFieldWidth,
@@ -36,7 +35,7 @@ class Required extends StatelessWidget {
           BorderBottom(
             child: CreateEventFormTextField(
                 initialTextValue:
-                    _currentCreateEventBlocState.eventModel.getHost,
+                    _currentCreateEventBlocState.eventModel.host,
                 hintText: 'Host (Required)',
                 height: _textFormFieldHeight,
                 width: _textFormFieldWidth,
@@ -57,7 +56,7 @@ class Required extends StatelessWidget {
                   /// Location TextFormField
                   child: CreateEventFormTextField(
                     initialTextValue:
-                        _currentCreateEventBlocState.eventModel.getLocation,
+                        _currentCreateEventBlocState.eventModel.location,
                     hintText: 'Location (Required)',
                     height: _textFormFieldHeight,
                     width: _textFormFieldWidth,
@@ -72,7 +71,7 @@ class Required extends StatelessWidget {
                   flex: 4,
                   child: CreateEventFormTextField(
                     initialTextValue:
-                        _currentCreateEventBlocState.eventModel.getRoom,
+                        _currentCreateEventBlocState.eventModel.room,
                     hintText: 'Room',
                     height: _textFormFieldHeight,
                     width: _textFormFieldWidth,

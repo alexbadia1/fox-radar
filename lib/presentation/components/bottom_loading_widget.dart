@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:communitytabs/constants/marist_color_scheme.dart';
+import 'package:communitytabs/presentation/presentation.dart';
+
 
 class BottomLoadingWidget extends StatelessWidget {
   @override

@@ -1,63 +1,110 @@
 import 'package:intl/intl.dart';
 
+/// Models each "Searchable Event" document in the "Search Events" collection.
+///
+/// A variation of the [EventModel] instead, only including the
+/// minimal details of the event in order to optimize searching for events.
 class SearchResultModel {
-  String _myTitle = '[Event Title]';
-  String _myHost = '[Event Host]';
-  String _myLocation = '[Event Location]';
-  String _myCategory = '[Event Category]';
-  String _eventId = '[Event Id]';
+  /// Event Title (required)
+  String _title = '[Event Title]';
+
+  /// Event Host (Required)
+  String _host = '[Event Host]';
+
+  /// Event Location (Required)
+  ///
+  /// Typically a building on campus, can include
+  /// locations like "Beach", "River", "Campus Green".
+  String _location = '[Event Location]';
+
+  /// Event Start Date (Required)
+  ///
+  /// The start date is parsed from the [rawStartDateAndTime] stored in firebase.
+  String _startDate = '[Event Start Date]';
+
+  /// Event Start Time (Required)
+  ///
+  /// The start time is parsed from the [rawStartDateAndTime] stored in firebase.
+  String _startTime = '[Event Start Time]';
+
+  /// Event Category (Required)
+  String _category = '[Event Category]';
+
+  /// Used to decide the aspect ration of the image in the search results
   bool _imageFitCover = true;
-  String _myStartDate = '[Event Start Date]';
-  String _myStartTime = '[Event Start Time]';
 
-  SearchResultModel({
-    String newHost,
-    String newTitle,
-    String newLocation,
-    String newCategory,
-    bool newImageFitCover,
-    String newEventId,
-    DateTime newRawStartDateAndTime,
-  }) {
-    _eventId = newEventId;
-    _myHost = newHost;
-    _myTitle = newTitle;
-    _myLocation = newLocation;
-    _imageFitCover = newImageFitCover;
-    _myCategory = newCategory;
+  /// Document ID of event in the "Events Collection"
+  /// That contains all of the details of the event.
+  String _eventId = '[Event Id]';
+
+  /// Account ID of of the Account that created this event
+  String _accountID = '[Account ID]';
+
+  /// Full Constructor
+  SearchResultModel(
+      {String newTitle,
+      String newHost,
+      String newLocation,
+      DateTime newRawStartDateAndTime,
+      String newCategory,
+      bool newImageFitCover,
+      String newEventId,
+      String newAccountID}) {
+    // Set the Event Title
+    this._title = newTitle;
+
+    // Set the Event Host
+    this._host = newHost;
+
+    // Set the Event Location
+    this._location = newLocation;
+
+    // Set the Event Category
+    this._category = newCategory;
+
+    // Parse the Start DATE from [rawStartDateAndTime]
     newRawStartDateAndTime == null
-        ? _myStartDate = ''
-        : _myStartDate =
+        ? this._startDate = ''
+        : this._startDate =
             DateFormat('E, MMMM d, y').format(newRawStartDateAndTime);
+
+    // Parse the  Start TIME from [rawStartDateAndTime]
     newRawStartDateAndTime == null
-        ? _myStartTime = ''
-        : _myStartTime = DateFormat.jm().format(newRawStartDateAndTime);
-  } //full constructor
+        ? this._startTime = ''
+        : this._startTime = DateFormat.jm().format(newRawStartDateAndTime);
 
-  SearchResultModel.nullConstructor() {
-    _eventId = '';
-    _myHost = '';
-    _myTitle = '';
-    _myLocation = '';
-    _imageFitCover = false;
-  } ////null constructor
+    // Decide if image should cover it's container
+    this._imageFitCover = newImageFitCover;
 
-  bool get getImageFitCover => _imageFitCover;
-  String get getHost => _myHost;
-  String get getLocation => _myLocation;
-  String get getTitle => _myTitle;
-  String get eventId => _eventId;
-  String get myCategory => _myCategory;
-  String get myStartDate => _myStartDate;
-  String get myStartTime => _myStartTime;
+    // Set the Event ID
+    this._eventId = newEventId;
+
+    // Set Account ID
+    this._accountID = newAccountID;
+  } // SearchResultModel
+
+  String get getTitle => this._title;
+  String get getHost => this._host;
+  String get getLocation => this._location;
+  String get myStartDate => this._startDate;
+  String get myStartTime => this._startTime;
+  String get myCategory => this._category;
+  bool get getImageFitCover => this._imageFitCover;
+  String get eventId => this._eventId;
+  String get accountID => this._accountID;
 
   @override
   String toString() {
-    return "Title: $_myTitle\n"
-        "Host: $_myHost\n"
-        "Location: $_myLocation\n"
-        "Category: $_myCategory\n"
-        "fullEventId: $_eventId\n"
-        "imageFitCover: $_imageFitCover";
+    return "{\n"
+        "\tTitle: ${this._title}\n"
+        "\tHost: ${this._host}\n"
+        "\tLocation: ${this._location}\n"
+        "\tStart Date: ${this._startDate}\n"
+        "\tStart Time: ${this._startTime}\n"
+        "\tCategory: ${this._category}\n"
+        "\tImage Fit Cover: ${this._imageFitCover}\n"
+        "\tEvent ID (Events Collection): ${this._eventId}\n"
+        "\tAccount ID (Owner of Event): ${this._accountID}\n"
+        "}\n";
   } // toString
 } //class

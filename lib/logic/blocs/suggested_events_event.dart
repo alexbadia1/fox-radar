@@ -12,4 +12,4 @@ class SuggestedEventsEventFetch extends SuggestedEventsEvent {
 class SuggestedEventsEventReload extends SuggestedEventsEvent {
   @override
   List<Object> get props => [];
-}// SuggestedEventsFetch
+}// SuggestedEventsEventReload

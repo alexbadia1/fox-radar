@@ -1,10 +1,9 @@
 import 'dart:typed_data';
-import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:communitytabs/logic/cubits/cubits.dart';
-import 'package:communitytabs/presentation/routes/navigation.dart';
-import 'package:database_repository/database_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:communitytabs/logic/logic.dart';
+import 'package:database_repository/database_repository.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 
 class EventCard extends StatefulWidget {
   final SearchResultModel newSearchResult;
@@ -14,7 +13,8 @@ class EventCard extends StatefulWidget {
   _EventCardState createState() => _EventCardState();
 } // ClubBigCard
 
-class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixin{
+class _EventCardState extends State<EventCard>
+    with AutomaticKeepAliveClientMixin {
   Uint8List _imageBytes;
 
   @override
@@ -33,7 +33,9 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
         onTap: () {
           Navigator.of(context).pushNamed(
             '/event',
-            arguments: EventScreenArguments(documentId: this.widget.newSearchResult.eventId, imageBytes: _imageBytes),
+            arguments: EventScreenArguments(
+                documentId: this.widget.newSearchResult.eventId,
+                imageBytes: _imageBytes),
           );
         },
         child: Container(
@@ -59,8 +61,9 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
                         _imageBytes = _fetchImageState.imageBytes;
                         return Image.memory(
                           _fetchImageState.imageBytes,
-                          fit:
-                          this.widget.newSearchResult.getImageFitCover ? BoxFit.cover : BoxFit.contain,
+                          fit: this.widget.newSearchResult.getImageFitCover
+                              ? BoxFit.cover
+                              : BoxFit.contain,
                         );
                       } // if
 
@@ -107,7 +110,7 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
                       TextSpan(
                           text: this.widget.newSearchResult.myStartDate,
                           style: TextStyle(color: cWhite70, fontSize: 10.0)),
-                      TextSpan(text: ' - '),
+                      TextSpan(text: ' '),
                       TextSpan(
                           text: this.widget.newSearchResult.myStartTime,
                           style: TextStyle(color: cWhite70, fontSize: 10.0))
@@ -121,7 +124,7 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
         ),
       ),
     );
-  }// build
+  } // build
 
   @override
   bool get wantKeepAlive => true;

@@ -9,15 +9,20 @@ import 'package:communitytabs/logic/blocs/blocs.dart';
 import 'package:communitytabs/logic/constants/constants.dart';
 import 'package:database_repository/database_repository.dart';
 
-class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> {
+class CategoryEventsBloc
+    extends Bloc<CategoryEventsEvent, CategoryEventsState> {
   final DatabaseRepository db;
   final String category;
   final int paginationLimit = PAGINATION_LIMIT;
 
-  CategoryEventsBloc({@required this.db, @required this.category}) : assert(db != null), assert(category != null), super(CategoryEventsStateFetching());
+  CategoryEventsBloc({@required this.db, @required this.category})
+      : assert(db != null),
+        assert(category != null),
+        super(CategoryEventsStateFetching());
 
   @override
-  Stream<CategoryEventsState> mapEventToState(CategoryEventsEvent categoryEventsEvent) async* {
+  Stream<CategoryEventsState> mapEventToState(
+      CategoryEventsEvent categoryEventsEvent) async* {
     print("Category Events Received An Event!");
     // await Future.delayed(Duration(milliseconds: 5000));
 
@@ -36,7 +41,7 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
     else {
       yield CategoryEventsStateFailed();
     } // else
-  }// mapEventToState
+  } // mapEventToState
 
   Stream<CategoryEventsState> _mapCategoryEventsEventReloadToState() async* {
     /// Get the current state for later use...
@@ -55,10 +60,10 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
     try {
       /// No posts were fetched yet
       final List<QueryDocumentSnapshot> _docs =
-      await _fetchEventsWithPagination(
-          lastEvent: null, limit: paginationLimit);
+          await _fetchEventsWithPagination(
+              lastEvent: null, limit: paginationLimit);
       final List<SearchResultModel> _eventModels =
-      _mapDocumentSnapshotsToEventModels(docs: _docs);
+          _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
       if (_eventModels.length != this.paginationLimit) {
         _maxEvents = true;
@@ -85,8 +90,10 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
       /// No posts were fetched yet
       if (_currentState is CategoryEventsStateFetching) {
         final List<QueryDocumentSnapshot> _docs =
-        await _fetchEventsWithPagination(lastEvent: null, limit: paginationLimit);
-        final List<SearchResultModel> _eventModels = _mapDocumentSnapshotsToEventModels(docs: _docs);
+            await _fetchEventsWithPagination(
+                lastEvent: null, limit: paginationLimit);
+        final List<SearchResultModel> _eventModels =
+            _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
         if (_eventModels.length != this.paginationLimit) {
           _maxEvents = true;
@@ -103,8 +110,8 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
       /// Some posts were fetched already, now fetch 20 more
       else if (_currentState is CategoryEventsStateSuccess) {
         final List<QueryDocumentSnapshot> _docs =
-        await _fetchEventsWithPagination(
-            lastEvent: _currentState.lastEvent, limit: paginationLimit);
+            await _fetchEventsWithPagination(
+                lastEvent: _currentState.lastEvent, limit: paginationLimit);
 
         /// No event models were returned from the database
         if (_docs.isEmpty) {
@@ -119,7 +126,7 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
         /// At least 1 event was returned from the database
         else {
           final List<SearchResultModel> _eventModels =
-          _mapDocumentSnapshotsToEventModels(docs: _docs);
+              _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
           if (_eventModels.length != this.paginationLimit) {
             _maxEvents = true;
@@ -138,40 +145,59 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
     } // catch
   } // _mapCategoryEventsEventFetchToState
 
-
   Future<List<QueryDocumentSnapshot>> _fetchEventsWithPagination(
       {@required QueryDocumentSnapshot lastEvent, @required int limit}) async {
-    return db.getEventsWithPaginationFromSearchEventsCollection(
-        category: category, lastEvent: lastEvent, limit: limit);
+    return db.searchEventsByCategory(
+        category: this.category, lastEvent: lastEvent, limit: limit);
   } // _fetchEventsWithPagination
 
-  List<SearchResultModel> _mapDocumentSnapshotsToEventModels(
+  List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels(
       {@required List<QueryDocumentSnapshot> docs}) {
     return docs.map((doc) {
+      // Convert the firebase timestamp to a DateTime
+      DateTime tempRawStartDateAndTimeToDateTime;
+      Timestamp _startTimestamp = doc.data()[ATTRIBUTE_RAW_START_DATE_TIME];
+      if (_startTimestamp != null) {
+        tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(
+                _startTimestamp.millisecondsSinceEpoch)
+            .toUtc()
+            .toLocal();
+      } // if
+      else {
+        tempRawStartDateAndTimeToDateTime = null;
+      } // else
+
       return SearchResultModel(
-          /// DocumentId converted to [STRING] from [STRING] in firebase.
-          newEventId: doc.data()['id'] ?? '',
+        // Title converted to [STRING] from [STRING] in Firebase.
+        newTitle: doc.data()[ATTRIBUTE_TITLE] ?? '',
 
-          ///Category converted to [STRING] from [STRING] in Firebase.
-          newCategory: doc.data()['category'] ?? '',
+        // Host converted to [STRING] from [STRING] in Firebase.
+        newHost: doc.data()[ATTRIBUTE_HOST] ?? '',
 
-          ///Host converted to [STRING] from [STRING] in Firebase.
-          newHost: doc.data()['host'] ?? '',
+        // Location Converted to [] from [] in Firebase.
+        newLocation: doc.data()[ATTRIBUTE_LOCATION] ?? '',
 
-          ///Title converted to [STRING] from [STRING] in Firebase.
-          newTitle: doc.data()['title'] ?? '',
+        // RawStartDate converted to [DATETIME] from [TIMESTAMP] in Firebase.
+        newRawStartDateAndTime: tempRawStartDateAndTimeToDateTime ?? null,
 
-          ///Location Converted to [] from [] in Firebase.
-          newLocation: doc.data()['location'] ?? '',
+        // Category converted to [STRING] from [STRING] in Firebase.
+        newCategory: doc.data()[ATTRIBUTE_CATEGORY] ?? '',
 
-          ///Implement Firebase Images.
-          newImageFitCover: doc.data()['imageFitCover'] ?? true);
+        // Implement Firebase Images.
+        newImageFitCover: doc.data()[ATTRIBUTE_IMAGE_FIT_COVER] ?? true,
+
+        // DocumentId converted to [STRING] from [STRING] in firebase.
+        newEventId: doc.data()[ATTRIBUTE_EVENT_ID] ?? '',
+
+        // AccountID converted to [STRING] from [STRING] in firebase.
+        newAccountID: doc.data()[ATTRIBUTE_ACCOUNT_ID] ?? '',
+      );
     }).toList();
-  } // _mapDocumentSnapshotsToEventModels
+  } // _mapDocumentSnapshotsToSearchEventModels
 
   @override
-  Stream<Transition<CategoryEventsEvent, CategoryEventsState>>
-  transformEvents(Stream<CategoryEventsEvent> events, transitionFn) {
+  Stream<Transition<CategoryEventsEvent, CategoryEventsState>> transformEvents(
+      Stream<CategoryEventsEvent> events, transitionFn) {
     return super.transformEvents(
         events.debounceTime(const Duration(milliseconds: 0)), transitionFn);
   } // transformEvents
@@ -187,4 +213,4 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
     print('Category Events Bloc Closed!');
     return super.close();
   } // close
-}// CategoryEventsBloc
+} // CategoryEventsBloc

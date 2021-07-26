@@ -9,12 +9,17 @@ abstract class DeviceImagesState extends Equatable {
 class DeviceImagesStateFetching extends DeviceImagesState {
   @override
   List<Object> get props => [];
-} // SuggestedEventsFetching
+} // DeviceImagesStateFetching
 
 class DeviceImagesStateFailed extends DeviceImagesState {
   @override
   List<Object> get props => [];
-} // SuggestedEventsStateFailed
+} // DeviceImagesStateFailed
+
+class DeviceImagesStateDenied extends DeviceImagesState {
+  @override
+  List<Object> get props => [];
+} // DeviceImagesStateDenied
 
 class DeviceImagesStateSuccess extends DeviceImagesState {
   final List<File> images;
@@ -29,4 +34,4 @@ class DeviceImagesStateSuccess extends DeviceImagesState {
         @required this.isFetching});
   @override
   List<Object> get props => [images, maxImages, lastPage, isFetching];
-} // SuggestedEventsStateFailed
+} // DeviceImagesStateSuccess

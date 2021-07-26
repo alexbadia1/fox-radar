@@ -69,6 +69,12 @@ class CreateEventSetRawEndDateTime extends CreateEventEvent {
   List<Object> get props => [newRawEndDateTime];
 }// CreateEventSetRawEndDateTime
 
+/// Sets the End DateTime to null
+class CreateEventRemoveRawEndDateTime extends CreateEventEvent {
+  @override
+  List<Object> get props => [];
+}// CreateEventRemoveRawEndDateTime
+
 class CreateEventSetCategory extends CreateEventEvent {
   final String category;
 

@@ -1,6 +1,5 @@
-import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 
 class SearchButton extends StatelessWidget {
   @override

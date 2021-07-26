@@ -1,9 +1,7 @@
-import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/logic/blocs/blocs.dart';
-import 'package:communitytabs/presentation/screens/screens.dart';
-import 'package:communitytabs/presentation/routes/navigation.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -24,13 +22,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
         /// Authenticated
         if (_authenticationBlocState is AuthenticationStateAuthenticated) {
-          print('Showing Marist App');
           return MaristApp(
-            routeGenerator: RouteGenerator(
-              authenticationRepository: _authenticationRepository,
-              authenticationBloc: BlocProvider.of<AuthenticationBloc>(context),
-              loginBloc: BlocProvider.of<LoginBloc>(context),
-            ),
+            routeGeneratorMain: RouteGeneratorMain(),
           );
         } // if
 

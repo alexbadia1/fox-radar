@@ -19,6 +19,9 @@ export 'category_page_state.dart';
 export 'home_page_view_cubit.dart';
 export 'home_page_view_state.dart';
 
+export 'app_page_view_cubit.dart';
+export 'app_page_view_state.dart';
+
 export 'create_event_page_view_cubit.dart';
 export 'create_event_page_view_state.dart';
 

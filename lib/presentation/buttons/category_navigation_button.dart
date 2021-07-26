@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:communitytabs/logic/cubits/cubits.dart';
+import 'package:communitytabs/logic/logic.dart';
 
 class CategoryNavigationButton extends StatefulWidget {
   final String category;

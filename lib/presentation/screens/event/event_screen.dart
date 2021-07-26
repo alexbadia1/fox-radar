@@ -1,13 +1,9 @@
 import 'dart:typed_data';
-import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:communitytabs/logic/cubits/fetch_event_cubit.dart';
-import 'package:communitytabs/logic/cubits/fetch_event_state.dart';
-import 'package:database_repository/database_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
+import 'package:communitytabs/logic/logic.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'event.dart';
+import 'package:database_repository/database_repository.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 
 class EventScreen extends StatelessWidget {
   final String eventId;
@@ -20,16 +16,6 @@ class EventScreen extends StatelessWidget {
 
     double _screenWidth = MediaQuery.of(context).size.width;
     double _screenHeight = MediaQuery.of(context).size.height;
-
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenPaddingBottom = MediaQuery.of(context).padding.bottom;
-    final screenInsetsBottom = MediaQuery.of(context).viewInsets.bottom;
-    final screenPaddingTop = MediaQuery.of(context).padding.top;
-
-    final height = screenHeight -
-        screenPaddingTop -
-        screenPaddingBottom +
-        screenInsetsBottom;
 
     return BlocProvider(
       create: (context) => FetchFullEventCubit(
@@ -70,18 +56,18 @@ class EventScreen extends StatelessWidget {
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
-                              HeaderLevelOne(text: _event.getTitle),
+                              HeaderLevelOne(text: _event.title),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
                                     children: [
                                       Subtitle(
                                           icon: Icons.person,
-                                          text: _event.getHost),
+                                          text: _event.host),
                                       Subtitle(
                                           icon: Icons.location_on,
                                           text:
-                                              '${_event.getLocation} ${_event.getRoom}'
+                                              '${_event.location} ${_event.room}'
                                                   .trim()),
                                       Subtitle(
                                           icon: Icons.access_time,
@@ -93,7 +79,7 @@ class EventScreen extends StatelessWidget {
                                   ),
                               ),
                               HeaderLevelTwo(text: 'Highlights'),
-                              HighlightsList(highlights: _event.getHighlights),
+                              HighlightsList(highlights: _event.highlights),
 
                               /// Summary Section
                               HeaderLevelTwo(text: 'Summary'),
@@ -110,7 +96,7 @@ class EventScreen extends StatelessWidget {
                                     Expanded(
                                       flex: 9,
                                       child: Text(
-                                        _event.getSummary,
+                                        _event.description,
                                         style: TextStyle(
                                           color: cWhite70,
                                           fontSize: 14.0,

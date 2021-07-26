@@ -1,3 +1,7 @@
+/// Page Views
+const int HOME_PAGE_VIEW_INDEX = 0;
+const int ACCOUNT_PAGE_VIEW_INDEX = 1;
+
 /// Event Categories
 const String ACADEMIC = 'Academic';
 const String CLUB_SPORTS = 'Club Sports';
@@ -8,7 +12,7 @@ const String FREE_FOOD = 'Free Food';
 const String INTRAMURAL = 'Intramural';
 const String MARIST_DINING = 'Marist Dining';
 const String MEDIA_PUBLICATION = 'Media & Publication';
-const String MOVIES_THEATRE = 'Movies Theatre';
+const String MOVIES_THEATRE = 'Movies & Theatre';
 const String MUSIC_AND_DANCE = 'Music & Dance';
 const String OCCASIONS = 'Occasions';
 const String POLITICAL = 'Political';
@@ -39,3 +43,6 @@ const List<String> CATEGORIES = [
 
 /// Pagination Limit
 const int PAGINATION_LIMIT = 3;
+
+/// Highlights Limit
+const int HIGHLIGHTS_LIMIT = 5;

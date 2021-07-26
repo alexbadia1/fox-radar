@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:communitytabs/logic/cubits/cubits.dart';
-import 'package:communitytabs/constants/marist_color_scheme.dart';
+import 'package:communitytabs/logic/logic.dart';
+import 'package:communitytabs/presentation/presentation.dart';
+
 
 /// A void callback that triggers from the Flutter defined Button onPressed() property.
 ///

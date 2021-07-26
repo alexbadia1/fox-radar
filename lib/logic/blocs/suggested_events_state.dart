@@ -17,6 +17,11 @@ class SuggestedEventsStateFailed extends SuggestedEventsState {
   List<Object> get props => [];
 } // SuggestedEventsStateFailed
 
+class SuggestedEventsStateReloadFailed extends SuggestedEventsState {
+  @override
+  List<Object> get props => [];
+} // SuggestedEventsStateReloadFailed
+
 class SuggestedEventsStateSuccess extends SuggestedEventsState {
   final List<SearchResultModel> eventModels;
   final QueryDocumentSnapshot lastEvent;
@@ -30,4 +35,4 @@ class SuggestedEventsStateSuccess extends SuggestedEventsState {
       @required this.isFetching});
   @override
   List<Object> get props => [eventModels, maxEvents, lastEvent, isFetching];
-} // SuggestedEventsStateFailed
+} // SuggestedEventsStateSuccess

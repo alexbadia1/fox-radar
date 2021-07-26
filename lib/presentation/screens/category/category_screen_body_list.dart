@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:communitytabs/logic/blocs/blocs.dart';
-import 'package:communitytabs/constants/marist_color_scheme.dart';
-import 'package:communitytabs/presentation/components/components.dart';
+import 'package:communitytabs/logic/logic.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 
 /*
 category_screen_body_list.dart
@@ -62,7 +61,7 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
     /// The Category Events Bloc is generated and passed directly into the list view
     /// The Category Events Bloc will be closed in the Widget above: Category Screen Body
     return Container(
-      color: Color.fromRGBO(33, 33, 33, 1),
+      color: Color.fromRGBO(24, 24, 24, 1.0),
       child: Builder(builder: (context) {
         final CategoryEventsState _categoryEventsState =
             context.watch<CategoryEventsBloc>().state;

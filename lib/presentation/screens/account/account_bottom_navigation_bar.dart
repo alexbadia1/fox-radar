@@ -1,25 +1,21 @@
-import 'package:communitytabs/logic/cubits/cubits.dart';
 import 'package:flutter/material.dart';
-import 'package:communitytabs/data/expansionTileMetadata.dart';
-import 'package:communitytabs/constants/marist_color_scheme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
+import 'package:communitytabs/logic/logic.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 
 class AccountBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    ExpansionTiles _expansionPanels = Provider.of<ExpansionTiles>(context);
-
     final SlidingUpPanelState _slidingUpPanelState =
         context.watch<SlidingUpPanelCubit>().state;
 
-    /// Sliding panel is open
+    /// Sliding panel is open,
     /// Show an empty container to make room for the Create Event Screens App Bar
     if (_slidingUpPanelState is SlidingUpPanelOpen) {
       return Container();
     } // if
 
-    /// Sliding Panel is closed
+    /// Sliding Panel is closed,
     /// Show the bottom navigation bar buttons
     else if (_slidingUpPanelState is SlidingUpPanelClosed) {
       return Stack(
@@ -29,12 +25,13 @@ class AccountBottomNavigationBar extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
+              /// This button navigates to the Home Screen
               IconButton(
                   icon: Icon(Icons.home),
                   color: kHavenLightGray,
                   splashColor: kActiveHavenLightGray,
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/');
+                    BlocProvider.of<AppPageViewCubit>(context).jumpToHomePage();
                   }),
 
               /// This button opens the sliding up panel
@@ -43,21 +40,11 @@ class AccountBottomNavigationBar extends StatelessWidget {
                   color: kHavenLightGray,
                   splashColor: kActiveHavenLightGray,
                   onPressed: () {
-
-                    /// Get the current time to set as the initial time(s) for the Calender Pickers
-                    DateTime currentTime = DateTime.now();
-
-                    /// Open the panel
                     BlocProvider.of<SlidingUpPanelCubit>(context).openPanel();
+                  },
+              ),
 
-                    /// Actually Set the initial time(s) for the Calender Pickers
-                    _expansionPanels.data[0].setHeaderDateValue(currentTime);
-                    _expansionPanels.data[0].setHeaderTimeValue(currentTime);
-                    _expansionPanels.updateExpansionPanels();
-
-                    /// Remember the original Start Date and Time
-                    _expansionPanels.originalStartDateAndTime = currentTime;
-                  }),
+              /// This does nothing, this is the Account Screen
               IconButton(
                 icon: Icon(Icons.person),
                 color: kHavenLightGray,
@@ -75,7 +62,9 @@ class AccountBottomNavigationBar extends StatelessWidget {
       return Container(
           child: Center(
               child: Text(
-                  'Sliding Up Panel Cubit did not return a state that is either open or closed!')));
+                  'Sliding Up Panel Cubit did not return a state that is either open or closed!'),
+          ),
+      );
     } // else
   }
 }
