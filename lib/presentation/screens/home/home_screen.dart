@@ -1,3 +1,4 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:communitytabs/logic/blocs/blocs.dart';
 import 'package:communitytabs/logic/cubits/cubits.dart';
 import 'package:database_repository/database_repository.dart';
@@ -27,14 +28,14 @@ class HomeScreen extends StatelessWidget {
             body: BlocProvider(
               create: (context) => CategoryPageCubit(),
               child: PageView(
-                controller: BlocProvider.of<HomePageViewCubit>(context).homePageViewController,
+                controller: BlocProvider.of<HomePageViewCubit>(context)
+                    .homePageViewController,
                 physics: NeverScrollableScrollPhysics(),
                 children: [
-                  BlocProvider(
+                  BlocProvider<SuggestedEventsBloc>(
                     create: (context) => SuggestedEventsBloc(
-                        db: RepositoryProvider.of<DatabaseRepository>(
-                            context))
-                      ..add(SuggestedEventsEventFetch()),
+                      db: RepositoryProvider.of<DatabaseRepository>(context),
+                    )..add(SuggestedEventsEventFetch()),
                     child: HomeScreenBody(),
                   ),
                   CategoryScreen(),

@@ -9,7 +9,7 @@ import 'package:communitytabs/presentation/presentation.dart';
 class SelectedImage extends StatefulWidget {
   @override
   _SelectedImageState createState() => _SelectedImageState();
-}// SelectedImage
+} // SelectedImage
 
 class _SelectedImageState extends State<SelectedImage> {
   ImagePicker picker;
@@ -21,12 +21,16 @@ class _SelectedImageState extends State<SelectedImage> {
   } // initState
 
   Future getImageFromDeviceGallery() async {
-    PickedFile image = await picker.getImage(source: ImageSource.gallery);
-    if (image != null) {
-      final bytes = await image.readAsBytes();
-      BlocProvider.of<CreateEventBloc>(context)
-          .add(CreateEventSetImage(imageBytes: bytes));
-    } // if
+    try {
+      PickedFile image = await picker.getImage(source: ImageSource.gallery);
+
+      if (image != null) {
+        final bytes = await image.readAsBytes();
+        BlocProvider.of<CreateEventBloc>(context)
+            .add(CreateEventSetImage(imageBytes: bytes));
+      } // if
+    } // try
+    catch (e) {} // catch
   } // getImageFromDeviceGallery
 
   @override
@@ -37,7 +41,7 @@ class _SelectedImageState extends State<SelectedImage> {
       children: <Widget>[
         BlocBuilder<CreateEventBloc, CreateEventState>(
           builder: (context, CreateEventState state) {
-            final imageBytes = state.eventModel.getImageBytes;
+            final imageBytes = state.eventModel.imageBytes;
             if (imageBytes != null) {
               return AspectRatio(
                 aspectRatio: 16 / 9,
@@ -47,7 +51,7 @@ class _SelectedImageState extends State<SelectedImage> {
                   width: double.infinity,
                   child: Image.memory(
                     imageBytes,
-                    fit: state.eventModel.getImageFitCover
+                    fit: state.eventModel.imageFitCover
                         ? BoxFit.cover
                         : BoxFit.contain,
                   ),
@@ -65,12 +69,12 @@ class _SelectedImageState extends State<SelectedImage> {
             } //else
           },
           buildWhen: (CreateEventState prevState, CreateEventState currState) {
-            if (prevState.eventModel.getImageFitCover !=
-                    currState.eventModel.getImageFitCover ||
-                prevState.eventModel.getImageBytes !=
-                    currState.eventModel.getImageBytes ||
-                prevState.eventModel.getImagePath !=
-                    currState.eventModel.getImagePath) {
+            if (prevState.eventModel.imageFitCover !=
+                    currState.eventModel.imageFitCover ||
+                prevState.eventModel.imageBytes !=
+                    currState.eventModel.imageBytes ||
+                prevState.eventModel.imagePath !=
+                    currState.eventModel.imagePath) {
               return true;
             } // if
             return false;
@@ -98,46 +102,49 @@ class _SelectedImageState extends State<SelectedImage> {
                     ),
                   ),
                   onTap: () async {
-                    File croppedFile = await ImageCropper.cropImage(
-                      sourcePath: BlocProvider.of<CreateEventBloc>(context)
-                          .state
-                          .eventModel
-                          .getImagePath,
-                      aspectRatioPresets: Platform.isAndroid
-                          ? [
-                              CropAspectRatioPreset.square,
-                              CropAspectRatioPreset.ratio3x2,
-                              CropAspectRatioPreset.original,
-                              CropAspectRatioPreset.ratio5x4,
-                              CropAspectRatioPreset.ratio16x9
-                            ]
-                          : [
-                              CropAspectRatioPreset.original,
-                              CropAspectRatioPreset.square,
-                              CropAspectRatioPreset.ratio3x2,
-                              CropAspectRatioPreset.ratio4x3,
-                              CropAspectRatioPreset.ratio5x3,
-                              CropAspectRatioPreset.ratio5x4,
-                              CropAspectRatioPreset.ratio7x5,
-                              CropAspectRatioPreset.ratio16x9
-                            ],
-                      androidUiSettings: AndroidUiSettings(
-                          hideBottomControls: false,
-                          toolbarTitle: 'Cropper',
-                          toolbarWidgetColor: cWhite100,
-                          toolbarColor: cCard,
-                          activeControlsWidgetColor: Colors.blueAccent,
-                          initAspectRatio: CropAspectRatioPreset.original,
-                          lockAspectRatio: false),
-                      iosUiSettings: IOSUiSettings(
-                        minimumAspectRatio: 1.0,
-                      ),
-                    );
-                    if (croppedFile != null) {
-                      BlocProvider.of<CreateEventBloc>(context).add(
-                          CreateEventSetImage(
-                              imageBytes: croppedFile?.readAsBytesSync()));
-                    } // if
+                    try {
+                      File croppedFile = await ImageCropper.cropImage(
+                        sourcePath: BlocProvider.of<CreateEventBloc>(context)
+                            .state
+                            .eventModel
+                            .imagePath,
+                        aspectRatioPresets: Platform.isAndroid
+                            ? [
+                                CropAspectRatioPreset.square,
+                                CropAspectRatioPreset.ratio3x2,
+                                CropAspectRatioPreset.original,
+                                CropAspectRatioPreset.ratio5x4,
+                                CropAspectRatioPreset.ratio16x9
+                              ]
+                            : [
+                                CropAspectRatioPreset.original,
+                                CropAspectRatioPreset.square,
+                                CropAspectRatioPreset.ratio3x2,
+                                CropAspectRatioPreset.ratio4x3,
+                                CropAspectRatioPreset.ratio5x3,
+                                CropAspectRatioPreset.ratio5x4,
+                                CropAspectRatioPreset.ratio7x5,
+                                CropAspectRatioPreset.ratio16x9
+                              ],
+                        androidUiSettings: AndroidUiSettings(
+                            hideBottomControls: false,
+                            toolbarTitle: 'Cropper',
+                            toolbarWidgetColor: cWhite100,
+                            toolbarColor: cCard,
+                            activeControlsWidgetColor: Colors.blueAccent,
+                            initAspectRatio: CropAspectRatioPreset.original,
+                            lockAspectRatio: false),
+                        iosUiSettings: IOSUiSettings(
+                          minimumAspectRatio: 1.0,
+                        ),
+                      );
+                      if (croppedFile != null) {
+                        BlocProvider.of<CreateEventBloc>(context).add(
+                            CreateEventSetImage(
+                                imageBytes: croppedFile?.readAsBytesSync()));
+                      } // if
+                    } // try
+                    catch (e) {} // catch
                   },
                 ),
                 VerticalDivider(
@@ -167,9 +174,8 @@ class _SelectedImageState extends State<SelectedImage> {
           height: _sHeight * .075,
           child: BlocBuilder<CreateEventBloc, CreateEventState>(
             builder: (context, state) {
-
               // Image will cover the entire card
-              if (state.eventModel.getImageFitCover) {
+              if (state.eventModel.imageFitCover) {
                 return GestureDetector(
                   onTap: () {
                     BlocProvider.of<CreateEventBloc>(context)
@@ -199,8 +205,10 @@ class _SelectedImageState extends State<SelectedImage> {
                             color: cWhite100)));
               }
             },
-            buildWhen: (CreateEventState prevState, CreateEventState currState) {
-              return prevState.eventModel.getImageFitCover != currState.eventModel.getImageFitCover;
+            buildWhen:
+                (CreateEventState prevState, CreateEventState currState) {
+              return prevState.eventModel.imageFitCover !=
+                  currState.eventModel.imageFitCover;
             },
           ),
         ),

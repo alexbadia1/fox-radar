@@ -9,11 +9,15 @@ import 'package:database_repository/database_repository.dart';
 
 class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
   final DatabaseRepository db;
+  final String accountID;
   EventModel _eventModel;
 
-  CreateEventBloc({@required this.db})
-      : super(CreateEventInvalid(EventModel.nullConstructor())) {
+  CreateEventBloc({@required this.db, @required this.accountID})
+      : assert(db != null),
+        assert(accountID != null),
+        super(CreateEventInvalid(EventModel.nullConstructor())) {
     this._eventModel = this.state.eventModel;
+    this._eventModel.accountID = accountID;
   } // CreateEventBloc
 
   @override
@@ -195,14 +199,13 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
       {@required CreateEventSetDescription createEventSetDescription}) async* {
     // Empty description, set description to empty string
     if (createEventSetDescription.newDescription.trim().isEmpty) {
-      this._eventModel = this._eventModel.copyWith(summary: '');
+      this._eventModel = this._eventModel.copyWith(description: '');
     } // if
 
     // Not empty description, so update the [_eventModel]
     else {
-      this._eventModel = this
-          ._eventModel
-          .copyWith(summary: createEventSetDescription.newDescription.trim());
+      this._eventModel = this._eventModel.copyWith(
+          description: createEventSetDescription.newDescription.trim());
     } // else
 
     // This attribute does not affect the validity of the event
@@ -323,7 +326,7 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
     // Dart passes array's by reference, so "clone" the array into a new one
     // in order to ensure the new event model object is using a "new" reference
     List<String> _highlightList = [];
-    _highlightList.addAll(this._eventModel.getHighlights);
+    _highlightList.addAll(this._eventModel.highlights);
 
     // Not empty highlight
     if (createEventAddHighlight.highlight != null) {
@@ -359,11 +362,10 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
     // Dart passes array's by reference, so "clone" the array into a new one
     // in order to ensure the new event model object is using a "new" reference
     List<String> _highlightList = [];
-    _highlightList.addAll(this._eventModel.getHighlights);
+    _highlightList.addAll(this._eventModel.highlights);
 
     // Not empty highlight
     if (createEventRemoveHighlight.index != null) {
-
       // Obviously can't remove items from an empty list
       if (_highlightList.length > 0) {
         _highlightList.removeAt(createEventRemoveHighlight.index);
@@ -389,7 +391,7 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
   /// Returns: the previous BloC's state
   Stream<CreateEventState> _mapCreateEventSetHighlightToState(
       {@required CreateEventSetHighlight createEventSetHighlight}) async* {
-    final List<String> _highlightList = this._eventModel.getHighlights ?? [];
+    final List<String> _highlightList = this._eventModel.highlights ?? [];
 
     // Not empty highlight
     if (createEventSetHighlight.index != null) {
@@ -432,13 +434,12 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
   Stream<CreateEventState> _mapCreateEventSetImageFitCoverToState(
       {@required
           CreateEventSetImageFitCover createEventSetImageFitCover}) async* {
-
     // The image fit is defaulted to "cover: true"
     if (createEventSetImageFitCover.fitCover != null) {
       this._eventModel = this
           ._eventModel
           .copyWith(imageFitCover: createEventSetImageFitCover.fitCover);
-    }// if
+    } // if
 
     // This attribute does not affect the validity of the event
     yield this._getNewInstanceOfCurrentState();
@@ -473,11 +474,11 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
   CreateEventState _getNewInstanceOfCurrentState() {
     if (this.state is CreateEventValid) {
       return CreateEventValid(this._eventModel);
-    }// if
+    } // if
 
     // See create_event_state.dart for more states if necessary
     return CreateEventInvalid(this._eventModel);
-  }// _getNewInstanceOfCurrentState
+  } // _getNewInstanceOfCurrentState
 
   /// Name: isValid
   ///
@@ -495,11 +496,11 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
   ///
   CreateEventState isValid() {
     // Valid
-    if (this._eventModel.myCategory.trim().isNotEmpty &&
-        this._eventModel.getTitle.trim().isNotEmpty &&
-        this._eventModel.getHost.trim().isNotEmpty &&
-        this._eventModel.getLocation.trim().isNotEmpty &&
-        (this._eventModel.getRawStartDateAndTime != null)) {
+    if (this._eventModel.category.trim().isNotEmpty &&
+        this._eventModel.title.trim().isNotEmpty &&
+        this._eventModel.host.trim().isNotEmpty &&
+        this._eventModel.location.trim().isNotEmpty &&
+        (this._eventModel.rawStartDateAndTime != null)) {
       return CreateEventValid(this._eventModel); // Return Valid Bloc State
     } // if
 
@@ -521,13 +522,15 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
   /// TODO: Change name to "hasValidEndDate" to better reflect that the end date is an attribute of the CreateEventBloc
   bool isValidEndDate() {
     // See isValidEndDate design note for why "null" is valid
-    if (this._eventModel.getRawEndDateAndTime == null) { return true; }// if
+    if (this._eventModel.rawEndDateAndTime == null) {
+      return true;
+    } // if
 
     // Make sure non-null end date time occurs BEFORE the start date time
     if (this
         ._eventModel
-        .getRawStartDateAndTime
-        .isBefore(this._eventModel.getRawEndDateAndTime)) {
+        .rawStartDateAndTime
+        .isBefore(this._eventModel.rawEndDateAndTime)) {
       return true;
     } // if
     return false;
@@ -545,5 +548,5 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
   Future<void> close() {
     print('Create Event Bloc Closed!');
     return super.close();
-  }// close
+  } // close
 } // CreateEventBloc

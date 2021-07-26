@@ -239,11 +239,11 @@ class ExpansionPanelCategoryTitle extends StatelessWidget {
         if (_category != null) {
           if (_category.isNotEmpty) {
             return Text(this.title,
-                style: TextStyle(fontSize: 16.0, color: cWhite100));
+                style: TextStyle(fontSize: 15.0, color: cWhite100));
           } // if
         } // if
         return Text(this.hintText,
-            style: TextStyle(fontSize: 14.0, color: cWhite65));
+            style: TextStyle(fontSize: 15.0, color: cWhite65));
       },
     );
   } // build

@@ -1,55 +1,60 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'account_events_event.dart';
+import 'account_events_state.dart';
 import 'package:rxdart/rxdart.dart';
-import 'category_events_event.dart';
-import 'category_events_state.dart';
 import 'package:flutter/material.dart';
+import 'package:communitytabs/logic/logic.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:communitytabs/logic/blocs/blocs.dart';
-import 'package:communitytabs/logic/constants/constants.dart';
 import 'package:database_repository/database_repository.dart';
 
-class CategoryEventsBloc
-    extends Bloc<CategoryEventsEvent, CategoryEventsState> {
+class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
   final DatabaseRepository db;
-  final String category;
+  final String accountID;
   final int paginationLimit = PAGINATION_LIMIT;
 
-  CategoryEventsBloc({@required this.db, @required this.category})
+  AccountEventsBloc({@required this.db, @required this.accountID})
       : assert(db != null),
-        assert(category != null),
-        super(CategoryEventsStateFetching());
+        assert(accountID != null),
+        super(AccountEventsStateFetching());
+
+  // Adds a debounce, to prevent the spamming of requesting events
+  @override
+  Stream<Transition<AccountEventsEvent, AccountEventsState>> transformEvents(
+      Stream<AccountEventsEvent> events, transitionFn) {
+    return super.transformEvents(
+        events.debounceTime(const Duration(milliseconds: 0)), transitionFn);
+  } // transformEvents
 
   @override
-  Stream<CategoryEventsState> mapEventToState(
-      CategoryEventsEvent categoryEventsEvent) async* {
-    print("Category Events Received An Event!");
-    // await Future.delayed(Duration(milliseconds: 5000));
-
-    /// Fetch some events
-    if (categoryEventsEvent is CategoryEventsEventFetch) {
-      yield* _mapCategoryEventsEventFetchToState();
+  Stream<AccountEventsState> mapEventToState(
+    AccountEventsEvent accountEventsEvent,
+  ) async* {
+    // Fetch some events
+    if (accountEventsEvent is AccountEventsEventFetch) {
+      yield* _mapAccountEventsEventFetchToState();
     } // if
 
-    /// Reload the events list
-    else if (categoryEventsEvent is CategoryEventsEventReload) {
-      yield* _mapCategoryEventsEventReloadToState();
+    // Reload the events list
+    else if (accountEventsEvent is AccountEventsEventReload) {
+      yield* _mapAccountEventsEventReloadToState();
     } // else if
 
-    /// The event added to the bloc has not associated state
-    /// either create one, or check all the available CategoryEvents
+    // The event added to the bloc has not associated state
+    // either create one, or check the [account_events_state.dart]
     else {
-      yield CategoryEventsStateFailed();
+      yield AccountEventsStateFailed();
     } // else
   } // mapEventToState
 
-  Stream<CategoryEventsState> _mapCategoryEventsEventReloadToState() async* {
-    /// Get the current state for later use...
+  Stream<AccountEventsState> _mapAccountEventsEventReloadToState() async* {
     final _currentState = this.state;
     bool _maxEvents = false;
 
-    if (_currentState is CategoryEventsStateSuccess) {
-      yield CategoryEventsStateSuccess(
+    // Change "isFetching" to true, to show a
+    // loading widget at the bottom of the list view.
+    if (_currentState is AccountEventsStateSuccess) {
+      yield AccountEventsStateSuccess(
         eventModels: _currentState.eventModels,
         maxEvents: _currentState.maxEvents,
         lastEvent: _currentState.lastEvent,
@@ -58,18 +63,30 @@ class CategoryEventsBloc
     } // if
 
     try {
-      /// No posts were fetched yet
+      // No posts were fetched yet
       final List<QueryDocumentSnapshot> _docs =
           await _fetchEventsWithPagination(
-              lastEvent: null, limit: paginationLimit);
+        lastEvent: null,
+        limit: paginationLimit,
+      );
+
+      // Failed Reload from a failed state
+      if (_currentState is AccountEventsStateFailed && _docs.isEmpty) {
+        yield AccountEventsStateReloadFailed();
+        yield AccountEventsStateFailed();
+        return;
+      } // if
+
+      // Map the events to a list of "Search Result Models"
       final List<SearchResultModel> _eventModels =
           _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
+      // The last remaining events where retrieved
       if (_eventModels.length != this.paginationLimit) {
         _maxEvents = true;
       } // if
 
-      yield CategoryEventsStateSuccess(
+      yield AccountEventsStateSuccess(
         eventModels: _eventModels,
         maxEvents: _maxEvents,
         lastEvent: _docs.last,
@@ -77,29 +94,42 @@ class CategoryEventsBloc
       );
     } // try
     catch (e) {
-      yield CategoryEventsStateFailed();
+      yield AccountEventsStateFailed();
     } // catch
-  } // _mapCategoryEventsEventReloadToState
+  } // _mapAccountEventsEventReloadToState
 
-  Stream<CategoryEventsState> _mapCategoryEventsEventFetchToState() async* {
-    /// Get the current state for later use...
+  Stream<AccountEventsState> _mapAccountEventsEventFetchToState() async* {
     final _currentState = this.state;
     bool _maxEvents = false;
 
     try {
-      /// No posts were fetched yet
-      if (_currentState is CategoryEventsStateFetching) {
+      // No posts were fetched yet
+      if (_currentState is AccountEventsStateFetching ||
+          _currentState is AccountEventsStateFailed) {
+        // Fetch the first [paginationLimit] number of events
         final List<QueryDocumentSnapshot> _docs =
             await _fetchEventsWithPagination(
-                lastEvent: null, limit: paginationLimit);
+          lastEvent: null,
+          limit: paginationLimit,
+        );
+
+        // No events were retrieved on the FIRST retrieval, fail.
+        if (_docs.isEmpty) {
+          yield AccountEventsStateFailed();
+          return;
+        } // if
+
+        // Map the events to a list of "Search Result Models"
         final List<SearchResultModel> _eventModels =
             _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
+        // The last remaining events where retrieved
         if (_eventModels.length != this.paginationLimit) {
           _maxEvents = true;
         } // if
 
-        yield CategoryEventsStateSuccess(
+        //
+        yield AccountEventsStateSuccess(
           eventModels: _eventModels,
           maxEvents: _maxEvents,
           lastEvent: _docs.last,
@@ -107,15 +137,19 @@ class CategoryEventsBloc
         );
       } // if
 
-      /// Some posts were fetched already, now fetch 20 more
-      else if (_currentState is CategoryEventsStateSuccess) {
+      // Posts were fetched already, now fetch [paginationLimit] more events.
+      else if (_currentState is AccountEventsStateSuccess) {
+        // Fetch the first [paginationLimit] number of events
         final List<QueryDocumentSnapshot> _docs =
             await _fetchEventsWithPagination(
                 lastEvent: _currentState.lastEvent, limit: paginationLimit);
 
-        /// No event models were returned from the database
+        // No event models were returned from the database
+        //
+        // Since events were already received, this means that all
+        // events were retrieved from the database (maxEvents = true).
         if (_docs.isEmpty) {
-          yield CategoryEventsStateSuccess(
+          yield AccountEventsStateSuccess(
             eventModels: _currentState.eventModels,
             maxEvents: true,
             lastEvent: _currentState.lastEvent,
@@ -123,16 +157,19 @@ class CategoryEventsBloc
           );
         } // if
 
-        /// At least 1 event was returned from the database
+        // At least 1 event was returned from the database, update
+        // the AccountEventBloc's State by adding the new events.
         else {
+          // Map the events to a list of "Search Result Models"
           final List<SearchResultModel> _eventModels =
               _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
+          // The last remaining events where retrieved
           if (_eventModels.length != this.paginationLimit) {
             _maxEvents = true;
           } // if
 
-          yield CategoryEventsStateSuccess(
+          yield AccountEventsStateSuccess(
             eventModels: _currentState.eventModels + _eventModels,
             maxEvents: _maxEvents,
             lastEvent: _docs?.last ?? _currentState.lastEvent,
@@ -141,16 +178,19 @@ class CategoryEventsBloc
         } // else
       } // if
     } catch (e) {
-      yield CategoryEventsStateFailed();
+      yield AccountEventsStateFailed();
     } // catch
-  } // _mapCategoryEventsEventFetchToState
+  } // _mapAccountEventsEventFetchToState
 
   Future<List<QueryDocumentSnapshot>> _fetchEventsWithPagination(
       {@required QueryDocumentSnapshot lastEvent, @required int limit}) async {
-    return db.searchEventsByCategory(
-        category: this.category, lastEvent: lastEvent, limit: limit);
+    return db.searchEventsByAccount(
+        accountID: this.accountID, lastEvent: lastEvent, limit: limit);
   } // _fetchEventsWithPagination
 
+  /// Name: _mapDocumentSnapshotsToSearchEventModels
+  ///
+  /// Description: maps the document snapshot from firebase to the event model
   List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels(
       {@required List<QueryDocumentSnapshot> docs}) {
     return docs.map((doc) {
@@ -196,21 +236,14 @@ class CategoryEventsBloc
   } // _mapDocumentSnapshotsToSearchEventModels
 
   @override
-  Stream<Transition<CategoryEventsEvent, CategoryEventsState>> transformEvents(
-      Stream<CategoryEventsEvent> events, transitionFn) {
-    return super.transformEvents(
-        events.debounceTime(const Duration(milliseconds: 0)), transitionFn);
-  } // transformEvents
-
-  @override
-  void onChange(Change<CategoryEventsState> change) {
-    print('${this.category} Category Events Bloc: $change');
+  void onChange(Change<AccountEventsState> change) {
+    print('Account Events Bloc: $change');
     super.onChange(change);
   } // onChange
 
   @override
   Future<void> close() {
-    print('Category Events Bloc Closed!');
+    print('Account Events Bloc Closed');
     return super.close();
   } // close
-} // CategoryEventsBloc
+} // AccountEventsBloc

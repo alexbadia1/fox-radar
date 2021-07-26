@@ -37,7 +37,7 @@ class Highlights extends StatelessWidget {
 
                     /// TODO: Set limit as a constant in the Event Model
                     // Disable the "Add Highlights" Button if Highlight length is reached
-                    if (_createEventState.eventModel.getHighlights.length >= 5) {
+                    if (_createEventState.eventModel.highlights.length >= HIGHLIGHTS_LIMIT) {
                       return Center(
                         child: IconButton(
                           icon: Icon(
@@ -61,7 +61,7 @@ class Highlights extends StatelessWidget {
                           if (BlocProvider.of<CreateEventBloc>(context)
                                   .state
                                   .eventModel
-                                  .getHighlights
+                                  .highlights
                                   .length <
                               5) {
                             BlocProvider.of<CreateEventBloc>(context)
@@ -78,8 +78,8 @@ class Highlights extends StatelessWidget {
           BlocBuilder<CreateEventBloc, CreateEventState>(
             buildWhen: (previousState, currentState) {
               // Null Check
-              if (previousState.eventModel.getHighlights == null) {
-                if (currentState.eventModel.getHighlights == null) {
+              if (previousState.eventModel.highlights == null) {
+                if (currentState.eventModel.highlights == null) {
                   return false;
                 } // if
                 else {
@@ -87,11 +87,11 @@ class Highlights extends StatelessWidget {
                 } // else
               } // if
               return !ListEquality().equals(
-                  previousState.eventModel.getHighlights,
-                  currentState.eventModel.getHighlights);
+                  previousState.eventModel.highlights,
+                  currentState.eventModel.highlights);
             },
             builder: (context, createEventState) {
-              final _highlights = createEventState.eventModel.getHighlights;
+              final _highlights = createEventState.eventModel.highlights;
               List<Widget> _highlightTextFieldList = [];
 
               for (int i = 0; i < _highlights.length; ++i) {

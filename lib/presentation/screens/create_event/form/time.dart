@@ -34,13 +34,13 @@ class Time extends StatelessWidget {
                   } //
                 },
                 titleLabelCallback: (CreateEventState state) {
-                  return state.eventModel.getRawStartDateAndTime;
+                  return state.eventModel.rawStartDateAndTime;
                 },
                 timeLabelCallback: (CreateEventState state) {
-                  return state.eventModel.getRawStartDateAndTime;
+                  return state.eventModel.rawStartDateAndTime;
                 },
                 dateLabelCallback: (CreateEventState state) {
-                  return state.eventModel.getRawStartDateAndTime;
+                  return state.eventModel.rawStartDateAndTime;
                 },
                 onConfirmButtonPressed: (DateTime dateTime) {
                   BlocProvider.of<CreateEventBloc>(context).add(
@@ -56,7 +56,7 @@ class Time extends StatelessWidget {
             create: (context) => DateTimePickerCubit(),
             child: Builder(builder: (context) {
               CreateEventState state = context.watch<CreateEventBloc>().state;
-              bool slideEnable = (state.eventModel.getRawEndDateAndTime != null);
+              bool slideEnable = (state.eventModel.rawEndDateAndTime != null);
               return Slidable(
                 enabled: slideEnable,
                 direction: Axis.horizontal,
@@ -80,13 +80,13 @@ class Time extends StatelessWidget {
                     } //
                   },
                   titleLabelCallback: (CreateEventState state) {
-                    return state.eventModel.getRawEndDateAndTime;
+                    return state.eventModel.rawEndDateAndTime;
                   },
                   timeLabelCallback: (CreateEventState state) {
-                    return state.eventModel.getRawEndDateAndTime;
+                    return state.eventModel.rawEndDateAndTime;
                   },
                   dateLabelCallback: (CreateEventState state) {
-                    return state.eventModel.getRawEndDateAndTime;
+                    return state.eventModel.rawEndDateAndTime;
                   },
                   onConfirmButtonPressed: (DateTime dateTime) {
                     BlocProvider.of<CreateEventBloc>(context).add(

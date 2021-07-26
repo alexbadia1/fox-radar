@@ -13,7 +13,8 @@ class EventCard extends StatefulWidget {
   _EventCardState createState() => _EventCardState();
 } // ClubBigCard
 
-class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixin{
+class _EventCardState extends State<EventCard>
+    with AutomaticKeepAliveClientMixin {
   Uint8List _imageBytes;
 
   @override
@@ -32,7 +33,9 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
         onTap: () {
           Navigator.of(context).pushNamed(
             '/event',
-            arguments: EventScreenArguments(documentId: this.widget.newSearchResult.eventId, imageBytes: _imageBytes),
+            arguments: EventScreenArguments(
+                documentId: this.widget.newSearchResult.eventId,
+                imageBytes: _imageBytes),
           );
         },
         child: Container(
@@ -58,8 +61,9 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
                         _imageBytes = _fetchImageState.imageBytes;
                         return Image.memory(
                           _fetchImageState.imageBytes,
-                          fit:
-                          this.widget.newSearchResult.getImageFitCover ? BoxFit.cover : BoxFit.contain,
+                          fit: this.widget.newSearchResult.getImageFitCover
+                              ? BoxFit.cover
+                              : BoxFit.contain,
                         );
                       } // if
 
@@ -120,7 +124,7 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
         ),
       ),
     );
-  }// build
+  } // build
 
   @override
   bool get wantKeepAlive => true;

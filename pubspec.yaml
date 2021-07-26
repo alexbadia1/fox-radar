@@ -55,7 +55,7 @@ dependencies:
   # image_picker >= 0.7.0 conflicts with firebase
   # Shouldn't be a problem when switching backend to sql.
   image_picker: ^0.6.7+22
-  photo_manager: ^1.0.6
+  photo_manager: ^1.2.8
   image_cropper: ^1.4.0
 
 #  # Local storage

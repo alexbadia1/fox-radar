@@ -20,9 +20,9 @@ class FetchFullEventSuccess extends FetchFullEventState {
   String formattedStartDate;
 
   FetchFullEventSuccess({@required this.eventModel}) : assert(eventModel != null) {
-    end = this.eventModel.getRawEndDateAndTime;
-    start = this.eventModel.getRawStartDateAndTime;
-  }
+    end = this.eventModel.rawEndDateAndTime;
+    start = this.eventModel.rawStartDateAndTime;
+  }// FetchFullEventSuccess
 
   void formatEventDatesAndTimes() {
     final event = this.eventModel;
@@ -44,7 +44,7 @@ class FetchFullEventSuccess extends FetchFullEventState {
     } else if (myCurrent.difference(this.start).inDays == -1) {
       this.formattedStartDate = 'tomorrow';
     } else {
-      this.formattedStartDate = 'on ${event.getStartDate}';
+      this.formattedStartDate = 'on ${event.startDate}';
     }
 
     if (this.end != null) {
@@ -55,33 +55,33 @@ class FetchFullEventSuccess extends FetchFullEventState {
       } else if (myCurrent.difference(this.end).inDays == -1) {
         formattedEndDate = 'tomorrow';
       } else {
-        formattedEndDate = 'on ${event.getEndDate}';
+        formattedEndDate = 'on ${event.endDate}';
       }
     }
 
     if (myCurrent.isBefore(this.start)) {
-      startSubtitle = 'Starts $formattedStartDate at ${event.getStartTime}';
-      if (event.getEndDate.trim().isNotEmpty)
-        endSubtitle = 'Ends $formattedEndDate at ${event.getEndTime}';
+      startSubtitle = 'Starts $formattedStartDate at ${event.startTime}';
+      if (event.endDate.trim().isNotEmpty)
+        endSubtitle = 'Ends $formattedEndDate at ${event.endTime}';
     } else if (myCurrent.isAtSameMomentAs(start)) {
       startSubtitle = 'Event starts now!';
-      if (event.getEndDate.trim().isNotEmpty)
-        endSubtitle = 'Ends at ${event.getEndTime} $formattedEndDate';
+      if (event.endDate.trim().isNotEmpty)
+        endSubtitle = 'Ends at ${event.endTime} $formattedEndDate';
     } else if (myCurrent.isAfter(this.start)) {
       if (this.end != null) {
         if (myCurrent.isBefore(this.end)) {
           startSubtitle =
-              'Started since ${event.getStartTime} ${this.formattedStartDate}';
-          endSubtitle = 'Ends at ${event.getEndTime} $formattedEndDate';
+              'Started since ${event.startTime} ${this.formattedStartDate}';
+          endSubtitle = 'Ends at ${event.endTime} $formattedEndDate';
         } else {
-          startSubtitle = 'Ended since ${event.getEndTime} $formattedEndDate ';
+          startSubtitle = 'Ended since ${event.endTime} $formattedEndDate ';
         }
       } else {
         startSubtitle =
-            'Started since ${event.getStartTime} ${this.formattedStartDate}';
+            'Started since ${event.startTime} ${this.formattedStartDate}';
       }
     } else {
-      startSubtitle = 'Ended since ${event.getEndTime} $formattedEndDate ';
+      startSubtitle = 'Ended since ${event.startTime} $formattedEndDate ';
     }
   } // _formatEventDatesAndTimes
 

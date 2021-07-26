@@ -21,7 +21,7 @@ class Description extends StatelessWidget {
                maxLines: 5,
                minLines: 3,
                initialTextValue:
-               _currentCreateEventBlocState.eventModel.getSummary,
+               _currentCreateEventBlocState.eventModel.description,
                hintText: 'Description',
                height: _width,
                width: _height,

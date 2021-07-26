@@ -4,6 +4,7 @@ import 'package:communitytabs/presentation/presentation.dart';
 
 class MaristSliverAppBarTitle extends StatelessWidget {
   final String title;
+
   const MaristSliverAppBarTitle({@required this.title});
 
   @override
@@ -19,9 +20,11 @@ class MaristSliverAppBarTitle extends StatelessWidget {
 
 class MaristSliverAppBar extends StatelessWidget {
   final String title;
+  final Widget action;
+
   Image _backgroundImage;
 
-  MaristSliverAppBar({@required this.title}) {
+  MaristSliverAppBar({@required this.title, this.action}) {
     _backgroundImage = new Image.asset(
       "images/tenney.jpg",
       fit: BoxFit.fill,
@@ -37,6 +40,7 @@ class MaristSliverAppBar extends StatelessWidget {
       toolbarHeight: MediaQuery.of(context).size.height * 0.0725,
       elevation: 1.0,
       pinned: true,
+      actions: [this.action], // Scaffold inherits drawer
       flexibleSpace: Container(
         width: double.infinity,
         height: MediaQuery.of(context).size.height * 0.0725,
@@ -55,7 +59,6 @@ class MaristSliverAppBar extends StatelessWidget {
                 Expanded(
                     flex: 30,
                     child: MaristSliverAppBarTitle(title: this.title)),
-                Expanded(flex: 3, child: SearchButton()),
                 Expanded(flex: 2, child: SizedBox()),
               ],
             ),

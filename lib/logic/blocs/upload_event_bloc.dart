@@ -41,7 +41,7 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
       createEventId = await this
           .db
           .insertNewEventToEventsCollection(newEvent: newEventModel);
-      newEventModel.setImagePath('events/$createEventId.jpg');
+      newEventModel.imagePath = 'events/$createEventId.jpg';
 
       // Upload new event data to the firebase cloud search events document
       if (createEventId != null) {
@@ -52,8 +52,8 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
       // the new event's document id as a the name for the image.
       if (createEventId != null) {
         this.uploadTask = this.db.uploadImageToStorage(
-            path: newEventModel.getImagePath,
-            imageBytes: newEventModel.getImageBytes);
+            path: newEventModel.imagePath,
+            imageBytes: newEventModel.imageBytes);
       } // if
 
       yield UploadEventStateUploading(

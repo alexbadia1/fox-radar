@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/logic/logic.dart';
 import 'package:database_repository/database_repository.dart';
 import 'package:communitytabs/presentation/presentation.dart';
+import 'package:authentication_repository/authentication_repository.dart';
 
 class CreateEventBody extends StatelessWidget {
   @override
@@ -16,7 +17,9 @@ class CreateEventBody extends StatelessWidget {
           providers: [
             BlocProvider<CreateEventBloc>(
               create: (parentContext) => CreateEventBloc(
-                  db: RepositoryProvider.of<DatabaseRepository>(parentContext)),
+                  db: RepositoryProvider.of<DatabaseRepository>(parentContext),
+                  accountID: RepositoryProvider.of<AuthenticationRepository>(parentContext).getUserModel().userID,
+              ),
             ),
             BlocProvider<CreateEventPageViewCubit>(
                 create: (parentContext) => CreateEventPageViewCubit()),

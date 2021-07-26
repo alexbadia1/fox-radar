@@ -1,5 +1,5 @@
-import 'package:communitytabs/presentation/routes/authentication_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 
 class MaristAppAuthentication extends StatefulWidget {
   final RouteGeneratorAuthentication routeGeneratorAuthentication;
@@ -7,7 +7,7 @@ class MaristAppAuthentication extends StatefulWidget {
   MaristAppAuthentication({@required this.routeGeneratorAuthentication, Key key}) : super(key: key);
   @override
   _MaristAppAuthenticationState createState() => _MaristAppAuthenticationState();
-}
+}// MaristAppAuthentication
 
 class _MaristAppAuthenticationState extends State<MaristAppAuthentication> {
   @override
@@ -23,4 +23,4 @@ class _MaristAppAuthenticationState extends State<MaristAppAuthentication> {
     this.widget.routeGeneratorAuthentication.close();
     super.dispose();
   }// dispose
-}
+}// _MaristAppAuthenticationState

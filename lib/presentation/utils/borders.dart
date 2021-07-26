@@ -22,6 +22,27 @@ class BorderTop extends StatelessWidget {
   }// build
 }// BorderTop
 
+class BorderLeft extends StatelessWidget {
+  final Widget child;
+
+  const BorderLeft({Key key, @required this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          left: BorderSide(
+            width: 1.25,
+            color: Color.fromRGBO(61, 61, 61, 1.0),
+          ),
+        ),
+      ),
+      child: child,
+    );
+  }// build
+}// BorderTop
+
 class BorderBottom extends StatelessWidget {
   final Widget child;
 

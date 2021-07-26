@@ -25,7 +25,6 @@ class Category extends StatelessWidget {
                       height: _textFormFieldHeight,
                       width: double.infinity,
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           cLeftMarginSmall(context),
 
@@ -34,7 +33,7 @@ class Category extends StatelessWidget {
                             title: 'Category',
                             hintText: 'Add Category (Required)',
                             retrieveCategoryFromBlocCallback: (state) {
-                              return state.eventModel.myCategory;
+                              return state.eventModel.category;
                             },
                           ),
 
@@ -44,7 +43,7 @@ class Category extends StatelessWidget {
                           ExpansionPanelCategoryLabel(
                             retrieveCategoryFromBlocCallback:
                                 (CreateEventState state) {
-                              return state.eventModel.myCategory;
+                              return state.eventModel.category;
                             },
                           ),
 

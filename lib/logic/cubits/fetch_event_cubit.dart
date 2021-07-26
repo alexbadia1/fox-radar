@@ -12,7 +12,8 @@ class FetchFullEventCubit extends Cubit<FetchFullEventState> {
   void fetchEvent({@required documentId}) async {
     DocumentSnapshot _documentSnapshot;
     try {
-      _documentSnapshot = await db.getEventFromEventsCollection(documentId: documentId);
+      _documentSnapshot =
+          await db.getEventFromEventsCollection(documentId: documentId);
 
       final EventModel _eventModel = _mapQueryDocumentSnapshotToEventModel(
           documentSnapshot: _documentSnapshot);
@@ -22,10 +23,9 @@ class FetchFullEventCubit extends Cubit<FetchFullEventState> {
       final _currentState = this.state;
       if (_currentState is FetchFullEventSuccess) {
         _currentState.formatEventDatesAndTimes();
-      }// if
+      } // if
     } // try
     catch (error) {
-
       // print(error);
 
       emit(FetchFullEventFailure());
@@ -35,11 +35,10 @@ class FetchFullEventCubit extends Cubit<FetchFullEventState> {
 
   EventModel _mapQueryDocumentSnapshotToEventModel(
       {@required DocumentSnapshot documentSnapshot}) {
-
-    // print('Firebase data: ${documentSnapshot.data()}');
-
-    Timestamp _startTimestamp = documentSnapshot.data()['rawStartDateAndTime'];
-    Timestamp _endTimestamp = documentSnapshot.data()['rawEndDateAndTime'];
+    Timestamp _startTimestamp =
+        documentSnapshot.data()[ATTRIBUTE_RAW_START_DATE_TIME];
+    Timestamp _endTimestamp =
+        documentSnapshot.data()[ATTRIBUTE_RAW_END_DATE_TIME];
 
     DateTime tempRawStartDateAndTimeToDateTime;
     DateTime tempRawEndDateAndTimeToDateTime;
@@ -67,40 +66,44 @@ class FetchFullEventCubit extends Cubit<FetchFullEventState> {
     } // else
 
     return EventModel(
-        /// DocumentId converted to [STRING] from [STRING] in firebase.
-        newId: documentSnapshot.id,
+      // Title converted to [STRING] from [STRING] in Firebase.
+      newTitle: documentSnapshot.data()[ATTRIBUTE_TITLE] ?? '',
 
-        /// RawStartDate converted to [DATETIME] from [TIMESTAMP] in Firebase.
-        newRawStartDateAndTime: tempRawStartDateAndTimeToDateTime ?? null,
+      // Host converted to [STRING] from [STRING] in Firebase.
+      newHost: documentSnapshot.data()[ATTRIBUTE_HOST] ?? '',
 
-        /// RawEndDate converted to [DATETIME] from [TIMESTAMP] in Firebase.
-        newRawEndDateAndTime: tempRawEndDateAndTimeToDateTime ?? null,
+      // Location Converted to [] from [] in Firebase.
+      newLocation: documentSnapshot.data()[ATTRIBUTE_LOCATION] ?? '',
 
-        ///Category converted to [STRING] from [STRING] in Firebase.
-        newCategory: documentSnapshot.data()['category'] ?? '',
+      // Room converted to [STRING] from [String] in Firebase.
+      newRoom: documentSnapshot.data()[ATTRIBUTE_ROOM] ?? '',
 
-        ///Host converted to [STRING] from [STRING] in Firebase.
-        newHost: documentSnapshot.data()['host'] ?? '',
+      // RawStartDate converted to [DATETIME] from [TIMESTAMP] in Firebase.
+      newRawStartDateAndTime: tempRawStartDateAndTimeToDateTime ?? null,
 
-        ///Title converted to [STRING] from [STRING] in Firebase.
-        newTitle: documentSnapshot.data()['title'] ?? '',
+      // RawEndDate converted to [DATETIME] from [TIMESTAMP] in Firebase.
+      newRawEndDateAndTime: tempRawEndDateAndTimeToDateTime ?? null,
 
-        ///Location Converted to [] from [] in Firebase.
-        newLocation: documentSnapshot.data()['location'] ?? '',
+      // Category converted to [STRING] from [STRING] in Firebase.
+      newCategory: documentSnapshot.data()[ATTRIBUTE_CATEGORY] ?? '',
 
-        ///Room converted to [STRING] from [String] in Firebase.
-        newRoom: documentSnapshot.data()['room'] ?? '',
+      // Highlights converted to [List<String>] from [List<dynamic>] in Firebase.
+      newHighlights: List.from(
+          documentSnapshot.data()[ATTRIBUTE_HIGHLIGHTS] ?? ['', '', '', '', ''],
+      ),
 
-        ///Summary converted to [STRING] from [STRING] in Firebase.
-        newSummary: documentSnapshot.data()['summary'] ?? '',
+      // Description converted to [STRING] from [STRING] in Firebase.
+      newDescription: documentSnapshot.data()[ATTRIBUTE_DESCRIPTION] ?? '',
 
-        ///Highlights converted to [List<String>] from [List<dynamic>] in Firebase.
-        newHighlights: List.from(
-            documentSnapshot.data()['highlights'] ?? ['', '', '', '', '']),
+      // Implement Firebase Images.
+      newImageFitCover: documentSnapshot.data()[ATTRIBUTE_IMAGE_FIT_COVER] ?? false,
 
-        ///Implement Firebase Images.
-        newImageFitCover: documentSnapshot.data()['imageFitCover'] ?? true,);
-  } // _mapQueryDocumentSnaphshotToEventModel
+      // DocumentId converted to [STRING] from [STRING] in firebase.
+      newEventID: documentSnapshot.id ?? '',
+
+      newAccountID: documentSnapshot.data()[ATTRIBUTE_ACCOUNT_ID] ?? '',
+    );
+  } // _mapQueryDocumentSnapshotToEventModel
 
   @override
   void onChange(Change<FetchFullEventState> change) {
