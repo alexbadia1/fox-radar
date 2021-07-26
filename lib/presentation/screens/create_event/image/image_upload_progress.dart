@@ -3,11 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/logic/logic.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:communitytabs/presentation/presentation.dart';
+import 'package:database_repository/database_repository.dart';
 
 class ImageUploadProgress extends StatelessWidget {
+  final EventModel eventModel;
   int bytesTransferred;
   int totalBytes;
   String msg;
+
+  ImageUploadProgress({Key key, @required this.eventModel})
+      : super(key: key);
 
   /// Name: _bytesTransferred
   ///
@@ -26,17 +31,24 @@ class ImageUploadProgress extends StatelessWidget {
   /// Description: Normalizes the upload progress between 0 and 1
   ///
   /// Returns: Upload progress between 0 and 1
-  double _uploadProgress({@required int bytesTransferred, @required int totalByteCount}) {
+  double _uploadProgress(
+      {@required int bytesTransferred, @required int totalByteCount}) {
     print('bytes transfered $bytesTransferred');
     print('total bytes $totalByteCount');
-    if (totalByteCount <= 0) {return 0.0;}
+    if (totalByteCount <= 0) {
+      return 0.0;
+    }
     double rawProgress = (bytesTransferred / totalByteCount);
 
-    if (rawProgress < 0) {return 0.0;}// if
-    if (rawProgress > 1) {return 1.0;}// if
+    if (rawProgress < 0) {
+      return 0.0;
+    } // if
+    if (rawProgress > 1) {
+      return 1.0;
+    } // if
 
     return rawProgress;
-  }// uploadProgress
+  } // uploadProgress
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +56,7 @@ class ImageUploadProgress extends StatelessWidget {
 
     /// Nothing is uploading, don't show anything for upload progress
     if (uploadState is UploadEventStateInitial) {
-      return SizedBox(
-        height: 0, width: 0,
-      );
+      return SizedBox(height: 0, width: 0);
     } // if
 
     /// Show upload progress with a stream builder
@@ -54,7 +64,6 @@ class ImageUploadProgress extends StatelessWidget {
       return StreamBuilder(
         stream: uploadState.uploadTask.snapshotEvents,
         builder: (BuildContext context, AsyncSnapshot<TaskSnapshot> snapshot) {
-
           // No data, task hasn't started
           if (!snapshot.hasData) {
             this.bytesTransferred = 0;
@@ -80,6 +89,8 @@ class ImageUploadProgress extends StatelessWidget {
 
             else if (snapshot.data.state == TaskState.success) {
               this.msg = 'Success';
+              BlocProvider.of<UploadEventBloc>(context)
+                  .add(UploadEventComplete());
             } // else if
 
             // Data is uploading
@@ -95,17 +106,23 @@ class ImageUploadProgress extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
             child: UploadProgressCard(
+              eventModel: this.eventModel,
               msg: this.msg,
               uploadProgress: _uploadProgress(
                   bytesTransferred: this.bytesTransferred,
-                  totalByteCount:this.totalBytes
-              ),
+                  totalByteCount: this.totalBytes),
               cancelButtonEnabled: this.msg != 'Success',
               onUploadCanceledCallback: () {
                 // Cancel the upload using the Block Event
                 BlocProvider.of<UploadEventBloc>(context)
                     .add(UploadEventCancel());
+              },
 
+              // Allow the user press the check mark to reload
+              // the account events and reset the UploadBloc to initial state.
+              onUploadSuccessCallback: () {
+                BlocProvider.of<UploadEventBloc>(context)
+                    .add(UploadEventReset());
               },
             ),
           );
@@ -116,7 +133,8 @@ class ImageUploadProgress extends StatelessWidget {
     /// Invalid upload state, don't show anything for upload progress
     else {
       return SizedBox(
-        height: 0, width: 0,
+        height: 0,
+        width: 0,
       );
     } // else
   } // build

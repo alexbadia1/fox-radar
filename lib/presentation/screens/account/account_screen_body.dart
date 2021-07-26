@@ -129,6 +129,8 @@ class _AccountScreenBodyState extends State<AccountScreenBody> with AutomaticKee
                   onRefresh: () async {
                     BlocProvider.of<AccountEventsBloc>(refreshIndicatorContext)
                         .add(AccountEventsEventReload());
+                    BlocProvider.of<UploadEventBloc>(refreshIndicatorContext)
+                        .add(UploadEventReset());
                     final _future = await this._refreshCompleter.future;
                     return _future;
                   },
@@ -140,6 +142,7 @@ class _AccountScreenBodyState extends State<AccountScreenBody> with AutomaticKee
                     /// Description: Nests a scroll view inside the "SLiver Scaffold"
                     ///              allowing for a list of Events created by the user.
                     child: CustomScrollView(
+                      physics: AlwaysScrollableScrollPhysics(),
                       controller: this._scrollController,
                       slivers: [
                         /// Name: Builder
@@ -154,7 +157,9 @@ class _AccountScreenBodyState extends State<AccountScreenBody> with AutomaticKee
                             // Show upload progress at top
                             if (uploadState is UploadEventStateUploading) {
                               return SliverToBoxAdapter(
-                                child: ImageUploadProgress(),
+                                child: ImageUploadProgress(
+                                  eventModel: uploadState.eventModel,
+                                ),
                               );
                             } // if
 

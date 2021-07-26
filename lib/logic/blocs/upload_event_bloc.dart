@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:communitytabs/logic/blocs/blocs.dart';
+import 'package:communitytabs/logic/logic.dart';
 import 'upload_event_event.dart';
 import 'upload_event_state.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,9 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
   UploadEventBloc({@required this.db}) : super(UploadEventStateInitial());
 
   @override
-  Stream<UploadEventState> mapEventToState(UploadEventEvent event,) async* {
+  Stream<UploadEventState> mapEventToState(
+    UploadEventEvent event,
+  ) async* {
     // Start Upload
     if (event is UploadEventUpload) {
       yield* _mapUploadEventUploadToState(uploadEventUpload: event);
@@ -22,6 +25,14 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
 
     else if (event is UploadEventCancel) {
       yield* _mapUploadEventCancelToState(uploadEventCancel: event);
+    } // else if
+
+    else if (event is UploadEventReset) {
+      yield* _mapUploadEventResetToState();
+    } // else if
+
+    else if (event is UploadEventComplete) {
+      yield* _mapUploadEventCompleteToState();
     } // else if
   } // mapEventToState
 
@@ -57,10 +68,19 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
       } // if
 
       yield UploadEventStateUploading(
-          uploadTask: this.uploadTask,
-          eventModel: newEventModel);
+        uploadTask: this.uploadTask,
+        eventModel: newEventModel,
+      );
     } // if
   } // _mapUploadEventUploadToState
+
+  Stream<UploadEventStateInitial> _mapUploadEventResetToState() async* {
+    // Only can reset the event BloC if there was an event uploaded
+    if (this.uploadTask != null) {
+      yield (UploadEventStateInitial());
+      this.uploadTask = null;
+    } // if
+  } // _mapUploadEventResetToState
 
   Stream<UploadEventState> _mapUploadEventCancelToState(
       {@required UploadEventCancel uploadEventCancel}) async* {
@@ -70,7 +90,21 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
     } // if
 
     this.uploadTask.cancel();
+    // Maybe delete the event stored, but what
+    // if users want to undo canceling an upload event?
   } // UploadEventBloc
+
+  Stream<UploadEventState> _mapUploadEventCompleteToState(
+      {@required UploadEventCancel uploadEventCancel}) async* {
+    // An event must already be being uploaded
+    if (this.uploadTask != null) {
+      final state = this.state;
+      if (state is UploadEventStateUploading) {
+        state.uploadComplete();
+        yield state;
+      }// if
+    } // if
+  } // _mapUploadEventCompleteToState
 
   // TODO: Remove print when Create Event Bloc changes
   @override
@@ -84,5 +118,5 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
   Future<void> close() {
     print('Upload Event Bloc Closed!');
     return super.close();
-  }// close
-}// UploadEventBloc
+  } // close
+} // UploadEventBloc

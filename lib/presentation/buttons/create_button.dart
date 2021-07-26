@@ -24,7 +24,7 @@ class CustomCreateButton extends StatelessWidget {
               if (state is CreateEventInvalid) {
                 return GestureDetector(
                   child: Text(
-                      'Post', style: TextStyle(fontSize: 16, color: Colors.grey)),
+                      'POST', style: TextStyle(fontSize: 16, color: Colors.grey)),
                   onTap: null,
                 );
               }

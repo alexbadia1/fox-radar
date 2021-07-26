@@ -6,7 +6,8 @@ import 'package:communitytabs/presentation/presentation.dart';
 class HomeBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    HomePageViewCubit _homePageViewCubit = BlocProvider.of<HomePageViewCubit>(context);
+    HomePageViewCubit _homePageViewCubit =
+        BlocProvider.of<HomePageViewCubit>(context);
 
     final SlidingUpPanelState _slidingUpPanelState =
         context.watch<SlidingUpPanelCubit>().state;
@@ -42,12 +43,36 @@ class HomeBottomNavigationBar extends StatelessWidget {
 
               /// This button opens the sliding up panel
               IconButton(
-                  icon: Icon(Icons.add),
-                  color: kHavenLightGray,
-                  splashColor: kActiveHavenLightGray,
-                  onPressed: () {
+                icon: Icon(Icons.add),
+                color: kHavenLightGray,
+                splashColor: kActiveHavenLightGray,
+                onPressed: () {
+                  final state = BlocProvider.of<UploadEventBloc>(context).state;
+                  if (state is UploadEventStateUploading) {
+                    if (!state.complete) {
+                      showModalBottomSheet<void>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return UploadSnackBar(onCancelUploadCallback: (_) {
+                              BlocProvider.of<UploadEventBloc>(context).add(
+                                UploadEventCancel(),
+                              );
+                            });
+                          });
+                    } // if
+                    else {
+                      // Reset the upload event bloc
+                      BlocProvider.of<UploadEventBloc>(context)
+                          .add(UploadEventReset());
+
+                      // Open panel and reset the upload progress bloc
+                      BlocProvider.of<SlidingUpPanelCubit>(context).openPanel();
+                    } // else
+                  } // if
+                  else {
                     BlocProvider.of<SlidingUpPanelCubit>(context).openPanel();
-                  },
+                  } // else
+                },
               ),
 
               /// This button navigates to the Account Screen
@@ -56,7 +81,8 @@ class HomeBottomNavigationBar extends StatelessWidget {
                   color: kHavenLightGray,
                   splashColor: kActiveHavenLightGray,
                   onPressed: () {
-                    BlocProvider.of<AppPageViewCubit>(context).jumpToAccountPage();
+                    BlocProvider.of<AppPageViewCubit>(context)
+                        .jumpToAccountPage();
                   }),
             ],
           ),
@@ -67,10 +93,10 @@ class HomeBottomNavigationBar extends StatelessWidget {
     /// Sliding Up Panel Cubit did not return a state that is either open or closed
     else {
       return Container(
-          child: Center(
-              child: Text(
-                  'Sliding Up Panel Cubit did not return a state that is either open or closed!'),
-          ),
+        child: Center(
+          child: Text(
+              'Sliding Up Panel Cubit did not return a state that is either open or closed!'),
+        ),
       );
     } // else
   }

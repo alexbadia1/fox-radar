@@ -40,7 +40,31 @@ class AccountBottomNavigationBar extends StatelessWidget {
                   color: kHavenLightGray,
                   splashColor: kActiveHavenLightGray,
                   onPressed: () {
-                    BlocProvider.of<SlidingUpPanelCubit>(context).openPanel();
+                    final state = BlocProvider.of<UploadEventBloc>(context).state;
+                    if (state is UploadEventStateUploading) {
+                      if (!state.complete) {
+                        showModalBottomSheet<void>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return UploadSnackBar(onCancelUploadCallback: (_) {
+                                BlocProvider.of<UploadEventBloc>(context).add(
+                                  UploadEventCancel(),
+                                );
+                              });
+                            });
+                      } // if
+                      else {
+                        // Reset the upload event bloc
+                        BlocProvider.of<UploadEventBloc>(context)
+                            .add(UploadEventReset());
+
+                        // Open panel and reset the upload progress bloc
+                        BlocProvider.of<SlidingUpPanelCubit>(context).openPanel();
+                      } // else
+                    } // if
+                    else {
+                      BlocProvider.of<SlidingUpPanelCubit>(context).openPanel();
+                    } // else
                   },
               ),
 

@@ -17,8 +17,11 @@ class CreateEventBody extends StatelessWidget {
           providers: [
             BlocProvider<CreateEventBloc>(
               create: (parentContext) => CreateEventBloc(
-                  db: RepositoryProvider.of<DatabaseRepository>(parentContext),
-                  accountID: RepositoryProvider.of<AuthenticationRepository>(parentContext).getUserModel().userID,
+                db: RepositoryProvider.of<DatabaseRepository>(parentContext),
+                accountID: RepositoryProvider.of<AuthenticationRepository>(
+                        parentContext)
+                    .getUserModel()
+                    .userID,
               ),
             ),
             BlocProvider<CreateEventPageViewCubit>(
@@ -103,10 +106,11 @@ class CreateEventBody extends StatelessWidget {
                                             child: FlatButton(
                                               minWidth: double.infinity,
                                               onPressed: () {
-                                                Navigator.of(parentContext).pop();
+                                                Navigator.of(parentContext)
+                                                    .pop();
                                                 BlocProvider.of<
                                                             SlidingUpPanelCubit>(
-                                                    parentContext)
+                                                        parentContext)
                                                     .closePanel();
                                               },
                                               child: Align(
@@ -126,7 +130,8 @@ class CreateEventBody extends StatelessWidget {
                                             child: FlatButton(
                                               minWidth: double.infinity,
                                               onPressed: () {
-                                                Navigator.of(parentContext).pop();
+                                                Navigator.of(parentContext)
+                                                    .pop();
                                               },
                                               child: Align(
                                                 alignment: Alignment.centerLeft,
@@ -175,22 +180,58 @@ class CreateEventBody extends StatelessWidget {
                                   // Close keyboard
                                   FocusScope.of(parentContext).unfocus();
 
-                                  // Navigate to the account screen
-                                  BlocProvider.of<AppPageViewCubit>(parentContext).jumpToAccountPage();
+                                  // Only upload event if there's an event not already being uploaded
+                                  if (BlocProvider.of<UploadEventBloc>(context)
+                                      .state is UploadEventStateUploading) {
+                                    return showDialog<String>(
+                                      context: context,
+                                      builder: (BuildContext context) =>
+                                          AlertDialog(
+                                        title: Text('Cannot Upload Event'),
+                                        content: Text(
+                                            'An event is already currently being upload. Please wait for that event to finish uploading before creating a new event.'),
+                                        actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text('OK',
+                                                  style: TextStyle(
+                                                      color: Colors.blueAccent),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    );
+                                  } // if
 
-                                  // Close the sliding up panel, and destroy CreateEventBloc
-                                  BlocProvider.of<SlidingUpPanelCubit>(parentContext).closePanel();
+                                  else {
+                                    // Reset the upload event bloc
+                                    BlocProvider.of<UploadEventBloc>(context)
+                                        .add(UploadEventReset());
 
-                                  // Add an upload event to upload event bloc
-                                  BlocProvider.of<UploadEventBloc>(context).add(
-                                    UploadEventUpload(
-                                      newEventModel:
-                                          BlocProvider.of<CreateEventBloc>(
-                                                  context)
-                                              .state
-                                              .eventModel,
-                                    ),
-                                  );
+                                    // Navigate to the account screen
+                                    BlocProvider.of<AppPageViewCubit>(
+                                            parentContext)
+                                        .jumpToAccountPage();
+
+                                    // Close the sliding up panel, and destroy CreateEventBloc
+                                    BlocProvider.of<SlidingUpPanelCubit>(
+                                            parentContext)
+                                        .closePanel();
+
+                                    // Add an upload event to upload event bloc
+                                    BlocProvider.of<UploadEventBloc>(context)
+                                        .add(
+                                      UploadEventUpload(
+                                        newEventModel:
+                                            BlocProvider.of<CreateEventBloc>(
+                                                    context)
+                                                .state
+                                                .eventModel,
+                                      ),
+                                    );
+                                  } // else
                                 }, // onCreate
                               );
                             } // if

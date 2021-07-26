@@ -21,3 +21,15 @@ class UploadEventCancel extends UploadEventEvent {
   @override
   List<Object> get props => [];
 } // UploadEventCancel
+
+/// Resets the upload bloc
+class UploadEventReset extends UploadEventEvent {
+  @override
+  List<Object> get props => [];
+} // UploadEventReset
+
+/// Upload was completed
+class UploadEventComplete extends UploadEventEvent {
+  @override
+  List<Object> get props => [];
+} // UploadEventCancel
