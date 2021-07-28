@@ -52,11 +52,18 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
       createEventId = await this
           .db
           .insertNewEventToEventsCollection(newEvent: newEventModel);
+      newEventModel.eventID = createEventId;
       newEventModel.imagePath = 'events/$createEventId.jpg';
 
       // Upload new event data to the firebase cloud search events document
       if (createEventId != null) {
-        this.db.insertNewEventToSearchableCollection(newEvent: newEventModel);
+        String searchEventId;
+
+        searchEventId = await this
+            .db
+            .insertNewEventToSearchableCollection(newEvent: newEventModel);
+
+        newEventModel.searchID = searchEventId;
       } // if
 
       // Upload image bytes to firebase storage bucket using
@@ -102,7 +109,7 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
       if (state is UploadEventStateUploading) {
         state.uploadComplete();
         yield state;
-      }// if
+      } // if
     } // if
   } // _mapUploadEventCompleteToState
 

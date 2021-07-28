@@ -66,89 +66,90 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
         final CategoryEventsState _categoryEventsState =
             context.watch<CategoryEventsBloc>().state;
 
+        /// Completer will complete when a new Category Events Bloc state is emitted.
+        /// Refresh indicator will stay loading as long as the Completer is not completed.
+        /// Once the Completer is completed, the refresh indicator will stop showing loading
+        /// and a new instance of the Completer is created for the user next reload.
+        if (_categoryEventsState is CategoryEventsStateSuccess) {
+          _refreshCompleter.complete();
+          _refreshCompleter = Completer();
+        } // if
 
-          /// Completer will complete when a new Category Events Bloc state is emitted.
-          /// Refresh indicator will stay loading as long as the Completer is not completed.
-          /// Once the Completer is completed, the refresh indicator will stop showing loading
-          /// and a new instance of the Completer is created for the user next reload.
-          if (_categoryEventsState is CategoryEventsStateSuccess) {
-            _refreshCompleter.complete();
-            _refreshCompleter = Completer();
-          } // if
+        return Scrollbar(
+          radius: Radius.circular(50.0),
+          child: RefreshIndicator(
+            color: cWhite70,
+            displacement: 15,
+            backgroundColor: Colors.transparent,
+            onRefresh: () async {
+              BlocProvider.of<CategoryEventsBloc>(context)
+                  .add(CategoryEventsEventReload());
+              final _future = await _refreshCompleter.future;
+              return _future;
+            },
+            child: Builder(builder: (context) {
+              final CategoryEventsState _nestedCategoryEventsState =
+                  context.watch<CategoryEventsBloc>().state;
 
-          return Scrollbar(
-            radius: Radius.circular(50.0),
-            child: RefreshIndicator(
-              color: cWhite70,
-              displacement: 15,
-              backgroundColor: Colors.transparent,
-              onRefresh: () async {
-                BlocProvider.of<CategoryEventsBloc>(context)
-                    .add(CategoryEventsEventReload());
-                final _future = await _refreshCompleter.future;
-                return _future;
-              },
-              child: Builder(builder: (context) {
-                final CategoryEventsState _nestedCategoryEventsState =
-                    context.watch<CategoryEventsBloc>().state;
-
-                /// List View Builder dynamically shows all events returned by the category events bloc
-                if (_nestedCategoryEventsState is CategoryEventsStateSuccess) {
-                  return ListView.builder(
-                    controller: _listViewController,
-                    addAutomaticKeepAlives: true,
-                    itemCount:
-                        _nestedCategoryEventsState.eventModels.length + 1,
-                    itemBuilder: (BuildContext context, int index) {
-                      if (index <
-                          _nestedCategoryEventsState.eventModels.length) {
-                        return EventCard(
-                            newSearchResult: _nestedCategoryEventsState
-                                .eventModels
-                                .elementAt(index));
-                      } // if
-                      else {
-                        return Builder(builder: (context) {
-                          final CategoryEventsState
-                              _nestedNestedCategoryEventsState =
-                              context.watch<CategoryEventsBloc>().state;
-                          if (_nestedNestedCategoryEventsState
-                              is CategoryEventsStateSuccess) {
-                            if (!_nestedNestedCategoryEventsState.maxEvents) {
-                              return BottomLoadingWidget();
-                            } // if
-                            else {
-                              return Container(height: _realHeight * .1);
-                            } // else
+              /// List View Builder dynamically shows all events returned by the category events bloc
+              if (_nestedCategoryEventsState is CategoryEventsStateSuccess) {
+                return ListView.builder(
+                  controller: _listViewController,
+                  addAutomaticKeepAlives: true,
+                  itemCount: _nestedCategoryEventsState.eventModels.length + 1,
+                  itemBuilder: (BuildContext context, int index) {
+                    if (index < _nestedCategoryEventsState.eventModels.length) {
+                      return EventCard(
+                        newSearchResult: _nestedCategoryEventsState.eventModels
+                            .elementAt(index),
+                        onEventCardVertMoreCallback: () {
+                          // TODO: Give user options to save or report events
+                        },
+                      );
+                    } // if
+                    else {
+                      return Builder(builder: (context) {
+                        final CategoryEventsState
+                            _nestedNestedCategoryEventsState =
+                            context.watch<CategoryEventsBloc>().state;
+                        if (_nestedNestedCategoryEventsState
+                            is CategoryEventsStateSuccess) {
+                          if (!_nestedNestedCategoryEventsState.maxEvents) {
+                            return BottomLoadingWidget();
                           } // if
                           else {
-                            return Container();
+                            return Container(height: _realHeight * .1);
                           } // else
-                        });
-                      } // else
-                    },
-                  );
-                } // if
+                        } // if
+                        else {
+                          return Container();
+                        } // else
+                      });
+                    } // else
+                  },
+                );
+              } // if
 
-                /// Kindly tell the user there are no events
-                else if (_nestedCategoryEventsState
-                    is CategoryEventsStateFailed) {
-                  return Center(child: Text('Looks Like Nothing\'s Going On?'));
-                } // if
+              /// Kindly tell the user there are no events
+              else if (_nestedCategoryEventsState
+                  is CategoryEventsStateFailed) {
+                return Center(child: Text('Looks Like Nothing\'s Going On?'));
+              } // if
 
-                /// Something went wrong
-                else {
-                  return Center(child: Text('Something Went Wrong Oops!'));
-                } // else
-              }),
-            ),
-          );
+              /// Something went wrong
+              else {
+                return Center(child: Text('Something Went Wrong Oops!'));
+              } // else
+            }),
+          ),
+        );
       }),
     );
   } // build
-@override
+
+  @override
   void dispose() {
     _listViewController.dispose();
     super.dispose();
-  }//dispose
+  } //dispose
 } // _SingleCategoryViewState

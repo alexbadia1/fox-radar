@@ -261,6 +261,9 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
                                       if (index < _suggestedEventsState.eventModels.length) {
                                         return EventCard(
                                             newSearchResult: _suggestedEventsState.eventModels.elementAt(index),
+                                            onEventCardVertMoreCallback: () {
+                                              // TODO: Give user options to save or report events
+                                            },
                                         );
                                       } // if
 

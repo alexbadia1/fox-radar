@@ -167,7 +167,7 @@ class DatabaseRepository {
     try {
       // Calling ".doc" on a collection without a provided path
       // will auto-generate a new document with a new "primary" key.
-      final DocumentReference _document = _eventsCollection.doc();
+      final DocumentReference _document = _searchEventsCollection.doc();
 
       // Get the document id
       final String _documentReferenceId = _document.id;
@@ -203,4 +203,30 @@ class DatabaseRepository {
       return null;
     } // catch
   } // uploadImageToStorage
+
+  /// Deletes an document in Events Collection
+  Future<void> deleteNewEventFromEventsCollection(
+      {@required String documentReferenceID}) async {
+    try {
+      // Update the empty document with the new data
+      return await _eventsCollection.doc(documentReferenceID).delete();
+    } // try
+    catch (e) {
+      print(e);
+      return null;
+    } // catch
+  } // deleteNewEventFromEventsCollection
+
+  /// Deletes an document in Search Events Collection
+  Future<void> deleteNewEventFromSearchableCollection(
+      {@required String documentReferenceID}) async {
+    try {
+      // Update the empty document with the new data
+      return await _searchEventsCollection.doc(documentReferenceID).delete();
+    } // try
+    catch (e) {
+      print(e);
+      return null;
+    } // catch
+  } // deleteNewEventFromSearchableCollection
 } //class

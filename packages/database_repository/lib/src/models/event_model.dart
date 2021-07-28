@@ -77,6 +77,10 @@ class EventModel {
   /// That contains all of the details of the event.
   String _eventID;
 
+  /// ID of the document that contains the
+  /// minimal details of the event for search
+  String _searchID;
+
   /// Account ID of of the Account that created this event
   String _accountID;
 
@@ -95,6 +99,7 @@ class EventModel {
       bool newImageFitCover,
       String newImagePath,
       String newEventID,
+        String newSearchID,
       String newAccountID}) {
     // Set the Event Title
     this._title = newTitle;
@@ -153,6 +158,9 @@ class EventModel {
     // Set the Event ID
     this._eventID = newEventID;
 
+    // Set the Search ID
+    this._searchID = newSearchID;
+
     // Set Account ID
     this._accountID = newAccountID;
   } // EventModel
@@ -170,6 +178,7 @@ class EventModel {
     this._imageFitCover = false;
     this._imagePath = '';
     this._eventID = '';
+    this._searchID = '';
     this._accountID = '';
 
     this._rawStartDateAndTime = DateTime.now();
@@ -208,6 +217,7 @@ class EventModel {
     bool imageFitCover,
     String imagePath,
     String eventID,
+    String searchID,
     String accountID,
   }) {
     // Use previous rawEndDateAndTime
@@ -235,6 +245,7 @@ class EventModel {
       newImageFitCover: imageFitCover ?? this._imageFitCover,
       newImagePath: imagePath ?? this._imagePath,
       newEventID: eventID ?? this._eventID,
+      newSearchID: searchID ?? this._searchID,
       newAccountID: accountID ?? this._accountID,
     );
   } // copyWith
@@ -256,6 +267,7 @@ class EventModel {
   bool get imageFitCover => this._imageFitCover;
   String get imagePath => this._imagePath;
   String get eventID => this._eventID;
+  String get searchID => this._eventID;
   String get accountID => this._accountID;
 
   set imagePath(String value) {
@@ -264,6 +276,10 @@ class EventModel {
 
   set eventID(String value) {
     this._eventID = value;
+  }// eventId
+
+  set searchID(String value) {
+    this._searchID = value;
   }// eventId
 
   set accountID(String value) {
@@ -286,6 +302,7 @@ class EventModel {
         "\tImage Fit Cover:  ${this.imageFitCover}\n"
         "\tImage Path: ${this._imagePath}\n"
         "\tEvent ID (Events Collection): ${this._eventID}\n"
+        "\tSearch ID (Events Collection): ${this._searchID}\n"
         "\tAccount ID (Owner of Event): ${this._accountID}\n"
         "}\n";
   } // toString
