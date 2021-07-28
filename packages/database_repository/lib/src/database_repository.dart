@@ -109,9 +109,12 @@ class DatabaseRepository {
     return await _eventsCollection.doc(documentId).get();
   } // getEventsFromEventsCollection
 
-  Future<Uint8List> getImageFromStorage({@required String path}) async {
+  Future<Uint8List> getImageFromStorage({@required String eventID}) async {
     try {
-      return await FirebaseStorage.instance.ref().child(path).getData(4194304);
+      return await FirebaseStorage.instance
+          .ref()
+          .child(this.imagePath(eventID: eventID))
+          .getData(4194304);
     } // try
     catch (e) {
       return null;
@@ -195,9 +198,12 @@ class DatabaseRepository {
   ///
   /// Returns a listenable upload task, to show upload progress.
   UploadTask uploadImageToStorage(
-      {@required String path, @required Uint8List imageBytes}) {
+      {@required String eventID, @required Uint8List imageBytes}) {
     try {
-      return FirebaseStorage.instance.ref().child(path).putData(imageBytes);
+      return FirebaseStorage.instance
+          .ref()
+          .child(this.imagePath(eventID: eventID))
+          .putData(imageBytes);
     } // try
     catch (e) {
       return null;
@@ -229,4 +235,24 @@ class DatabaseRepository {
       return null;
     } // catch
   } // deleteNewEventFromSearchableCollection
+
+  /// Attempts to delete an image uploaded to firebase
+  /// using the document id of the event as the image name.
+  ///
+  /// Returns a listenable upload task, to show upload progress.
+  Future<void> deleteImageFromStorage({@required String eventID}) {
+    try {
+      return FirebaseStorage.instance
+          .ref()
+          .child(this.imagePath(eventID: eventID))
+          .delete();
+    } // try
+    catch (e) {
+      return null;
+    } // catch
+  } // uploadImageToStorage
+
+  String imagePath({@required String eventID}) {
+    return 'events/$eventID.jpg';
+  } // _getGenerateImagePath
 } //class

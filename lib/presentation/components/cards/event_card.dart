@@ -8,18 +8,27 @@ import 'package:communitytabs/presentation/presentation.dart';
 typedef OnEventCardVertMoreCallback = Function();
 
 class EventCard extends StatefulWidget {
+
+  /// The search result, from firebase
   final SearchResultModel newSearchResult;
+
+  /// The vert more bar, when pressed gives the user,
+  /// more options to handle the search result.
+  ///
+  /// The options will should be displayed using a modal bottom sheet
   final OnEventCardVertMoreCallback onEventCardVertMoreCallback;
 
-  EventCard({@required this.newSearchResult, this.onEventCardVertMoreCallback})
-      : assert(newSearchResult != null);
+  EventCard(
+      {Key key,
+      @required this.newSearchResult,
+      this.onEventCardVertMoreCallback})
+      : assert(newSearchResult != null), super(key: key);
 
   @override
   _EventCardState createState() => _EventCardState();
 } // ClubBigCard
 
-class _EventCardState extends State<EventCard>
-    with AutomaticKeepAliveClientMixin {
+class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixin {
   Uint8List _imageBytes;
 
   @override
@@ -35,12 +44,10 @@ class _EventCardState extends State<EventCard>
         screenPaddingBottom +
         screenInsetsBottom;
 
-    String filePath = 'events/${this.widget.newSearchResult.eventId}.jpg';
-
     return BlocProvider(
       create: (context) => FetchImageCubit(
         db: RepositoryProvider.of<DatabaseRepository>(context),
-      )..fetchImage(path: filePath),
+      )..fetchImage(eventID: this.widget.newSearchResult.eventId),
       child: GestureDetector(
         onTap: () => Navigator.of(context).pushNamed(
           '/event',
@@ -71,14 +78,13 @@ class _EventCardState extends State<EventCard>
                         _imageBytes = _fetchImageState.imageBytes;
                         return Image.memory(
                           _fetchImageState.imageBytes,
-                          fit: this.widget.newSearchResult.getImageFitCover
+                          fit: this.widget.newSearchResult.imageFitCover
                               ? BoxFit.cover
                               : BoxFit.contain,
                         );
                       } // if
 
                       else if (_fetchImageState is FetchImageFailure) {
-                        print('Looking for: $filePath');
                         return Container(
                           color: Colors.black,
                         );
@@ -128,32 +134,27 @@ class _EventCardState extends State<EventCard>
                                 /// Description: The title of the event,
                                 ///              Ellipses on overflow.
                                 Text(
-                                  this.widget.newSearchResult.getTitle,
+                                  this.widget.newSearchResult.title,
                                   textAlign: TextAlign.start,
                                   style: TextStyle(
-                                      color: cWhite100,
-                                      fontSize: 16.0
-                                  ),
+                                      color: cWhite100, fontSize: 16.0),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 SizedBox(height: 4),
 
-                              /// Name: Text
-                              ///
-                              /// Description: The location of the event,
-                              ///              Ellipses on overflow.
+                                /// Name: Text
+                                ///
+                                /// Description: The location of the event,
+                                ///              Ellipses on overflow.
                                 Text(
-                                  this.widget.newSearchResult.getLocation,
+                                  this.widget.newSearchResult.location,
                                   style: TextStyle(
-                                    color: cWhite70,
-                                    fontSize: 12.0
-                                  ),
+                                      color: cWhite70, fontSize: 12.0),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 SizedBox(height: 2),
-
 
                                 /// Name: Text
                                 ///
@@ -161,12 +162,10 @@ class _EventCardState extends State<EventCard>
                                 ///              time of the event,
                                 ///              Ellipses on overflow.
                                 Text(
-                                  this.widget.newSearchResult.myStartDate
-                                  + this.widget.newSearchResult.myStartTime,
+                                  this.widget.newSearchResult.startDate +
+                                      this.widget.newSearchResult.startTime,
                                   style: TextStyle(
-                                      color: cWhite70,
-                                      fontSize: 12.0
-                                  ),
+                                      color: cWhite70, fontSize: 12.0),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -185,7 +184,9 @@ class _EventCardState extends State<EventCard>
                           IconButton(
                             icon: Icon(Icons.more_vert),
                             color: cWhite70,
-                            onPressed: this.widget.onEventCardVertMoreCallback,
+                            onPressed: this
+                                .widget
+                                .onEventCardVertMoreCallback,
                           ),
                         ],
                       ),
@@ -198,8 +199,8 @@ class _EventCardState extends State<EventCard>
         ),
       ),
     );
-  } // build
+  }
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => true; // build
 } // _EventCardState

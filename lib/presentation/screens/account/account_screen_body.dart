@@ -86,12 +86,19 @@ class _AccountScreenBodyState extends State<AccountScreenBody>
           ///               action button to the sliver app bar's properties.
           MaristSliverAppBar(
             title: "Hello, Alex",
+
+            /// Name: Builder
+            ///
+            /// Description: Scaffold was declared in AccountScreenBody's
+            ///              context, using [Builder] to access the
+            ///              AccountDrawerButtons context in order to
+            ///              access the Scaffold.of() functions.
             action: Builder(
-              builder: (context) {
+              builder: (accountDrawerButtonContext) {
                 return AccountDrawerButton(
                   openDrawerCallback: () {
                     // End Drawer is inherited from scaffold
-                    Scaffold.of(accountScreenBodyContext).openEndDrawer();
+                    Scaffold.of(accountDrawerButtonContext).openEndDrawer();
                   },
                 );
               },
@@ -241,6 +248,9 @@ class _AccountScreenBodyState extends State<AccountScreenBody>
                                 if (index <
                                     _accountEventsState.eventModels.length) {
                                   return EventCard(
+                                    key: ObjectKey(_accountEventsState
+                                        .eventModels
+                                        .elementAt(index)),
                                     newSearchResult: _accountEventsState
                                         .eventModels
                                         .elementAt(index),
@@ -248,12 +258,25 @@ class _AccountScreenBodyState extends State<AccountScreenBody>
                                       // Show a modal bottom sheet with
                                       // options to edit or delete an event.
                                       showModalBottomSheet(
-                                          context: accountScreenBodyContext,
-                                          builder: (modalSheetContext) {
-                                            return AccountModalBottomSheet(
-
-                                            );
-                                          },// builder
+                                        context: accountScreenBodyContext,
+                                        builder: (modalSheetContext) {
+                                          /// Pass the current AccountEventsBloc.
+                                          ///
+                                          /// Bottom Modal Sheet is built within
+                                          /// its own context, that doesn't have
+                                          /// access to the current widget's context.
+                                          return BlocProvider.value(
+                                            value: BlocProvider.of<
+                                                    AccountEventsBloc>(
+                                                accountScreenBodyContext),
+                                            child: AccountModalBottomSheet(
+                                                listViewIndex: index,
+                                                searchResultModel:
+                                                    _accountEventsState
+                                                        .eventModels
+                                                        .elementAt(index)),
+                                          );
+                                        }, // builder
                                       );
                                     },
                                   );
@@ -321,7 +344,25 @@ class _AccountScreenBodyState extends State<AccountScreenBody>
                                 ),
                                 Text(
                                   'Stop hibernating, make something happen!',
-                                  style: TextStyle(color: cWhite70),
+                                  style: TextStyle(
+                                      color: cWhite70, fontSize: 16.0),
+                                ),
+                                cVerticalMarginSmall(accountScreenBodyContext),
+                                TextButton(
+                                  child: Text(
+                                    'RELOAD',
+                                    style: TextStyle(
+                                        color: Colors.blueAccent,
+                                        fontSize: 16.0),
+                                  ),
+                                  onPressed: () {
+                                    BlocProvider.of<AccountEventsBloc>(
+                                            refreshIndicatorContext)
+                                        .add(AccountEventsEventReload());
+                                    BlocProvider.of<UploadEventBloc>(
+                                            refreshIndicatorContext)
+                                        .add(UploadEventReset());
+                                  },
                                 ),
                                 Expanded(flex: 1, child: SizedBox()),
                               ],

@@ -267,7 +267,7 @@ class EventModel {
   bool get imageFitCover => this._imageFitCover;
   String get imagePath => this._imagePath;
   String get eventID => this._eventID;
-  String get searchID => this._eventID;
+  String get searchID => this._searchID;
   String get accountID => this._accountID;
 
   set imagePath(String value) {

@@ -100,6 +100,9 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
                   itemBuilder: (BuildContext context, int index) {
                     if (index < _nestedCategoryEventsState.eventModels.length) {
                       return EventCard(
+                        key: ObjectKey(_nestedCategoryEventsState
+                            .eventModels
+                            .elementAt(index)),
                         newSearchResult: _nestedCategoryEventsState.eventModels
                             .elementAt(index),
                         onEventCardVertMoreCallback: () {
