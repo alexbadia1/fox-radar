@@ -274,6 +274,10 @@ class EventModel {
     this._imagePath = value;
   }// imagePath
 
+  set imageBytes(Uint8List newImageBytes) {
+    this._imageBytes = newImageBytes;
+  }// imagePath
+
   set eventID(String value) {
     this._eventID = value;
   }// eventId

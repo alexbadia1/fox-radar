@@ -5,7 +5,7 @@ import 'package:communitytabs/logic/logic.dart';
 import 'package:database_repository/database_repository.dart';
 import 'package:communitytabs/presentation/presentation.dart';
 
-typedef OnEventCardVertMoreCallback = Function();
+typedef OnEventCardVertMoreCallback = Function(Uint8List);
 
 class EventCard extends StatefulWidget {
   /// The search result, from firebase
@@ -182,11 +182,32 @@ class _EventCardState extends State<EventCard>
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          IconButton(
-                            icon: Icon(Icons.more_vert),
-                            color: cWhite70,
-                            onPressed: this.widget.onEventCardVertMoreCallback,
-                          ),
+                          Builder(builder: (iconButtonContext) {
+                            final imageState = iconButtonContext
+                                .watch<FetchImageCubit>()
+                                .state;
+
+                            if (imageState is FetchImageSuccess) {
+                              return IconButton(
+                                icon: Icon(Icons.more_vert),
+                                color: cWhite70,
+                                onPressed: () => this
+                                    .widget
+                                    .onEventCardVertMoreCallback(imageState.imageBytes),
+                              );
+                            } // if
+
+                            /// If the image is still being fetch
+                            /// don't let the "more vert button" work.
+                            ///
+                            /// Don't want a user to try and update an
+                            /// event that hasn't fully been fetched yet.
+                            return IconButton(
+                              icon: Icon(Icons.more_vert),
+                              color: cWhite70,
+                              onPressed: () {},
+                            );
+                          }),
                         ],
                       ),
                     ),

@@ -31,7 +31,7 @@ class CustomNextButton extends StatelessWidget {
             else {
               return GestureDetector(
                 child: Text(
-                    'Next', style: TextStyle(fontSize: 16, color: Colors.blueAccent)),
+                    'NEXT', style: TextStyle(fontSize: 16, color: Colors.blueAccent)),
                 onTap: onClose,
               );
             }

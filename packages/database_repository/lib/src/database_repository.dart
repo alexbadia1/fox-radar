@@ -196,6 +196,8 @@ class DatabaseRepository {
   /// Attempts to upload an image to firebase storage
   /// using the document id of the event as the image name.
   ///
+  /// Overwrites existing files (useful for updating an image).
+  ///
   /// Returns a listenable upload task, to show upload progress.
   UploadTask uploadImageToStorage(
       {@required String eventID, @required Uint8List imageBytes}) {
@@ -209,6 +211,54 @@ class DatabaseRepository {
       return null;
     } // catch
   } // uploadImageToStorage
+
+  /// Updates an existing document in the "Search Events"
+  /// Collection, Fails if the document does not exist.
+  Future<void> updateEventInSearchEventsCollection(
+      {@required EventModel newEvent}) async {
+    try {
+      return await _searchEventsCollection.doc(newEvent.searchID).update({
+        ATTRIBUTE_TITLE: newEvent.title.toLowerCase() ?? '',
+        ATTRIBUTE_HOST: newEvent.host.toLowerCase() ?? '',
+        ATTRIBUTE_LOCATION: newEvent.location.toLowerCase() ?? '',
+        ATTRIBUTE_RAW_START_DATE_TIME: newEvent.rawStartDateAndTime ?? null,
+        ATTRIBUTE_CATEGORY: newEvent.category ?? '',
+        ATTRIBUTE_EVENT_ID: newEvent.eventID ?? '',
+        ATTRIBUTE_ACCOUNT_ID: newEvent.accountID ?? '',
+      });
+    } // try
+    catch (e) {
+      // print(e);
+      return null;
+    } // catch
+  } // updateEventInSearchEventsCollection
+
+  /// Updates an existing document in the "Events"
+  /// Collection, Fails if the document does not exist.
+  Future<void> updateEventInEventsCollection(
+      {@required EventModel newEvent}) async {
+    try {
+      return await _eventsCollection.doc(newEvent.eventID).update({
+        ATTRIBUTE_TITLE: newEvent.title,
+        ATTRIBUTE_HOST: newEvent.host,
+        ATTRIBUTE_LOCATION: newEvent.location,
+        ATTRIBUTE_ROOM: newEvent.room,
+        ATTRIBUTE_RAW_START_DATE_TIME: newEvent.rawStartDateAndTime,
+        ATTRIBUTE_RAW_END_DATE_TIME: newEvent.rawEndDateAndTime,
+        ATTRIBUTE_CATEGORY: newEvent.category,
+        ATTRIBUTE_HIGHLIGHTS: newEvent.highlights,
+        ATTRIBUTE_DESCRIPTION: newEvent.description,
+        ATTRIBUTE_IMAGE_FIT_COVER: newEvent.imageFitCover,
+        ATTRIBUTE_EVENT_ID: newEvent.eventID,
+        ATTRIBUTE_ACCOUNT_ID: newEvent.accountID ,
+      });
+    } // try
+    catch (e) {
+      // print(e);
+      return null;
+    } // catch
+  } // updateEventInEventsCollection
+
 
   /// Deletes an document in Events Collection
   Future<void> deleteNewEventFromEventsCollection(

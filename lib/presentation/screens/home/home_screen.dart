@@ -1,12 +1,9 @@
-import 'package:authentication_repository/authentication_repository.dart';
-import 'package:communitytabs/logic/blocs/blocs.dart';
-import 'package:communitytabs/logic/cubits/cubits.dart';
-import 'package:database_repository/database_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:communitytabs/logic/logic.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:database_repository/database_repository.dart';
 import 'package:communitytabs/presentation/screens/screens.dart';
-import 'home_bottom_navigation.dart';
 
 class HomeScreen extends StatelessWidget {
   @override

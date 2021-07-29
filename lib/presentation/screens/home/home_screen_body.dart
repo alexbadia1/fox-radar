@@ -277,7 +277,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
                                     newSearchResult: _suggestedEventsState
                                         .eventModels
                                         .elementAt(index),
-                                    onEventCardVertMoreCallback: () {
+                                    onEventCardVertMoreCallback: (imageBytes) {
                                       // TODO: Give user options to save or report events
                                     },
                                   );

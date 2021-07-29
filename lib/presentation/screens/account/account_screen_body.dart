@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:communitytabs/logic/logic.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/presentation/presentation.dart';
+import 'package:database_repository/database_repository.dart';
 
 class AccountScreenBody extends StatefulWidget {
   @override
@@ -254,7 +255,7 @@ class _AccountScreenBodyState extends State<AccountScreenBody>
                                     newSearchResult: _accountEventsState
                                         .eventModels
                                         .elementAt(index),
-                                    onEventCardVertMoreCallback: () {
+                                    onEventCardVertMoreCallback: (imageBytes) {
                                       // Show a modal bottom sheet with
                                       // options to edit or delete an event.
                                       showModalBottomSheet(
@@ -270,11 +271,20 @@ class _AccountScreenBodyState extends State<AccountScreenBody>
                                                     AccountEventsBloc>(
                                                 accountScreenBodyContext),
                                             child: AccountModalBottomSheet(
-                                                listViewIndex: index,
-                                                searchResultModel:
-                                                    _accountEventsState
-                                                        .eventModels
-                                                        .elementAt(index)),
+                                              listViewIndex: index,
+                                              searchResultModel:
+                                                  _accountEventsState
+                                                      .eventModels
+                                                      .elementAt(index),
+                                              onEdit: (eventModel) {
+                                                // Set image bytes to the event model, before passing on
+                                                eventModel.imageBytes = imageBytes;
+                                                BlocProvider.of<SlidingUpPanelCubit>(accountScreenBodyContext)
+                                                    .openPanel(initialEventModel:
+                                                eventModel);
+                                                Navigator.pop(accountScreenBodyContext);
+                                              },
+                                            ),
                                           );
                                         }, // builder
                                       );

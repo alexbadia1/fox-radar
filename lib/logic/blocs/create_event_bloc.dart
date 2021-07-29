@@ -1,28 +1,37 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
-import 'package:communitytabs/logic/constants/constants.dart';
 import 'create_event_event.dart';
 import 'create_event_state.dart';
 import 'package:flutter/material.dart';
+import 'package:communitytabs/logic/logic.dart';
 import 'package:database_repository/database_repository.dart';
 
 class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
   final DatabaseRepository db;
   final String accountID;
+  final CreateEventState initialCreateEventState;
   EventModel _eventModel;
 
-  CreateEventBloc({@required this.db, @required this.accountID})
+  CreateEventBloc(
+      {@required this.db,
+      @required this.accountID,
+      @required this.initialCreateEventState})
       : assert(db != null),
         assert(accountID != null),
-        super(CreateEventInvalid(EventModel.nullConstructor())) {
+        assert(initialCreateEventState != null),
+        super(initialCreateEventState) {
     this._eventModel = this.state.eventModel;
     this._eventModel.accountID = accountID;
   } // CreateEventBloc
 
   @override
   Stream<CreateEventState> mapEventToState(CreateEventEvent event) async* {
-    if (event is CreateEventSetTitle) {
+    if (event is CreateEventSetEvent) {
+      yield* _mapCreateEventSetEventToState(createEventSetEvent: event);
+    } // if
+
+    else if (event is CreateEventSetTitle) {
       yield* _mapCreateEventSetTitleToState(createEventSetTitle: event);
     } // if
 
@@ -95,6 +104,24 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
       yield this.state;
     } // else
   } // mapEventToState
+
+  /// Name: _mapCreateEventSetEventToState
+  ///
+  /// Description: Loads an entire event object.
+  ///              Useful for loading previous events
+  ///              that users may want to modify.
+  ///
+  /// Returns: a new valid or invalid BloC state
+  Stream<CreateEventState> _mapCreateEventSetEventToState(
+      {@required CreateEventSetEvent createEventSetEvent}) async* {
+    // Empty Title, set title to empty string
+    if (createEventSetEvent != null) {
+      this._eventModel = createEventSetEvent.eventModel;
+    } // if
+
+    // Changing this attribute may affect the validity of the BloC
+    yield isValid();
+  } // _mapCreateEventSetEventToState
 
   /// Name: _mapCreateEventSetTitleToState
   ///

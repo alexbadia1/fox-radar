@@ -105,7 +105,7 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
                             .elementAt(index)),
                         newSearchResult: _nestedCategoryEventsState.eventModels
                             .elementAt(index),
-                        onEventCardVertMoreCallback: () {
+                        onEventCardVertMoreCallback: (imageBytes) {
                           // TODO: Give user options to save or report events
                         },
                       );

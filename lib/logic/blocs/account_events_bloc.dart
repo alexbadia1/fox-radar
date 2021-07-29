@@ -221,19 +221,19 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
         }// if
 
         // TODO: Enable this code to actually delete and event
-        // Remove image from storage
-        this.db.deleteImageFromStorage(
-            eventID: accountEventsEventRemove.searchResultModel.eventId);
-
-        // Remove from "search" collection
-        this.db.deleteNewEventFromSearchableCollection(
-            documentReferenceID:
-            accountEventsEventRemove.searchResultModel.searchID);
-
-        // Remove from the "events" collection
-        this.db.deleteNewEventFromEventsCollection(
-            documentReferenceID:
-            accountEventsEventRemove.searchResultModel.eventId);
+        // // Remove image from storage
+        // this.db.deleteImageFromStorage(
+        //     eventID: accountEventsEventRemove.searchResultModel.eventId);
+        //
+        // // Remove from "search" collection
+        // this.db.deleteNewEventFromSearchableCollection(
+        //     documentReferenceID:
+        //     accountEventsEventRemove.searchResultModel.searchID);
+        //
+        // // Remove from the "events" collection
+        // this.db.deleteNewEventFromEventsCollection(
+        //     documentReferenceID:
+        //     accountEventsEventRemove.searchResultModel.eventId);
 
         // Deleted the last event (on the device)
         //

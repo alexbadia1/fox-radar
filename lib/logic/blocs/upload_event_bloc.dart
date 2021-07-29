@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:communitytabs/logic/blocs/blocs.dart';
-import 'package:communitytabs/logic/logic.dart';
 import 'upload_event_event.dart';
 import 'upload_event_state.dart';
 import 'package:flutter/material.dart';
+import 'package:communitytabs/logic/logic.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:database_repository/database_repository.dart';
 
@@ -24,7 +23,7 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
     } // if
 
     else if (event is UploadEventCancel) {
-      yield* _mapUploadEventCancelToState(uploadEventCancel: event);
+      yield* _mapUploadEventCancelToState();
     } // else if
 
     else if (event is UploadEventReset) {
@@ -45,30 +44,41 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
 
     // Start new upload event
     if (uploadEventUpload.newEventModel != null) {
-      String createEventId;
+      CreateEventFormAction action = uploadEventUpload.createEventFormAction;
       EventModel newEventModel = uploadEventUpload.newEventModel;
 
-      // Create new "event" document in the Events Collection
-      createEventId = await this
-          .db
-          .insertNewEventToEventsCollection(newEvent: newEventModel);
-      newEventModel.eventID = createEventId;
-      newEventModel.imagePath = this.db.imagePath(eventID: createEventId);
-
-      // Upload new event data to the firebase cloud search events document
-      if (createEventId != null) {
-        String searchEventId;
-
-        searchEventId = await this
+      // Form Action Create
+      if (action == CreateEventFormAction.create) {
+        // Store full event details
+        newEventModel.eventID = await this
             .db
-            .insertNewEventToSearchableCollection(newEvent: newEventModel);
+            .insertNewEventToEventsCollection(newEvent: newEventModel);
 
-        newEventModel.searchID = searchEventId;
+        // Make the event searchable
+        if (newEventModel.eventID != null || newEventModel.eventID.isNotEmpty) {
+          newEventModel.searchID = await this
+              .db
+              .insertNewEventToSearchableCollection(newEvent: newEventModel);
+        } // if
       } // if
+
+      // Form Action Update
+      else if (action == CreateEventFormAction.update) {
+        await this.db.updateEventInEventsCollection(newEvent: newEventModel);
+        await this
+            .db
+            .updateEventInSearchEventsCollection(newEvent: newEventModel);
+      } // else if
+
+      // TODO: Consider letting the user deleting an image
+
+      // Generate the storage path for the image
+      newEventModel.imagePath =
+          this.db.imagePath(eventID: newEventModel.eventID);
 
       // Upload image bytes to firebase storage bucket using
       // the new event's document id as a the name for the image.
-      if (createEventId != null) {
+      if (newEventModel.searchID != null || newEventModel.searchID.isNotEmpty) {
         this.uploadTask = this.db.uploadImageToStorage(
             eventID: newEventModel.eventID,
             imageBytes: newEventModel.imageBytes);
@@ -89,8 +99,7 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
     } // if
   } // _mapUploadEventResetToState
 
-  Stream<UploadEventState> _mapUploadEventCancelToState(
-      {@required UploadEventCancel uploadEventCancel}) async* {
+  Stream<UploadEventState> _mapUploadEventCancelToState() async* {
     // An event must already be being uploaded
     if (this.uploadTask == null) {
       return;
@@ -101,12 +110,12 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
     // if users want to undo canceling an upload event?
   } // UploadEventBloc
 
-  Stream<UploadEventState> _mapUploadEventCompleteToState(
-      {@required UploadEventCancel uploadEventCancel}) async* {
+  Stream<UploadEventState> _mapUploadEventCompleteToState() async* {
     // An event must already be being uploaded
     if (this.uploadTask != null) {
       final state = this.state;
       if (state is UploadEventStateUploading) {
+        // Emit state, but with upload complete flag
         state.uploadComplete();
         yield state;
       } // if

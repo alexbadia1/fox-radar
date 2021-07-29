@@ -53,11 +53,37 @@ class HomeBottomNavigationBar extends StatelessWidget {
                       showModalBottomSheet<void>(
                           context: context,
                           builder: (BuildContext context) {
-                            return UploadSnackBar(onCancelUploadCallback: (_) {
-                              BlocProvider.of<UploadEventBloc>(context).add(
-                                UploadEventCancel(),
-                              );
-                            });
+                            return ModalConfirmation(
+                              prompt:
+                                  'An event is already currently being upload. Please wait for, or cancel, that event!',
+                              cancelText: 'CANCEL CURRENT UPLOAD',
+                              cancelColor: Colors.redAccent,
+                              onCancel: () {
+                                showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) {
+                                      return ModalConfirmation(
+                                        cancelText: 'CANCEL CURRENT UPLOAD',
+                                        cancelColor: Colors.redAccent,
+                                        onCancel: () {
+                                          BlocProvider.of<UploadEventBloc>(
+                                                  context)
+                                              .add(UploadEventCancel());
+
+                                          Navigator.popUntil(context,
+                                              (route) => route.isFirst);
+                                        },
+                                        confirmText: "NEVERMIND",
+                                        confirmColor: Colors.blueAccent,
+                                        onConfirm: () => Navigator.popUntil(
+                                            context, (route) => route.isFirst),
+                                      );
+                                    });
+                              },
+                              confirmText: 'I CAN WAIT',
+                              confirmColor: Colors.blueAccent,
+                              onConfirm: () => Navigator.pop(context),
+                            );
                           });
                     } // if
                     else {
