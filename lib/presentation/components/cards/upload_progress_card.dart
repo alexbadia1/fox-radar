@@ -85,7 +85,8 @@ class UploadProgressCard extends StatelessWidget {
         child: ConstrainedBox(
           constraints: BoxConstraints(
             minWidth: double.infinity,
-            minHeight: _realHeight * .12
+            minHeight: _realHeight * .12,
+              maxHeight: _realHeight * .15
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,

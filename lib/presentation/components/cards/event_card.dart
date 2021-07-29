@@ -8,7 +8,6 @@ import 'package:communitytabs/presentation/presentation.dart';
 typedef OnEventCardVertMoreCallback = Function();
 
 class EventCard extends StatefulWidget {
-
   /// The search result, from firebase
   final SearchResultModel newSearchResult;
 
@@ -22,13 +21,15 @@ class EventCard extends StatefulWidget {
       {Key key,
       @required this.newSearchResult,
       this.onEventCardVertMoreCallback})
-      : assert(newSearchResult != null), super(key: key);
+      : assert(newSearchResult != null),
+        super(key: key);
 
   @override
   _EventCardState createState() => _EventCardState();
 } // ClubBigCard
 
-class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixin {
+class _EventCardState extends State<EventCard>
+    with AutomaticKeepAliveClientMixin {
   Uint8List _imageBytes;
 
   @override
@@ -104,9 +105,9 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
               ),
               ConstrainedBox(
                 constraints: BoxConstraints(
-                  minWidth: double.infinity,
-                  minHeight: _realHeight * .12,
-                ),
+                    minWidth: double.infinity,
+                    minHeight: _realHeight * .12,
+                    maxHeight: _realHeight * .15),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
@@ -184,9 +185,7 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
                           IconButton(
                             icon: Icon(Icons.more_vert),
                             color: cWhite70,
-                            onPressed: this
-                                .widget
-                                .onEventCardVertMoreCallback,
+                            onPressed: this.widget.onEventCardVertMoreCallback,
                           ),
                         ],
                       ),
