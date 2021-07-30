@@ -12,6 +12,9 @@ class HomeScreen extends StatelessWidget {
       child: Material(
         child: SafeArea(
           child: SlidingUpPanel(
+            /// TODO: OnCollapsed widget pointer fails after modifying a textfield.
+            ///  Figure out a better solution, as onPanel Opened every time the panel
+            ///  state changes (especially when modifying a form text field).
             onPanelOpened: () {
               BlocProvider.of<SlidingUpPanelCubit>(context).openPanel();
             },
@@ -19,7 +22,7 @@ class HomeScreen extends StatelessWidget {
                 .slidingUpPanelControl,
             minHeight: MediaQuery.of(context).size.height * .0625,
             maxHeight: MediaQuery.of(context).size.height,
-            collapsed: HomeBottomNavigationBar(),
+            collapsed: HomeBottomNavigationBar(key: UniqueKey()),
             isDraggable: false,
             panel: CreateEventScreen(),
             body: BlocProvider(

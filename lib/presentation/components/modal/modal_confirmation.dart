@@ -2,12 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:communitytabs/presentation/presentation.dart';
 
 class ModalConfirmation extends StatelessWidget {
+  /// Centered text appearing at the top of the modal bottom sheet.
+  ///
+  /// Tell the user something useful, though not required. If you
+  /// aren't going to give a prompt, be sure the buttons uses are easily inferred.
   final String prompt;
+
+  /// Text description of the "Cancel" Button (Button on the LEFT)
   final String cancelText;
+
+  /// Text color of the "Cancel" Button (Button on the LEFT)
   final Color cancelColor;
+
+  /// Text description of the "Confirm" Button (Button on the RIGHT)
   final String confirmText;
+
+  /// Text color of the "Confirm" Button (Button on the RIGHT)
   final Color confirmColor;
+
+  /// Function performed when the "Cancel" Button (Button on the LEFT) is pressed
   final Function onCancel;
+
+  /// Function performed when the "Cancel" Button (Button on the RIGHT) is pressed
   final Function onConfirm;
 
   const ModalConfirmation(

@@ -78,7 +78,7 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
 
       // Upload image bytes to firebase storage bucket using
       // the new event's document id as a the name for the image.
-      if (newEventModel.searchID != null || newEventModel.searchID.isNotEmpty) {
+      if (newEventModel.eventID != null && newEventModel.eventID.isNotEmpty) {
         this.uploadTask = this.db.uploadImageToStorage(
             eventID: newEventModel.eventID,
             imageBytes: newEventModel.imageBytes);

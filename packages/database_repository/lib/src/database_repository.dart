@@ -8,11 +8,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class DatabaseRepository {
+  // Singleton
+  static final DatabaseRepository _db = DatabaseRepository._internal();
+
   // Collection References
   final CollectionReference _eventsCollection =
       FirebaseFirestore.instance.collection(COLLECTION_EVENTS);
   final CollectionReference _searchEventsCollection =
       FirebaseFirestore.instance.collection(COLLECTION_SEARCH_EVENTS);
+
+
+  factory DatabaseRepository() {
+    return _db;
+  }// DatabaseRepository
+
+  DatabaseRepository._internal();
 
   /// Retrieves events from the "Search Events Collection" based on
   /// [category] and returns a [QueryDocumentSnapshot] with the events.

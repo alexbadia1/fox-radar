@@ -8,8 +8,7 @@ class CreateEventBody extends StatelessWidget {
   final EventModel eventModelToUpdate;
   final CreateEventFormAction createEventFormAction;
 
-  const CreateEventBody(
-      {Key key, @required this.createEventFormAction, this.eventModelToUpdate})
+  const CreateEventBody({Key key, @required this.createEventFormAction, this.eventModelToUpdate})
       : assert(createEventFormAction != null),
         super(key: key);
 
@@ -41,23 +40,16 @@ class CreateEventBody extends StatelessWidget {
                         ),
                         fit: BoxFit.fill),
                     Container(
-                      decoration:
-                          BoxDecoration(gradient: cMaristGradientWashed),
+                      decoration: BoxDecoration(gradient: cMaristGradientWashed),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Builder(
                           builder: (BuildContext context) {
-                            final createEventState =
-                                context.watch<CreateEventPageViewCubit>().state;
-                            if (createEventState
-                                is CreateEventPageViewEventPhoto) {
-                              return CustomBackButton(
-                                  onBack: () =>
-                                      BlocProvider.of<CreateEventPageViewCubit>(
-                                              context)
-                                          .animateToEventForm());
+                            final createEventState = context.watch<CreateEventPageViewCubit>().state;
+                            if (createEventState is CreateEventPageViewEventPhoto) {
+                              return CustomBackButton(onBack: () => BlocProvider.of<CreateEventPageViewCubit>(context).animateToEventForm());
                             } // if
                             return CustomCloseButton(
                               onClose: () {
@@ -66,80 +58,72 @@ class CreateEventBody extends StatelessWidget {
 
                                 // Confirm discarding event...
                                 showModalBottomSheet(
-                                  context: parentContext,
-                                  builder: (context) => Container(
-                                    color: Color.fromRGBO(31, 31, 31, 1.0),
-                                    height: MediaQuery.of(context).size.height *
-                                        .18,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Expanded(
-                                          flex: 2,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Text(
-                                                  'Are you sure you want to discard this event?',
-                                                  style: TextStyle(
-                                                      color: Colors.white)),
-                                            ),
-                                          ),
-                                        ),
+                                    context: parentContext,
+                                    builder: (context) {
 
-                                        Expanded(
-                                          flex: 2,
-                                          child: FlatButton(
-                                            minWidth: double.infinity,
-                                            onPressed: () {
-                                              Navigator.of(parentContext).pop();
-                                              BlocProvider.of<
-                                                          SlidingUpPanelCubit>(
-                                                      parentContext)
-                                                  .closePanel();
-                                            },
-                                            child: Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Text(
-                                                'Discard',
-                                                textAlign: TextAlign.left,
-                                                style: TextStyle(
-                                                    color: Colors.white),
+                                      return Container(
+                                        color: Color.fromRGBO(31, 31, 31, 1.0),
+                                        height: MediaQuery.of(context).size.height * .18,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: [
+                                            Expanded(
+                                              flex: 2,
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Align(
+                                                  alignment: Alignment.centerLeft,
+                                                  child: Text('Are you sure you want to discard this event?', style: TextStyle(color: Colors.white)),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ),
 
-                                        Expanded(
-                                          flex: 2,
-                                          child: FlatButton(
-                                            minWidth: double.infinity,
-                                            onPressed: () {
-                                              Navigator.of(parentContext).pop();
-                                            },
-                                            child: Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Text(
-                                                'Keep Editing',
-                                                style: TextStyle(
-                                                    color: Colors.blueAccent),
+                                            Expanded(
+                                              flex: 2,
+                                              child: FlatButton(
+                                                minWidth: double.infinity,
+                                                onPressed: () {
+                                                  BlocProvider.of<SlidingUpPanelCubit>(parentContext).closePanel();
+                                                  Navigator.of(parentContext).pop();
+                                                },
+                                                child: Align(
+                                                  alignment: Alignment.centerLeft,
+                                                  child: Text(
+                                                    'Discard',
+                                                    textAlign: TextAlign.left,
+                                                    style: TextStyle(color: Colors.white),
+                                                  ),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ),
 
-                                        // Bottom Margin
-                                        Expanded(
-                                          flex: 1,
-                                          child: SizedBox(),
+                                            Expanded(
+                                              flex: 2,
+                                              child: FlatButton(
+                                                minWidth: double.infinity,
+                                                onPressed: () {
+                                                  Navigator.of(parentContext).pop();
+                                                },
+                                                child: Align(
+                                                  alignment: Alignment.centerLeft,
+                                                  child: Text(
+                                                    'Keep Editing',
+                                                    style: TextStyle(color: Colors.blueAccent),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+
+                                            // Bottom Margin
+                                            Expanded(
+                                              flex: 1,
+                                              child: SizedBox(),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                );
+                                      );
+                                    });
                               },
                             );
                           },
@@ -147,48 +131,36 @@ class CreateEventBody extends StatelessWidget {
                         Center(
                           child: Text(
                             'Add Event',
-                            style: TextStyle(
-                                color: kHavenLightGray,
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold),
+                            style: TextStyle(color: kHavenLightGray, fontSize: 18.0, fontWeight: FontWeight.bold),
                           ),
                         ),
                         // UploadImage(),
                         Builder(builder: (context) {
-                          final createEventState =
-                              context.watch<CreateEventPageViewCubit>().state;
+                          final createEventState = context.watch<CreateEventPageViewCubit>().state;
 
                           /// Currently on the Event Photo Page
                           /// Show a "post" button in the top right.
-                          if (createEventState
-                              is CreateEventPageViewEventPhoto) {
+                          if (createEventState is CreateEventPageViewEventPhoto) {
                             return CreateEventFormSubmitButton(
-                              text: this.createEventFormAction ==
-                                      CreateEventFormAction.create
-                                  ? "POST"
-                                  : "UPDATE",
+                              text: this.createEventFormAction == CreateEventFormAction.create ? "POST" : "UPDATE",
                               onSubmit: () {
                                 // Close keyboard
                                 FocusScope.of(parentContext).unfocus();
 
                                 // Only upload event if there's an event not already being uploaded
-                                if (BlocProvider.of<UploadEventBloc>(context)
-                                    .state is UploadEventStateUploading) {
+                                if (BlocProvider.of<UploadEventBloc>(context).state is UploadEventStateUploading) {
                                   return showDialog<String>(
                                     context: context,
-                                    builder: (BuildContext context) =>
-                                        AlertDialog(
+                                    builder: (BuildContext context) => AlertDialog(
                                       title: Text('Cannot Upload Event'),
                                       content: Text(
                                           'An event is already currently being upload. Please wait for that event to finish uploading before creating a new event.'),
                                       actions: [
                                         TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context),
+                                          onPressed: () => Navigator.pop(context),
                                           child: Text(
                                             'OK',
-                                            style: TextStyle(
-                                                color: Colors.blueAccent),
+                                            style: TextStyle(color: Colors.blueAccent),
                                           ),
                                         ),
                                       ],
@@ -199,29 +171,19 @@ class CreateEventBody extends StatelessWidget {
                                 // No event is uploading
                                 else {
                                   // Reset the upload event bloc
-                                  BlocProvider.of<UploadEventBloc>(context)
-                                      .add(UploadEventReset());
+                                  BlocProvider.of<UploadEventBloc>(context).add(UploadEventReset());
 
                                   // Navigate to the account screen
-                                  BlocProvider.of<AppPageViewCubit>(
-                                          parentContext)
-                                      .jumpToAccountPage();
+                                  BlocProvider.of<AppPageViewCubit>(parentContext).jumpToAccountPage();
 
                                   // Close the sliding up panel, and destroy CreateEventBloc
-                                  BlocProvider.of<SlidingUpPanelCubit>(
-                                          parentContext)
-                                      .closePanel();
+                                  BlocProvider.of<SlidingUpPanelCubit>(parentContext).closePanel();
 
                                   // Add an upload event to upload event bloc
                                   BlocProvider.of<UploadEventBloc>(context).add(
                                     UploadEventUpload(
-                                      createEventFormAction:
-                                          this.createEventFormAction,
-                                      newEventModel:
-                                          BlocProvider.of<CreateEventBloc>(
-                                                  context)
-                                              .state
-                                              .eventModel,
+                                      createEventFormAction: this.createEventFormAction,
+                                      newEventModel: BlocProvider.of<CreateEventBloc>(context).state.eventModel,
                                     ),
                                   );
                                 } // else
@@ -234,8 +196,7 @@ class CreateEventBody extends StatelessWidget {
                           return CustomNextButton(
                             onClose: () {
                               FocusScope.of(parentContext).unfocus();
-                              if (!BlocProvider.of<CreateEventBloc>(context)
-                                  .isValidEndDate()) {
+                              if (!BlocProvider.of<CreateEventBloc>(context).isValidEndDate()) {
                                 // Show error message for invalid end date
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
@@ -256,9 +217,7 @@ class CreateEventBody extends StatelessWidget {
                                 FocusScope.of(context).unfocus();
 
                                 // Advance Page Index
-                                BlocProvider.of<CreateEventPageViewCubit>(
-                                        context)
-                                    .animateToEventPhoto();
+                                BlocProvider.of<CreateEventPageViewCubit>(context).animateToEventPhoto();
                               } // else
                             },
                           );
@@ -276,9 +235,7 @@ class CreateEventBody extends StatelessWidget {
                     // Logic for controlling the Create Event Page View
                     // is stored in the "CreateEventPageViewBlock"
                     return PageView(
-                      controller:
-                          BlocProvider.of<CreateEventPageViewCubit>(context)
-                              .createEventPageViewController,
+                      controller: BlocProvider.of<CreateEventPageViewCubit>(context).createEventPageViewController,
                       physics: NeverScrollableScrollPhysics(),
                       children: <Widget>[
                         CreateEventForm(),

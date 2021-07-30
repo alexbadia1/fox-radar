@@ -50,8 +50,6 @@ class CreateEventScreen extends StatelessWidget {
           ),
           BlocProvider<CreateEventPageViewCubit>(
               create: (parentContext) => CreateEventPageViewCubit()),
-
-          // TODO: Set the initial image bytes from the search results
           BlocProvider<DeviceImagesBloc>(
               create: (parentContext) => DeviceImagesBloc()),
         ],

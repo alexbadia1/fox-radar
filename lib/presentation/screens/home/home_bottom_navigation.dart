@@ -4,13 +4,13 @@ import 'package:communitytabs/logic/logic.dart';
 import 'package:communitytabs/presentation/presentation.dart';
 
 class HomeBottomNavigationBar extends StatelessWidget {
+  const HomeBottomNavigationBar({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    HomePageViewCubit _homePageViewCubit =
-        BlocProvider.of<HomePageViewCubit>(context);
+    HomePageViewCubit _homePageViewCubit = BlocProvider.of<HomePageViewCubit>(context);
 
-    final SlidingUpPanelState _slidingUpPanelState =
-        context.watch<SlidingUpPanelCubit>().state;
+    final SlidingUpPanelState _slidingUpPanelState = context.watch<SlidingUpPanelCubit>().state;
 
     /// Sliding panel is open
     /// Show an empty container to make room for the Create Event Screens App Bar
@@ -54,8 +54,7 @@ class HomeBottomNavigationBar extends StatelessWidget {
                           context: context,
                           builder: (BuildContext context) {
                             return ModalConfirmation(
-                              prompt:
-                                  'An event is already currently being upload. Please wait for, or cancel, that event!',
+                              prompt: 'An event is already currently being upload. Please wait for, or cancel, that event!',
                               cancelText: 'CANCEL CURRENT UPLOAD',
                               cancelColor: Colors.redAccent,
                               onCancel: () {
@@ -66,17 +65,13 @@ class HomeBottomNavigationBar extends StatelessWidget {
                                         cancelText: 'CANCEL CURRENT UPLOAD',
                                         cancelColor: Colors.redAccent,
                                         onCancel: () {
-                                          BlocProvider.of<UploadEventBloc>(
-                                                  context)
-                                              .add(UploadEventCancel());
+                                          BlocProvider.of<UploadEventBloc>(context).add(UploadEventCancel());
 
-                                          Navigator.popUntil(context,
-                                              (route) => route.isFirst);
+                                          Navigator.popUntil(context, (route) => route.isFirst);
                                         },
                                         confirmText: "NEVERMIND",
                                         confirmColor: Colors.blueAccent,
-                                        onConfirm: () => Navigator.popUntil(
-                                            context, (route) => route.isFirst),
+                                        onConfirm: () => Navigator.popUntil(context, (route) => route.isFirst),
                                       );
                                     });
                               },
@@ -88,8 +83,7 @@ class HomeBottomNavigationBar extends StatelessWidget {
                     } // if
                     else {
                       // Reset the upload event bloc
-                      BlocProvider.of<UploadEventBloc>(context)
-                          .add(UploadEventReset());
+                      BlocProvider.of<UploadEventBloc>(context).add(UploadEventReset());
 
                       // Open panel and reset the upload progress bloc
                       BlocProvider.of<SlidingUpPanelCubit>(context).openPanel();
@@ -107,8 +101,7 @@ class HomeBottomNavigationBar extends StatelessWidget {
                   color: kHavenLightGray,
                   splashColor: kActiveHavenLightGray,
                   onPressed: () {
-                    BlocProvider.of<AppPageViewCubit>(context)
-                        .jumpToAccountPage();
+                    BlocProvider.of<AppPageViewCubit>(context).jumpToAccountPage();
                   }),
             ],
           ),
@@ -120,8 +113,7 @@ class HomeBottomNavigationBar extends StatelessWidget {
     else {
       return Container(
         child: Center(
-          child: Text(
-              'Sliding Up Panel Cubit did not return a state that is either open or closed!'),
+          child: Text('Sliding Up Panel Cubit did not return a state that is either open or closed!'),
         ),
       );
     } // else

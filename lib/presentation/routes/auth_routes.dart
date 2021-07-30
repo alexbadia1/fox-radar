@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:communitytabs/logic/blocs/blocs.dart';
-import 'package:communitytabs/presentation/screens/screens.dart';
+import 'package:communitytabs/logic/logic.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 
-/// Name: RouteGenerator
-///
-/// Description: This is the route generator for authentication screens:
-///                - Login
-///                - Sign Up
-///
+/// This is the route generator for authentication screens:
+///   - Login
+///   - Sign Up
 class RouteGeneratorAuthentication {
   final AuthenticationRepository authenticationRepository;
   final AuthenticationBloc authenticationBloc;
@@ -26,12 +23,9 @@ class RouteGeneratorAuthentication {
         assert(loginBloc != null),
         assert(signUpBloc != null);
 
-  /// Name: onGenerateRoute
-  ///
-  /// Description: maps each named route to a page route builder
-  ///              during each navigation, route settings can be used
-  ///              to pass data between routes.
-  /// params: settings: are used to pass arguments to the route
+  /// Maps each named route to a page route
+  /// builder during each navigation, route
+  /// settings can be used  to pass data between routes.
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
 
@@ -91,7 +85,7 @@ class RouteGeneratorAuthentication {
     } // switch
   } // onGenerateRoute
 
-  Future<void> close() {
+  Future<void> close() async {
     signUpBloc.close();
   } // close
 } // RouteGeneratorAuthentication

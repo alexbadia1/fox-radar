@@ -9,8 +9,7 @@ class HomeScreenBody extends StatefulWidget {
   _HomeScreenBodyState createState() => _HomeScreenBodyState();
 } // HomeScreenBody
 
-class _HomeScreenBodyState extends State<HomeScreenBody>
-    with AutomaticKeepAliveClientMixin {
+class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAliveClientMixin {
   Completer<void> _refreshCompleter;
   ScrollController _sliverController;
   GlobalKey navigation = new GlobalKey();
@@ -27,19 +26,16 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
 
     // When nearing the bottom of the page, fetch more events
     _sliverController.addListener(() {
-      SuggestedEventsState _currentState =
-          BlocProvider.of<SuggestedEventsBloc>(context).state;
+      SuggestedEventsState _currentState = BlocProvider.of<SuggestedEventsBloc>(context).state;
 
       // User is about 2/3 to the bottom of the list, fetch more
       // events, in an effort to load events before they get to the bottom.
-      if (_sliverController.position.pixels >=
-          _sliverController.position.maxScrollExtent / 3) {
+      if (_sliverController.position.pixels >= _sliverController.position.maxScrollExtent / 3) {
         // Check the current state to prevent spamming bloc with fetch events
         if (_currentState is SuggestedEventsStateSuccess) {
           if (!_currentState.maxEvents) {
             // Add a fetch event to the SuggestedEventsBloc
-            BlocProvider.of<SuggestedEventsBloc>(context)
-                .add(SuggestedEventsEventFetch());
+            BlocProvider.of<SuggestedEventsBloc>(context).add(SuggestedEventsEventFetch());
           } // if
         } // if
       } // else-if
@@ -48,20 +44,14 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
 
   @override
   Widget build(BuildContext homeScreenBodyContext) {
-    super.build(
-        homeScreenBodyContext); // AutomaticKeepAliveClientMixin require this.
+    super.build(homeScreenBodyContext); // AutomaticKeepAliveClientMixin require this.
     final screenHeight = MediaQuery.of(homeScreenBodyContext).size.height;
     final screenWidth = MediaQuery.of(homeScreenBodyContext).size.width;
-    final screenPaddingBottom =
-        MediaQuery.of(homeScreenBodyContext).padding.bottom;
-    final screenInsetsBottom =
-        MediaQuery.of(homeScreenBodyContext).viewInsets.bottom;
+    final screenPaddingBottom = MediaQuery.of(homeScreenBodyContext).padding.bottom;
+    final screenInsetsBottom = MediaQuery.of(homeScreenBodyContext).viewInsets.bottom;
     final screenPaddingTop = MediaQuery.of(homeScreenBodyContext).padding.top;
 
-    final _realHeight = screenHeight -
-        screenPaddingTop -
-        screenPaddingBottom +
-        screenInsetsBottom;
+    final _realHeight = screenHeight - screenPaddingTop - screenPaddingBottom + screenInsetsBottom;
 
     return Container(
       color: Color.fromRGBO(24, 24, 24, 1.0),
@@ -94,11 +84,9 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
             ///              When the "Completer" is complete, the
             ///              RefreshIndicator's loading widget stops.
             child: Builder(builder: (refreshIndicatorContext) {
-              final _suggestedEventsBlocState =
-                  context.watch<SuggestedEventsBloc>().state;
+              final _suggestedEventsBlocState = context.watch<SuggestedEventsBloc>().state;
 
-              if (!(_suggestedEventsBlocState
-                  is SuggestedEventsStateFetching)) {
+              if (!(_suggestedEventsBlocState is SuggestedEventsStateFetching)) {
                 // To stop the Refresh Indicator's loading widget,
                 // complete [complete()] the completer [_refreshCompleter].
                 this._refreshCompleter.complete();
@@ -112,8 +100,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
                 displacement: 15,
                 backgroundColor: Colors.transparent,
                 onRefresh: () async {
-                  BlocProvider.of<SuggestedEventsBloc>(refreshIndicatorContext)
-                      .add(SuggestedEventsEventReload());
+                  BlocProvider.of<SuggestedEventsBloc>(refreshIndicatorContext).add(SuggestedEventsEventReload());
                   final _future = await _refreshCompleter.future;
                   return _future;
                 },
@@ -139,13 +126,9 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
                       ///              while retrieving users' events.
                       Builder(
                         builder: (loadingWidgetContext) {
-                          final SuggestedEventsState _suggestedEventsState =
-                              loadingWidgetContext
-                                  .watch<SuggestedEventsBloc>()
-                                  .state;
+                          final SuggestedEventsState _suggestedEventsState = loadingWidgetContext.watch<SuggestedEventsBloc>().state;
 
-                          if (!(_suggestedEventsState
-                              is SuggestedEventsStateFetching)) {
+                          if (!(_suggestedEventsState is SuggestedEventsStateFetching)) {
                             return SliverToBoxAdapter(child: Container());
                           } // if
 
@@ -156,8 +139,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
                                 width: screenWidth * .05,
                                 child: CircularProgressIndicator(
                                   backgroundColor: Colors.transparent,
-                                  valueColor:
-                                      AlwaysStoppedAnimation<Color>(cWhite70),
+                                  valueColor: AlwaysStoppedAnimation<Color>(cWhite70),
                                   strokeWidth: 2.25,
                                 ),
                               ),
@@ -170,14 +152,10 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
                       ///
                       /// Changes the page view to the appropriate category
                       Builder(builder: (navigationContext) {
-                        final SuggestedEventsState _suggestedEventsState =
-                            navigationContext
-                                .watch<SuggestedEventsBloc>()
-                                .state;
+                        final SuggestedEventsState _suggestedEventsState = navigationContext.watch<SuggestedEventsBloc>().state;
 
                         // Don't show the Category Navigation Menu while retrieving events
-                        if (_suggestedEventsState
-                            is SuggestedEventsStateFetching) {
+                        if (_suggestedEventsState is SuggestedEventsStateFetching) {
                           return SliverToBoxAdapter(
                             child: Container(
                               color: Color.fromRGBO(61, 61, 61, 1.0),
@@ -192,12 +170,8 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
                           sliver: SliverGrid.count(
                             key: navigation,
                             crossAxisCount: 2,
-                            crossAxisSpacing:
-                                MediaQuery.of(navigationContext).size.width *
-                                    .05,
-                            mainAxisSpacing:
-                                MediaQuery.of(navigationContext).size.height *
-                                    .015,
+                            crossAxisSpacing: MediaQuery.of(navigationContext).size.width * .05,
+                            mainAxisSpacing: MediaQuery.of(navigationContext).size.height * .015,
                             childAspectRatio: 4,
                             children: <Widget>[
                               /// The Navigation Item is a re-usable button
@@ -205,30 +179,12 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
                               ///   [option]: sets the title of the next PageView
                               ///   [icon]: sets the current icon of the navigation button
                               ///   [gradient]: an image that sets the background for the navigation button
-                              CategoryNavigationButton(
-                                  category: 'Arts',
-                                  icon: Icons.palette,
-                                  imagePath: "images/soft_red_banner.jpg"),
-                              CategoryNavigationButton(
-                                  category: 'Sports',
-                                  icon: Icons.flag,
-                                  imagePath: "images/soft_green_banner.png"),
-                              CategoryNavigationButton(
-                                  category: 'Diversity',
-                                  icon: Icons.public,
-                                  imagePath: "images/fresh_milk_banner.png"),
-                              CategoryNavigationButton(
-                                  category: 'Student',
-                                  icon: Icons.library_books,
-                                  imagePath: "images/sharp_blue_banner.png"),
-                              CategoryNavigationButton(
-                                  category: 'Food',
-                                  icon: Icons.local_dining,
-                                  imagePath: "images/soft_yellow_banner.jpg"),
-                              CategoryNavigationButton(
-                                  category: 'Greek',
-                                  icon: Icons.account_balance,
-                                  imagePath: "images/everlasting_banner.png"),
+                              CategoryNavigationButton(category: 'Arts', icon: Icons.palette, imagePath: "images/soft_red_banner.jpg"),
+                              CategoryNavigationButton(category: 'Sports', icon: Icons.flag, imagePath: "images/soft_green_banner.png"),
+                              CategoryNavigationButton(category: 'Diversity', icon: Icons.public, imagePath: "images/fresh_milk_banner.png"),
+                              CategoryNavigationButton(category: 'Student', icon: Icons.library_books, imagePath: "images/sharp_blue_banner.png"),
+                              CategoryNavigationButton(category: 'Food', icon: Icons.local_dining, imagePath: "images/soft_yellow_banner.jpg"),
+                              CategoryNavigationButton(category: 'Greek', icon: Icons.account_balance, imagePath: "images/everlasting_banner.png"),
                             ],
                           ),
                         );
@@ -239,11 +195,9 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
                       /// Description: Only show header, if the
                       ///              user events were retrieved.
                       Builder(builder: (headerContext) {
-                        final SuggestedEventsState _suggestedEventsState =
-                            headerContext.watch<SuggestedEventsBloc>().state;
+                        final SuggestedEventsState _suggestedEventsState = headerContext.watch<SuggestedEventsBloc>().state;
 
-                        if (_suggestedEventsState
-                            is SuggestedEventsStateFetching) {
+                        if (_suggestedEventsState is SuggestedEventsStateFetching) {
                           return SliverToBoxAdapter(child: Container());
                         } // if
                         return SliverListHeader(text: 'Up Coming');
@@ -255,12 +209,9 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
                       /// and builds "Event Cards" for each event, with
                       /// the last widget being a loading widget if necessary.
                       Builder(builder: (suggestedEventsContext) {
-                        final _suggestedEventsState = suggestedEventsContext
-                            .watch<SuggestedEventsBloc>()
-                            .state;
+                        final _suggestedEventsState = suggestedEventsContext.watch<SuggestedEventsBloc>().state;
 
-                        if (_suggestedEventsState
-                            is SuggestedEventsStateSuccess) {
+                        if (_suggestedEventsState is SuggestedEventsStateSuccess) {
                           return SliverList(
                             delegate: SliverChildBuilderDelegate(
                               (BuildContext context, int index) {
@@ -268,15 +219,10 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
                                 ///
                                 /// Show each search result in an [EventCard] widget.
                                 /// When clicking on the card, the full event is retrieved.
-                                if (index <
-                                    _suggestedEventsState.eventModels.length) {
+                                if (index < _suggestedEventsState.eventModels.length) {
                                   return EventCard(
-                                    key: ObjectKey(_suggestedEventsState
-                                        .eventModels
-                                        .elementAt(index)),
-                                    newSearchResult: _suggestedEventsState
-                                        .eventModels
-                                        .elementAt(index),
+                                    key: ObjectKey(_suggestedEventsState.eventModels.elementAt(index)),
+                                    newSearchResult: _suggestedEventsState.eventModels.elementAt(index),
                                     onEventCardVertMoreCallback: (imageBytes) {
                                       // TODO: Give user options to save or report events
                                     },
@@ -290,23 +236,17 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
                                 /// more events to retrieve (maxEvents == true).
                                 else {
                                   return Builder(builder: (context) {
-                                    final SuggestedEventsState
-                                        _nestedSuggestedEventsState = context
-                                            .watch<SuggestedEventsBloc>()
-                                            .state;
+                                    final SuggestedEventsState _nestedSuggestedEventsState = context.watch<SuggestedEventsBloc>().state;
 
                                     /// Only return a loading widget if there are
                                     /// are more events to retrieve. Otherwise
                                     /// show an empty container as a bottom margin.
-                                    if (_nestedSuggestedEventsState
-                                        is SuggestedEventsStateSuccess) {
-                                      if (!_nestedSuggestedEventsState
-                                          .maxEvents) {
+                                    if (_nestedSuggestedEventsState is SuggestedEventsStateSuccess) {
+                                      if (!_nestedSuggestedEventsState.maxEvents) {
                                         return BottomLoadingWidget();
                                       } // if
                                       else {
-                                        return Container(
-                                            height: _realHeight * .1);
+                                        return Container(height: _realHeight * .1);
                                       } // else
                                     } // if
                                     else {
@@ -316,15 +256,13 @@ class _HomeScreenBodyState extends State<HomeScreenBody>
                                 } // else
                               },
                               addAutomaticKeepAlives: true,
-                              childCount:
-                                  _suggestedEventsState.eventModels.length + 1,
+                              childCount: _suggestedEventsState.eventModels.length + 1,
                             ),
                           );
                         } // if
 
                         // There are no events that start near the current time
-                        else if (_suggestedEventsState
-                            is SuggestedEventsStateFailed) {
+                        else if (_suggestedEventsState is SuggestedEventsStateFailed) {
                           return SliverFillRemaining(
                             child: Column(
                               children: [

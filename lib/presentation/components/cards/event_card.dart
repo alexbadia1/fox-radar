@@ -17,10 +17,7 @@ class EventCard extends StatefulWidget {
   /// The options will should be displayed using a modal bottom sheet
   final OnEventCardVertMoreCallback onEventCardVertMoreCallback;
 
-  EventCard(
-      {Key key,
-      @required this.newSearchResult,
-      this.onEventCardVertMoreCallback})
+  EventCard({Key key, @required this.newSearchResult, this.onEventCardVertMoreCallback})
       : assert(newSearchResult != null),
         super(key: key);
 
@@ -28,8 +25,7 @@ class EventCard extends StatefulWidget {
   _EventCardState createState() => _EventCardState();
 } // ClubBigCard
 
-class _EventCardState extends State<EventCard>
-    with AutomaticKeepAliveClientMixin {
+class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixin {
   Uint8List _imageBytes;
 
   @override
@@ -40,10 +36,7 @@ class _EventCardState extends State<EventCard>
     final screenInsetsBottom = MediaQuery.of(context).viewInsets.bottom;
     final screenPaddingTop = MediaQuery.of(context).padding.top;
 
-    final _realHeight = screenHeight -
-        screenPaddingTop -
-        screenPaddingBottom +
-        screenInsetsBottom;
+    final _realHeight = screenHeight - screenPaddingTop - screenPaddingBottom + screenInsetsBottom;
 
     return BlocProvider(
       create: (context) => FetchImageCubit(
@@ -52,9 +45,7 @@ class _EventCardState extends State<EventCard>
       child: GestureDetector(
         onTap: () => Navigator.of(context).pushNamed(
           '/event',
-          arguments: EventScreenArguments(
-              documentId: this.widget.newSearchResult.eventId,
-              imageBytes: _imageBytes),
+          arguments: EventScreenArguments(documentId: this.widget.newSearchResult.eventId, imageBytes: _imageBytes),
         ),
         child: Container(
           decoration: BoxDecoration(
@@ -73,15 +64,12 @@ class _EventCardState extends State<EventCard>
                   color: Colors.black,
                   child: Builder(
                     builder: (context) {
-                      final FetchImageState _fetchImageState =
-                          context.watch<FetchImageCubit>().state;
+                      final FetchImageState _fetchImageState = context.watch<FetchImageCubit>().state;
                       if (_fetchImageState is FetchImageSuccess) {
                         _imageBytes = _fetchImageState.imageBytes;
                         return Image.memory(
                           _fetchImageState.imageBytes,
-                          fit: this.widget.newSearchResult.imageFitCover
-                              ? BoxFit.cover
-                              : BoxFit.contain,
+                          fit: this.widget.newSearchResult.imageFitCover ? BoxFit.cover : BoxFit.contain,
                         );
                       } // if
 
@@ -104,10 +92,7 @@ class _EventCardState extends State<EventCard>
                 ),
               ),
               ConstrainedBox(
-                constraints: BoxConstraints(
-                    minWidth: double.infinity,
-                    minHeight: _realHeight * .12,
-                    maxHeight: _realHeight * .15),
+                constraints: BoxConstraints(minWidth: double.infinity, minHeight: _realHeight * .12, maxHeight: _realHeight * .15),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
@@ -137,8 +122,7 @@ class _EventCardState extends State<EventCard>
                                 Text(
                                   this.widget.newSearchResult.title,
                                   textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                      color: cWhite100, fontSize: 16.0),
+                                  style: TextStyle(color: cWhite100, fontSize: 16.0),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -150,8 +134,7 @@ class _EventCardState extends State<EventCard>
                                 ///              Ellipses on overflow.
                                 Text(
                                   this.widget.newSearchResult.location,
-                                  style: TextStyle(
-                                      color: cWhite70, fontSize: 12.0),
+                                  style: TextStyle(color: cWhite70, fontSize: 12.0),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -163,10 +146,8 @@ class _EventCardState extends State<EventCard>
                                 ///              time of the event,
                                 ///              Ellipses on overflow.
                                 Text(
-                                  this.widget.newSearchResult.startDate +
-                                      this.widget.newSearchResult.startTime,
-                                  style: TextStyle(
-                                      color: cWhite70, fontSize: 12.0),
+                                  '${this.widget.newSearchResult.startDate} ${this.widget.newSearchResult.startTime}',
+                                  style: TextStyle(color: cWhite70, fontSize: 12.0),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -183,17 +164,13 @@ class _EventCardState extends State<EventCard>
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           Builder(builder: (iconButtonContext) {
-                            final imageState = iconButtonContext
-                                .watch<FetchImageCubit>()
-                                .state;
+                            final imageState = iconButtonContext.watch<FetchImageCubit>().state;
 
                             if (imageState is FetchImageSuccess) {
                               return IconButton(
                                 icon: Icon(Icons.more_vert),
                                 color: cWhite70,
-                                onPressed: () => this
-                                    .widget
-                                    .onEventCardVertMoreCallback(imageState.imageBytes),
+                                onPressed: () => this.widget.onEventCardVertMoreCallback(imageState.imageBytes),
                               );
                             } // if
 

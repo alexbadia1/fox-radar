@@ -4,13 +4,17 @@ import 'package:communitytabs/logic/logic.dart';
 import 'package:communitytabs/presentation/presentation.dart';
 
 
-/// An option callback when the currently centered item changes.
+/// An "option" callback when the currently centered item changes.
 ///
 /// The argument passed 'index' [int] changes when the item closest to the center changes.
 /// NOTE: This callback is only triggered when scrolling settles, not during scrolls or ballistic flings.
 typedef OnSelectedItemChangedCallback = void Function(int index);
 
 class CategoryPicker extends StatelessWidget {
+  /// An "option" callback when the currently centered item changes.
+  ///
+  /// The argument passed 'index' [int] changes when the item closest to the center changes.
+  /// NOTE: This callback is only triggered when scrolling settles, not during scrolls or ballistic flings.
   final OnSelectedItemChangedCallback onSelectedItemChangedCallback;
 
   const CategoryPicker({Key key, @required this.onSelectedItemChangedCallback}) : super(key: key);
@@ -20,8 +24,7 @@ class CategoryPicker extends StatelessWidget {
       height: MediaQuery.of(context).size.height * .15,
       child: CupertinoTheme(
         data: CupertinoThemeData(
-            textTheme: CupertinoTextThemeData(
-                dateTimePickerTextStyle: TextStyle(color: Colors.white))),
+            textTheme: CupertinoTextThemeData(dateTimePickerTextStyle: TextStyle(color: Colors.white))),
         child: CupertinoPicker(
           backgroundColor: Colors.transparent,
           itemExtent: 40.0,

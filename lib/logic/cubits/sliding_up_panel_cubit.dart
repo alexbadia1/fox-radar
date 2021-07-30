@@ -9,7 +9,7 @@ class SlidingUpPanelCubit extends Cubit<SlidingUpPanelState> {
 
   SlidingUpPanelCubit() : super(SlidingUpPanelClosed(null));
 
-  get slidingUpPanelControl => _slidingUpPanelControl;
+  get slidingUpPanelControl => this._slidingUpPanelControl;
 
   void openPanel({EventModel initialEventModel}) {
     final _state = this.state;
@@ -21,17 +21,17 @@ class SlidingUpPanelCubit extends Cubit<SlidingUpPanelState> {
       if (initialEventModel != null) {
         emit(SlidingUpPanelClosed(initialEventModel));
       }// if
-
-      if (_slidingUpPanelControl.isAttached) {
-        _slidingUpPanelControl.open();
-        emit(SlidingUpPanelOpen(initialEventModel));
-      } // if
     }// if
+
+    if (_slidingUpPanelControl.isAttached) {
+      this._slidingUpPanelControl.open();
+      emit(SlidingUpPanelOpen(initialEventModel));
+    } // if
   } // openPanel
 
   void closePanel() {
     if (_slidingUpPanelControl.isAttached) {
-      _slidingUpPanelControl.close();
+      this._slidingUpPanelControl.close();
       emit(SlidingUpPanelClosed(null));
     } // if
   } // closePanel

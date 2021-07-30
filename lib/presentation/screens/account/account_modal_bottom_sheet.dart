@@ -28,50 +28,43 @@ class AccountModalBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext pContext) {
-    return BlocProvider(
-      create: (fetchEventCubitContext) => FetchFullEventCubit(
-        db: RepositoryProvider.of<DatabaseRepository>(pContext),
-      )..fetchEvent(documentId: searchResultModel.eventId),
-      child: Builder(builder: (buildContext) {
-        return ModalActionMenu(
-          actions: [
-            ModalActionMenuButton(
-                icon: Icons.edit,
-                description: "Edit",
-                color: Colors.blueAccent,
-                onPressed: () {
-                  final state =
-                      BlocProvider.of<FetchFullEventCubit>(buildContext).state;
-                  print(state.toString());
-                  if (state is FetchFullEventSuccess) {
-                    this.onEdit(state.eventModel);
-                  } // if
-                }),
-            ModalActionMenuButton(
-              icon: Icons.delete,
-              description: "Delete",
-              color: Colors.redAccent,
+    return Builder(builder: (buildContext) {
+      return ModalActionMenu(
+        actions: [
+          ModalActionMenuButton(
+              icon: Icons.edit,
+              description: "Edit",
+              color: Colors.blueAccent,
               onPressed: () {
-                // Confirm Delete
-                showModalBottomSheet(
-                    // Make sure user is focused on task at hand only
-                    isDismissible: false,
-                    context: pContext,
-                    builder: (confirmDeleteButtonContext) {
-                      return BlocProvider.value(
-                        value: BlocProvider.of<AccountEventsBloc>(pContext),
-                        child: ConfirmDelete(
-                            searchResultModel: this.searchResultModel,
-                            listViewIndex: this.listViewIndex),
-                      );
-                    });
-              },
-            )
-          ],
-          cancel: true,
-        );
-      }),
-    );
+                final state = BlocProvider.of<FetchFullEventCubit>(buildContext).state;
+                if (state is FetchFullEventSuccess) {
+                  this.onEdit(state.eventModel);
+                } // if
+              }),
+          ModalActionMenuButton(
+            icon: Icons.delete,
+            description: "Delete",
+            color: Colors.redAccent,
+            onPressed: () {
+              // Confirm Delete
+              showModalBottomSheet(
+                  // Make sure user is focused on task at hand only
+                  isDismissible: false,
+                  context: pContext,
+                  builder: (confirmDeleteButtonContext) {
+                    return BlocProvider.value(
+                      value: BlocProvider.of<AccountEventsBloc>(pContext),
+                      child: ConfirmDelete(
+                          searchResultModel: this.searchResultModel,
+                          listViewIndex: this.listViewIndex),
+                    );
+                  });
+            },
+          )
+        ],
+        cancel: true,
+      );
+    });
   } // build
 } // AccountModalBottomSheet
 

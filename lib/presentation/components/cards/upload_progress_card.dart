@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:database_repository/database_repository.dart';
 import 'package:communitytabs/presentation/presentation.dart';
 
-// TODO: Add documentation
-
 typedef OnUploadCanceledCallback = void Function();
 typedef OnUploadSuccessCallback = void Function();
 
 class UploadProgressCardDescription extends StatelessWidget {
+  /// A double between 0 and 1, showing upload progress of the events image
   final double uploadProgress;
+
+  /// Title of the event being uploaded
+  /// Shown right beneath the upload progress indicator
   final String eventTitle;
+
+  /// Text revealing data about the current state of the
+  /// upload progress. Appears directly beneath the event title.
   final String uploadMessage;
 
   const UploadProgressCardDescription({
@@ -49,11 +54,29 @@ class UploadProgressCardDescription extends StatelessWidget {
 } // UploadProgressCardDescription
 
 class UploadProgressCard extends StatelessWidget {
-  final EventModel eventModel;
-  final double uploadProgress;
+  /// Text shown to the user, try to tell
+  /// them something useful about the upload.
   final String msg;
+
+  /// The Event being uploaded.
+  ///
+  /// Useful for showing the user that
+  /// the correct event is being uploaded.
+  final EventModel eventModel;
+
+  /// A double between 0 and 1, showing upload progress of the events image
+  final double uploadProgress;
+
+  /// Whether or not to add a cancel button should be enabled.
+  ///
+  /// In some cases, you may want to disable the cancel,
+  /// event button as in, for instance, the event completed.
   final bool cancelButtonEnabled;
+
+  /// Function called when the canceled icon button is pressed.
   final OnUploadCanceledCallback onUploadCanceledCallback;
+
+  /// Function called when the check mark icon button is pressed.
   final OnUploadSuccessCallback onUploadSuccessCallback;
 
   const UploadProgressCard(
@@ -68,16 +91,10 @@ class UploadProgressCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenPaddingBottom = MediaQuery.of(context).padding.bottom;
-    final screenInsetsBottom = MediaQuery.of(context).viewInsets.bottom;
-    final screenPaddingTop = MediaQuery.of(context).padding.top;
-
-    final _realHeight = screenHeight -
-        screenPaddingTop -
-        screenPaddingBottom +
-        screenInsetsBottom;
+    final _realHeight = MediaQuery.of(context).size.height -
+        MediaQuery.of(context).padding.top -
+        MediaQuery.of(context).padding.bottom +
+        MediaQuery.of(context).viewInsets.bottom;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0),
