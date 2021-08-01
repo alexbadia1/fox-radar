@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:communitytabs/presentation/presentation.dart';
 
 class AuthView extends StatefulWidget {
@@ -12,6 +13,7 @@ class AuthView extends StatefulWidget {
 class _AuthViewState extends State<AuthView> {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return  MaterialApp(
       initialRoute: '/login',
       onGenerateRoute: this.widget.routeGeneratorAuthentication.onGenerateRoute,
