@@ -1,8 +1,5 @@
 import 'dart:async';
-import 'package:bloc/bloc.dart';
 import 'package:rxdart/rxdart.dart';
-import 'suggested_events_event.dart';
-import 'suggested_events_state.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/logic/logic.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -61,6 +58,15 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
     } // if
 
     try {
+      // User is fetching events from a failed state
+      if (!(_currentState is SuggestedEventsStateFetching) && !(_currentState is SuggestedEventsStateSuccess)) {
+        yield SuggestedEventsStateFetching();
+        // Retry will fail to quickly,
+        //
+        // Give the user a good feeling that events are actually being searched for.
+        await Future.delayed(Duration(milliseconds: 350));
+      }// if
+
       // No posts were fetched yet
       final List<QueryDocumentSnapshot> _docs =
           await _fetchEventsWithPagination(

@@ -154,14 +154,23 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
     } // if
 
     try {
-      // No posts were fetched yet
+      // User is fetching events from a failed state
+      if (!(_currentState is AccountEventsStateFetching) && !(_currentState is AccountEventsStateSuccess)) {
+        yield AccountEventsStateFetching();
+        // Retry will fail to quickly,
+        //
+        // Give the user a good feeling that events are actually being searched for.
+        await Future.delayed(Duration(milliseconds: 350));
+      }// if
+
+      // User is calling reload, so treat as if no posts were fetched yet
       final List<QueryDocumentSnapshot> _docs =
       await _fetchEventsWithPagination(
         lastEvent: null,
         limit: paginationLimit,
       );
 
-      // Failed Reload from a failed state
+      // Failed Reload from a Failed State
       if (_currentState is AccountEventsStateFailed && _docs.isEmpty) {
         yield AccountEventsStateReloadFailed();
         yield AccountEventsStateFailed();

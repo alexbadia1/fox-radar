@@ -1,12 +1,9 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:rxdart/rxdart.dart';
-import 'category_events_event.dart';
-import 'category_events_state.dart';
 import 'package:flutter/material.dart';
+import 'package:communitytabs/logic/logic.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:communitytabs/logic/blocs/blocs.dart';
-import 'package:communitytabs/logic/constants/constants.dart';
 import 'package:database_repository/database_repository.dart';
 
 class CategoryEventsBloc
@@ -58,12 +55,28 @@ class CategoryEventsBloc
     } // if
 
     try {
-      /// No posts were fetched yet
+      // User is fetching events from a failed state
+      if (!(_currentState is CategoryEventsStateFetching) && !(_currentState is CategoryEventsStateSuccess)) {
+        yield CategoryEventsStateFetching();
+        // Retry will fail to quickly,
+        //
+        // Give the user a good feeling that events are actually being searched for.
+        await Future.delayed(Duration(milliseconds: 350));
+      }// if
+
+      // No posts were fetched yet
       final List<QueryDocumentSnapshot> _docs =
           await _fetchEventsWithPagination(
               lastEvent: null, limit: paginationLimit);
       final List<SearchResultModel> _eventModels =
           _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+
+      // Failed Reload from a failed state
+      if (_currentState is CategoryEventsStateFailed && _docs.isEmpty) {
+        yield CategoryEventsStateReloadFailed();
+        yield CategoryEventsStateFailed();
+        return;
+      } // if
 
       if (_eventModels.length != this.paginationLimit) {
         _maxEvents = true;

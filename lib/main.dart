@@ -26,10 +26,10 @@ void main() async {
   final AuthenticationRepository authenticationRepository = new AuthenticationRepository();
 
   /// Resolve image assets
-  // await loadImage(
-  //     imageProvider: AssetImage('images/image1.jpg'),
-  //     devicePixelRatio:  widgetsBinding.window.devicePixelRatio,
-  // );
+  await loadImage(
+      imageProvider: AssetImage('images/image1.jpg'),
+      devicePixelRatio:  widgetsBinding.window.devicePixelRatio,
+  );
   // await loadImage(
   //   imageProvider: AssetImage('images/everlasting_banner.png'),
   //   devicePixelRatio:  widgetsBinding.window.devicePixelRatio,
