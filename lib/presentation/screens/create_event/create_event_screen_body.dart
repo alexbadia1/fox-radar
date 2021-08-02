@@ -49,7 +49,9 @@ class CreateEventBody extends StatelessWidget {
                           builder: (BuildContext context) {
                             final createEventState = context.watch<CreateEventPageViewCubit>().state;
                             if (createEventState is CreateEventPageViewEventPhoto) {
-                              return CustomBackButton(onBack: () => BlocProvider.of<CreateEventPageViewCubit>(context).animateToEventForm());
+                              return CustomBackButton(
+                                  onBack: () => BlocProvider.of<CreateEventPageViewCubit>(context).animateToEventForm(),
+                              );
                             } // if
                             return CustomCloseButton(
                               onClose: () {
@@ -58,72 +60,24 @@ class CreateEventBody extends StatelessWidget {
 
                                 // Confirm discarding event...
                                 showModalBottomSheet(
-                                    context: parentContext,
-                                    builder: (context) {
-
-                                      return Container(
-                                        color: Color.fromRGBO(31, 31, 31, 1.0),
-                                        height: MediaQuery.of(context).size.height * .18,
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            Expanded(
-                                              flex: 2,
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Align(
-                                                  alignment: Alignment.centerLeft,
-                                                  child: Text('Are you sure you want to discard this event?', style: TextStyle(color: Colors.white)),
-                                                ),
-                                              ),
-                                            ),
-
-                                            Expanded(
-                                              flex: 2,
-                                              child: FlatButton(
-                                                minWidth: double.infinity,
-                                                onPressed: () {
-                                                  BlocProvider.of<SlidingUpPanelCubit>(parentContext).closePanel();
-                                                  Navigator.of(parentContext).pop();
-                                                },
-                                                child: Align(
-                                                  alignment: Alignment.centerLeft,
-                                                  child: Text(
-                                                    'Discard',
-                                                    textAlign: TextAlign.left,
-                                                    style: TextStyle(color: Colors.white),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-
-                                            Expanded(
-                                              flex: 2,
-                                              child: FlatButton(
-                                                minWidth: double.infinity,
-                                                onPressed: () {
-                                                  Navigator.of(parentContext).pop();
-                                                },
-                                                child: Align(
-                                                  alignment: Alignment.centerLeft,
-                                                  child: Text(
-                                                    'Keep Editing',
-                                                    style: TextStyle(color: Colors.blueAccent),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-
-                                            // Bottom Margin
-                                            Expanded(
-                                              flex: 1,
-                                              child: SizedBox(),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    });
+                                  context: parentContext,
+                                  builder: (modalContext) {
+                                    return ModalConfirmation(
+                                      prompt: "Are you sure you want to discard this event?",
+                                      confirmText: "DISCARD",
+                                      confirmColor: Colors.redAccent,
+                                      onConfirm: () {
+                                        BlocProvider.of<SlidingUpPanelCubit>(parentContext).closePanel();
+                                        Navigator.of(modalContext).pop();
+                                      },
+                                      cancelText: "KEEP EDITING",
+                                      cancelColor: Colors.blueAccent,
+                                      onCancel: () {
+                                        Navigator.of(modalContext).pop();
+                                      },
+                                    );
+                                  },
+                                );
                               },
                             );
                           },

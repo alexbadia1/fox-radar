@@ -23,7 +23,7 @@ class EventCard extends StatefulWidget {
 
   @override
   _EventCardState createState() => _EventCardState();
-} // ClubBigCard
+} // EventCard
 
 class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixin {
   Uint8List _imageBytes;
@@ -31,13 +31,6 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenPaddingBottom = MediaQuery.of(context).padding.bottom;
-    final screenInsetsBottom = MediaQuery.of(context).viewInsets.bottom;
-    final screenPaddingTop = MediaQuery.of(context).padding.top;
-
-    final _realHeight = screenHeight - screenPaddingTop - screenPaddingBottom + screenInsetsBottom;
-
     return BlocProvider(
       create: (context) => FetchImageCubit(
         db: RepositoryProvider.of<DatabaseRepository>(context),
@@ -45,7 +38,10 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
       child: GestureDetector(
         onTap: () => Navigator.of(context).pushNamed(
           '/event',
-          arguments: EventScreenArguments(documentId: this.widget.newSearchResult.eventId, imageBytes: _imageBytes),
+          arguments: EventScreenArguments(
+              documentId: this.widget.newSearchResult.eventId,
+              imageBytes: _imageBytes,
+          ),
         ),
         child: Container(
           decoration: BoxDecoration(
@@ -79,117 +75,48 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
                         );
                       } // else if
 
+                      // Image is still being fetch, show a cool loading animation
                       else {
                         return Container(
                           color: Colors.black,
                         );
-                        // return LoadingWidget(
-                        //   size: 75.0,
-                        // );
                       } // else
                     },
                   ),
                 ),
               ),
-              ConstrainedBox(
-                constraints: BoxConstraints(minWidth: double.infinity, minHeight: _realHeight * .12, maxHeight: _realHeight * .15),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                      flex: 3,
-                      child: CircleAvatar(
-                        backgroundColor: Colors.redAccent,
-                      ),
-                    ),
-                    Expanded(
-                      flex: 13,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                /// Name: Text
-                                ///
-                                /// Description: The title of the event,
-                                ///              Ellipses on overflow.
-                                Text(
-                                  this.widget.newSearchResult.title,
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(color: cWhite100, fontSize: 16.0),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                SizedBox(height: 4),
+              EventCardDescription(
+                profilePicture: Icon(Icons.person),
+                title: this.widget.newSearchResult.title,
+                location: this.widget.newSearchResult.location,
+                startDate: this.widget.newSearchResult.startDate,
+                startTime: this.widget.newSearchResult.startTime,
+                trailingActions: [
+                  Builder(
+                    builder: (iconButtonContext) {
+                      final imageState = iconButtonContext.watch<FetchImageCubit>().state;
 
-                                /// Name: Text
-                                ///
-                                /// Description: The location of the event,
-                                ///              Ellipses on overflow.
-                                Text(
-                                  this.widget.newSearchResult.location,
-                                  style: TextStyle(color: cWhite70, fontSize: 12.0),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                SizedBox(height: 2),
+                      if (imageState is FetchImageSuccess) {
+                        return IconButton(
+                          icon: Icon(Icons.more_vert),
+                          color: cWhite70,
+                          onPressed: () => this.widget.onEventCardVertMoreCallback(imageState.imageBytes),
+                        );
+                      } // if
 
-                                /// Name: Text
-                                ///
-                                /// Description: The start date and
-                                ///              time of the event,
-                                ///              Ellipses on overflow.
-                                Text(
-                                  '${this.widget.newSearchResult.startDate} ${this.widget.newSearchResult.startTime}',
-                                  style: TextStyle(color: cWhite70, fontSize: 12.0),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Builder(builder: (iconButtonContext) {
-                            final imageState = iconButtonContext.watch<FetchImageCubit>().state;
-
-                            if (imageState is FetchImageSuccess) {
-                              return IconButton(
-                                icon: Icon(Icons.more_vert),
-                                color: cWhite70,
-                                onPressed: () => this.widget.onEventCardVertMoreCallback(imageState.imageBytes),
-                              );
-                            } // if
-
-                            /// If the image is still being fetch
-                            /// don't let the "more vert button" work.
-                            ///
-                            /// Don't want a user to try and update an
-                            /// event that hasn't fully been fetched yet.
-                            return IconButton(
-                              icon: Icon(Icons.more_vert),
-                              color: cWhite70,
-                              onPressed: () {},
-                            );
-                          }),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                      /// If the image is still being fetch
+                      /// don't let the "more vert button" work.
+                      ///
+                      /// Don't want a user to try and update an
+                      /// event that hasn't fully been fetched yet.
+                      return IconButton(
+                        icon: Icon(Icons.more_vert),
+                        color: cWhite70,
+                        onPressed: () {},
+                      );
+                    },
+                  ),
+                ],
               ),
             ],
           ),

@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class MaristFoxLogo extends StatelessWidget {
+  final _url = 'https://my.marist.edu/';
+
   _launchURL() async {
-    const url = 'https://my.marist.edu/';
-    if (await canLaunch(url)) {
-      await launch(url);
-    }// if
-    else {
-      throw 'Could not launch $url';
-    }// else
+    // TODO: Add URL launcher to dependencies
   } //_launchURL
 
   @override
   Widget build(BuildContext context) {
     return RawMaterialButton(
       onPressed: () {
-        _launchURL();
+        // _launchURL();
       },
       child: Center(
         child: Image(

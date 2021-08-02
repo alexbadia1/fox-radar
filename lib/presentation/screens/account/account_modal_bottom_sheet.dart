@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/logic/logic.dart';
@@ -18,11 +17,7 @@ class AccountModalBottomSheet extends StatelessWidget {
 
   final OnEditCallback onEdit;
 
-  const AccountModalBottomSheet(
-      {Key key,
-      @required this.searchResultModel,
-      this.listViewIndex,
-      this.onEdit})
+  const AccountModalBottomSheet({Key key, @required this.searchResultModel, this.listViewIndex, this.onEdit})
       : assert(searchResultModel != null),
         super(key: key);
 
@@ -54,9 +49,7 @@ class AccountModalBottomSheet extends StatelessWidget {
                   builder: (confirmDeleteButtonContext) {
                     return BlocProvider.value(
                       value: BlocProvider.of<AccountEventsBloc>(pContext),
-                      child: ConfirmDelete(
-                          searchResultModel: this.searchResultModel,
-                          listViewIndex: this.listViewIndex),
+                      child: ConfirmDelete(searchResultModel: this.searchResultModel, listViewIndex: this.listViewIndex),
                     );
                   });
             },
@@ -77,8 +70,7 @@ class ConfirmDelete extends StatelessWidget {
   /// clicked on the "More Vert Bar" icon.
   final SearchResultModel searchResultModel;
 
-  const ConfirmDelete(
-      {Key key, @required this.searchResultModel, @required this.listViewIndex})
+  const ConfirmDelete({Key key, @required this.searchResultModel, @required this.listViewIndex})
       : assert(searchResultModel != null),
         assert(listViewIndex != null),
         super(key: key);
@@ -86,24 +78,20 @@ class ConfirmDelete extends StatelessWidget {
   @override
   Widget build(BuildContext pContext) {
     return ModalConfirmation(
-      prompt:
-          'Are you sure you want to delete: "${this.searchResultModel.title}"?',
+      prompt: 'Are you sure you want to delete: "${this.searchResultModel.title}"?',
 
       // Put CANCEL on the left to make the user think twice
-      confirmText: "CANCEL",
-      confirmColor: Colors.blueAccent,
-      onConfirm: () =>
-          Navigator.of(pContext).popUntil((route) => route.isFirst),
+      cancelText: "CANCEL",
+      cancelColor: Colors.blueAccent,
+      onCancel: () => Navigator.of(pContext).popUntil((route) => route.isFirst),
 
       // Put CONFIRM on the left to make the user think twice
-      cancelText: "CONFIRM",
-      cancelColor: Colors.redAccent,
-      onCancel: () {
+      confirmText: "CONFIRM",
+      confirmColor: Colors.redAccent,
+      onConfirm: () {
         // Send a delete event to the BloC
         BlocProvider.of<AccountEventsBloc>(pContext).add(
-          AccountEventsEventRemove(
-              listIndex: this.listViewIndex,
-              searchResultModel: this.searchResultModel),
+          AccountEventsEventRemove(listIndex: this.listViewIndex, searchResultModel: this.searchResultModel),
         );
 
         // Close all modal bottom sheets

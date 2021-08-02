@@ -61,6 +61,11 @@ class ImageUploadProgress extends StatelessWidget {
 
     /// Show upload progress with a stream builder
     else if (uploadState is UploadEventStateUploading) {
+      // ONly show upload progress for image, otherwise assume event uploaded complete
+      if (uploadState.uploadTask == null) {
+        BlocProvider.of<UploadEventBloc>(context).add(UploadEventComplete());
+        return SizedBox(height: 0, width: 0);
+      }// if
       return StreamBuilder(
         stream: uploadState.uploadTask.snapshotEvents,
         builder: (BuildContext context, AsyncSnapshot<TaskSnapshot> snapshot) {

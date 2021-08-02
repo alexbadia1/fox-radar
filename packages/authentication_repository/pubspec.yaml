@@ -7,6 +7,13 @@ environment:
 
 dependencies:
   meta: ^1.2.4
-  firebase_core: ^0.6.0
-  firebase_auth: ^0.19.0+1
+  intl: ^0.17.0
   equatable: ^1.2.5
+
+  # Legacy
+  # firebase_core: ^0.6.0
+  # firebase_auth: ^0.19.0+1
+
+  # Null Safety
+  firebase_core: ^1.4.0
+  firebase_auth: ^3.0.1

@@ -169,7 +169,7 @@ class CategoryEventsBloc
     return docs.map((doc) {
       // Convert the firebase timestamp to a DateTime
       DateTime tempRawStartDateAndTimeToDateTime;
-      Timestamp _startTimestamp = doc.data()[ATTRIBUTE_RAW_START_DATE_TIME];
+      Timestamp _startTimestamp = doc[ATTRIBUTE_RAW_START_DATE_TIME];
       if (_startTimestamp != null) {
         tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(
                 _startTimestamp.millisecondsSinceEpoch)
@@ -182,28 +182,28 @@ class CategoryEventsBloc
 
       return SearchResultModel(
         // Title converted to [STRING] from [STRING] in Firebase.
-        newTitle: doc.data()[ATTRIBUTE_TITLE] ?? '',
+        newTitle: doc[ATTRIBUTE_TITLE] ?? '',
 
         // Host converted to [STRING] from [STRING] in Firebase.
-        newHost: doc.data()[ATTRIBUTE_HOST] ?? '',
+        newHost: doc[ATTRIBUTE_HOST] ?? '',
 
         // Location Converted to [] from [] in Firebase.
-        newLocation: doc.data()[ATTRIBUTE_LOCATION] ?? '',
+        newLocation: doc[ATTRIBUTE_LOCATION] ?? '',
 
         // RawStartDate converted to [DATETIME] from [TIMESTAMP] in Firebase.
         newRawStartDateAndTime: tempRawStartDateAndTimeToDateTime ?? null,
 
         // Category converted to [STRING] from [STRING] in Firebase.
-        newCategory: doc.data()[ATTRIBUTE_CATEGORY] ?? '',
+        newCategory: doc[ATTRIBUTE_CATEGORY] ?? '',
 
         // Implement Firebase Images.
-        newImageFitCover: doc.data()[ATTRIBUTE_IMAGE_FIT_COVER] ?? true,
+        newImageFitCover: doc[ATTRIBUTE_IMAGE_FIT_COVER] ?? true,
 
         // DocumentId converted to [STRING] from [STRING] in firebase.
-        newEventId: doc.data()[ATTRIBUTE_EVENT_ID] ?? '',
+        newEventId: doc[ATTRIBUTE_EVENT_ID] ?? '',
 
         // AccountID converted to [STRING] from [STRING] in firebase.
-        newAccountID: doc.data()[ATTRIBUTE_ACCOUNT_ID] ?? '',
+        newAccountID: doc[ATTRIBUTE_ACCOUNT_ID] ?? '',
       );
     }).toList();
   } // _mapDocumentSnapshotsToSearchEventModels

@@ -1,13 +1,9 @@
 import 'dart:io';
 import 'dart:async';
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:communitytabs/logic/logic.dart';
 import 'package:flutter/services.dart';
-import 'device_images_event.dart';
-import 'device_images_state.dart';
+import 'package:communitytabs/logic/logic.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:communitytabs/logic/blocs/blocs.dart';
 
 class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
   final int paginationLimit = 10;
@@ -24,16 +20,35 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
     }
   } // mapEventToState
 
-  Stream<DeviceImagesState>
-      _mapDeviceImagesEventFetchToDeviceImagesState() async* {
+  Stream<DeviceImagesState> _mapDeviceImagesEventFetchToDeviceImagesState() async* {
     // Get the current state for later use...
     final _currentState = this.state;
     bool _maxImages = false;
 
-    try {
-      final PermissionState result = await PhotoManager.requestPermissionExtend();
+    // Fetch called fom fail state
+    if (_currentState is DeviceImagesStateFailed) {
+      yield DeviceImagesStateFetching();
+    }// if
 
-      if (result.isAuth) {
+    try {
+      bool hasPermission = false;
+
+      try {
+        final PermissionState result = await PhotoManager.requestPermissionExtend();
+        hasPermission = result.isAuth;
+      }// try
+
+      catch (newApiError) {
+        try {
+          await PhotoManager.forceOldApi();
+          hasPermission = await PhotoManager.requestPermission();
+        }// try
+        catch(oldApiError) {
+          yield DeviceImagesStateFailed();
+        }// catch
+      }
+
+      if (hasPermission) {
         // No posts were fetched yet...
         if (_currentState is DeviceImagesStateFetching ||
             _currentState is DeviceImagesStateFailed ||
