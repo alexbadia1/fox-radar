@@ -1,9 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/logic/logic.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:communitytabs/presentation/presentation.dart';
 
 class SelectedImage extends StatefulWidget {
@@ -22,12 +21,11 @@ class _SelectedImageState extends State<SelectedImage> {
 
   Future getImageFromDeviceGallery() async {
     try {
-      PickedFile image = await picker.getImage(source: ImageSource.gallery);
+      XFile image = await picker.pickImage(source: ImageSource.gallery);
 
       if (image != null) {
         final bytes = await image.readAsBytes();
-        BlocProvider.of<CreateEventBloc>(context)
-            .add(CreateEventSetImage(imageBytes: bytes));
+        BlocProvider.of<CreateEventBloc>(context).add(CreateEventSetImage(imageBytes: bytes));
       } // if
     } // try
     catch (e) {} // catch
@@ -51,9 +49,7 @@ class _SelectedImageState extends State<SelectedImage> {
                   width: double.infinity,
                   child: Image.memory(
                     imageBytes,
-                    fit: state.eventModel.imageFitCover
-                        ? BoxFit.cover
-                        : BoxFit.contain,
+                    fit: state.eventModel.imageFitCover ? BoxFit.cover : BoxFit.contain,
                   ),
                 ),
               );
@@ -69,12 +65,9 @@ class _SelectedImageState extends State<SelectedImage> {
             } //else
           },
           buildWhen: (CreateEventState prevState, CreateEventState currState) {
-            if (prevState.eventModel.imageFitCover !=
-                    currState.eventModel.imageFitCover ||
-                prevState.eventModel.imageBytes !=
-                    currState.eventModel.imageBytes ||
-                prevState.eventModel.imagePath !=
-                    currState.eventModel.imagePath) {
+            if (prevState.eventModel.imageFitCover != currState.eventModel.imageFitCover ||
+                prevState.eventModel.imageBytes != currState.eventModel.imageBytes ||
+                prevState.eventModel.imagePath != currState.eventModel.imagePath) {
               return true;
             } // if
             return false;
@@ -104,10 +97,7 @@ class _SelectedImageState extends State<SelectedImage> {
                   onTap: () async {
                     try {
                       File croppedFile = await ImageCropper.cropImage(
-                        sourcePath: BlocProvider.of<CreateEventBloc>(context)
-                            .state
-                            .eventModel
-                            .imagePath,
+                        sourcePath: BlocProvider.of<CreateEventBloc>(context).state.eventModel.imagePath,
                         aspectRatioPresets: Platform.isAndroid
                             ? [
                                 CropAspectRatioPreset.square,
@@ -139,9 +129,7 @@ class _SelectedImageState extends State<SelectedImage> {
                         ),
                       );
                       if (croppedFile != null) {
-                        BlocProvider.of<CreateEventBloc>(context).add(
-                            CreateEventSetImage(
-                                imageBytes: croppedFile?.readAsBytesSync()));
+                        BlocProvider.of<CreateEventBloc>(context).add(CreateEventSetImage(imageBytes: croppedFile?.readAsBytesSync()));
                       } // if
                     } // try
                     catch (e) {} // catch
@@ -178,15 +166,11 @@ class _SelectedImageState extends State<SelectedImage> {
               if (state.eventModel.imageFitCover) {
                 return GestureDetector(
                   onTap: () {
-                    BlocProvider.of<CreateEventBloc>(context)
-                        .add(CreateEventSetImageFitCover(fitCover: false));
+                    BlocProvider.of<CreateEventBloc>(context).add(CreateEventSetImageFitCover(fitCover: false));
                   },
                   child: Container(
-                      decoration: BoxDecoration(
-                          color: Color.fromRGBO(0, 0, 0, .6),
-                          shape: BoxShape.circle),
-                      child: Icon(Icons.photo_size_select_actual,
-                          color: cWhite100)),
+                      decoration: BoxDecoration(color: Color.fromRGBO(0, 0, 0, .6), shape: BoxShape.circle),
+                      child: Icon(Icons.photo_size_select_actual, color: cWhite100)),
                 );
               } // if
 
@@ -194,21 +178,15 @@ class _SelectedImageState extends State<SelectedImage> {
               else {
                 return GestureDetector(
                     onTap: () {
-                      BlocProvider.of<CreateEventBloc>(context)
-                          .add(CreateEventSetImageFitCover(fitCover: true));
+                      BlocProvider.of<CreateEventBloc>(context).add(CreateEventSetImageFitCover(fitCover: true));
                     },
                     child: Container(
-                        decoration: BoxDecoration(
-                            color: Color.fromRGBO(0, 0, 0, .6),
-                            shape: BoxShape.circle),
-                        child: Icon(Icons.photo_size_select_small,
-                            color: cWhite100)));
+                        decoration: BoxDecoration(color: Color.fromRGBO(0, 0, 0, .6), shape: BoxShape.circle),
+                        child: Icon(Icons.photo_size_select_small, color: cWhite100)));
               }
             },
-            buildWhen:
-                (CreateEventState prevState, CreateEventState currState) {
-              return prevState.eventModel.imageFitCover !=
-                  currState.eventModel.imageFitCover;
+            buildWhen: (CreateEventState prevState, CreateEventState currState) {
+              return prevState.eventModel.imageFitCover != currState.eventModel.imageFitCover;
             },
           ),
         ),

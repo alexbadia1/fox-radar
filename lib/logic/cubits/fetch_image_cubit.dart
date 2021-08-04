@@ -8,10 +8,10 @@ class FetchImageCubit extends Cubit<FetchImageState> {
   final DatabaseRepository db;
   FetchImageCubit({@required this.db}) : super(FetchImageInitial());
 
-  void fetchImage({@required String path}) async {
+  void fetchImage({@required String eventID}) async {
     Uint8List _bytes;
     try {
-      _bytes = await db.getImageFromStorage(path: path);
+      _bytes = await db.getImageFromStorage(eventID: eventID);
 
       if (_bytes != null) {
         emit(FetchImageSuccess(imageBytes: _bytes));

@@ -3,37 +3,34 @@ import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:database_repository/database_repository.dart';
 
-
-abstract class AccountEventsState extends Equatable {
+abstract class AccountEventsState {
   const AccountEventsState();
-}// AccountEventsState
+} // AccountEventsState
 
-class AccountEventsStateFetching extends AccountEventsState {
-  @override
-  List<Object> get props => [];
-} // AccountEventsStateFetching
+class AccountEventsStateFetching extends AccountEventsState {} // AccountEventsStateFetching
 
-class AccountEventsStateFailed extends AccountEventsState {
-  @override
-  List<Object> get props => [];
-} // AccountEventsStateFailed
+class AccountEventsStateFailed extends AccountEventsState {} // AccountEventsStateFailed
 
-class AccountEventsStateReloadFailed extends AccountEventsState {
-  @override
-  List<Object> get props => [];
-} // AccountEventsStateReloadFailed
+class AccountEventsStateReloadFailed extends AccountEventsState {} // AccountEventsStateReloadFailed
 
 class AccountEventsStateSuccess extends AccountEventsState {
   final List<SearchResultModel> eventModels;
   final QueryDocumentSnapshot lastEvent;
   final bool maxEvents;
   final bool isFetching;
+  bool isDeleting = false;
 
   AccountEventsStateSuccess(
       {@required this.eventModels,
-        @required this.lastEvent,
-        @required this.maxEvents,
-        @required this.isFetching});
-  @override
-  List<Object> get props => [eventModels, maxEvents, lastEvent, isFetching];
+      @required this.lastEvent,
+      @required this.maxEvents,
+      @required this.isFetching,
+      isDeleting});
+
+  set deleting(bool newIsDeleting) {
+    this.isDeleting = newIsDeleting;
+    if (isFetching) {
+      this.isDeleting = false;
+    } // if
+  } // isDeleting
 } // AccountEventsStateSuccess

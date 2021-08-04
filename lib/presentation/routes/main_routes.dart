@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:communitytabs/presentation/presentation.dart';
 
-/// Name: RouteGenerator
-///
-/// Description: This is the route generator for non-authentication screens:
-///                - Home
-///                - Account
-///
+/// This is the route generator for non-authentication screens:
+///   - Home
+///   - Account
 class RouteGeneratorMain {
-  /// Name: onGenerateRoute
-  ///
-  /// Description: maps each named route to a page route builder
-  ///              during each navigation, route settings can be used
-  ///              to pass data between routes.
-  /// params: settings: are used to pass arguments to the route
+  /// Maps each named route to a page route
+  /// builder during each navigation, route
+  /// settings can be used to pass data between routes.
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
 
@@ -22,7 +16,7 @@ class RouteGeneratorMain {
         return PageRouteBuilder(
           pageBuilder: (context, animation1, animation2) =>
               // Home and account screen are stored in a PageView Widget
-              AppPageViewWrapper(),
+              AppPageView(),
         );
         break;
 

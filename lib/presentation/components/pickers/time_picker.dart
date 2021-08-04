@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
+
 typedef OnDateTimeChangedCallback = void Function(DateTime dateTime);
 
 class TimePicker extends StatelessWidget {
+  /// Sets the initial time the TimePicker starts on.
   final DateTime initialDateTime;
+
+  /// Function triggered every time a new time is selected.
   final OnDateTimeChangedCallback onDateTimeChangedCallback;
 
   const TimePicker({
@@ -12,6 +16,7 @@ class TimePicker extends StatelessWidget {
     @required this.initialDateTime,
     @required this.onDateTimeChangedCallback,
   }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Container(

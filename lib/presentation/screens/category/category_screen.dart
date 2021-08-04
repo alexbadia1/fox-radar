@@ -1,7 +1,7 @@
 import 'category_screen_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:communitytabs/logic/cubits/cubits.dart';
+import 'package:communitytabs/logic/logic.dart';
 
 class CategoryScreen extends StatelessWidget {
   @override
@@ -12,37 +12,37 @@ class CategoryScreen extends StatelessWidget {
         case 'Sports':
           return CategoryBody(
             title: 'Sports',
-            tabNamesFromLtoR: ['Intramural', 'College', 'Club'],
+            tabNamesFromLtoR: [INTRAMURAL, 'College', 'Club'],
           );
           break;
         case 'Arts':
           return CategoryBody(
             title: 'Arts',
-            tabNamesFromLtoR: ['Music & Dance', 'Movies & Theatre'],
+            tabNamesFromLtoR: [MUSIC_AND_DANCE, MOVIES_THEATRE],
           );
           break;
         case 'Diversity':
           return CategoryBody(
             title: 'Diversity',
-            tabNamesFromLtoR: ['Culture', 'Religion', 'Spiritual'],
+            tabNamesFromLtoR: [CULTURE, RELIGION, SPIRITUAL],
           );
           break;
         case 'Student':
           return CategoryBody(
             title: 'Student Interest',
-            tabNamesFromLtoR: ['Academic', 'Political', 'Media'],
+            tabNamesFromLtoR: [ACADEMIC, POLITICAL, "Media"],
           );
           break;
         case 'Food':
           return CategoryBody(
             title: 'Marist Food',
-            tabNamesFromLtoR: ['Marist Dining', 'Occasions', 'Free Food'],
+            tabNamesFromLtoR: [MARIST_DINING, OCCASIONS, FREE_FOOD],
           );
           break;
         case 'Greek':
           return CategoryBody(
             title: 'Greek Life',
-            tabNamesFromLtoR: ['Fraternity', 'Sorority', 'Rushes'],
+            tabNamesFromLtoR: [FRATERNITY, SORORITY, RUSHES],
           );
           break;
         default:

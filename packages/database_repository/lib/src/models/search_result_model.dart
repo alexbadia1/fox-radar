@@ -37,6 +37,10 @@ class SearchResultModel {
   /// That contains all of the details of the event.
   String _eventId = '[Event Id]';
 
+  /// ID of the document that contains the
+  /// minimal details of the event for search
+  String _searchID;
+
   /// Account ID of of the Account that created this event
   String _accountID = '[Account ID]';
 
@@ -49,6 +53,7 @@ class SearchResultModel {
       String newCategory,
       bool newImageFitCover,
       String newEventId,
+      String newSearchID,
       String newAccountID}) {
     // Set the Event Title
     this._title = newTitle;
@@ -79,18 +84,22 @@ class SearchResultModel {
     // Set the Event ID
     this._eventId = newEventId;
 
+    // Set the Search ID
+    this._searchID = newSearchID;
+
     // Set Account ID
     this._accountID = newAccountID;
   } // SearchResultModel
 
-  String get getTitle => this._title;
-  String get getHost => this._host;
-  String get getLocation => this._location;
-  String get myStartDate => this._startDate;
-  String get myStartTime => this._startTime;
-  String get myCategory => this._category;
-  bool get getImageFitCover => this._imageFitCover;
+  String get title => this._title;
+  String get host => this._host;
+  String get location => this._location;
+  String get startDate => this._startDate;
+  String get startTime => this._startTime;
+  String get category => this._category;
+  bool get imageFitCover => this._imageFitCover;
   String get eventId => this._eventId;
+  String get searchID => this._searchID;
   String get accountID => this._accountID;
 
   @override

@@ -17,10 +17,9 @@ class DateTimePickerCubit extends Cubit<DateTimePickerState> {
     } // if
     else {
       tempDateTime = _setDate(currentDateTime: state.tempDateTime, newDate: tempDateTime);
-    }// else
+    } // else
 
-    emit(DateTimePickerOpenShowDatePicker(
-        isOpen: true, tempDateTime: tempDateTime));
+    emit(DateTimePickerOpenShowDatePicker(isOpen: true, tempDateTime: tempDateTime));
   } // open
 
   void openExpansionPanelToTimePicker({
@@ -32,21 +31,18 @@ class DateTimePickerCubit extends Cubit<DateTimePickerState> {
 
     else {
       tempDateTime = _setTime(currentDateTime: state.tempDateTime, newTime: tempDateTime);
-    }// else
+    } // else
 
-    emit(DateTimePickerOpenShowTimePicker(
-        isOpen: true, tempDateTime: tempDateTime));
+    emit(DateTimePickerOpenShowTimePicker(isOpen: true, tempDateTime: tempDateTime));
   } // open
 
   void closeExpansionPanel() {
     final _currentState = this.state;
 
-    emit(DateTimePickerClosed(
-        isOpen: false, tempDateTime: _currentState.tempDateTime));
+    emit(DateTimePickerClosed(isOpen: false, tempDateTime: _currentState.tempDateTime));
   } // close
 
-  DateTime _setTime(
-      {@required DateTime currentDateTime, @required DateTime newTime}) {
+  DateTime _setTime({@required DateTime currentDateTime, @required DateTime newTime}) {
     currentDateTime = new DateTime(
       currentDateTime.year,
       currentDateTime.month,
@@ -58,8 +54,7 @@ class DateTimePickerCubit extends Cubit<DateTimePickerState> {
     return currentDateTime;
   } // _setTime
 
-  DateTime _setDate(
-      {@required DateTime currentDateTime, @required DateTime newDate}) {
+  DateTime _setDate({@required DateTime currentDateTime, @required DateTime newDate}) {
     currentDateTime = new DateTime(
       newDate.year,
       newDate.month,
@@ -73,7 +68,7 @@ class DateTimePickerCubit extends Cubit<DateTimePickerState> {
 
   @override
   void onChange(Change<DateTimePickerState> change) {
-    print('Expansion Panel Cubit $change');
+    print('DateTime Picker Cubit $change');
     super.onChange(change);
   } // onChange
-} // ExpansionPanelCubit
+} // DateTimePickerCubit

@@ -6,8 +6,19 @@ typedef OnDateSelectedCallback = void Function(DateTime dateTime);
 typedef UpdateBlocCallback = void Function(DateTime dateTime);
 
 class DatePicker extends StatefulWidget {
+  /// Sets the initial date the Date picker starts on.
   final DateTime initialSelectedDate;
+
+  /// [Deprecated], replaced by "confirm"" and "cancel" buttons.
+  ///
+  /// This function is called every time a
+  /// new Date is selected from the Date Picker.
+  ///
+  /// When this function is called, you should add an event
+  /// to the Bloc managing the Date, to update it as the user chooses.
   final UpdateBlocCallback updateBlocCallback;
+
+  /// General purpose function triggered whenever a new date is selected.
   final OnDateSelectedCallback onDateSelectedCallback;
 
   const DatePicker(
@@ -23,9 +34,13 @@ class DatePicker extends StatefulWidget {
 class _DatePickerState extends State<DatePicker> {
   /// Start date should be set when the user opens the panel. However, you
   /// are able to change the start date using add or subtract functions:
-  ///   DateTime.now().subtract(Duration(days: 365));
+  ///   - DateTime.now().subtract(Duration(days: 365));
   DateTime startDate = DateTime.now();
+
+  /// The latest end Date is a year from [DateTime.now]
   DateTime endDate = DateTime.now().add(Duration(days: 365));
+
+  /// Default to todays date [DateTime.now]
   DateTime selectedDate = DateTime.now();
   List<DateTime> markedDates = [];
 
@@ -129,5 +144,5 @@ class _DatePickerState extends State<DatePicker> {
         ),
       ],
     );
-  }
-}
+  }// build
+}// _DatePickerState
