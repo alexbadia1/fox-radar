@@ -1,0 +1,57 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Marist_Community_Tabs",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "Marist_Community_Tabs (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "authentication_repository",
+            "cwd": "packages\\authentication_repository",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "calender_strip_fixed",
+            "cwd": "packages\\calender_strip_fixed",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "calender_strip_fixed (profile mode)",
+            "cwd": "packages\\calender_strip_fixed",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "database_repository",
+            "cwd": "packages\\database_repository",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "loading_fixed",
+            "cwd": "packages\\loading_fixed",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "loading_fixed (profile mode)",
+            "cwd": "packages\\loading_fixed",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        }
+    ]
+}
