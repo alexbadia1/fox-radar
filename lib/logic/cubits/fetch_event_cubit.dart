@@ -16,7 +16,7 @@ class FetchFullEventCubit extends Cubit<FetchFullEventState> {
           await db.getEventFromEventsCollection(documentId: documentId);
 
       final EventModel _eventModel = _mapQueryDocumentSnapshotToEventModel(
-          documentSnapshot: _documentSnapshot);
+          doc: _documentSnapshot);
 
       emit(FetchFullEventSuccess(eventModel: _eventModel));
 
@@ -34,7 +34,8 @@ class FetchFullEventCubit extends Cubit<FetchFullEventState> {
   } // fetchEvent
 
   EventModel _mapQueryDocumentSnapshotToEventModel(
-      {@required DocumentSnapshot documentSnapshot}) {
+      {@required DocumentSnapshot doc}) {
+    Map<String, dynamic> documentSnapshot = doc.data();
     Timestamp _startTimestamp =
         documentSnapshot[ATTRIBUTE_RAW_START_DATE_TIME];
     Timestamp _endTimestamp =
@@ -99,7 +100,7 @@ class FetchFullEventCubit extends Cubit<FetchFullEventState> {
       newImageFitCover: documentSnapshot[ATTRIBUTE_IMAGE_FIT_COVER] ?? false,
 
       // DocumentId converted to [STRING] from [STRING] in firebase.
-      newEventID: documentSnapshot.id ?? '',
+      newEventID: doc.id ?? '',
 
       newAccountID: documentSnapshot[ATTRIBUTE_ACCOUNT_ID] ?? '',
     );

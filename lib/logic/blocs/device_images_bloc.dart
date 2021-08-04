@@ -7,6 +7,7 @@ import 'package:photo_manager/photo_manager.dart';
 
 class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
   final int paginationLimit = 10;
+  int failedAttempts = 0;
   DeviceImagesBloc() : super(DeviceImagesStateFetching());
 
   @override
@@ -44,7 +45,7 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
           hasPermission = await PhotoManager.requestPermission();
         }// try
         catch(oldApiError) {
-          yield DeviceImagesStateFailed();
+          yield DeviceImagesStateFailed(failedAttempts: this.failedAttempts++);
         }// catch
       }
 
@@ -128,7 +129,7 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
         }// if
       }// if
 
-      yield DeviceImagesStateFailed();
+      yield DeviceImagesStateFailed(failedAttempts: this.failedAttempts++);
     } // catch
   } // _mapDeviceImagesEventFetchToDeviceImagesState
 

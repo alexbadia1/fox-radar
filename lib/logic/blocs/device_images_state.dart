@@ -12,8 +12,12 @@ class DeviceImagesStateFetching extends DeviceImagesState {
 } // DeviceImagesStateFetching
 
 class DeviceImagesStateFailed extends DeviceImagesState {
+  final int failedAttempts;
+
+  DeviceImagesStateFailed({@required this.failedAttempts}) : assert(failedAttempts != null && failedAttempts >= 0);
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [failedAttempts];
 } // DeviceImagesStateFailed
 
 class DeviceImagesStateDenied extends DeviceImagesState {

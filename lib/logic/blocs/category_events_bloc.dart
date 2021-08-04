@@ -167,9 +167,11 @@ class CategoryEventsBloc
   List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels(
       {@required List<QueryDocumentSnapshot> docs}) {
     return docs.map((doc) {
+      Map<String, dynamic> docAsMap = doc.data();
+
       // Convert the firebase timestamp to a DateTime
       DateTime tempRawStartDateAndTimeToDateTime;
-      Timestamp _startTimestamp = doc[ATTRIBUTE_RAW_START_DATE_TIME];
+      Timestamp _startTimestamp = docAsMap[ATTRIBUTE_RAW_START_DATE_TIME];
       if (_startTimestamp != null) {
         tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(
                 _startTimestamp.millisecondsSinceEpoch)
@@ -182,28 +184,28 @@ class CategoryEventsBloc
 
       return SearchResultModel(
         // Title converted to [STRING] from [STRING] in Firebase.
-        newTitle: doc[ATTRIBUTE_TITLE] ?? '',
+        newTitle: docAsMap[ATTRIBUTE_TITLE] ?? '',
 
         // Host converted to [STRING] from [STRING] in Firebase.
-        newHost: doc[ATTRIBUTE_HOST] ?? '',
+        newHost: docAsMap[ATTRIBUTE_HOST] ?? '',
 
         // Location Converted to [] from [] in Firebase.
-        newLocation: doc[ATTRIBUTE_LOCATION] ?? '',
+        newLocation: docAsMap[ATTRIBUTE_LOCATION] ?? '',
 
         // RawStartDate converted to [DATETIME] from [TIMESTAMP] in Firebase.
         newRawStartDateAndTime: tempRawStartDateAndTimeToDateTime ?? null,
 
         // Category converted to [STRING] from [STRING] in Firebase.
-        newCategory: doc[ATTRIBUTE_CATEGORY] ?? '',
+        newCategory: docAsMap[ATTRIBUTE_CATEGORY] ?? '',
 
         // Implement Firebase Images.
-        newImageFitCover: doc[ATTRIBUTE_IMAGE_FIT_COVER] ?? true,
+        newImageFitCover: docAsMap[ATTRIBUTE_IMAGE_FIT_COVER] ?? true,
 
         // DocumentId converted to [STRING] from [STRING] in firebase.
-        newEventId: doc[ATTRIBUTE_EVENT_ID] ?? '',
+        newEventId: docAsMap[ATTRIBUTE_EVENT_ID] ?? '',
 
         // AccountID converted to [STRING] from [STRING] in firebase.
-        newAccountID: doc[ATTRIBUTE_ACCOUNT_ID] ?? '',
+        newAccountID: docAsMap[ATTRIBUTE_ACCOUNT_ID] ?? '',
       );
     }).toList();
   } // _mapDocumentSnapshotsToSearchEventModels

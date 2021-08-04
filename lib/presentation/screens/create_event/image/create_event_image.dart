@@ -42,8 +42,11 @@ class _CreateEventImageState extends State<CreateEventImage> with WidgetsBinding
         profilePicture: Icon(Icons.person, color: cWhite70),
         title: BlocProvider.of<CreateEventBloc>(createEventImageContext).state?.eventModel?.title ?? '[Event Title]',
         location: BlocProvider.of<CreateEventBloc>(createEventImageContext).state?.eventModel?.location ?? '[Location]',
-        startDate: DateFormat('E, MMMM d, y')?.format(BlocProvider.of<CreateEventBloc>(createEventImageContext).state?.eventModel?.rawStartDateAndTime) ?? '[Start Date]',
-        startTime: DateFormat.jm()?.format(BlocProvider.of<CreateEventBloc>(createEventImageContext).state?.eventModel?.rawStartDateAndTime) ?? "[Start Time]",
+        startDate:
+            DateFormat('E, MMMM d, y')?.format(BlocProvider.of<CreateEventBloc>(createEventImageContext).state?.eventModel?.rawStartDateAndTime) ??
+                '[Start Date]',
+        startTime: DateFormat.jm()?.format(BlocProvider.of<CreateEventBloc>(createEventImageContext).state?.eventModel?.rawStartDateAndTime) ??
+            "[Start Time]",
         trailingActions: [Icon(Icons.more_vert, color: cWhite70)],
       ),
       Expanded(
@@ -117,30 +120,45 @@ class _CreateEventImageState extends State<CreateEventImage> with WidgetsBinding
               } // if
 
               else if (deviceImagesBlocState is DeviceImagesStateFailed) {
+                final int failedAttempts = deviceImagesBlocState.failedAttempts;
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Failed to Retrieve Device Images!',
+                        failedAttempts > 1 ? 'Retry failed, please open settings!' : 'Failed to Retrieve Device Images!',
                         style: TextStyle(
                           fontSize: 15.0,
                           color: cWhite70,
                         ),
                       ),
                       cVerticalMarginSmall(createEventImageContext),
-                      GestureDetector(
-                        onTap: () {
-                          BlocProvider.of<DeviceImagesBloc>(context).add(DeviceImagesEventFetch());
-                        },
-                        child: Text(
-                          'RETRY',
-                          style: TextStyle(
-                            fontSize: 15.0,
-                            color: Colors.blueAccent,
-                          ),
-                        ),
-                      ),
+                      failedAttempts > 1
+                          ? GestureDetector(
+                              onTap: () async {
+                                await PhotoManager.forceOldApi();
+                                PhotoManager.openSetting();
+                              },
+                              child: Text(
+                                'OPEN SETTINGS',
+                                style: TextStyle(
+                                  fontSize: 15.0,
+                                  color: Colors.blueAccent,
+                                ),
+                              ),
+                            )
+                          : GestureDetector(
+                              onTap: () {
+                                BlocProvider.of<DeviceImagesBloc>(context).add(DeviceImagesEventFetch());
+                              },
+                              child: Text(
+                                'RETRY',
+                                style: TextStyle(
+                                  fontSize: 15.0,
+                                  color: Colors.blueAccent,
+                                ),
+                              ),
+                            ),
                     ],
                   ),
                 );

@@ -27,7 +27,7 @@ class AccountBottomNavigationBar extends StatelessWidget {
             children: <Widget>[
               /// This button navigates to the Home Screen
               IconButton(
-                  icon: Icon(Icons.home),
+                  icon: Icon(Icons.home_outlined),
                   color: kHavenLightGray,
                   splashColor: kActiveHavenLightGray,
                   onPressed: () {
@@ -36,7 +36,7 @@ class AccountBottomNavigationBar extends StatelessWidget {
 
               /// This button opens the sliding up panel
               IconButton(
-                icon: Icon(Icons.add),
+                icon: Icon(Icons.add_circle_outline_rounded),
                 color: kHavenLightGray,
                 splashColor: kActiveHavenLightGray,
                 onPressed: () {
