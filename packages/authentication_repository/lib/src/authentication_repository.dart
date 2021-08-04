@@ -5,31 +5,39 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthenticationRepository {
+  // Singleton
+  static final AuthenticationRepository _authenticationRepository = AuthenticationRepository._internal();
 
   /// Create a firebase authentication object
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  factory AuthenticationRepository() {
+    return _authenticationRepository;
+  } // DatabaseRepository
+
+  AuthenticationRepository._internal();
+
   /// Create our own user object
   UserModel _createModelUserFromFirebaseCredentials({@required user}) {
     return UserModel(userID: user.uid, email: user.email);
-  }//_userFromFirebaseUser
+  } //_userFromFirebaseUser
 
   /// Listen to a firebase authentication stream and create a user model
   Stream<UserModel> get user {
-      return _auth.authStateChanges().map((User user) {
-        print(user);
-        if (user != null) {
-          return _createModelUserFromFirebaseCredentials(user: user);
-        } // if
-        else {
-          return UserModel.empty;
-        } // else
-      });
-  }//user
+    return _auth.authStateChanges().map((User user) {
+      print(user);
+      if (user != null) {
+        return _createModelUserFromFirebaseCredentials(user: user);
+      } // if
+      else {
+        return UserModel.empty;
+      } // else
+    });
+  } //user
 
   /// Try an anonymous sign in
   Future anonymousSignIn() async {
-    try{
+    try {
       /// AuthResult changed to "UserCredential"
       UserCredential _userCredential = await _auth.signInAnonymously();
 
@@ -38,23 +46,23 @@ class AuthenticationRepository {
 
       /// Create a model for the anonymous user
       return _createModelUserFromFirebaseCredentials(user: user);
-
     } catch (Exception) {
       print(Exception.toString());
       return null;
     }
-  }//anonymousSigIn
-  bool isSignedIn () {
+  } //anonymousSigIn
+
+  bool isSignedIn() {
     return _auth.currentUser != null;
-  }// isSignedIn
+  } // isSignedIn
 
   UserModel getUserModel() {
     return _createModelUserFromFirebaseCredentials(user: _auth.currentUser);
-  }// getUser
+  } // getUser
 
   /// Try an anonymous sign in
   Future<UserModel> signIn() async {
-    try{
+    try {
       /// AuthResult changed to "UserCredential"
       UserCredential _userCredential = await _auth.signInWithEmailAndPassword(email: '', password: '');
 
@@ -63,16 +71,15 @@ class AuthenticationRepository {
 
       /// Create a model for the anonymous user
       return _createModelUserFromFirebaseCredentials(user: user);
-
     } catch (Exception) {
       print(Exception.toString());
       return null;
     }
-  }//anonymousSigIn
+  } //anonymousSigIn
 
   /// Email Password login
   Future signInWithEmailAndPassword(String newEmail, String newPassword) async {
-    try{
+    try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(email: newEmail, password: newPassword);
       User user = userCredential.user;
       return _createModelUserFromFirebaseCredentials(user: user);
@@ -80,7 +87,7 @@ class AuthenticationRepository {
       print(e);
       return null;
     }
-  }//signInWithEmailAndPassword
+  } //signInWithEmailAndPassword
 
   //Register Email and password
   Future registerWithEmailAndPassword(String newEmail, String newPassword) async {
@@ -98,24 +105,21 @@ class AuthenticationRepository {
       //Return user data received from Firebase
       print('Returning new firebase user');
       return _createModelUserFromFirebaseCredentials(user: user);
-
     } catch (e) {
       print('User received: $user');
       print(e.toString());
       return null;
     }
-  }//registerWithEmailAndPassword
+  } //registerWithEmailAndPassword
 
   //sign out
-  Future<void> signOut () async {
-    try{
-      await Future.wait(
-          [_auth.signOut()]
-      );
+  Future<void> signOut() async {
+    try {
+      await Future.wait([_auth.signOut()]);
     } on Exception {
       throw LogoutFailure();
     }
-  }//signOut
+  } //signOut
 }
 
-class LogoutFailure implements Exception{}
+class LogoutFailure implements Exception {}

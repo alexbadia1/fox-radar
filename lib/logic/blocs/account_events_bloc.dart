@@ -10,13 +10,14 @@ import 'package:database_repository/database_repository.dart';
 
 class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
   final DatabaseRepository db;
-  final String accountID;
   final int paginationLimit = PAGINATION_LIMIT;
+  String _accountID;
 
-  AccountEventsBloc({@required this.db, @required this.accountID})
+  AccountEventsBloc({@required this.db, @required accountID})
       : assert(db != null),
-        assert(accountID != null),
-        super(AccountEventsStateFetching());
+        super(AccountEventsStateFetching()) {
+    this._accountID = accountID;
+  } // AccountEventsBloc
 
   // Adds a debounce, to prevent the spamming of requesting events
   @override
@@ -28,8 +29,8 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
 
   @override
   Stream<AccountEventsState> mapEventToState(
-    AccountEventsEvent accountEventsEvent,
-  ) async* {
+      AccountEventsEvent accountEventsEvent,
+      ) async* {
     // Fetch some events
     if (accountEventsEvent is AccountEventsEventFetch) {
       yield* _mapAccountEventsEventFetchToState();
@@ -40,63 +41,18 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
       yield* _mapAccountEventsEventReloadToState();
     } // else if
 
+    // Remove an event
+    else if (accountEventsEvent is AccountEventsEventRemove) {
+      yield* _mapAccountEventsEventRemoveToState(
+          accountEventsEventRemove: accountEventsEvent);
+    } // else if
+
     // The event added to the bloc has not associated state
     // either create one, or check the [account_events_state.dart]
     else {
       yield AccountEventsStateFailed();
     } // else
   } // mapEventToState
-
-  Stream<AccountEventsState> _mapAccountEventsEventReloadToState() async* {
-    final _currentState = this.state;
-    bool _maxEvents = false;
-
-    // Change "isFetching" to true, to show a
-    // loading widget at the bottom of the list view.
-    if (_currentState is AccountEventsStateSuccess) {
-      yield AccountEventsStateSuccess(
-        eventModels: _currentState.eventModels,
-        maxEvents: _currentState.maxEvents,
-        lastEvent: _currentState.lastEvent,
-        isFetching: true,
-      );
-    } // if
-
-    try {
-      // No posts were fetched yet
-      final List<QueryDocumentSnapshot> _docs =
-          await _fetchEventsWithPagination(
-        lastEvent: null,
-        limit: paginationLimit,
-      );
-
-      // Failed Reload from a failed state
-      if (_currentState is AccountEventsStateFailed && _docs.isEmpty) {
-        yield AccountEventsStateReloadFailed();
-        yield AccountEventsStateFailed();
-        return;
-      } // if
-
-      // Map the events to a list of "Search Result Models"
-      final List<SearchResultModel> _eventModels =
-          _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
-
-      // The last remaining events where retrieved
-      if (_eventModels.length != this.paginationLimit) {
-        _maxEvents = true;
-      } // if
-
-      yield AccountEventsStateSuccess(
-        eventModels: _eventModels,
-        maxEvents: _maxEvents,
-        lastEvent: _docs.last,
-        isFetching: false,
-      );
-    } // try
-    catch (e) {
-      yield AccountEventsStateFailed();
-    } // catch
-  } // _mapAccountEventsEventReloadToState
 
   Stream<AccountEventsState> _mapAccountEventsEventFetchToState() async* {
     final _currentState = this.state;
@@ -108,7 +64,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
           _currentState is AccountEventsStateFailed) {
         // Fetch the first [paginationLimit] number of events
         final List<QueryDocumentSnapshot> _docs =
-            await _fetchEventsWithPagination(
+        await _fetchEventsWithPagination(
           lastEvent: null,
           limit: paginationLimit,
         );
@@ -121,7 +77,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
 
         // Map the events to a list of "Search Result Models"
         final List<SearchResultModel> _eventModels =
-            _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+        _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
         // The last remaining events where retrieved
         if (_eventModels.length != this.paginationLimit) {
@@ -141,8 +97,8 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
       else if (_currentState is AccountEventsStateSuccess) {
         // Fetch the first [paginationLimit] number of events
         final List<QueryDocumentSnapshot> _docs =
-            await _fetchEventsWithPagination(
-                lastEvent: _currentState.lastEvent, limit: paginationLimit);
+        await _fetchEventsWithPagination(
+            lastEvent: _currentState.lastEvent, limit: paginationLimit);
 
         // No event models were returned from the database
         //
@@ -162,7 +118,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
         else {
           // Map the events to a list of "Search Result Models"
           final List<SearchResultModel> _eventModels =
-              _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+          _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
           // The last remaining events where retrieved
           if (_eventModels.length != this.paginationLimit) {
@@ -182,10 +138,138 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
     } // catch
   } // _mapAccountEventsEventFetchToState
 
+  Stream<AccountEventsState> _mapAccountEventsEventReloadToState() async* {
+    final _currentState = this.state;
+    bool _maxEvents = false;
+
+    // Change "isFetching" to true, to show a
+    // loading widget at the bottom of the list view.
+    if (_currentState is AccountEventsStateSuccess) {
+      yield AccountEventsStateSuccess(
+        eventModels: _currentState.eventModels,
+        maxEvents: _currentState.maxEvents,
+        lastEvent: _currentState.lastEvent,
+        isFetching: true,
+      );
+    } // if
+
+    try {
+      // User is fetching events from a failed state
+      if (!(_currentState is AccountEventsStateFetching) && !(_currentState is AccountEventsStateSuccess)) {
+        yield AccountEventsStateFetching();
+        // Retry will fail to quickly,
+        //
+        // Give the user a good feeling that events are actually being searched for.
+        await Future.delayed(Duration(milliseconds: 350));
+      }// if
+
+      // User is calling reload, so treat as if no posts were fetched yet
+      final List<QueryDocumentSnapshot> _docs =
+      await _fetchEventsWithPagination(
+        lastEvent: null,
+        limit: paginationLimit,
+      );
+
+      // Failed Reload from a Failed State
+      if (_currentState is AccountEventsStateFailed && _docs.isEmpty) {
+        yield AccountEventsStateReloadFailed();
+        yield AccountEventsStateFailed();
+        return;
+      } // if
+
+      // Map the events to a list of "Search Result Models"
+      final List<SearchResultModel> _eventModels =
+      _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+
+      // The last remaining events where retrieved
+      if (_eventModels.length != this.paginationLimit) {
+        _maxEvents = true;
+      } // if
+
+      yield AccountEventsStateSuccess(
+        eventModels: _eventModels,
+        maxEvents: _maxEvents,
+        lastEvent: _docs.last,
+        isFetching: false,
+      );
+    } // try
+    catch (e) {
+      yield AccountEventsStateFailed();
+    } // catch
+  } // _mapAccountEventsEventReloadToState
+
+  Stream<AccountEventsState> _mapAccountEventsEventRemoveToState(
+      {@required AccountEventsEventRemove accountEventsEventRemove}) async* {
+    final currentState = this.state;
+
+    if (currentState is AccountEventsStateSuccess) {
+      if (!currentState.isFetching) {
+        // Set [isDeleting] true, but still emit a
+        // success state since the event has yet to be deleted.
+        //
+        // UI should show a loading widget in the UI
+        // to indicate that the deletion is in process.
+        // Still emit a success state, so list view remains unchanged
+        yield AccountEventsStateSuccess(
+            eventModels: currentState.eventModels,
+            lastEvent: currentState.lastEvent,
+            maxEvents: currentState.maxEvents,
+            isFetching: currentState.isFetching,
+            isDeleting: true
+        );
+
+        // Remove event from "My Events" list view on the device
+        if (currentState.eventModels.isNotEmpty) {
+          currentState.eventModels.removeAt(accountEventsEventRemove.listIndex);
+        }// if
+
+        // Create a new reference, to force the list view to update
+        List<SearchResultModel> newEventModelReference = [];
+        if (currentState.eventModels.isNotEmpty) {
+          newEventModelReference.addAll(currentState.eventModels);
+        }// if
+
+        // TODO: Enable this code to actually delete and event
+        // // Remove image from storage
+        // this.db.deleteImageFromStorage(
+        //     eventID: accountEventsEventRemove.searchResultModel.eventId);
+        //
+        // // Remove from "search" collection
+        // this.db.deleteNewEventFromSearchableCollection(
+        //     documentReferenceID:
+        //     accountEventsEventRemove.searchResultModel.searchID);
+        //
+        // // Remove from the "events" collection
+        // this.db.deleteNewEventFromEventsCollection(
+        //     documentReferenceID:
+        //     accountEventsEventRemove.searchResultModel.eventId);
+
+        // Deleted the last event (on the device)
+        //
+        // Show lonely panda image with a reload button,
+        // just in case there's more events in the database
+        if (newEventModelReference.isEmpty) {
+          yield AccountEventsStateFailed();
+        }// if
+
+        // Set [isDeleting] false, as there are still events
+        else {
+          yield AccountEventsStateSuccess(
+              eventModels: newEventModelReference,
+              lastEvent: currentState.lastEvent,
+              maxEvents: currentState.maxEvents,
+              isFetching: currentState.isFetching,
+              isDeleting: false
+          );
+        }// else
+      }// if
+    } // if
+  } // _mapAccountEventsEventRemoveToState
+
   Future<List<QueryDocumentSnapshot>> _fetchEventsWithPagination(
       {@required QueryDocumentSnapshot lastEvent, @required int limit}) async {
     return db.searchEventsByAccount(
-        accountID: this.accountID, lastEvent: lastEvent, limit: limit);
+        accountID: this._accountID, lastEvent: lastEvent, limit: limit);
   } // _fetchEventsWithPagination
 
   /// Name: _mapDocumentSnapshotsToSearchEventModels
@@ -194,12 +278,14 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
   List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels(
       {@required List<QueryDocumentSnapshot> docs}) {
     return docs.map((doc) {
+      Map<String, dynamic> docAsMap = doc.data();
+
       // Convert the firebase timestamp to a DateTime
       DateTime tempRawStartDateAndTimeToDateTime;
-      Timestamp _startTimestamp = doc.data()[ATTRIBUTE_RAW_START_DATE_TIME];
+      Timestamp _startTimestamp = docAsMap[ATTRIBUTE_RAW_START_DATE_TIME];
       if (_startTimestamp != null) {
         tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(
-                _startTimestamp.millisecondsSinceEpoch)
+            _startTimestamp.millisecondsSinceEpoch)
             .toUtc()
             .toLocal();
       } // if
@@ -209,28 +295,31 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
 
       return SearchResultModel(
         // Title converted to [STRING] from [STRING] in Firebase.
-        newTitle: doc.data()[ATTRIBUTE_TITLE] ?? '',
+        newTitle: docAsMap[ATTRIBUTE_TITLE] ?? '',
 
         // Host converted to [STRING] from [STRING] in Firebase.
-        newHost: doc.data()[ATTRIBUTE_HOST] ?? '',
+        newHost: docAsMap[ATTRIBUTE_HOST] ?? '',
 
         // Location Converted to [] from [] in Firebase.
-        newLocation: doc.data()[ATTRIBUTE_LOCATION] ?? '',
+        newLocation: docAsMap[ATTRIBUTE_LOCATION] ?? '',
 
         // RawStartDate converted to [DATETIME] from [TIMESTAMP] in Firebase.
         newRawStartDateAndTime: tempRawStartDateAndTimeToDateTime ?? null,
 
         // Category converted to [STRING] from [STRING] in Firebase.
-        newCategory: doc.data()[ATTRIBUTE_CATEGORY] ?? '',
+        newCategory: docAsMap[ATTRIBUTE_CATEGORY] ?? '',
 
         // Implement Firebase Images.
-        newImageFitCover: doc.data()[ATTRIBUTE_IMAGE_FIT_COVER] ?? true,
+        newImageFitCover: docAsMap[ATTRIBUTE_IMAGE_FIT_COVER] ?? true,
 
         // DocumentId converted to [STRING] from [STRING] in firebase.
-        newEventId: doc.data()[ATTRIBUTE_EVENT_ID] ?? '',
+        newEventId: docAsMap[ATTRIBUTE_EVENT_ID] ?? '',
+
+        // DocumentId converted to [STRING] from [STRING] in firebase.
+        newSearchID: doc.id ?? '',
 
         // AccountID converted to [STRING] from [STRING] in firebase.
-        newAccountID: doc.data()[ATTRIBUTE_ACCOUNT_ID] ?? '',
+        newAccountID: docAsMap[ATTRIBUTE_ACCOUNT_ID] ?? '',
       );
     }).toList();
   } // _mapDocumentSnapshotsToSearchEventModels

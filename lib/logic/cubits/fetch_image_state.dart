@@ -7,6 +7,7 @@ abstract class FetchImageState extends Equatable {
   const FetchImageState();
 }// FetchImageState
 
+/// TODO: The initial state is the fetching state, make that clear!
 class FetchImageInitial extends FetchImageState {
   @override
   List<Object> get props => [];

@@ -32,6 +32,8 @@ class CategoryBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double _width = MediaQuery.of(context).size.width;
+
     /// Temporary lists to allow for the dynamic building of Tabs and PageViews
     List<Widget> _tabs = [];
     List<Widget> _pageView = [];
@@ -47,80 +49,62 @@ class CategoryBody extends StatelessWidget {
     /// that has a uniquely generated key to to ensure each Bloc Provider instance is unique.
     print('Generating Page Views');
     for (int i = 0; i < this.tabNamesFromLtoR.length; ++i) {
-      _pageView.add(
-          BlocProvider(
-            key: UniqueKey(),
-            create: (context) => CategoryEventsBloc(
-                db: RepositoryProvider.of<DatabaseRepository>(context),
-                category: this.tabNamesFromLtoR[i])..add(CategoryEventsEventFetch(),
-            ),
-            child:SingleCategoryView(),
+      _pageView.add(BlocProvider(
+        key: UniqueKey(),
+        create: (context) => CategoryEventsBloc(db: RepositoryProvider.of<DatabaseRepository>(context), category: this.tabNamesFromLtoR[i])
+          ..add(
+            CategoryEventsEventFetch(),
+          ),
+        child: SingleCategoryView(),
       ));
     } //for
 
-
-    ///TODO: Account for only 1 sub-Category. Maybe just use a different special widget
+    /// TODO: Account for only 1 sub-Category in a Tab View, Maybe just use a different special widget
     return SafeArea(
       child: DefaultTabController(
         length: this.tabNamesFromLtoR.length,
         child: Scaffold(
           appBar: PreferredSize(
-            preferredSize:
-                Size.fromHeight(MediaQuery.of(context).size.height * .15),
+            preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * .15),
             child: AppBar(
               flexibleSpace: Stack(
+                fit: StackFit.expand,
                 children: <Widget>[
-//                  Container(
-//                    width: double.infinity,
-//                    height: double.infinity,
-//                    child: Image(
-//                      image: ResizeImage(
-//                        AssetImage("images/image1.jpg"),
-//                        width: int.parse(
-//                          MediaQuery.of(context)
-//                              .size
-//                              .width
-//                              .toString()
-//                              .replaceAll('.', ''),
-//                        ),
-//                      ),
-//                      fit: BoxFit.fill,
-//                    ),
-//                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: <Color>[
-                          cWashedRedFaded,
-                          cFullRedFaded,
-                        ],
-                      ),
-                    ),
+                  Image(
+                    image: AssetImage("images/image1.jpg"),
+                    fit: BoxFit.cover,
+                  ),
+                  FullScreenGradient(
+                    gradient: cMaristGradientWashed,
+                    height: double.infinity,
                   ),
                 ],
               ),
-              leading: IconButton(
-                color: kHavenLightGray,
-                splashColor: kActiveHavenLightGray,
-                icon: Icon(Icons.chevron_left),
-                onPressed: () =>
-                    BlocProvider.of<HomePageViewCubit>(context).animateToHomePage(),
+              leading: Padding(
+                padding: EdgeInsets.only(left: _width * .01),
+                child: IconButton(
+                  color: kHavenLightGray,
+                  splashColor: kActiveHavenLightGray,
+                  icon: Icon(Icons.chevron_left),
+                  onPressed: () => BlocProvider.of<HomePageViewCubit>(context).animateToHomePage(),
+                ),
               ),
+              leadingWidth: _width * .1,
               centerTitle: false,
-              title: Text(this.title,
-                  style: TextStyle(
-                      color: kHavenLightGray, fontWeight: FontWeight.bold)),
+              title: Text(
+                this.title,
+                style: TextStyle(color: kHavenLightGray, fontWeight: FontWeight.bold),
+              ),
               actions: <Widget>[
-                // IconButton(
-                //   color: kHavenLightGray,
-                //   splashColor: kActiveHavenLightGray,
-                //   icon: Icon(Icons.search),
-                //   onPressed: () async {
-                //     await showSearch(context: context, delegate: Search());
-                //   },
-                // )
+                IconButton(
+                  color: kHavenLightGray,
+                  splashColor: kActiveHavenLightGray,
+                  icon: Icon(Icons.search),
+                  onPressed: () async {
+                    // TODO: Re-implement searching
+                    // await showSearch(context: context, delegate: Search());
+                  },
+                )
               ],
               bottom: TabBar(
                 labelStyle: TextStyle(color: kActiveHavenLightGray),

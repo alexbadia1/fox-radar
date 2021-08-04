@@ -4,7 +4,7 @@ import 'package:communitytabs/logic/logic.dart';
 import 'package:database_repository/database_repository.dart';
 import 'package:communitytabs/presentation/presentation.dart';
 
-class AppPageViewWrapper extends StatelessWidget {
+class AppPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<UploadEventBloc>(
@@ -12,8 +12,7 @@ class AppPageViewWrapper extends StatelessWidget {
         db: RepositoryProvider.of<DatabaseRepository>(context),
       ),
       child: PageView(
-        controller:
-            BlocProvider.of<AppPageViewCubit>(context).appPageViewController,
+        controller: BlocProvider.of<AppPageViewCubit>(context).appPageViewController,
         physics: NeverScrollableScrollPhysics(),
         children: [
           MultiBlocProvider(
@@ -39,4 +38,4 @@ class AppPageViewWrapper extends StatelessWidget {
       ),
     );
   } // build
-} // PageViewWrapper
+} // AppPageView

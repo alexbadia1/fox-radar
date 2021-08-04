@@ -4,11 +4,10 @@ import 'package:communitytabs/logic/blocs/blocs.dart';
 import 'package:communitytabs/presentation/presentation.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 
-
 class SignUpScreen extends StatefulWidget {
   @override
   _SignUpScreenState createState() => _SignUpScreenState();
-}// SignUpScreen
+} // SignUpScreen
 
 class _SignUpScreenState extends State<SignUpScreen> {
   @override
@@ -19,223 +18,218 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final screenInsetsBottom = MediaQuery.of(context).viewInsets.bottom;
     final screenPaddingTop = MediaQuery.of(context).padding.top;
 
-    final height = screenHeight -
-        screenPaddingTop -
-        screenPaddingBottom +
-        screenInsetsBottom;
+    final height = screenHeight - screenPaddingTop - screenPaddingBottom + screenInsetsBottom;
 
     return SafeArea(
-      child: Container(
-        height: height + screenInsetsBottom,
-        width: screenWidth,
-        child: Stack(
-          children: [
-            Image(image: AssetImage("images/image1.jpg"), fit: BoxFit.none),
-            FullScreenGradient(gradient: cMaristGradientWashed, height: height + screenInsetsBottom),
-            Scaffold(
-              backgroundColor: Colors.transparent,
-              body: SingleChildScrollView(
-                physics: ClampingScrollPhysics(),
-                child: Container(
-                  height: height,
-                  width: screenWidth,
-                  child: BlocProvider<SignUpBloc>(
-                    create: (BuildContext context) => SignUpBloc(authenticationRepository: RepositoryProvider.of<AuthenticationRepository>(context)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        Expanded(
-                          flex: 4,
-                          child: Listener(onPointerDown: (_) =>
-                              FocusScope.of(context).unfocus(),
-                              behavior: HitTestBehavior.opaque,child: SizedBox()),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image(
+            image: AssetImage("images/image1.jpg"),
+            fit: BoxFit.cover,
+          ),
+          FullScreenGradient(
+            gradient: cMaristGradientWashed,
+            height: double.infinity,
+          ),
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Container(
+              height: double.infinity,
+              child: SingleChildScrollView(
+                physics: const ScrollPhysics(),
+
+                /// Instantiate the [SignUpBloc] here, so the
+                /// Back Icon Button can watch the [SignUpBlocState]
+                child: BlocProvider<SignUpBloc>(
+                  create: (BuildContext context) => SignUpBloc(
+                    authenticationRepository: RepositoryProvider.of<AuthenticationRepository>(context),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Listener(
+                        onPointerDown: (_) => FocusScope.of(context).unfocus(),
+                        behavior: HitTestBehavior.opaque,
+                        /// Container is used to match the top margin on the login screen
+                        child: Container(
+                          height: height * .12,
                         ),
+                      ),
 
-                        Builder(
-                          builder: (context) {
-                            final SignUpState _signUpState = context.watch<SignUpBloc>().state;
+                      /// Back Button
+                      /// Depending on whether the user just tried to
+                      /// sign up, show or remove the [Back Button Icon].
+                      Builder(
+                        builder: (context) {
+                          final SignUpState _signUpState = context.watch<SignUpBloc>().state;
 
-                            if (_signUpState is SignUpStateSubmitted) {
-                              return Container(height: height * .10);
-                            } // if
+                          if (_signUpState is SignUpStateSubmitted) {
+                            return Container();
+                          } // if
 
-                            return Listener(
-                              onPointerDown: (_) =>
-                                  FocusScope.of(context).unfocus(),
-                              behavior: HitTestBehavior.opaque,
-                              child: Container(
-                                height: height * .10,
-                                width: screenWidth * .75,
+                          return GestureDetector(
+                            onTap: () {
+                              FocusScope.of(context).unfocus();
+                              Navigator.pushReplacementNamed(context, '/login');
+                            },
+                            behavior: HitTestBehavior.opaque,
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 2.0, left: screenWidth * .03),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.chevron_left,
+                                    size: 28.0,
+                                    color: kHavenLightGray,
+                                  ),
+                                  Text(
+                                    'Back',
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(fontSize: 23.5, color: kHavenLightGray),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+
+                      /// Title
+                      Listener(
+                        onPointerDown: (_) => FocusScope.of(context).unfocus(),
+                        behavior: HitTestBehavior.opaque,
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          width: double.infinity,
+                          child: Padding(
+                            /// Padding should be the difference of font size between the Login Screen Title and Sign Up Screen Title
+                            padding: EdgeInsets.only(left: screenWidth * .1),
+                            child: Text(
+                              'Sign Up',
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                fontWeight: FontWeight.w400,
+                                fontSize: 44.0,
+                                color: kHavenLightGray,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      /// Subtitle
+                      Listener(
+                        onPointerDown: (_) => FocusScope.of(context).unfocus(),
+                        behavior: HitTestBehavior.opaque,
+                        child: Container(
+                          width: double.infinity,
+                          child: Padding(
+                            /// Padding should be the difference of font size between the Login Screen Subtitle and Sign Up Screen Subtitle
+                            padding: EdgeInsets.only(left: screenWidth * .1),
+                            child: Text(
+                              'See the latest events!',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16.0,
+                                color: kHavenLightGray,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      Listener(
+                        onPointerDown: (_) => FocusScope.of(context).unfocus(),
+                        behavior: HitTestBehavior.opaque,
+                        child: cVerticalMarginSmall(context),
+                      ),
+
+                      /// Show the sign up form, or loading widget
+                      /// Depending on the [SignUpBlocState]
+                      Builder(
+                        builder: (context) {
+                          final SignUpState _signUpState = context.watch<SignUpBloc>().state;
+
+                          /// If login was submitted, show a loading
+                          /// widget, while user waits for authentication.
+                          if (_signUpState is SignUpStateSubmitted) {
+                            return Column(
+                              children: [
+                                cVerticalMarginSmall(context),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: LoadingWidget(
+                                    size: 90.0,
+                                    color: kHavenLightGray,
+                                  ),
+                                ),
+                              ],
+                            );
+                          } // if
+
+                          /// Login form wasn't submitted, show the form itself.
+                          return Column(
+                            children: [
+                              SignUpForm(),
+                              Listener(
+                                onPointerDown: (_) => FocusScope.of(context).unfocus(),
+                                behavior: HitTestBehavior.opaque,
+                                child: SizedBox(
+                                  height: MediaQuery.of(context).size.height * .02,
+                                ),
+                              ),
+                              Listener(
+                                onPointerDown: (_) => FocusScope.of(context).unfocus(),
+                                behavior: HitTestBehavior.opaque,
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    IconButton(
-                                      icon: Icon(Icons.chevron_left),
-                                      iconSize: 35.0,
-                                      color: kHavenLightGray,
-                                      onPressed: () {
-                                        FocusScope.of(context).unfocus();
-                                        Navigator.pushReplacementNamed(context, '/login');
-                                      },
+                                    Text(
+                                      'Already have an account? ',
+                                      style: TextStyle(
+                                        fontSize: 15.0,
+                                        fontWeight: FontWeight.w400,
+                                        color: kHavenLightGray,
+                                      ),
                                     ),
-                                    Container(
-                                      child: InkWell(
-                                        onTap: () {
-                                          FocusScope.of(context).unfocus();
-                                          Navigator.pushReplacementNamed(context, '/login');
-                                        },
-                                        child: Text(
-                                          'Back',
-                                          style: TextStyle(
-                                              fontSize: 22.0,
-                                              color: kHavenLightGray),
+                                    TextButton(
+                                      child: Text(
+                                        'Sign In',
+                                        style: TextStyle(
+                                          color: Colors.blueAccent,
+                                          fontSize: 15.0,
                                         ),
                                       ),
+                                      onPressed: () {
+                                        FocusScope.of(context).unfocus();
+                                        Navigator.of(context).pushReplacementNamed('/login');
+                                      },
                                     ),
                                   ],
                                 ),
                               ),
-                            );
-                          },
-                        ),
-
-                        /// Title
-                        Listener(
-                          onPointerDown: (_) =>
-                              FocusScope.of(context).unfocus(),
-                          behavior: HitTestBehavior.opaque,
-                          child: Center(
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * .775,
-                              child: Text(
-                                'Sign Up',
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 44.0,
-                                  color: kHavenLightGray,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        /// Subtitle
-                        Listener(
-                          onPointerDown: (_) =>
-                              FocusScope.of(context).unfocus(),
-                          behavior: HitTestBehavior.opaque,
-                          child: Center(
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * .75,
-                              child: Text(
-                                'See the latest events!',
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16.0,
-                                  color: kHavenLightGray,
-                                  fontStyle: FontStyle.italic,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        Expanded(
-                          flex: 15,
-                          child: Builder(
-                            builder: (context) {
-                              final SignUpState _signUpState = context.watch<SignUpBloc>().state;
-
-                              // Loading Widget
-                              if (_signUpState is SignUpStateSubmitted) {
-                                return LoadingWidget(
-                                  size: 90.0,
-                                  color: kHavenLightGray,
-                                );
-                              } // if
-
-                              // Show Form
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Expanded(
-                                    flex: 20,
-                                    child: SignUpForm(),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: Listener(onPointerDown: (_) =>
-                                        FocusScope.of(context).unfocus(),
-                                        behavior: HitTestBehavior.opaque,child: SizedBox()),
-                                  ),
-                                  Listener(
-                                    onPointerDown: (_) =>
-                                        FocusScope.of(context).unfocus(),
-                                    behavior: HitTestBehavior.opaque,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Text(
-                                          'Already have an account? ',
-                                          style: TextStyle(
-                                            fontSize: 12.0,
-                                          ),
-                                        ),
-                                        InkWell(
-                                          child: Text(
-                                            'Sign In',
-                                            style: TextStyle(
-                                              fontSize: 14.0,
-                                              fontStyle: FontStyle.italic,
-                                              fontWeight: FontWeight.bold,
-                                              decoration:
-                                                  TextDecoration.underline,
-                                            ),
-                                          ),
-                                          onTap: () {
-                                            FocusScope.of(context).unfocus();
-                                            Navigator.pushReplacementNamed(context, '/login');
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                        ),
-                        Expanded(
-                          flex: 8,
-                          child: Listener(onPointerDown: (_) =>
-                              FocusScope.of(context).unfocus(),
-                              behavior: HitTestBehavior.opaque,child: SizedBox()),
-                        ),
-                        Listener(
-                          onPointerDown: (_) =>
-                              FocusScope.of(context).unfocus(),
-                          behavior: HitTestBehavior.opaque,
-                          child: SizedBox(
-                            height: screenInsetsBottom,
-                          ),
-                        ),
-                      ],
-                    ),
+                            ],
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
-  }// build
-}// _SignUpScreenState
+  } // build
+} // _SignUpScreenState

@@ -10,8 +10,7 @@ class SignUpForm extends StatefulWidget {
 
 class _SignUpFormState extends State<SignUpForm> {
   final GlobalKey<FormState> _signUpFormKeyEmail = new GlobalKey<FormState>();
-  final GlobalKey<FormState> _signUpFormKeyPassword =
-      new GlobalKey<FormState>();
+  final GlobalKey<FormState> _signUpFormKeyPassword = new GlobalKey<FormState>();
   FocusNode emailFocusNode;
   FocusNode passwordFocusNode;
   TextEditingController emailTextEditingController;
@@ -43,160 +42,98 @@ class _SignUpFormState extends State<SignUpForm> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Expanded(
-          flex: 2,
-          child: Listener(
-              onPointerDown: (_) => FocusScope.of(context).unfocus(),
-              behavior: HitTestBehavior.opaque,
-              child: SizedBox()),
-        ),
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            Form(
-              key: _signUpFormKeyEmail,
-              child: Container(
-                width: MediaQuery.of(context).size.width * .65,
-                child: TextFormField(
-                  focusNode: emailFocusNode,
-                  controller: emailTextEditingController,
-                  textInputAction: TextInputAction.done,
-                  decoration:
-                      customTextField.copyWith(labelText: 'Marist Email'),
-                  validator: (String email) {
-                    // Missing password
-                    if (email.isEmpty || email.contains(' ')) {
-                      return '\u26A0 Enter a MARIST email.';
-                    } // if
-
-                    return null;
-                  },
-                ),
+            IntrinsicHeight(
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Listener(
+                    onPointerDown: (_) => FocusScope.of(context).unfocus(),
+                    behavior: HitTestBehavior.opaque,
+                    child: Container(width: double.infinity),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * .65,
+                    child: EmailTextFormField(
+                      loginFormKeyEmail: this._signUpFormKeyEmail,
+                      emailFocusNode: this.emailFocusNode,
+                      emailTextEditingController: this.emailTextEditingController,
+                    ),
+                  ),
+                ],
               ),
             ),
-            Form(
-              key: _signUpFormKeyPassword,
-              child: BlocProvider<PasswordCubit>(
-                create: (context) => PasswordCubit(),
-                child: Builder(
-                  builder: (context) {
-                    context.watch<PasswordCubit>();
-                    return Container(
-                      width: MediaQuery.of(context).size.width * .65,
-                      child: TextFormField(
-                        focusNode: passwordFocusNode,
-                        controller: passwordTextEditingController,
-                        textInputAction: TextInputAction.done,
-                        obscureText: BlocProvider.of<PasswordCubit>(context)
-                            .obscurePassword,
-                        decoration: customTextField.copyWith(
-                          labelText: 'Password',
-                          suffixIcon: IconButton(
-                            icon: !BlocProvider.of<PasswordCubit>(context)
-                                    .obscurePassword
-                                ? Icon(Icons.visibility)
-                                : Icon(Icons.visibility_off),
-                            onPressed: () {
-                              BlocProvider.of<PasswordCubit>(context)
-                                      .obscurePassword
-                                  ? BlocProvider.of<PasswordCubit>(context)
-                                      .setPasswordVisible()
-                                  : BlocProvider.of<PasswordCubit>(context)
-                                      .setPasswordHidden();
-                            },
-                          ),
-                        ),
-                        validator: (String password) {
-                          // Missing password
-                          if (password.isEmpty) {
-                            return '\u26A0 Enter a password.';
-                          } // if
-                          // No Spaces
-                          if (password.contains(' ')) {
-                            return '\u26A0 Password cannot contain spaces.';
-                          } // if
-                          return null;
-                        },
-                      ),
-                    );
-                  },
-                ),
+            IntrinsicHeight(
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Listener(
+                    onPointerDown: (_) => FocusScope.of(context).unfocus(),
+                    behavior: HitTestBehavior.opaque,
+                    child: Container(width: double.infinity),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * .65,
+                    child: PasswordTextFormField(
+                      loginFormKeyPassword: this._signUpFormKeyPassword,
+                      passwordFocusNode: this.passwordFocusNode,
+                      passwordTextEditingController: this.passwordTextEditingController,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
         ),
-        Expanded(
-          flex: 3,
-          child: Listener(
-            onPointerDown: (_) =>
-                FocusScope.of(context).unfocus(),
-            behavior: HitTestBehavior.opaque,
-            child: Container(
-              child: Center(
-                child: Builder(
-                  builder: (context) {
-                    final _signUpState = context.watch<SignUpBloc>().state;
-
-                    // Sign up failed
-                    if (_signUpState is SignUpStateFailed) {
-                      return Text('${_signUpState.msg}');
-                    } // if
-
-                    // Normal logged out
-                    return Container();
-                  },
-                ),
-              ),
-            ),
-          ),
-        ),
         Listener(
-          onPointerDown: (_) =>
-              FocusScope.of(context).unfocus(),
+          onPointerDown: (_) => FocusScope.of(context).unfocus(),
           behavior: HitTestBehavior.opaque,
-          child: Container(
-            height: MediaQuery.of(context).size.height * .0475,
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: SizedBox(),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * .535,
-                  child: FlatButton(
-                    color: kHavenLightGray,
-                    child: Container(
-                      child: Text(
-                        'Sign Up',
-                        style: TextStyle(
-                          letterSpacing: 1.0,
-                          color: Colors.white,
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w400,
-                        ),
+          child: SignUpMessage(),
+        ),
+        IntrinsicHeight(
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width * .535,
+                child: TextButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(kHavenLightGray),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(10.0),
+                        side: BorderSide(color: kHavenLightGray),
                       ),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(10.0),
-                      side: BorderSide(color: kHavenLightGray),
-                    ),
-                    onPressed: () async {
-                      if (_signUpFormKeyEmail.currentState.validate() &&
-                          _signUpFormKeyPassword.currentState.validate()) {
-                        BlocProvider.of<SignUpBloc>(context).add(
-                          SignUpEventSignUp(
-                            signUpType: SignUpType.emailAndPassword,
-                            hashedEmail: emailTextEditingController.text,
-                            hashedPassword: passwordTextEditingController.text,
-                          ),
-                        );
-                      } // if
-                    },
                   ),
+                  child: Container(
+                    child: Text(
+                      'Sign Up',
+                      style: TextStyle(
+                        letterSpacing: 1.0,
+                        color: Colors.white,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                  onPressed: () async {
+                    if (_signUpFormKeyEmail.currentState.validate() && _signUpFormKeyPassword.currentState.validate()) {
+                      BlocProvider.of<SignUpBloc>(context).add(
+                        SignUpEventSignUp(
+                          signUpType: SignUpType.emailAndPassword,
+                          hashedEmail: emailTextEditingController.text,
+                          hashedPassword: passwordTextEditingController.text,
+                        ),
+                      );
+                    } // if
+                  },
+                  onLongPress: () {}, // Do nothing, to let user cancel selection
                 ),
-                Expanded(child: SizedBox())
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],
@@ -211,5 +148,29 @@ class _SignUpFormState extends State<SignUpForm> {
     passwordTextEditingController.dispose();
     super.dispose();
   } // dispose
+} // _SignUpFormState
 
-} // _LoginFormState
+class SignUpMessage extends StatelessWidget {
+  const SignUpMessage({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final _signUpState = context.watch<SignUpBloc>().state;
+
+    if (_signUpState is SignUpStateFailed) {
+      return Container(
+        width: double.infinity,
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
+            child: Text('${_signUpState.msg}'),
+          ),
+        ),
+      );
+    } // if
+
+    return cVerticalMarginSmall(context);
+  } // build
+} // SignUpMessage

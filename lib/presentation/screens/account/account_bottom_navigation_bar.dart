@@ -27,7 +27,7 @@ class AccountBottomNavigationBar extends StatelessWidget {
             children: <Widget>[
               /// This button navigates to the Home Screen
               IconButton(
-                  icon: Icon(Icons.home),
+                  icon: Icon(Icons.home_outlined),
                   color: kHavenLightGray,
                   splashColor: kActiveHavenLightGray,
                   onPressed: () {
@@ -36,12 +36,62 @@ class AccountBottomNavigationBar extends StatelessWidget {
 
               /// This button opens the sliding up panel
               IconButton(
-                  icon: Icon(Icons.add),
-                  color: kHavenLightGray,
-                  splashColor: kActiveHavenLightGray,
-                  onPressed: () {
+                icon: Icon(Icons.add_circle_outline_rounded),
+                color: kHavenLightGray,
+                splashColor: kActiveHavenLightGray,
+                onPressed: () {
+                  final state = BlocProvider.of<UploadEventBloc>(context).state;
+                  if (state is UploadEventStateUploading) {
+                    if (!state.complete) {
+                      showModalBottomSheet<void>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return ModalConfirmation(
+                              prompt:
+                                  'An event is already currently being upload. Please wait for, or cancel, that event!',
+                              cancelText: 'CANCEL CURRENT UPLOAD',
+                              cancelColor: Colors.redAccent,
+                              onCancel: () {
+                                showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) {
+                                      return ModalConfirmation(
+                                        cancelText: 'CANCEL CURRENT UPLOAD',
+                                        cancelColor: Colors.redAccent,
+                                        onCancel: () {
+                                          BlocProvider.of<UploadEventBloc>(
+                                                  context)
+                                              .add(UploadEventCancel());
+
+                                          Navigator.popUntil(context,
+                                              (route) => route.isFirst);
+                                        },
+                                        confirmText: "NEVERMIND",
+                                        confirmColor: Colors.blueAccent,
+                                        onConfirm: () => Navigator.popUntil(
+                                            context, (route) => route.isFirst),
+                                      );
+                                    });
+                              },
+                              confirmText: 'I CAN WAIT',
+                              confirmColor: Colors.blueAccent,
+                              onConfirm: () => Navigator.pop(context),
+                            );
+                          });
+                    } // if
+                    else {
+                      // Reset the upload event bloc
+                      BlocProvider.of<UploadEventBloc>(context)
+                          .add(UploadEventReset());
+
+                      // Open panel and reset the upload progress bloc
+                      BlocProvider.of<SlidingUpPanelCubit>(context).openPanel();
+                    } // else
+                  } // if
+                  else {
                     BlocProvider.of<SlidingUpPanelCubit>(context).openPanel();
-                  },
+                  } // else
+                },
               ),
 
               /// This does nothing, this is the Account Screen
@@ -60,10 +110,10 @@ class AccountBottomNavigationBar extends StatelessWidget {
     /// Sliding Up Panel Cubit did not return a state that is either open or closed
     else {
       return Container(
-          child: Center(
-              child: Text(
-                  'Sliding Up Panel Cubit did not return a state that is either open or closed!'),
-          ),
+        child: Center(
+          child: Text(
+              'Sliding Up Panel Cubit did not return a state that is either open or closed!'),
+        ),
       );
     } // else
   }

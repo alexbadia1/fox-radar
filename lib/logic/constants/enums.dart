@@ -7,3 +7,8 @@ enum LoginType {
 enum SignUpType {
   emailAndPassword
 }// signUpType
+
+enum CreateEventFormAction {
+  create,
+  update
+}// CreateEventFormAction

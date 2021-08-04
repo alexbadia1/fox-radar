@@ -8,11 +8,21 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class DatabaseRepository {
+  // Singleton
+  static final DatabaseRepository _db = DatabaseRepository._internal();
+
   // Collection References
   final CollectionReference _eventsCollection =
       FirebaseFirestore.instance.collection(COLLECTION_EVENTS);
   final CollectionReference _searchEventsCollection =
       FirebaseFirestore.instance.collection(COLLECTION_SEARCH_EVENTS);
+
+
+  factory DatabaseRepository() {
+    return _db;
+  }// DatabaseRepository
+
+  DatabaseRepository._internal();
 
   /// Retrieves events from the "Search Events Collection" based on
   /// [category] and returns a [QueryDocumentSnapshot] with the events.
@@ -109,9 +119,12 @@ class DatabaseRepository {
     return await _eventsCollection.doc(documentId).get();
   } // getEventsFromEventsCollection
 
-  Future<Uint8List> getImageFromStorage({@required String path}) async {
+  Future<Uint8List> getImageFromStorage({@required String eventID}) async {
     try {
-      return await FirebaseStorage.instance.ref().child(path).getData(4194304);
+      return await FirebaseStorage.instance
+          .ref()
+          .child(this.imagePath(eventID: eventID))
+          .getData(4194304);
     } // try
     catch (e) {
       return null;
@@ -167,7 +180,7 @@ class DatabaseRepository {
     try {
       // Calling ".doc" on a collection without a provided path
       // will auto-generate a new document with a new "primary" key.
-      final DocumentReference _document = _eventsCollection.doc();
+      final DocumentReference _document = _searchEventsCollection.doc();
 
       // Get the document id
       final String _documentReferenceId = _document.id;
@@ -193,14 +206,113 @@ class DatabaseRepository {
   /// Attempts to upload an image to firebase storage
   /// using the document id of the event as the image name.
   ///
+  /// Overwrites existing files (useful for updating an image).
+  ///
   /// Returns a listenable upload task, to show upload progress.
   UploadTask uploadImageToStorage(
-      {@required String path, @required Uint8List imageBytes}) {
+      {@required String eventID, @required Uint8List imageBytes}) {
     try {
-      return FirebaseStorage.instance.ref().child(path).putData(imageBytes);
+      return FirebaseStorage.instance
+          .ref()
+          .child(this.imagePath(eventID: eventID))
+          .putData(imageBytes);
     } // try
     catch (e) {
       return null;
     } // catch
   } // uploadImageToStorage
+
+  /// Updates an existing document in the "Search Events"
+  /// Collection, Fails if the document does not exist.
+  Future<void> updateEventInSearchEventsCollection(
+      {@required EventModel newEvent}) async {
+    try {
+      return await _searchEventsCollection.doc(newEvent.searchID).update({
+        ATTRIBUTE_TITLE: newEvent.title.toLowerCase() ?? '',
+        ATTRIBUTE_HOST: newEvent.host.toLowerCase() ?? '',
+        ATTRIBUTE_LOCATION: newEvent.location.toLowerCase() ?? '',
+        ATTRIBUTE_RAW_START_DATE_TIME: newEvent.rawStartDateAndTime ?? null,
+        ATTRIBUTE_CATEGORY: newEvent.category ?? '',
+        ATTRIBUTE_EVENT_ID: newEvent.eventID ?? '',
+        ATTRIBUTE_ACCOUNT_ID: newEvent.accountID ?? '',
+      });
+    } // try
+    catch (e) {
+      // print(e);
+      return null;
+    } // catch
+  } // updateEventInSearchEventsCollection
+
+  /// Updates an existing document in the "Events"
+  /// Collection, Fails if the document does not exist.
+  Future<void> updateEventInEventsCollection(
+      {@required EventModel newEvent}) async {
+    try {
+      return await _eventsCollection.doc(newEvent.eventID).update({
+        ATTRIBUTE_TITLE: newEvent.title,
+        ATTRIBUTE_HOST: newEvent.host,
+        ATTRIBUTE_LOCATION: newEvent.location,
+        ATTRIBUTE_ROOM: newEvent.room,
+        ATTRIBUTE_RAW_START_DATE_TIME: newEvent.rawStartDateAndTime,
+        ATTRIBUTE_RAW_END_DATE_TIME: newEvent.rawEndDateAndTime,
+        ATTRIBUTE_CATEGORY: newEvent.category,
+        ATTRIBUTE_HIGHLIGHTS: newEvent.highlights,
+        ATTRIBUTE_DESCRIPTION: newEvent.description,
+        ATTRIBUTE_IMAGE_FIT_COVER: newEvent.imageFitCover,
+        ATTRIBUTE_EVENT_ID: newEvent.eventID,
+        ATTRIBUTE_ACCOUNT_ID: newEvent.accountID ,
+      });
+    } // try
+    catch (e) {
+      // print(e);
+      return null;
+    } // catch
+  } // updateEventInEventsCollection
+
+
+  /// Deletes an document in Events Collection
+  Future<void> deleteNewEventFromEventsCollection(
+      {@required String documentReferenceID}) async {
+    try {
+      // Update the empty document with the new data
+      return await _eventsCollection.doc(documentReferenceID).delete();
+    } // try
+    catch (e) {
+      print(e);
+      return null;
+    } // catch
+  } // deleteNewEventFromEventsCollection
+
+  /// Deletes an document in Search Events Collection
+  Future<void> deleteNewEventFromSearchableCollection(
+      {@required String documentReferenceID}) async {
+    try {
+      // Update the empty document with the new data
+      return await _searchEventsCollection.doc(documentReferenceID).delete();
+    } // try
+    catch (e) {
+      print(e);
+      return null;
+    } // catch
+  } // deleteNewEventFromSearchableCollection
+
+  /// Attempts to delete an image uploaded to firebase
+  /// using the document id of the event as the image name.
+  ///
+  /// Returns a listenable upload task, to show upload progress.
+  Future<void> deleteImageFromStorage({@required String eventID}) {
+    try {
+      return FirebaseStorage.instance
+          .ref()
+          .child(this.imagePath(eventID: eventID))
+          .delete();
+    } // try
+    catch (e) {
+      return null;
+    } // catch
+  } // uploadImageToStorage
+
+  String imagePath({@required String eventID}) {
+    return 'events/$eventID.jpg';
+  } // _getGenerateImagePath
 } //class

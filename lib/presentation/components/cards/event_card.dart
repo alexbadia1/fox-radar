@@ -5,39 +5,44 @@ import 'package:communitytabs/logic/logic.dart';
 import 'package:database_repository/database_repository.dart';
 import 'package:communitytabs/presentation/presentation.dart';
 
+typedef OnEventCardVertMoreCallback = Function(Uint8List);
+
 class EventCard extends StatefulWidget {
+  /// The search result, from firebase
   final SearchResultModel newSearchResult;
-  EventCard({@required this.newSearchResult}) : assert(newSearchResult != null);
+
+  /// The vert more bar, when pressed gives the user,
+  /// more options to handle the search result.
+  ///
+  /// The options will should be displayed using a modal bottom sheet
+  final OnEventCardVertMoreCallback onEventCardVertMoreCallback;
+
+  EventCard({Key key, @required this.newSearchResult, this.onEventCardVertMoreCallback})
+      : assert(newSearchResult != null),
+        super(key: key);
 
   @override
   _EventCardState createState() => _EventCardState();
-} // ClubBigCard
+} // EventCard
 
-class _EventCardState extends State<EventCard>
-    with AutomaticKeepAliveClientMixin {
+class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixin {
   Uint8List _imageBytes;
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    String filePath = 'events/${this.widget.newSearchResult.eventId}.jpg';
-
-    /// TODO: REMOVE THIS LINE
-    //filePath = 'events/Meet The CommutersColin McCannCommuter Lounge.jpg';
-
     return BlocProvider(
       create: (context) => FetchImageCubit(
-          db: RepositoryProvider.of<DatabaseRepository>(context))
-        ..fetchImage(path: filePath),
+        db: RepositoryProvider.of<DatabaseRepository>(context),
+      )..fetchImage(eventID: this.widget.newSearchResult.eventId),
       child: GestureDetector(
-        onTap: () {
-          Navigator.of(context).pushNamed(
-            '/event',
-            arguments: EventScreenArguments(
-                documentId: this.widget.newSearchResult.eventId,
-                imageBytes: _imageBytes),
-          );
-        },
+        onTap: () => Navigator.of(context).pushNamed(
+          '/event',
+          arguments: EventScreenArguments(
+              documentId: this.widget.newSearchResult.eventId,
+              imageBytes: _imageBytes,
+          ),
+        ),
         child: Container(
           decoration: BoxDecoration(
             color: Color.fromRGBO(33, 33, 33, 1.0),
@@ -55,77 +60,71 @@ class _EventCardState extends State<EventCard>
                   color: Colors.black,
                   child: Builder(
                     builder: (context) {
-                      final FetchImageState _fetchImageState =
-                          context.watch<FetchImageCubit>().state;
+                      final FetchImageState _fetchImageState = context.watch<FetchImageCubit>().state;
                       if (_fetchImageState is FetchImageSuccess) {
                         _imageBytes = _fetchImageState.imageBytes;
                         return Image.memory(
                           _fetchImageState.imageBytes,
-                          fit: this.widget.newSearchResult.getImageFitCover
-                              ? BoxFit.cover
-                              : BoxFit.contain,
+                          fit: this.widget.newSearchResult.imageFitCover ? BoxFit.cover : BoxFit.contain,
                         );
                       } // if
 
                       else if (_fetchImageState is FetchImageFailure) {
-                        print('Looking for: $filePath');
                         return Container(
                           color: Colors.black,
                         );
                       } // else if
 
+                      // Image is still being fetch, show a cool loading animation
                       else {
                         return Container(
                           color: Colors.black,
                         );
-                        // return LoadingWidget(
-                        //   size: 75.0,
-                        // );
                       } // else
                     },
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                child: ListTile(
-                  leading: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      CircleAvatar(
-                        backgroundColor: Colors.redAccent,
-                      ),
-                    ],
+              EventCardDescription(
+                profilePicture: Icon(Icons.person),
+                title: this.widget.newSearchResult.title,
+                location: this.widget.newSearchResult.location,
+                startDate: this.widget.newSearchResult.startDate,
+                startTime: this.widget.newSearchResult.startTime,
+                trailingActions: [
+                  Builder(
+                    builder: (iconButtonContext) {
+                      final imageState = iconButtonContext.watch<FetchImageCubit>().state;
+
+                      if (imageState is FetchImageSuccess) {
+                        return IconButton(
+                          icon: Icon(Icons.more_vert),
+                          color: cWhite70,
+                          onPressed: () => this.widget.onEventCardVertMoreCallback(imageState.imageBytes),
+                        );
+                      } // if
+
+                      /// If the image is still being fetch
+                      /// don't let the "more vert button" work.
+                      ///
+                      /// Don't want a user to try and update an
+                      /// event that hasn't fully been fetched yet.
+                      return IconButton(
+                        icon: Icon(Icons.more_vert),
+                        color: cWhite70,
+                        onPressed: () {},
+                      );
+                    },
                   ),
-                  title: Text(
-                    this.widget.newSearchResult.getTitle,
-                    textAlign: TextAlign.start,
-                    style: TextStyle(color: cWhite100),
-                  ),
-                  subtitle: RichText(
-                    text: TextSpan(children: [
-                      TextSpan(
-                          text: this.widget.newSearchResult.getLocation + '\n',
-                          style: TextStyle(color: cWhite70, fontSize: 10.0)),
-                      TextSpan(
-                          text: this.widget.newSearchResult.myStartDate,
-                          style: TextStyle(color: cWhite70, fontSize: 10.0)),
-                      TextSpan(text: ' '),
-                      TextSpan(
-                          text: this.widget.newSearchResult.myStartTime,
-                          style: TextStyle(color: cWhite70, fontSize: 10.0))
-                    ]),
-                  ),
-                  trailing: Icon(Icons.more_vert, color: cWhite70),
-                ),
+                ],
               ),
             ],
           ),
         ),
       ),
     );
-  } // build
+  }
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => true; // build
 } // _EventCardState

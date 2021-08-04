@@ -1,10 +1,19 @@
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
+import 'package:database_repository/database_repository.dart';
 
 @immutable
 abstract class CreateEventEvent extends Equatable{}// CreateEventEvent
+
+class CreateEventSetEvent extends CreateEventEvent {
+  final EventModel eventModel;
+
+  CreateEventSetEvent({@required this.eventModel});
+
+  @override
+  List<Object> get props => [eventModel];
+}// CreateEventSetEvent
 
 class CreateEventSetTitle extends CreateEventEvent {
   final String newTitle;

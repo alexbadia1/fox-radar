@@ -23,10 +23,18 @@ class UploadEventStateUploading extends UploadEventState {
   // Data type: Firebase storage upload task
   final UploadTask uploadTask;
   final EventModel eventModel;
+  bool _complete = false;
 
   UploadEventStateUploading(
       {@required this.uploadTask, @required this.eventModel})
-      : assert(uploadTask != null), assert(eventModel != null);
+      : assert(uploadTask != null),
+        assert(eventModel != null);
   @override
   List<Object> get props => [];
+
+  void uploadComplete() {
+    this._complete = true;
+  } // uploadComplete
+
+  get complete => this._complete;
 } // UploadEventStateUploading

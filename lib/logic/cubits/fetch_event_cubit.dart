@@ -16,7 +16,7 @@ class FetchFullEventCubit extends Cubit<FetchFullEventState> {
           await db.getEventFromEventsCollection(documentId: documentId);
 
       final EventModel _eventModel = _mapQueryDocumentSnapshotToEventModel(
-          documentSnapshot: _documentSnapshot);
+          doc: _documentSnapshot);
 
       emit(FetchFullEventSuccess(eventModel: _eventModel));
 
@@ -34,11 +34,12 @@ class FetchFullEventCubit extends Cubit<FetchFullEventState> {
   } // fetchEvent
 
   EventModel _mapQueryDocumentSnapshotToEventModel(
-      {@required DocumentSnapshot documentSnapshot}) {
+      {@required DocumentSnapshot doc}) {
+    Map<String, dynamic> documentSnapshot = doc.data();
     Timestamp _startTimestamp =
-        documentSnapshot.data()[ATTRIBUTE_RAW_START_DATE_TIME];
+        documentSnapshot[ATTRIBUTE_RAW_START_DATE_TIME];
     Timestamp _endTimestamp =
-        documentSnapshot.data()[ATTRIBUTE_RAW_END_DATE_TIME];
+        documentSnapshot[ATTRIBUTE_RAW_END_DATE_TIME];
 
     DateTime tempRawStartDateAndTimeToDateTime;
     DateTime tempRawEndDateAndTimeToDateTime;
@@ -67,16 +68,16 @@ class FetchFullEventCubit extends Cubit<FetchFullEventState> {
 
     return EventModel(
       // Title converted to [STRING] from [STRING] in Firebase.
-      newTitle: documentSnapshot.data()[ATTRIBUTE_TITLE] ?? '',
+      newTitle: documentSnapshot[ATTRIBUTE_TITLE] ?? '',
 
       // Host converted to [STRING] from [STRING] in Firebase.
-      newHost: documentSnapshot.data()[ATTRIBUTE_HOST] ?? '',
+      newHost: documentSnapshot[ATTRIBUTE_HOST] ?? '',
 
       // Location Converted to [] from [] in Firebase.
-      newLocation: documentSnapshot.data()[ATTRIBUTE_LOCATION] ?? '',
+      newLocation: documentSnapshot[ATTRIBUTE_LOCATION] ?? '',
 
       // Room converted to [STRING] from [String] in Firebase.
-      newRoom: documentSnapshot.data()[ATTRIBUTE_ROOM] ?? '',
+      newRoom: documentSnapshot[ATTRIBUTE_ROOM] ?? '',
 
       // RawStartDate converted to [DATETIME] from [TIMESTAMP] in Firebase.
       newRawStartDateAndTime: tempRawStartDateAndTimeToDateTime ?? null,
@@ -85,23 +86,23 @@ class FetchFullEventCubit extends Cubit<FetchFullEventState> {
       newRawEndDateAndTime: tempRawEndDateAndTimeToDateTime ?? null,
 
       // Category converted to [STRING] from [STRING] in Firebase.
-      newCategory: documentSnapshot.data()[ATTRIBUTE_CATEGORY] ?? '',
+      newCategory: documentSnapshot[ATTRIBUTE_CATEGORY] ?? '',
 
       // Highlights converted to [List<String>] from [List<dynamic>] in Firebase.
       newHighlights: List.from(
-          documentSnapshot.data()[ATTRIBUTE_HIGHLIGHTS] ?? ['', '', '', '', ''],
+          documentSnapshot[ATTRIBUTE_HIGHLIGHTS] ?? ['', '', '', '', ''],
       ),
 
       // Description converted to [STRING] from [STRING] in Firebase.
-      newDescription: documentSnapshot.data()[ATTRIBUTE_DESCRIPTION] ?? '',
+      newDescription: documentSnapshot[ATTRIBUTE_DESCRIPTION] ?? '',
 
       // Implement Firebase Images.
-      newImageFitCover: documentSnapshot.data()[ATTRIBUTE_IMAGE_FIT_COVER] ?? false,
+      newImageFitCover: documentSnapshot[ATTRIBUTE_IMAGE_FIT_COVER] ?? false,
 
       // DocumentId converted to [STRING] from [STRING] in firebase.
-      newEventID: documentSnapshot.id ?? '',
+      newEventID: doc.id ?? '',
 
-      newAccountID: documentSnapshot.data()[ATTRIBUTE_ACCOUNT_ID] ?? '',
+      newAccountID: documentSnapshot[ATTRIBUTE_ACCOUNT_ID] ?? '',
     );
   } // _mapQueryDocumentSnapshotToEventModel
 

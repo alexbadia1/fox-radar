@@ -1,8 +1,5 @@
 import 'dart:async';
-import 'package:bloc/bloc.dart';
 import 'package:rxdart/rxdart.dart';
-import 'suggested_events_event.dart';
-import 'suggested_events_state.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/logic/logic.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -61,6 +58,15 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
     } // if
 
     try {
+      // User is fetching events from a failed state
+      if (!(_currentState is SuggestedEventsStateFetching) && !(_currentState is SuggestedEventsStateSuccess)) {
+        yield SuggestedEventsStateFetching();
+        // Retry will fail to quickly,
+        //
+        // Give the user a good feeling that events are actually being searched for.
+        await Future.delayed(Duration(milliseconds: 350));
+      }// if
+
       // No posts were fetched yet
       final List<QueryDocumentSnapshot> _docs =
           await _fetchEventsWithPagination(
@@ -151,6 +157,7 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
         } // else
       } // if
     } catch (e) {
+      print(e);
       yield SuggestedEventsStateFailed();
     } // catch
   } // _mapSuggestedEventsEventFetchToState
@@ -164,9 +171,11 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
   List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels(
       {@required List<QueryDocumentSnapshot> docs}) {
     return docs.map((doc) {
+      Map<String, dynamic> docAsMap = doc.data();
+
       // Convert the firebase timestamp to a DateTime
       DateTime tempRawStartDateAndTimeToDateTime;
-      Timestamp _startTimestamp = doc.data()[ATTRIBUTE_RAW_START_DATE_TIME];
+      Timestamp _startTimestamp = docAsMap[ATTRIBUTE_RAW_START_DATE_TIME];
       if (_startTimestamp != null) {
         tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(
                 _startTimestamp.millisecondsSinceEpoch)
@@ -179,28 +188,28 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
 
       return SearchResultModel(
         // Title converted to [STRING] from [STRING] in Firebase.
-        newTitle: doc.data()[ATTRIBUTE_TITLE] ?? '',
+        newTitle: docAsMap[ATTRIBUTE_TITLE] ?? '',
 
         // Host converted to [STRING] from [STRING] in Firebase.
-        newHost: doc.data()[ATTRIBUTE_HOST] ?? '',
+        newHost: docAsMap[ATTRIBUTE_HOST] ?? '',
 
         // Location Converted to [] from [] in Firebase.
-        newLocation: doc.data()[ATTRIBUTE_LOCATION] ?? '',
+        newLocation: docAsMap[ATTRIBUTE_LOCATION] ?? '',
 
         // RawStartDate converted to [DATETIME] from [TIMESTAMP] in Firebase.
         newRawStartDateAndTime: tempRawStartDateAndTimeToDateTime ?? null,
 
         // Category converted to [STRING] from [STRING] in Firebase.
-        newCategory: doc.data()[ATTRIBUTE_CATEGORY] ?? '',
+        newCategory: docAsMap[ATTRIBUTE_CATEGORY] ?? '',
 
         // Implement Firebase Images.
-        newImageFitCover: doc.data()[ATTRIBUTE_IMAGE_FIT_COVER] ?? true,
+        newImageFitCover: docAsMap[ATTRIBUTE_IMAGE_FIT_COVER] ?? true,
 
         // DocumentId converted to [STRING] from [STRING] in firebase.
-        newEventId: doc.data()[ATTRIBUTE_EVENT_ID] ?? '',
+        newEventId: docAsMap[ATTRIBUTE_EVENT_ID] ?? '',
 
         // AccountID converted to [STRING] from [STRING] in firebase.
-        newAccountID: doc.data()[ATTRIBUTE_ACCOUNT_ID] ?? '',
+        newAccountID: docAsMap[ATTRIBUTE_ACCOUNT_ID] ?? '',
       );
     }).toList();
   } // _mapDocumentSnapshotsToSearchEventModels

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:communitytabs/logic/logic.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/presentation/presentation.dart';
+import 'package:database_repository/database_repository.dart';
 
 class AccountScreenBody extends StatefulWidget {
   @override
@@ -26,20 +27,16 @@ class _AccountScreenBodyState extends State<AccountScreenBody> with AutomaticKee
 
     // When nearing the bottom of the page, fetch more events
     this._scrollController.addListener(() {
-      AccountEventsState _currentState =
-          BlocProvider.of<AccountEventsBloc>(context).state;
+      AccountEventsState _currentState = BlocProvider.of<AccountEventsBloc>(context).state;
 
       // User is about 2/3 to the bottom of the list, fetch more
       // events, in an effort to load events before they get to the bottom.
-      if (this._scrollController.position.pixels >=
-          this._scrollController.position.maxScrollExtent / 3) {
-
+      if (this._scrollController.position.pixels >= this._scrollController.position.maxScrollExtent / 3) {
         // Check the current state to prevent spamming bloc with fetch events
         if (_currentState is AccountEventsStateSuccess) {
           if (!_currentState.maxEvents) {
             // Add a fetch event to the AccountsEventsBloc
-            BlocProvider.of<AccountEventsBloc>(context)
-                .add(AccountEventsEventFetch());
+            BlocProvider.of<AccountEventsBloc>(context).add(AccountEventsEventFetch());
           } // if
         } // if
       } // else-if
@@ -55,10 +52,7 @@ class _AccountScreenBodyState extends State<AccountScreenBody> with AutomaticKee
     final screenInsetsBottom = MediaQuery.of(accountScreenBodyContext).viewInsets.bottom;
     final screenPaddingTop = MediaQuery.of(accountScreenBodyContext).padding.top;
 
-    final _realHeight = screenHeight -
-        screenPaddingTop -
-        screenPaddingBottom +
-        screenInsetsBottom;
+    final _realHeight = screenHeight - screenPaddingTop - screenPaddingBottom + screenInsetsBottom;
 
     return Scaffold(
       key: this._scaffoldKey,
@@ -82,181 +76,215 @@ class _AccountScreenBodyState extends State<AccountScreenBody> with AutomaticKee
           ///               action button to the sliver app bar's properties.
           MaristSliverAppBar(
             title: "Hello, Alex",
+
+            /// Name: Builder
+            ///
+            /// Description: Scaffold was declared in AccountScreenBody's
+            ///              context, using [Builder] to access the
+            ///              AccountDrawerButtons context in order to
+            ///              access the Scaffold.of() functions.
             action: Builder(
-              builder: (context) {
+              builder: (accountDrawerButtonContext) {
                 return AccountDrawerButton(
                   openDrawerCallback: () {
                     // End Drawer is inherited from scaffold
-                    Scaffold.of(accountScreenBodyContext).openEndDrawer();
+                    Scaffold.of(accountDrawerButtonContext).openEndDrawer();
                   },
                 );
               },
             ),
           ),
 
-          /// Name: SliverFillRemaining
+          /// Name: CircularProgressIndicator
           ///
-          /// Description: Effectively behaves as the "body" of the "Sliver Scaffold"
-          SliverFillRemaining(
+          /// Description: Show a loading widget while retrieving users' events.
+          Builder(
+            builder: (loadingWidgetContext) {
+              final _accountEventsBlocState = loadingWidgetContext.watch<AccountEventsBloc>().state;
 
-            /// Name: Refresh indicator
-            ///
-            /// Description: Adds a fetch event to the AccountEventsBloc
-            ///              then waits for a "Completer" to complete.
-            ///
-            ///              When the "Completer" is complete, the
-            ///              RefreshIndicator's loading widget stops.
-            child: Builder(
-              builder: (BuildContext refreshIndicatorContext) {
-                final _accountEventsBlocState =
-                    refreshIndicatorContext.watch<AccountEventsBloc>().state;
+              if (_accountEventsBlocState is AccountEventsStateFetching) {
+                return SliverFillRemaining(
+                  child: Container(
+                    width: double.infinity,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(height: _realHeight * .35),
+                        CustomCircularProgressIndicator(),
+                      ],
+                    ),
+                  ),
+                );
+              } // if
 
-                // AccountEventsBloc must either be [AccountEventsStateSuccess]
-                // or [AccountEventsStateFailed] (Not [AccountEventsStateFetching])
-                if (!(_accountEventsBlocState is AccountEventsStateFetching)) {
-                  // To stop the Refresh Indicator's loading widget,
-                  // complete [complete()] the completer [_refreshCompleter].
-                  this._refreshCompleter.complete();
+              /// Name: SliverFillRemaining
+              ///
+              /// Description: Effectively behaves as the "body" of the "Sliver Scaffold"
+              return SliverFillRemaining(
+                /// Name: Refresh indicator
+                ///
+                /// Description: Adds a fetch event to the AccountEventsBloc
+                ///              then waits for a "Completer" to complete.
+                ///
+                ///              When the "Completer" is complete, the
+                ///              RefreshIndicator's loading widget stops.
+                child: Builder(builder: (BuildContext refreshIndicatorContext) {
+                  final _accountEventsBlocState = refreshIndicatorContext.watch<AccountEventsBloc>().state;
 
-                  // Instantiate a new Completer to allow for a new reload event.
-                  this._refreshCompleter = Completer();
-                } // if
+                  // AccountEventsBloc must either be [AccountEventsStateSuccess]
+                  // or [AccountEventsStateFailed] (Not [AccountEventsStateFetching])
+                  if (!(_accountEventsBlocState is AccountEventsStateFetching)) {
+                    // To stop the Refresh Indicator's loading widget,
+                    // complete [complete()] the completer [_refreshCompleter].
+                    this._refreshCompleter.complete();
 
-                return RefreshIndicator(
-                  color: cWhite70,
-                  displacement: 15,
-                  backgroundColor: Colors.transparent,
-                  onRefresh: () async {
-                    BlocProvider.of<AccountEventsBloc>(refreshIndicatorContext)
-                        .add(AccountEventsEventReload());
-                    final _future = await this._refreshCompleter.future;
-                    return _future;
-                  },
-                  child: Scrollbar(
-                    radius: Radius.circular(50.0),
+                    // Instantiate a new Completer to allow for a new reload event.
+                    this._refreshCompleter = Completer();
+                  } // if
 
-                    /// Name: CustomScrollView
-                    ///
-                    /// Description: Nests a scroll view inside the "SLiver Scaffold"
-                    ///              allowing for a list of Events created by the user.
-                    child: CustomScrollView(
-                      controller: this._scrollController,
-                      slivers: [
-                        /// Name: Builder
-                        ///
-                        /// Description: When a new event is created by the
-                        ///              user, show the upload progress at the top.
-                        Builder(
-                          builder: (imageUploadProgressContext) {
-                            UploadEventState uploadState =
-                                accountScreenBodyContext.watch<UploadEventBloc>().state;
+                  return RefreshIndicator(
+                    color: cWhite70,
+                    displacement: 15,
+                    backgroundColor: Colors.transparent,
+                    onRefresh: () async {
+                      BlocProvider.of<AccountEventsBloc>(refreshIndicatorContext).add(AccountEventsEventReload());
+                      BlocProvider.of<UploadEventBloc>(refreshIndicatorContext).add(UploadEventReset());
+                      final _future = await this._refreshCompleter.future;
+                      return _future;
+                    },
+                    child: Scrollbar(
+                      radius: Radius.circular(50.0),
 
-                            // Show upload progress at top
-                            if (uploadState is UploadEventStateUploading) {
-                              return SliverToBoxAdapter(
-                                child: ImageUploadProgress(),
-                              );
-                            } // if
+                      /// Name: CustomScrollView
+                      ///
+                      /// Description: Nests a scroll view inside the "SLiver Scaffold"
+                      ///              allowing for a list of Events created by the user.
+                      child: CustomScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        controller: this._scrollController,
+                        slivers: [
+                          /// Name: Builder
+                          ///
+                          /// Description: When a new event is created by the
+                          ///              user, show the upload progress at the top.
+                          Builder(
+                            builder: (imageUploadProgressContext) {
+                              UploadEventState uploadState = accountScreenBodyContext.watch<UploadEventBloc>().state;
 
-                            // Don't show image upload progress
-                            return SliverToBoxAdapter(child: SizedBox());
-                          },
-                        ),
+                              // Show upload progress at top
+                              if (uploadState is UploadEventStateUploading) {
+                                return SliverToBoxAdapter(
+                                  child: ImageUploadProgress(
+                                    eventModel: uploadState.eventModel,
+                                  ),
+                                );
+                              } // if
 
-                        /// Name: SliverListHeader
-                        ///
-                        /// Description: Only show header, if the
-                        ///              user events were retrieved.
-                        Builder(builder: (headerContext) {
-                          final AccountEventsState _accountEventsState =
-                              headerContext.watch<AccountEventsBloc>().state;
+                              // Don't show image upload progress
+                              return SliverToBoxAdapter(child: SizedBox());
+                            },
+                          ),
 
-                          if (_accountEventsState is AccountEventsStateFetching) {
-                            return SliverToBoxAdapter(child: Container());
-                          } // if
+                          /// Name: SliverListHeader
+                          ///
+                          /// Description: Only show header, if the
+                          ///              user events were retrieved.
+                          Builder(builder: (headerContext) {
+                            final AccountEventsState _accountEventsState = headerContext.watch<AccountEventsBloc>().state;
 
-                          return SliverListHeader(text: 'My Events');
-                        }),
-
-                        /// Name: CircularProgressIndicator
-                        ///
-                        /// Description: Show a loading widget
-                        ///              while retrieving users' events.
-                        Builder(
-                          builder: (loadingWidgetContext) {
-                            final AccountEventsState _accountEventsBlocState =
-                                loadingWidgetContext.watch<AccountEventsBloc>().state;
-
-                            if (!(_accountEventsBlocState is AccountEventsStateFetching)) {
+                            if (_accountEventsState is AccountEventsStateFetching) {
                               return SliverToBoxAdapter(child: Container());
                             } // if
 
-                            return SliverFillRemaining(
-                              child: Center(
-                                child: SizedBox(
-                                  height: _realHeight * .03,
-                                  width: screenWidth * .05,
-                                  child: CircularProgressIndicator(
-                                    backgroundColor: Colors.transparent,
-                                    valueColor: AlwaysStoppedAnimation<Color>(cWhite70),
-                                    strokeWidth: 2.25,
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
+                            return SliverListHeader(text: 'My Events');
+                          }),
 
-                        /// List of users' events implemented with SliverList.
-                        ///
-                        /// Sliver List receives data from the AccountEventsBloc
-                        /// and builds "Event Cards" for each event, with
-                        /// the last widget being a loading widget if necessary.
-                        Builder(
-                          builder: (userEventsContext) {
-                            final _accountEventsState =
-                                userEventsContext.watch<AccountEventsBloc>().state;
+                          /// List of users' events implemented with SliverList.
+                          ///
+                          /// Sliver List receives data from the AccountEventsBloc
+                          /// and builds "Event Cards" for each event, with
+                          /// the last widget being a loading widget if necessary.
+                          Builder(builder: (userEventsContext) {
+                            final _accountEventsState = userEventsContext.watch<AccountEventsBloc>().state;
 
                             // Show a paginated list view of events created by the account
                             if (_accountEventsState is AccountEventsStateSuccess) {
                               return SliverList(
                                 delegate: SliverChildBuilderDelegate(
-                                    (BuildContext sliverListContext, int index) {
+                                  (BuildContext sliverListContext, int index) {
+                                    /// Not at the bottom...
+                                    ///
+                                    /// Show each search result in an [EventCard] widget.
+                                    /// When clicking on the card, the full event is retrieved.
+                                    if (index < _accountEventsState.eventModels.length) {
+                                      return EventCard(
+                                        key: ObjectKey(_accountEventsState.eventModels.elementAt(index)),
+                                        newSearchResult: _accountEventsState.eventModels.elementAt(index),
+                                        onEventCardVertMoreCallback: (imageBytes) {
+                                          // Show a modal bottom sheet with
+                                          // options to edit or delete an event.
+                                          showModalBottomSheet(
+                                            context: accountScreenBodyContext,
+                                            builder: (modalSheetContext) {
+                                              /// Pass the current AccountEventsBloc.
+                                              ///
+                                              /// Bottom Modal Sheet is built within
+                                              /// its own context, that doesn't have
+                                              /// access to the current widget's context.
+                                              return MultiBlocProvider(
+                                                providers: [
+                                                  BlocProvider.value(value: BlocProvider.of<AccountEventsBloc>(accountScreenBodyContext)),
+                                                  BlocProvider(
+                                                    create: (fetchEventCubitContext) => FetchFullEventCubit(
+                                                      db: RepositoryProvider.of<DatabaseRepository>(accountScreenBodyContext),
+                                                    ),
+                                                  ),
+                                                ],
+                                                child: Builder(builder: (modalSheetContext) {
+                                                  BlocProvider.of<FetchFullEventCubit>(modalSheetContext)
+                                                      .fetchEvent(documentId: _accountEventsState.eventModels.elementAt(index).eventId);
+                                                  return AccountModalBottomSheet(
+                                                    listViewIndex: index,
+                                                    searchResultModel: _accountEventsState.eventModels.elementAt(index),
+                                                    onEdit: (eventModel) {
+                                                      // Set image bytes to the event model, before passing on
+                                                      eventModel.imageBytes = imageBytes;
+                                                      eventModel.searchID = _accountEventsState.eventModels.elementAt(index).searchID;
+                                                      BlocProvider.of<SlidingUpPanelCubit>(accountScreenBodyContext)
+                                                          .openPanel(initialEventModel: eventModel);
+                                                      Navigator.pop(accountScreenBodyContext);
+                                                    },
+                                                  );
+                                                }),
+                                              );
+                                            }, // builder
+                                          );
+                                        },
+                                      );
+                                    } // if
 
-                                      /// Not at the bottom...
-                                      ///
-                                      /// Show each search result in an [EventCard] widget.
-                                      /// When clicking on the card, the full event is retrieved.
-                                      if (index < _accountEventsState.eventModels.length) {
-                                        return EventCard(
-                                          newSearchResult: _accountEventsState.eventModels.elementAt(index),
-                                        );
-                                      } // if
+                                    /// At the bottom of the list...
+                                    ///
+                                    /// Might need to show a loading widget while
+                                    /// Retrieving more events, unless there are no
+                                    /// more events to retrieve (maxEvents == true).
+                                    else {
+                                      return Builder(
+                                        builder: (bottomListContext) {
+                                          final AccountEventsState _accountEventsState = bottomListContext.watch<AccountEventsBloc>().state;
 
-                                      /// At the bottom of the list...
-                                      ///
-                                      /// Might need to show a loading widget while
-                                      /// Retrieving more events, unless there are no
-                                      /// more events to retrieve (maxEvents == true).
-                                      else {
-                                        return Builder(
-                                            builder: (bottomListContext) {
-                                              final AccountEventsState _accountEventsState =
-                                                  bottomListContext.watch<AccountEventsBloc>().state;
-
-                                              /// Only return a loading widget if there are
-                                              /// are more events to retrieve. Otherwise
-                                              /// show an empty container as a bottom margin.
-                                              if (_accountEventsState is AccountEventsStateSuccess) {
-                                                return !_accountEventsState.maxEvents
-                                                    ? BottomLoadingWidget()
-                                                    : Container(height: _realHeight * .1);
-                                              } // if
-                                              else {
-                                                return Container();
-                                              } // else
-                                          },
-                                        );
+                                          /// Only return a loading widget if there are
+                                          /// are more events to retrieve. Otherwise
+                                          /// show an empty container as a bottom margin.
+                                          if (_accountEventsState is AccountEventsStateSuccess) {
+                                            return !_accountEventsState.maxEvents ? BottomLoadingWidget() : Container(height: _realHeight * .1);
+                                          } // if
+                                          else {
+                                            return Container();
+                                          } // else
+                                        },
+                                      );
                                     } // else
                                   },
                                   addAutomaticKeepAlives: true,
@@ -270,32 +298,49 @@ class _AccountScreenBodyState extends State<AccountScreenBody> with AutomaticKee
                             /// "Expired" events will be deleted by the database.
                             /// An event is expired when "TBD"...
                             else if (_accountEventsState is AccountEventsStateFailed) {
-
                               /// Lonely Panda with an inspirational message.
                               /// Trying to inspire the user to make something happen!
-                              return SliverFillRemaining(
+                              return SliverToBoxAdapter(
                                 child: Column(
                                   children: [
-                                    Expanded(flex: 1, child: SizedBox()),
-                                    Expanded(
-                                      flex: 1,
-                                      child: Image(
-                                        image: AssetImage(
-                                          'images/lonely_panda.png',
-                                        ),
-                                        height: screenHeight * .35,
-                                        width: screenWidth * .35,
+                                    cVerticalMarginSmall(accountScreenBodyContext),
+                                    Image(
+                                      image: AssetImage(
+                                        'images/lonely_panda.png',
                                       ),
+                                      height: screenHeight * .35,
+                                      width: screenWidth * .35,
                                     ),
                                     Text(
                                       'Stop hibernating, make something happen!',
-                                      style: TextStyle(color: cWhite70),
+                                      style: TextStyle(color: cWhite70, fontSize: 16.0),
                                     ),
-                                    Expanded(flex: 1, child: SizedBox()),
+                                    cVerticalMarginSmall(accountScreenBodyContext),
+                                    TextButton(
+                                      child: Text(
+                                        'RELOAD',
+                                        style: TextStyle(color: Colors.blueAccent, fontSize: 16.0),
+                                      ),
+                                      onPressed: () {
+                                        BlocProvider.of<AccountEventsBloc>(refreshIndicatorContext).add(AccountEventsEventReload());
+                                        BlocProvider.of<UploadEventBloc>(refreshIndicatorContext).add(UploadEventReset());
+                                      },
+                                    ),
                                   ],
                                 ),
                               );
                             } // if
+
+                            // Don't show the sliver list, since events are still being fetched,
+                            // Also don't know if the event fetch failed, so can't return the cactus dog image.
+                            else if (_accountEventsState is AccountEventsStateFetching) {
+                              return SliverToBoxAdapter(child: Container(color: Color.fromRGBO(61, 61, 61, 1.0)));
+                            } // else if
+
+                            // Don't show anything, since a reload failure should immediately be followed by an event fetch failure
+                            else if (_accountEventsState is AccountEventsStateReloadFailed) {
+                              return SliverToBoxAdapter(child: Container(color: Color.fromRGBO(61, 61, 61, 1.0)));
+                            } // else if
 
                             /// Something went wrong...
                             ///
@@ -308,12 +353,13 @@ class _AccountScreenBodyState extends State<AccountScreenBody> with AutomaticKee
                               );
                             } // else
                           }),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              }
-            ),
+                  );
+                }),
+              );
+            },
           ),
         ],
       ),
@@ -327,5 +373,5 @@ class _AccountScreenBodyState extends State<AccountScreenBody> with AutomaticKee
   void dispose() {
     this._scrollController.dispose();
     super.dispose();
-  }// dispose
+  } // dispose
 } // _AccountScreenBodyState

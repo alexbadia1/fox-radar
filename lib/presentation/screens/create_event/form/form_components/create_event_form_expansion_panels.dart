@@ -89,16 +89,13 @@ class ExpansionPanelDateTime extends StatelessWidget {
                 Row(
                   children: <Widget>[
                     ExpansionPanelDateLabel(
-                      retrieveDateTimeFromBlocCallback:
-                          (CreateEventState state) {
+                      retrieveDateTimeFromBlocCallback: (CreateEventState state) {
                         return this.dateLabelCallback(state);
                       },
                     ),
-                    Container(
-                        width: MediaQuery.of(context).size.width * .03225),
+                    Container(width: MediaQuery.of(context).size.width * .03225),
                     ExpansionPanelTimeLabel(
-                      retrieveDateTimeFromBlocCallback:
-                          (CreateEventState state) {
+                      retrieveDateTimeFromBlocCallback: (CreateEventState state) {
                         return this.timeLabelCallback(state);
                       },
                     ),
@@ -114,17 +111,14 @@ class ExpansionPanelDateTime extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Builder(builder: (context) {
-                final DateTimePickerState _expansionPanelCubitState =
-                    context.watch<DateTimePickerCubit>().state;
+                final DateTimePickerState _expansionPanelCubitState = context.watch<DateTimePickerCubit>().state;
 
                 // Show DatePicker
-                if (_expansionPanelCubitState
-                    is DateTimePickerOpenShowDatePicker) {
+                if (_expansionPanelCubitState is DateTimePickerOpenShowDatePicker) {
                   return DatePicker(
                     initialSelectedDate: _expansionPanelCubitState.tempDateTime,
                     onDateSelectedCallback: (DateTime dateTime) {
-                      BlocProvider.of<DateTimePickerCubit>(context)
-                          .openExpansionPanelToDatePicker(
+                      BlocProvider.of<DateTimePickerCubit>(context).openExpansionPanelToDatePicker(
                         tempDateTime: dateTime,
                       );
                     },
@@ -132,14 +126,11 @@ class ExpansionPanelDateTime extends StatelessWidget {
                 } // if
 
                 // Show TimePicker
-                else if (_expansionPanelCubitState
-                    is DateTimePickerOpenShowTimePicker) {
+                else if (_expansionPanelCubitState is DateTimePickerOpenShowTimePicker) {
                   return TimePicker(
                     initialDateTime: _expansionPanelCubitState.tempDateTime,
                     onDateTimeChangedCallback: (dateTime) {
-                      BlocProvider.of<DateTimePickerCubit>(context)
-                          .openExpansionPanelToTimePicker(
-                              tempDateTime: dateTime);
+                      BlocProvider.of<DateTimePickerCubit>(context).openExpansionPanelToTimePicker(tempDateTime: dateTime);
                     },
                   );
                 } // else-if
@@ -158,21 +149,17 @@ class ExpansionPanelDateTime extends StatelessWidget {
                   children: <Widget>[
                     Builder(
                       builder: (BuildContext context) {
-                        final _expansionPanelCubitState =
-                            context.watch<DateTimePickerCubit>().state;
+                        final _expansionPanelCubitState = context.watch<DateTimePickerCubit>().state;
 
-                        if (_expansionPanelCubitState
-                            is DateTimePickerOpenShowDatePicker) {
+                        if (_expansionPanelCubitState is DateTimePickerOpenShowDatePicker) {
                           return ExpansionPanelCancelButton(
                             onPressedCallback: () {
-                              BlocProvider.of<DateTimePickerCubit>(context)
-                                  .closeExpansionPanel();
+                              BlocProvider.of<DateTimePickerCubit>(context).closeExpansionPanel();
                             },
                           );
                         } // if
 
-                        else if (_expansionPanelCubitState
-                            is DateTimePickerOpenShowTimePicker) {
+                        else if (_expansionPanelCubitState is DateTimePickerOpenShowTimePicker) {
                           return ExpansionPanelBackButton();
                         } // else if
 
@@ -183,24 +170,17 @@ class ExpansionPanelDateTime extends StatelessWidget {
                     ),
                     Builder(
                       builder: (BuildContext context) {
-                        final _expansionPanelCubitState =
-                            context.watch<DateTimePickerCubit>().state;
+                        final _expansionPanelCubitState = context.watch<DateTimePickerCubit>().state;
 
-                        if (_expansionPanelCubitState
-                            is DateTimePickerOpenShowDatePicker) {
+                        if (_expansionPanelCubitState is DateTimePickerOpenShowDatePicker) {
                           return ExpansionPanelContinueButton();
                         } // if
 
-                        else if (_expansionPanelCubitState
-                            is DateTimePickerOpenShowTimePicker) {
+                        else if (_expansionPanelCubitState is DateTimePickerOpenShowTimePicker) {
                           return ExpansionPanelConfirmButton(
                             onPressedCallback: () {
-                              BlocProvider.of<DateTimePickerCubit>(context)
-                                  .closeExpansionPanel();
-                              onConfirmButtonPressed(
-                                  BlocProvider.of<DateTimePickerCubit>(context)
-                                      .state
-                                      .tempDateTime);
+                              BlocProvider.of<DateTimePickerCubit>(context).closeExpansionPanel();
+                              onConfirmButtonPressed(BlocProvider.of<DateTimePickerCubit>(context).state.tempDateTime);
                             },
                           );
                         } // else if

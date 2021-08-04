@@ -1,12 +1,9 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:rxdart/rxdart.dart';
-import 'category_events_event.dart';
-import 'category_events_state.dart';
 import 'package:flutter/material.dart';
+import 'package:communitytabs/logic/logic.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:communitytabs/logic/blocs/blocs.dart';
-import 'package:communitytabs/logic/constants/constants.dart';
 import 'package:database_repository/database_repository.dart';
 
 class CategoryEventsBloc
@@ -58,12 +55,28 @@ class CategoryEventsBloc
     } // if
 
     try {
-      /// No posts were fetched yet
+      // User is fetching events from a failed state
+      if (!(_currentState is CategoryEventsStateFetching) && !(_currentState is CategoryEventsStateSuccess)) {
+        yield CategoryEventsStateFetching();
+        // Retry will fail to quickly,
+        //
+        // Give the user a good feeling that events are actually being searched for.
+        await Future.delayed(Duration(milliseconds: 350));
+      }// if
+
+      // No posts were fetched yet
       final List<QueryDocumentSnapshot> _docs =
           await _fetchEventsWithPagination(
               lastEvent: null, limit: paginationLimit);
       final List<SearchResultModel> _eventModels =
           _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+
+      // Failed Reload from a failed state
+      if (_currentState is CategoryEventsStateFailed && _docs.isEmpty) {
+        yield CategoryEventsStateReloadFailed();
+        yield CategoryEventsStateFailed();
+        return;
+      } // if
 
       if (_eventModels.length != this.paginationLimit) {
         _maxEvents = true;
@@ -154,9 +167,11 @@ class CategoryEventsBloc
   List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels(
       {@required List<QueryDocumentSnapshot> docs}) {
     return docs.map((doc) {
+      Map<String, dynamic> docAsMap = doc.data();
+
       // Convert the firebase timestamp to a DateTime
       DateTime tempRawStartDateAndTimeToDateTime;
-      Timestamp _startTimestamp = doc.data()[ATTRIBUTE_RAW_START_DATE_TIME];
+      Timestamp _startTimestamp = docAsMap[ATTRIBUTE_RAW_START_DATE_TIME];
       if (_startTimestamp != null) {
         tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(
                 _startTimestamp.millisecondsSinceEpoch)
@@ -169,28 +184,28 @@ class CategoryEventsBloc
 
       return SearchResultModel(
         // Title converted to [STRING] from [STRING] in Firebase.
-        newTitle: doc.data()[ATTRIBUTE_TITLE] ?? '',
+        newTitle: docAsMap[ATTRIBUTE_TITLE] ?? '',
 
         // Host converted to [STRING] from [STRING] in Firebase.
-        newHost: doc.data()[ATTRIBUTE_HOST] ?? '',
+        newHost: docAsMap[ATTRIBUTE_HOST] ?? '',
 
         // Location Converted to [] from [] in Firebase.
-        newLocation: doc.data()[ATTRIBUTE_LOCATION] ?? '',
+        newLocation: docAsMap[ATTRIBUTE_LOCATION] ?? '',
 
         // RawStartDate converted to [DATETIME] from [TIMESTAMP] in Firebase.
         newRawStartDateAndTime: tempRawStartDateAndTimeToDateTime ?? null,
 
         // Category converted to [STRING] from [STRING] in Firebase.
-        newCategory: doc.data()[ATTRIBUTE_CATEGORY] ?? '',
+        newCategory: docAsMap[ATTRIBUTE_CATEGORY] ?? '',
 
         // Implement Firebase Images.
-        newImageFitCover: doc.data()[ATTRIBUTE_IMAGE_FIT_COVER] ?? true,
+        newImageFitCover: docAsMap[ATTRIBUTE_IMAGE_FIT_COVER] ?? true,
 
         // DocumentId converted to [STRING] from [STRING] in firebase.
-        newEventId: doc.data()[ATTRIBUTE_EVENT_ID] ?? '',
+        newEventId: docAsMap[ATTRIBUTE_EVENT_ID] ?? '',
 
         // AccountID converted to [STRING] from [STRING] in firebase.
-        newAccountID: doc.data()[ATTRIBUTE_ACCOUNT_ID] ?? '',
+        newAccountID: docAsMap[ATTRIBUTE_ACCOUNT_ID] ?? '',
       );
     }).toList();
   } // _mapDocumentSnapshotsToSearchEventModels

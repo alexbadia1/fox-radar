@@ -1,12 +1,9 @@
-import 'package:authentication_repository/authentication_repository.dart';
-import 'package:communitytabs/logic/blocs/blocs.dart';
-import 'package:communitytabs/logic/cubits/cubits.dart';
-import 'package:database_repository/database_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:communitytabs/logic/logic.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:database_repository/database_repository.dart';
 import 'package:communitytabs/presentation/screens/screens.dart';
-import 'home_bottom_navigation.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -15,6 +12,9 @@ class HomeScreen extends StatelessWidget {
       child: Material(
         child: SafeArea(
           child: SlidingUpPanel(
+            /// TODO: OnCollapsed widget pointer fails after modifying a textfield.
+            ///  Figure out a better solution, as onPanel Opened every time the panel
+            ///  state changes (especially when modifying a form text field).
             onPanelOpened: () {
               BlocProvider.of<SlidingUpPanelCubit>(context).openPanel();
             },
@@ -22,7 +22,7 @@ class HomeScreen extends StatelessWidget {
                 .slidingUpPanelControl,
             minHeight: MediaQuery.of(context).size.height * .0625,
             maxHeight: MediaQuery.of(context).size.height,
-            collapsed: HomeBottomNavigationBar(),
+            collapsed: HomeBottomNavigationBar(key: UniqueKey()),
             isDraggable: false,
             panel: CreateEventScreen(),
             body: BlocProvider(
