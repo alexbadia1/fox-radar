@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:communitytabs/presentation/presentation.dart';
 
-
 class MaristSliverAppBarTitle extends StatelessWidget {
   final String title;
 
@@ -12,8 +11,7 @@ class MaristSliverAppBarTitle extends StatelessWidget {
     return Container(
         child: Text(
       title,
-      style: TextStyle(
-          color: kHavenLightGray, fontSize: 19.0, fontWeight: FontWeight.bold),
+      style: TextStyle(color: kHavenLightGray, fontSize: 19.0, fontWeight: FontWeight.bold),
     ));
   }
 }
@@ -21,10 +19,12 @@ class MaristSliverAppBarTitle extends StatelessWidget {
 class MaristSliverAppBar extends StatelessWidget {
   final String title;
   final Widget action;
+  final IconData icon;
+  final Function onIconPressed;
 
   Image _backgroundImage;
 
-  MaristSliverAppBar({@required this.title, this.action}) {
+  MaristSliverAppBar({@required this.title, this.action, this.icon, this.onIconPressed}) {
     _backgroundImage = new Image.asset(
       "images/tenney.jpg",
       fit: BoxFit.fill,
@@ -54,11 +54,16 @@ class MaristSliverAppBar extends StatelessWidget {
             Row(
               children: <Widget>[
                 Expanded(flex: 1, child: SizedBox()),
-                Expanded(flex: 4, child: MaristFoxLogo()),
-                Expanded(flex: 1, child: SizedBox()),
                 Expanded(
-                    flex: 30,
-                    child: MaristSliverAppBarTitle(title: this.title)),
+                    flex: 4,
+                    child: this.icon != null
+                        ? IconButton(
+                            onPressed: this.onIconPressed,
+                            icon: Icon(this.icon, color: kHavenLightGray),
+                          )
+                        : MaristFoxLogo()),
+                Expanded(flex: 1, child: SizedBox()),
+                Expanded(flex: 30, child: MaristSliverAppBarTitle(title: this.title)),
                 Expanded(flex: 2, child: SizedBox()),
               ],
             ),

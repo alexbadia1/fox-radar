@@ -17,7 +17,7 @@ class CategoryPickerCubit extends Cubit<CategoryPickerState> {
 
   @override
   void onChange(Change<CategoryPickerState> change) {
-    print('Expansion Panel Cubit $change');
+    print('Category Picker Cubit $change');
     super.onChange(change);
   } // onChange
 }// CategoryPickerCubit
