@@ -66,7 +66,7 @@ class _CategoryNavigationButtonState extends State<CategoryNavigationButton> {
                     textAlign: TextAlign.left,
                     style: TextStyle(
                         color: Colors.white,
-                      fontSize: 16.0
+                      fontSize: 14.0
                     ),
                   ),
                 ),

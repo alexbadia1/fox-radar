@@ -26,7 +26,7 @@ class FetchFullEventCubit extends Cubit<FetchFullEventState> {
       } // if
     } // try
     catch (error) {
-      // print(error);
+      print(error);
 
       emit(FetchFullEventFailure());
     } // catch

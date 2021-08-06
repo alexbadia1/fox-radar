@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 import 'package:database_repository/database_repository.dart';
@@ -24,7 +25,6 @@ class FetchFullEventSuccess extends FetchFullEventState {
   } // FetchFullEventSuccess
 
   void formatEventDatesAndTimes() {
-    final event = this.eventModel;
 
     DateTime myCurrent = DateTime(
         DateTime.now().year,
@@ -42,6 +42,9 @@ class FetchFullEventSuccess extends FetchFullEventState {
     final int startDiffInDays = myCurrent.difference(this.start).inDays;
     final int startDiffInHours = myCurrent.difference(this.start).inHours;
     final int startDiffInMinutes = myCurrent.difference(this.start).inMinutes;
+
+    final formattedStartTime = DateFormat.jm().format(this.start);
+    final formattedStartDate = DateFormat('E, MMMM d, y').format(this.start);
 
     // Event is today now
     if (startDiffInDays == 0) {
@@ -67,84 +70,80 @@ class FetchFullEventSuccess extends FetchFullEventState {
     else if (startDiffInDays < 0) {
       if (startDiffInDays == -1) {
         // Starts tomorrow at [Insert Time]
-        startSubtitle = "Starts tomorrow at";
+        startSubtitle = "Starts tomorrow at $formattedStartTime";
       } // if
 
-      else if (startDiffInDays < -7) {
+      else if (startDiffInDays > -7) {
         // Starts in ${startDiffInDays} at [Time]
-        startSubtitle = "Starts in $startDiffInDays at";
+        startSubtitle = "Starts in $startDiffInDays at $formattedStartTime";
       } // if
 
       else if (startDiffInDays == -7) {
-        // Starts next ${DayOfWeek} at [Insert Time]
-        startSubtitle = "Starts next ${this.start.weekday} at";
+        startSubtitle = "Starts next ${this.start.weekday} at $formattedStartTime";
       } // if
 
       else {
-        // Starts on [Date] at [Time]
-        startSubtitle = "Starts on [Date] at [Time]";
+        startSubtitle = "Starts $formattedStartDate at $formattedStartTime";
       } // else
     } // else if
 
     // In the Past
     else {
       if (startDiffInDays == 1) {
-        // Started yesterday since [Insert Time]
-        startSubtitle = "Started yesterday since";
+        startSubtitle = "Started yesterday at $formattedStartTime";
       } // if
 
       else {
-        // Started since [Date] at [Time]
-        startSubtitle = "Started since";
+        startSubtitle = "Started since $formattedStartDate at $formattedStartTime";
       } // if
     } // else
 
-    // Compare start time to now
-    final int endDiffInDays = myCurrent.difference(this.end).inDays;
-    final int endDiffInHours = myCurrent.difference(this.end).inHours;
-    final int endDiffInMinutes = myCurrent.difference(this.end).inMinutes;
-
     if (this.end != null) {
+
+      // Compare start time to now
+      final int endDiffInDays = myCurrent.difference(this.end).inDays;
+      final int endDiffInHours = myCurrent.difference(this.end).inHours;
+      final int endDiffInMinutes = myCurrent.difference(this.end).inMinutes;
+
+      final formattedEndTime = DateFormat.jm().format(this.end);
+      final formattedEndDate = DateFormat('E, MMMM d, y').format(this.end);
+
       // Event ends today
       if (endDiffInDays == 0) {
         if (endDiffInMinutes == 0) {
-          endSubtitle = "Event is about to end!";
+          endSubtitle = "Event is about to end now!";
         } // if
 
-        else if (endDiffInMinutes < -60) {
+        else if (endDiffInMinutes > -60) {
           endSubtitle = "Ends in $endDiffInMinutes minutes.";
         } // if
 
-        else if (endDiffInHours <= -24) {
+        else if (endDiffInHours >= -24) {
           endSubtitle = "Ends in $startDiffInHours hours.";
         } // if
 
         else {
           // This should never be reached
-          endSubtitle = "Ends [Date] at [Time]"; 
+          endSubtitle = "Ends $formattedEndDate at $formattedEndTime";
         } // else
       } // if
 
       // In the Future
       else if (endDiffInDays < 0) {
         if (endDiffInDays == -1) {
-          // Ends tomorrow at [Insert Time]
-          endSubtitle = "Ends tomorrow at";
+          endSubtitle = "Ends tomorrow at $formattedEndTime";
         } // if
 
-        else if (endDiffInDays < -7) {
-          // Ends in ${startDiffInDays} at [Time]
-          endSubtitle = "Ends in $startDiffInDays days at";
+        else if (endDiffInDays > -7) {
+          endSubtitle = "Ends in $startDiffInDays days at $formattedEndTime";
         } // if
 
         else if (endDiffInDays == -7) {
-          // Ends next ${DayOfWeek} at [Insert Time]
-          endSubtitle = "Ends next ${this.start.weekday} at";
+          endSubtitle = "Ends next ${this.start.weekday} at $formattedEndTime";
         } // if
 
         else {
-          // Ends on [Date] at [Time]
-          endSubtitle = "Ends [Date] at [Time]";
+          endSubtitle = "Ends $formattedEndDate at $formattedEndTime";
         } // else
       } // else if
 
@@ -152,12 +151,12 @@ class FetchFullEventSuccess extends FetchFullEventState {
       else {
         if (endDiffInDays == 1) {
           // Started yesterday since [Insert Time]
-          endSubtitle = "Ended yesterday since";
+          endSubtitle = "Ended yesterday at $formattedEndTime";
         } // if
 
         else {
           // Started since [Date] at [Time]
-          endSubtitle = "Ends [Date] at [Time]";
+          endSubtitle = "Ended $formattedEndDate at $formattedEndTime";
         } // if
       } // else
     }// else 

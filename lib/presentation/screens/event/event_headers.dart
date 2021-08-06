@@ -18,7 +18,7 @@ class HeaderLevelOne extends StatelessWidget {
               this.text,
               style: TextStyle(
                 color: cWhite100,
-                fontSize: 32.0,
+                fontSize: 28.0,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Lato',
               ),
@@ -51,7 +51,7 @@ class HeaderLevelTwo extends StatelessWidget {
               this.text ?? '',
               style: TextStyle(
                 color: cWhite100,
-                fontSize: 26.0,
+                fontSize: 22.0,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Lato',
               ),

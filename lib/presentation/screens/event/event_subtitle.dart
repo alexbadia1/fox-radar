@@ -11,6 +11,7 @@ class Subtitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  Row(
+      mainAxisSize: MainAxisSize.max,
       children: <Widget>[
         SizedBox(
           width: MediaQuery.of(context).size.width * .022,
@@ -33,7 +34,7 @@ class Subtitle extends StatelessWidget {
                   text ?? '',
                   style: TextStyle(
                     color: cWhite70,
-                    fontSize: 14.0,
+                    fontSize: 12.0,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Lato',
                   ),

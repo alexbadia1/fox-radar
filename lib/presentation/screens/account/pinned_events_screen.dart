@@ -186,7 +186,7 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
                               return SliverToBoxAdapter(child: Container());
                             } // if
 
-                            return SliverListHeader(text: 'Pinned Events');
+                            return SliverListHeader(text: 'Pinned Events', trailing: DropdownEventsFilter());
                           }),
 
                           /// List of users' events implemented with SliverList.

@@ -1,41 +1,32 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'event_subtitle.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 
 class HighlightsList extends StatelessWidget {
   final IconData icon;
   final List<String> highlights;
 
-  const HighlightsList({this.icon, this.highlights});
+  HighlightsList({this.icon, this.highlights});
 
+  final List<Widget> highlightWidgets = [];
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        SizedBox(
-          width: MediaQuery.of(context).size.width * .04275,
+    for (int i = 0; i < this.highlights.length; ++i) {
+      highlightWidgets.add(
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Subtitle(icon: Icons.add, text: this.highlights[i]),
         ),
-        Expanded(
-          child: ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: highlights.length,
-              itemBuilder: (context, index) {
-                return Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Subtitle(
-                          icon: Icons.add,
-                          text: highlights[index]),
-                    ),
-                  ],
-                );
-              }),
-        ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width * .125,
-        ),
-      ],
+      );
+    } // for
+
+    return Container(
+      width: MediaQuery.of(context).size.width * .85,
+      alignment: Alignment.centerRight,
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: highlightWidgets,
+      ),
     );
   }
 }

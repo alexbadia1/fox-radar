@@ -113,13 +113,13 @@ class EventScreen extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              HeaderLevelTwo(text: 'Highlights'),
-                              HighlightsList(highlights: _event.highlights),
+                              _event.highlights.isNotEmpty ? HeaderLevelTwo(text: 'Highlights') : SizedBox(),
+                              _event.highlights.isNotEmpty ? HighlightsList(highlights: _event.highlights) : SizedBox(),
 
                               /// Summary Section
-                              HeaderLevelTwo(text: 'Summary'),
+                              _event.description.replaceAll(" ", "").isNotEmpty ? HeaderLevelTwo(text: 'Summary') : SizedBox(),
 
-                              Padding(
+                              _event.description.replaceAll(" ", "").isNotEmpty ? Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Row(
                                   children: <Widget>[
@@ -133,7 +133,7 @@ class EventScreen extends StatelessWidget {
                                         _event.description,
                                         style: TextStyle(
                                           color: cWhite70,
-                                          fontSize: 14.0,
+                                          fontSize: 12.0,
                                           fontWeight: FontWeight.bold,
                                           fontFamily: 'Lato',
                                         ),
@@ -144,7 +144,7 @@ class EventScreen extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                              ),
+                              ) : SizedBox(),
 
                               /// Back Button
                               Row(
