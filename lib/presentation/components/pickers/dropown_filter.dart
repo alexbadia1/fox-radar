@@ -1,5 +1,8 @@
-import 'package:communitytabs/presentation/presentation.dart';
+import 'dart:isolate';
 import 'package:flutter/material.dart';
+import 'package:communitytabs/logic/logic.dart';
+import 'package:database_repository/database_repository.dart';
+import 'package:communitytabs/presentation/presentation.dart';
 
 class DropdownEventsFilter extends StatefulWidget {
   @override
@@ -9,6 +12,26 @@ class DropdownEventsFilter extends StatefulWidget {
 class _DropdownEventsFilterState extends State<DropdownEventsFilter> {
   final filters = ["Starts", "Ends", "A-Z"];
   String dropdownValue;
+
+  List<EventModel> sortEventModels({@required List<EventModel> events, @required String sortKey}) {
+    switch (sortKey) {
+      case 'Starts': 
+        events.sort((a, b) => a.rawStartDateAndTime.compareTo(b.rawStartDateAndTime));
+        break;
+      case 'Ends':
+        // Events with no end date should be listed first, using 0 should ensure that.  
+        events.sort((a, b) => a.rawEndDateAndTime.compareTo(b.rawEndDateAndTime ?? 0));
+        break;
+      case 'A-Z':
+        events.sort((a, b) => a.title.compareTo(b.title));
+        break;
+      default:
+        events.sort((a, b) => a.title.compareTo(b.title));
+        break;
+    }// switch
+
+    return events;
+  }//sortList
 
   @override
   void initState() {
@@ -33,9 +56,17 @@ class _DropdownEventsFilterState extends State<DropdownEventsFilter> {
             return Text(value, style: TextStyle(fontSize: 14.0, color: cWhite100));
           }).toList();
         },
-        onChanged: (String newValue) {
+        onChanged: (String sortKey) async {
+
+          // TODO: Listen to PinnedEventsBloc to retrieve
+          //       the list or maybe just add pass the to this list?
+          // this.sortEventModels(
+          //   sortKey: sortKey,
+          //   events: BlocProvider.of<PinnedEventsBloc>(context),
+          // );
+
           setState(() {
-            this.dropdownValue = newValue;
+            this.dropdownValue = sortKey;
           });
         },
         items: this.filters.map<DropdownMenuItem<String>>((String value) {
