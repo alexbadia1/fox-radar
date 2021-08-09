@@ -193,11 +193,10 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
                                                 return AccountModalBottomSheet(
                                                   listViewIndex: index,
                                                   searchResultModel: _accountEventsState.eventModels.elementAt(index),
-                                                  onEdit: (eventModel) {
+                                                  onEdit: (EventModel fullEvent) {
                                                     // Set image bytes to the event model, before passing on
-                                                    eventModel.imageBytes = imageBytes;
-                                                    eventModel.searchID = _accountEventsState.eventModels.elementAt(index).searchID;
-                                                    BlocProvider.of<SlidingUpPanelCubit>(sliverListContext).openPanel(initialEventModel: eventModel);
+                                                    fullEvent.imageBytes = imageBytes;
+                                                    BlocProvider.of<SlidingUpPanelCubit>(sliverListContext).openPanel(initialEventModel: fullEvent);
                                                     Navigator.pop(sliverListContext);
                                                   },
                                                 );

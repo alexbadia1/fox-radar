@@ -32,7 +32,13 @@ class AccountModalBottomSheet extends StatelessWidget {
             onPressed: () {
               final state = BlocProvider.of<FetchFullEventCubit>(pContext).state;
               if (state is FetchFullEventSuccess) {
-                this.onEdit(state.eventModel);
+                final EventModel event = state.eventModel;
+                // Pass the "Full Event" the id's necessary to update it
+                event.eventID = searchResultModel.eventId;
+                event.searchID = searchResultModel.searchID;
+                event.accountID = searchResultModel.accountID;
+                print(event.toString());
+                this.onEdit(event);
               } // if
             }),
         ModalActionMenuButton(

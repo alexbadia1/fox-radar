@@ -9,9 +9,13 @@ import 'package:database_repository/database_repository.dart';
 
 class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
   final DatabaseRepository db;
+  final String uid;
   UploadTask uploadTask;
 
-  UploadEventBloc({@required this.db}) : super(UploadEventStateInitial());
+  UploadEventBloc({@required this.db, @required this.uid})
+      : assert(db != null),
+        assert(uid != null),
+        super(UploadEventStateInitial());
 
   @override
   Stream<UploadEventState> mapEventToState(
@@ -35,8 +39,7 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
     } // else if
   } // mapEventToState
 
-  Stream<UploadEventState> _mapUploadEventUploadToState(
-      {@required UploadEventUpload uploadEventUpload}) async* {
+  Stream<UploadEventState> _mapUploadEventUploadToState({@required UploadEventUpload uploadEventUpload}) async* {
     // Only allow one upload task at a time
     if (uploadTask != null) {
       return;
@@ -49,25 +52,14 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
 
       // Form Action Create
       if (action == CreateEventFormAction.create) {
-        // Store full event details
-        newEventModel.eventID = await this
-            .db
-            .insertNewEventToEventsCollection(newEvent: newEventModel);
-
-        // Make the event searchable
-        if (newEventModel.eventID != null || newEventModel.eventID.isNotEmpty) {
-          newEventModel.searchID = await this
-              .db
-              .insertNewEventToSearchableCollection(newEvent: newEventModel);
-        } // if
+        newEventModel.eventID = await this.db.createEvent(newEventModel, this.uid);
       } // if
 
       // Form Action Update
       else if (action == CreateEventFormAction.update) {
-        await this.db.updateEventInEventsCollection(newEvent: newEventModel);
-        await this
-            .db
-            .updateEventInSearchEventsCollection(newEvent: newEventModel);
+        await this.db.updateEvent(newEventModel, this.uid);
+        // await this.db.updateEventInEventsCollection(newEvent: newEventModel);
+        // await this.db.updateEventInSearchEventsCollection(newEvent: newEventModel);
       } // else if
 
       // TODO: Consider letting the user deleting an image
@@ -79,16 +71,14 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
         // Upload image bytes to firebase storage bucket using
         // the new event's document id as a the name for the image.
         if (newEventModel.eventID != null && newEventModel.eventID.isNotEmpty) {
-          this.uploadTask = this.db.uploadImageToStorage(
-              eventID: newEventModel.eventID,
-              imageBytes: newEventModel.imageBytes);
-        } // if
-      }// if
+          this.uploadTask = this.db.uploadImageToStorage(eventID: newEventModel.eventID, imageBytes: newEventModel.imageBytes);
 
-      yield UploadEventStateUploading(
-        uploadTask: this.uploadTask,
-        eventModel: newEventModel,
-      );
+          yield UploadEventStateUploading(
+            uploadTask: this.uploadTask,
+            eventModel: newEventModel,
+          );
+        } // if
+      } // if
     } // if
   } // _mapUploadEventUploadToState
 

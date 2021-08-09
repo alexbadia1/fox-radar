@@ -1,3 +1,4 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/logic/logic.dart';
@@ -9,6 +10,7 @@ class AppPageView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<UploadEventBloc>(
       create: (context) => UploadEventBloc(
+        uid: RepositoryProvider.of<AuthenticationRepository>(context).getUserModel().userID,
         db: RepositoryProvider.of<DatabaseRepository>(context),
       ),
       child: PageView(

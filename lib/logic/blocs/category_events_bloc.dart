@@ -6,10 +6,9 @@ import 'package:communitytabs/logic/logic.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:database_repository/database_repository.dart';
 
-class CategoryEventsBloc
-    extends Bloc<CategoryEventsEvent, CategoryEventsState> {
-  final DatabaseRepository db;
+class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> {
   final String category;
+  final DatabaseRepository db;
   final int paginationLimit = PAGINATION_LIMIT;
 
   CategoryEventsBloc({@required this.db, @required this.category})
@@ -18,11 +17,7 @@ class CategoryEventsBloc
         super(CategoryEventsStateFetching());
 
   @override
-  Stream<CategoryEventsState> mapEventToState(
-      CategoryEventsEvent categoryEventsEvent) async* {
-    print("Category Events Received An Event!");
-    // await Future.delayed(Duration(milliseconds: 5000));
-
+  Stream<CategoryEventsState> mapEventToState(CategoryEventsEvent categoryEventsEvent) async* {
     /// Fetch some events
     if (categoryEventsEvent is CategoryEventsEventFetch) {
       yield* _mapCategoryEventsEventFetchToState();
@@ -62,14 +57,11 @@ class CategoryEventsBloc
         //
         // Give the user a good feeling that events are actually being searched for.
         await Future.delayed(Duration(milliseconds: 350));
-      }// if
+      } // if
 
       // No posts were fetched yet
-      final List<QueryDocumentSnapshot> _docs =
-          await _fetchEventsWithPagination(
-              lastEvent: null, limit: paginationLimit);
-      final List<SearchResultModel> _eventModels =
-          _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+      final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(lastEvent: null, limit: paginationLimit);
+      final List<SearchResultModel> _eventModels = _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
       // Failed Reload from a failed state
       if (_currentState is CategoryEventsStateFailed && _docs.isEmpty) {
@@ -102,11 +94,8 @@ class CategoryEventsBloc
     try {
       /// No posts were fetched yet
       if (_currentState is CategoryEventsStateFetching) {
-        final List<QueryDocumentSnapshot> _docs =
-            await _fetchEventsWithPagination(
-                lastEvent: null, limit: paginationLimit);
-        final List<SearchResultModel> _eventModels =
-            _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+        final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(lastEvent: null, limit: paginationLimit);
+        final List<SearchResultModel> _eventModels = _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
         if (_eventModels.length != this.paginationLimit) {
           _maxEvents = true;
@@ -122,9 +111,7 @@ class CategoryEventsBloc
 
       /// Some posts were fetched already, now fetch 20 more
       else if (_currentState is CategoryEventsStateSuccess) {
-        final List<QueryDocumentSnapshot> _docs =
-            await _fetchEventsWithPagination(
-                lastEvent: _currentState.lastEvent, limit: paginationLimit);
+        final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(lastEvent: _currentState.lastEvent, limit: paginationLimit);
 
         /// No event models were returned from the database
         if (_docs.isEmpty) {
@@ -138,8 +125,7 @@ class CategoryEventsBloc
 
         /// At least 1 event was returned from the database
         else {
-          final List<SearchResultModel> _eventModels =
-              _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+          final List<SearchResultModel> _eventModels = _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
           if (_eventModels.length != this.paginationLimit) {
             _maxEvents = true;
@@ -158,14 +144,11 @@ class CategoryEventsBloc
     } // catch
   } // _mapCategoryEventsEventFetchToState
 
-  Future<List<QueryDocumentSnapshot>> _fetchEventsWithPagination(
-      {@required QueryDocumentSnapshot lastEvent, @required int limit}) async {
-    return db.searchEventsByCategory(
-        category: this.category, lastEvent: lastEvent, limit: limit);
+  Future<List<QueryDocumentSnapshot>> _fetchEventsWithPagination({@required QueryDocumentSnapshot lastEvent, @required int limit}) async {
+    return db.searchEventsByCategory(category: this.category, lastEvent: lastEvent, limit: limit);
   } // _fetchEventsWithPagination
 
-  List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels(
-      {@required List<QueryDocumentSnapshot> docs}) {
+  List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels({@required List<QueryDocumentSnapshot> docs}) {
     return docs.map((doc) {
       Map<String, dynamic> docAsMap = doc.data();
 
@@ -173,10 +156,7 @@ class CategoryEventsBloc
       DateTime tempRawStartDateAndTimeToDateTime;
       Timestamp _startTimestamp = docAsMap[ATTRIBUTE_RAW_START_DATE_TIME];
       if (_startTimestamp != null) {
-        tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(
-                _startTimestamp.millisecondsSinceEpoch)
-            .toUtc()
-            .toLocal();
+        tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(_startTimestamp.millisecondsSinceEpoch).toUtc().toLocal();
       } // if
       else {
         tempRawStartDateAndTimeToDateTime = null;
@@ -211,21 +191,17 @@ class CategoryEventsBloc
   } // _mapDocumentSnapshotsToSearchEventModels
 
   @override
-  Stream<Transition<CategoryEventsEvent, CategoryEventsState>> transformEvents(
-      Stream<CategoryEventsEvent> events, transitionFn) {
-    return super.transformEvents(
-        events.debounceTime(const Duration(milliseconds: 0)), transitionFn);
+  Stream<Transition<CategoryEventsEvent, CategoryEventsState>> transformEvents(Stream<CategoryEventsEvent> events, transitionFn) {
+    return super.transformEvents(events.debounceTime(const Duration(milliseconds: 0)), transitionFn);
   } // transformEvents
 
   @override
   void onChange(Change<CategoryEventsState> change) {
-    print('${this.category} Category Events Bloc: $change');
     super.onChange(change);
   } // onChange
 
   @override
   Future<void> close() {
-    print('Category Events Bloc Closed!');
     return super.close();
   } // close
 } // CategoryEventsBloc

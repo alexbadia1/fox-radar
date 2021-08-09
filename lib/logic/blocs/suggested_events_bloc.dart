@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:isolate';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/logic/logic.dart';
@@ -6,26 +7,30 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:database_repository/database_repository.dart';
 
 class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsState> {
+  IsolateWorker _isolateWorker;
   final DatabaseRepository db;
   final int paginationLimit = PAGINATION_LIMIT;
 
-  SuggestedEventsBloc({@required this.db})
-      : assert(db != null),
-        super(SuggestedEventsStateFetching());
+  SuggestedEventsBloc({@required this.db}) : assert(db != null), super(SuggestedEventsStateFetching());
 
   // Adds a debounce, to prevent the spamming of requesting events
   @override
-  Stream<Transition<SuggestedEventsEvent, SuggestedEventsState>>
-      transformEvents(Stream<SuggestedEventsEvent> events, transitionFn) {
-    return super.transformEvents(
-        events.debounceTime(const Duration(milliseconds: 0)), transitionFn);
+  Stream<Transition<SuggestedEventsEvent, SuggestedEventsState>> transformEvents(Stream<SuggestedEventsEvent> events, transitionFn) {
+    return super.transformEvents(events.debounceTime(const Duration(milliseconds: 0)), transitionFn);
   } // transformEvents
 
   @override
-  Stream<SuggestedEventsState> mapEventToState(
-      SuggestedEventsEvent suggestedEventsEvent) async* {
+  Stream<SuggestedEventsState> mapEventToState(SuggestedEventsEvent suggestedEventsEvent) async* {
     // Fetch some events
     if (suggestedEventsEvent is SuggestedEventsEventFetch) {
+
+      // TODO: Move this to the pinned events bloc
+      this._isolateWorker = await IsolateWorker.instance();
+      final result = await this._isolateWorker.sendMessage(EventModel.nullConstructor());
+      if (result is EventModel){
+        print("[Suggested Events Bloc] ${result.toString()}");
+      }// if
+
       yield* _mapSuggestedEventsEventFetchToState();
     } // if
 
@@ -65,14 +70,11 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
         //
         // Give the user a good feeling that events are actually being searched for.
         await Future.delayed(Duration(milliseconds: 350));
-      }// if
+      } // if
 
       // No posts were fetched yet
-      final List<QueryDocumentSnapshot> _docs =
-          await _fetchEventsWithPagination(
-              lastEvent: null, limit: paginationLimit);
-      final List<SearchResultModel> _eventModels =
-          _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+      final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(lastEvent: null, limit: paginationLimit);
+      final List<SearchResultModel> _eventModels = _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
       // Failed Reload from a failed state
       if (_currentState is SuggestedEventsStateFailed && _docs.isEmpty) {
@@ -105,11 +107,8 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
     try {
       // No posts were fetched yet
       if (_currentState is SuggestedEventsStateFetching) {
-        final List<QueryDocumentSnapshot> _docs =
-            await _fetchEventsWithPagination(
-                lastEvent: null, limit: paginationLimit);
-        final List<SearchResultModel> _eventModels =
-            _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+        final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(lastEvent: null, limit: paginationLimit);
+        final List<SearchResultModel> _eventModels = _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
         if (_eventModels.length != this.paginationLimit) {
           _maxEvents = true;
@@ -125,9 +124,7 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
 
       // Some posts were fetched already, now fetch 20 more
       else if (_currentState is SuggestedEventsStateSuccess) {
-        final List<QueryDocumentSnapshot> _docs =
-            await _fetchEventsWithPagination(
-                lastEvent: _currentState.lastEvent, limit: paginationLimit);
+        final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(lastEvent: _currentState.lastEvent, limit: paginationLimit);
 
         // No event models were returned from the database
         if (_docs.isEmpty) {
@@ -141,8 +138,7 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
 
         // At least 1 event was returned from the database
         else {
-          final List<SearchResultModel> _eventModels =
-              _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+          final List<SearchResultModel> _eventModels = _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
           if (_eventModels.length != this.paginationLimit) {
             _maxEvents = true;
@@ -162,14 +158,11 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
     } // catch
   } // _mapSuggestedEventsEventFetchToState
 
-  Future<List<QueryDocumentSnapshot>> _fetchEventsWithPagination(
-      {@required QueryDocumentSnapshot lastEvent, @required int limit}) async {
-    return db.searchEventsByStartDateAndTime(
-        lastEvent: lastEvent, limit: limit);
+  Future<List<QueryDocumentSnapshot>> _fetchEventsWithPagination({@required QueryDocumentSnapshot lastEvent, @required int limit}) async {
+    return db.searchEventsByStartDateAndTime(lastEvent: lastEvent, limit: limit);
   } // _fetchEventsWithPagination
 
-  List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels(
-      {@required List<QueryDocumentSnapshot> docs}) {
+  List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels({@required List<QueryDocumentSnapshot> docs}) {
     return docs.map((doc) {
       Map<String, dynamic> docAsMap = doc.data();
 
@@ -177,10 +170,7 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
       DateTime tempRawStartDateAndTimeToDateTime;
       Timestamp _startTimestamp = docAsMap[ATTRIBUTE_RAW_START_DATE_TIME];
       if (_startTimestamp != null) {
-        tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(
-                _startTimestamp.millisecondsSinceEpoch)
-            .toUtc()
-            .toLocal();
+        tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(_startTimestamp.millisecondsSinceEpoch).toUtc().toLocal();
       } // if
       else {
         tempRawStartDateAndTimeToDateTime = null;
@@ -214,6 +204,26 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
     }).toList();
   } // _mapDocumentSnapshotsToSearchEventModels
 
+  static List<EventModel> _sortEventModels(SendPort sendPort, {@required List<EventModel> events, @required String sortKey}) {
+    switch (sortKey) {
+      case START_DATE_TIME:
+        events.sort((a, b) => a.rawStartDateAndTime.compareTo(b.rawStartDateAndTime));
+        break;
+      case END_DATE_TIME:
+      // Events with no end date should be listed first, using 0 should ensure that.
+        events.sort((a, b) => a.rawEndDateAndTime.compareTo(b.rawEndDateAndTime ?? 0));
+        break;
+      case ALPHABETICAL:
+        events.sort((a, b) => a.title.compareTo(b.title));
+        break;
+      default:
+        events.sort((a, b) => a.title.compareTo(b.title));
+        break;
+    }// switch
+
+    return events;
+  }//sortList
+
   @override
   void onChange(Change<SuggestedEventsState> change) {
     print('Suggested Events Bloc: $change');
@@ -223,6 +233,11 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
   @override
   Future<void> close() {
     print('Suggested Events Bloc Closed');
+
+    if (this._isolateWorker != null) {
+      print('Suggested Events Isolate Closed!');
+      this._isolateWorker.dispose();
+    }// if
     return super.close();
   } // close
 } // SuggestedEventsBloc

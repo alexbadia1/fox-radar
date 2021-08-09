@@ -100,9 +100,9 @@ class FetchFullEventCubit extends Cubit<FetchFullEventState> {
       newImageFitCover: documentSnapshot[ATTRIBUTE_IMAGE_FIT_COVER] ?? false,
 
       // DocumentId converted to [STRING] from [STRING] in firebase.
-      newEventID: doc.id ?? '',
+      newEventID: documentSnapshot[ATTRIBUTE_EVENT_ID] ?? '',
 
-      newAccountID: documentSnapshot[ATTRIBUTE_ACCOUNT_ID] ?? '',
+      newAccountID: doc.id,
     );
   } // _mapQueryDocumentSnapshotToEventModel
 

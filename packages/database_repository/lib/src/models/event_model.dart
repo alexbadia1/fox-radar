@@ -84,6 +84,9 @@ class EventModel {
   /// Account ID of of the Account that created this event
   String _accountID;
 
+  /// ID used keep track if an account pinned it
+  String _pinnedID;
+
   /// Full Constructor
   EventModel(
       {String newHost,
@@ -100,7 +103,8 @@ class EventModel {
       String newImagePath,
       String newEventID,
         String newSearchID,
-      String newAccountID}) {
+      String newAccountID,
+      String newPinnedID}) {
     // Set the Event Title
     this._title = newTitle;
 
@@ -163,6 +167,8 @@ class EventModel {
 
     // Set Account ID
     this._accountID = newAccountID;
+
+    this._pinnedID = newPinnedID;
   } // EventModel
 
   /// Null Constructor
@@ -180,6 +186,7 @@ class EventModel {
     this._eventID = '';
     this._searchID = '';
     this._accountID = '';
+    this._pinnedID = '';
 
     this._rawStartDateAndTime = DateTime.now();
     this._startDate =
@@ -219,6 +226,7 @@ class EventModel {
     String eventID,
     String searchID,
     String accountID,
+    String pinnedID,
   }) {
     // Use previous rawEndDateAndTime
     if (rawEndDateAndTime == null) {
@@ -247,6 +255,7 @@ class EventModel {
       newEventID: eventID ?? this._eventID,
       newSearchID: searchID ?? this._searchID,
       newAccountID: accountID ?? this._accountID,
+      newPinnedID: pinnedID ?? this._pinnedID,
     );
   } // copyWith
 
@@ -269,6 +278,7 @@ class EventModel {
   String get eventID => this._eventID;
   String get searchID => this._searchID;
   String get accountID => this._accountID;
+  String get pinnedID => this._pinnedID;
 
   set imagePath(String value) {
     this._imagePath = value;
@@ -290,6 +300,10 @@ class EventModel {
     this._accountID = value;
   }// accountId
 
+  set pinnedID(String value) {
+    this._pinnedID = value;
+  }// accountId
+
   @override
   String toString() {
     return "{\n"
@@ -308,6 +322,7 @@ class EventModel {
         "\tEvent ID (Events Collection): ${this._eventID}\n"
         "\tSearch ID (Events Collection): ${this._searchID}\n"
         "\tAccount ID (Owner of Event): ${this._accountID}\n"
+        "\Pinned ID (Pinner of Event): ${this._pinnedID}\n"
         "}\n";
   } // toString
 } //class

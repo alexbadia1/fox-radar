@@ -1,5 +1,6 @@
 library logic;
 
+export 'isolate_worker.dart';
 export 'blocs/blocs.dart';
 export 'cubits/cubits.dart';
 export 'constants/constants.dart';

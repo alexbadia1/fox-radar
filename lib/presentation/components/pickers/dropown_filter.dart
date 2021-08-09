@@ -13,26 +13,6 @@ class _DropdownEventsFilterState extends State<DropdownEventsFilter> {
   final filters = ["Starts", "Ends", "A-Z"];
   String dropdownValue;
 
-  List<EventModel> sortEventModels({@required List<EventModel> events, @required String sortKey}) {
-    switch (sortKey) {
-      case 'Starts': 
-        events.sort((a, b) => a.rawStartDateAndTime.compareTo(b.rawStartDateAndTime));
-        break;
-      case 'Ends':
-        // Events with no end date should be listed first, using 0 should ensure that.  
-        events.sort((a, b) => a.rawEndDateAndTime.compareTo(b.rawEndDateAndTime ?? 0));
-        break;
-      case 'A-Z':
-        events.sort((a, b) => a.title.compareTo(b.title));
-        break;
-      default:
-        events.sort((a, b) => a.title.compareTo(b.title));
-        break;
-    }// switch
-
-    return events;
-  }//sortList
-
   @override
   void initState() {
     super.initState();
@@ -56,18 +36,28 @@ class _DropdownEventsFilterState extends State<DropdownEventsFilter> {
             return Text(value, style: TextStyle(fontSize: 14.0, color: cWhite100));
           }).toList();
         },
-        onChanged: (String sortKey) async {
+        onChanged: (String sortKey) {
+          // // Add a sort event to the PinnedEventsBloc
+          // // TODO: Listen to PinnedEventsBloc to retrieve
+          // // // the list or maybe just add pass the to this list?
+          // final EventModels events = BlocProvider.of<PinnedEventsBloc>(context).state.eventModels;
+          // if (events.length >= 50) {
+          //   // Use the dart isolate
+          // }// if
+          //
+          // else {
+          //   this.sortEventModels(
+          //     sortKey: sortKey,
+          //     events: BlocProvider
+          //         .of<PinnedEventsBloc>(context)
+          //         .state
+          //         .eventModels,
+          //   );
+          // }
 
-          // TODO: Listen to PinnedEventsBloc to retrieve
-          //       the list or maybe just add pass the to this list?
-          // this.sortEventModels(
-          //   sortKey: sortKey,
-          //   events: BlocProvider.of<PinnedEventsBloc>(context),
-          // );
-
-          setState(() {
-            this.dropdownValue = sortKey;
-          });
+          // setState(() {
+          //   this.dropdownValue = sortKey;
+          // });
         },
         items: this.filters.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(

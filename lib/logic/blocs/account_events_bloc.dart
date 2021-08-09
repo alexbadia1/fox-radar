@@ -9,28 +9,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:database_repository/database_repository.dart';
 
 class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
+  final String accountID;
   final DatabaseRepository db;
   final int paginationLimit = PAGINATION_LIMIT;
-  String _accountID;
 
-  AccountEventsBloc({@required this.db, @required accountID})
+  AccountEventsBloc({@required this.db, @required this.accountID})
       : assert(db != null),
-        super(AccountEventsStateFetching()) {
-    this._accountID = accountID;
-  } // AccountEventsBloc
+        assert(accountID != null),
+        super(AccountEventsStateFetching());
 
   // Adds a debounce, to prevent the spamming of requesting events
   @override
-  Stream<Transition<AccountEventsEvent, AccountEventsState>> transformEvents(
-      Stream<AccountEventsEvent> events, transitionFn) {
-    return super.transformEvents(
-        events.debounceTime(const Duration(milliseconds: 0)), transitionFn);
+  Stream<Transition<AccountEventsEvent, AccountEventsState>> transformEvents(Stream<AccountEventsEvent> events, transitionFn) {
+    return super.transformEvents(events.debounceTime(const Duration(milliseconds: 0)), transitionFn);
   } // transformEvents
 
   @override
   Stream<AccountEventsState> mapEventToState(
-      AccountEventsEvent accountEventsEvent,
-      ) async* {
+    AccountEventsEvent accountEventsEvent,
+  ) async* {
     // Fetch some events
     if (accountEventsEvent is AccountEventsEventFetch) {
       yield* _mapAccountEventsEventFetchToState();
@@ -43,8 +40,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
 
     // Remove an event
     else if (accountEventsEvent is AccountEventsEventRemove) {
-      yield* _mapAccountEventsEventRemoveToState(
-          accountEventsEventRemove: accountEventsEvent);
+      yield* _mapAccountEventsEventRemoveToState(accountEventsEventRemove: accountEventsEvent);
     } // else if
 
     // The event added to the bloc has not associated state
@@ -60,11 +56,9 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
 
     try {
       // No posts were fetched yet
-      if (_currentState is AccountEventsStateFetching ||
-          _currentState is AccountEventsStateFailed) {
+      if (_currentState is AccountEventsStateFetching || _currentState is AccountEventsStateFailed) {
         // Fetch the first [paginationLimit] number of events
-        final List<QueryDocumentSnapshot> _docs =
-        await _fetchEventsWithPagination(
+        final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(
           lastEvent: null,
           limit: paginationLimit,
         );
@@ -76,8 +70,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
         } // if
 
         // Map the events to a list of "Search Result Models"
-        final List<SearchResultModel> _eventModels =
-        _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+        final List<SearchResultModel> _eventModels = _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
         // The last remaining events where retrieved
         if (_eventModels.length != this.paginationLimit) {
@@ -96,9 +89,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
       // Posts were fetched already, now fetch [paginationLimit] more events.
       else if (_currentState is AccountEventsStateSuccess) {
         // Fetch the first [paginationLimit] number of events
-        final List<QueryDocumentSnapshot> _docs =
-        await _fetchEventsWithPagination(
-            lastEvent: _currentState.lastEvent, limit: paginationLimit);
+        final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(lastEvent: _currentState.lastEvent, limit: paginationLimit);
 
         // No event models were returned from the database
         //
@@ -117,8 +108,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
         // the AccountEventBloc's State by adding the new events.
         else {
           // Map the events to a list of "Search Result Models"
-          final List<SearchResultModel> _eventModels =
-          _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+          final List<SearchResultModel> _eventModels = _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
           // The last remaining events where retrieved
           if (_eventModels.length != this.paginationLimit) {
@@ -161,11 +151,10 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
         //
         // Give the user a good feeling that events are actually being searched for.
         await Future.delayed(Duration(milliseconds: 350));
-      }// if
+      } // if
 
       // User is calling reload, so treat as if no posts were fetched yet
-      final List<QueryDocumentSnapshot> _docs =
-      await _fetchEventsWithPagination(
+      final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(
         lastEvent: null,
         limit: paginationLimit,
       );
@@ -178,8 +167,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
       } // if
 
       // Map the events to a list of "Search Result Models"
-      final List<SearchResultModel> _eventModels =
-      _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+      final List<SearchResultModel> _eventModels = _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
       // The last remaining events where retrieved
       if (_eventModels.length != this.paginationLimit) {
@@ -198,8 +186,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
     } // catch
   } // _mapAccountEventsEventReloadToState
 
-  Stream<AccountEventsState> _mapAccountEventsEventRemoveToState(
-      {@required AccountEventsEventRemove accountEventsEventRemove}) async* {
+  Stream<AccountEventsState> _mapAccountEventsEventRemoveToState({@required AccountEventsEventRemove accountEventsEventRemove}) async* {
     final currentState = this.state;
 
     if (currentState is AccountEventsStateSuccess) {
@@ -215,19 +202,18 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
             lastEvent: currentState.lastEvent,
             maxEvents: currentState.maxEvents,
             isFetching: currentState.isFetching,
-            isDeleting: true
-        );
+            isDeleting: true);
 
         // Remove event from "My Events" list view on the device
         if (currentState.eventModels.isNotEmpty) {
           currentState.eventModels.removeAt(accountEventsEventRemove.listIndex);
-        }// if
+        } // if
 
         // Create a new reference, to force the list view to update
         List<SearchResultModel> newEventModelReference = [];
         if (currentState.eventModels.isNotEmpty) {
           newEventModelReference.addAll(currentState.eventModels);
-        }// if
+        } // if
 
         // TODO: Enable this code to actually delete and event
         // // Remove image from storage
@@ -250,7 +236,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
         // just in case there's more events in the database
         if (newEventModelReference.isEmpty) {
           yield AccountEventsStateFailed();
-        }// if
+        } // if
 
         // Set [isDeleting] false, as there are still events
         else {
@@ -259,24 +245,20 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
               lastEvent: currentState.lastEvent,
               maxEvents: currentState.maxEvents,
               isFetching: currentState.isFetching,
-              isDeleting: false
-          );
-        }// else
-      }// if
+              isDeleting: false);
+        } // else
+      } // if
     } // if
   } // _mapAccountEventsEventRemoveToState
 
-  Future<List<QueryDocumentSnapshot>> _fetchEventsWithPagination(
-      {@required QueryDocumentSnapshot lastEvent, @required int limit}) async {
-    return db.searchEventsByAccount(
-        accountID: this._accountID, lastEvent: lastEvent, limit: limit);
+  Future<List<QueryDocumentSnapshot>> _fetchEventsWithPagination({@required QueryDocumentSnapshot lastEvent, @required int limit}) async {
+    return db.getAccountEvents(accountID: this.accountID, lastEvent: lastEvent, limit: limit);
   } // _fetchEventsWithPagination
 
   /// Name: _mapDocumentSnapshotsToSearchEventModels
   ///
   /// Description: maps the document snapshot from firebase to the event model
-  List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels(
-      {@required List<QueryDocumentSnapshot> docs}) {
+  List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels({@required List<QueryDocumentSnapshot> docs}) {
     return docs.map((doc) {
       Map<String, dynamic> docAsMap = doc.data();
 
@@ -284,15 +266,13 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
       DateTime tempRawStartDateAndTimeToDateTime;
       Timestamp _startTimestamp = docAsMap[ATTRIBUTE_RAW_START_DATE_TIME];
       if (_startTimestamp != null) {
-        tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(
-            _startTimestamp.millisecondsSinceEpoch)
-            .toUtc()
-            .toLocal();
+        tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(_startTimestamp.millisecondsSinceEpoch).toUtc().toLocal();
       } // if
       else {
         tempRawStartDateAndTimeToDateTime = null;
       } // else
 
+      print('Document ID: ${doc.id}');
       return SearchResultModel(
         // Title converted to [STRING] from [STRING] in Firebase.
         newTitle: docAsMap[ATTRIBUTE_TITLE] ?? '',
@@ -315,24 +295,22 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
         // DocumentId converted to [STRING] from [STRING] in firebase.
         newEventId: docAsMap[ATTRIBUTE_EVENT_ID] ?? '',
 
-        // DocumentId converted to [STRING] from [STRING] in firebase.
-        newSearchID: doc.id ?? '',
+        // SearchId converted to [STRING] from [STRING] in firebase.
+        newSearchID: docAsMap[ATTRIBUTE_SEARCH_ID] ?? '',
 
-        // AccountID converted to [STRING] from [STRING] in firebase.
-        newAccountID: docAsMap[ATTRIBUTE_ACCOUNT_ID] ?? '',
+        // AccountIs converted to [STRING] from [STRING] in firebase.
+        newAccountID: doc.id ?? '',
       );
     }).toList();
   } // _mapDocumentSnapshotsToSearchEventModels
 
   @override
   void onChange(Change<AccountEventsState> change) {
-    print('Account Events Bloc: $change');
     super.onChange(change);
   } // onChange
 
   @override
   Future<void> close() {
-    print('Account Events Bloc Closed');
     return super.close();
   } // close
 } // AccountEventsBloc
