@@ -332,7 +332,7 @@ class DatabaseRepository {
     /// As events get purged from the database, the user
     /// shouldn't be able to pin 20,000 events in time.
     _batch.set(_userSavedEventsSubCollectionDocRef, {
-      newEvent.eventID: true,
+      newEvent.searchID: true,
     });
   } // updateEvent
 
