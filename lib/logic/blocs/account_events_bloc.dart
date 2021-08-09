@@ -57,6 +57,9 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
     try {
       // No posts were fetched yet
       if (_currentState is AccountEventsStateFetching || _currentState is AccountEventsStateFailed) {
+        // Fetch document containing all of the event id's
+        final List<String> _accountEvents = await _fetchCreatedEvents();
+        
         // Fetch the first [paginationLimit] number of events
         final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(
           lastEvent: null,
@@ -251,8 +254,12 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
     } // if
   } // _mapAccountEventsEventRemoveToState
 
+  Future<List<String>> _fetchCreatedEvents() async {
+    return await db.getAccountEvents(uid: this.accountID);
+  } // _fetchEventsWithPagination
+
   Future<List<QueryDocumentSnapshot>> _fetchEventsWithPagination({@required QueryDocumentSnapshot lastEvent, @required int limit}) async {
-    return db.getAccountEvents(accountID: this.accountID, lastEvent: lastEvent, limit: limit);
+    return db.getAccountEventsDeprecated(accountID: this.accountID, lastEvent: lastEvent, limit: limit);
   } // _fetchEventsWithPagination
 
   /// Name: _mapDocumentSnapshotsToSearchEventModels
@@ -272,7 +279,6 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
         tempRawStartDateAndTimeToDateTime = null;
       } // else
 
-      print('Document ID: ${doc.id}');
       return SearchResultModel(
         // Title converted to [STRING] from [STRING] in Firebase.
         newTitle: docAsMap[ATTRIBUTE_TITLE] ?? '',
@@ -292,14 +298,8 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
         // Implement Firebase Images.
         newImageFitCover: docAsMap[ATTRIBUTE_IMAGE_FIT_COVER] ?? true,
 
-        // DocumentId converted to [STRING] from [STRING] in firebase.
-        newEventId: docAsMap[ATTRIBUTE_EVENT_ID] ?? '',
-
-        // SearchId converted to [STRING] from [STRING] in firebase.
-        newSearchID: docAsMap[ATTRIBUTE_SEARCH_ID] ?? '',
-
-        // AccountIs converted to [STRING] from [STRING] in firebase.
-        newAccountID: doc.id ?? '',
+        // Doc ID is the same as the event ID
+        newEventId: doc.id ?? '',
       );
     }).toList();
   } // _mapDocumentSnapshotsToSearchEventModels

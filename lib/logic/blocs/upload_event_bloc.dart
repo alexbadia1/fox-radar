@@ -48,6 +48,9 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
     // Start new upload event
     if (uploadEventUpload.newEventModel != null) {
       CreateEventFormAction action = uploadEventUpload.createEventFormAction;
+
+      // New Event Model tricks equatable into viewing the 
+      // the next [UploadEventStateUploading] as a new state.
       EventModel newEventModel = uploadEventUpload.newEventModel;
 
       // Form Action Create
@@ -57,12 +60,11 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
 
       // Form Action Update
       else if (action == CreateEventFormAction.update) {
-        await this.db.updateEvent(newEventModel, this.uid);
-        // await this.db.updateEventInEventsCollection(newEvent: newEventModel);
-        // await this.db.updateEventInSearchEventsCollection(newEvent: newEventModel);
+        await this.db.updateEvent(newEventModel);
       } // else if
 
       // TODO: Consider letting the user deleting an image
+      
       // Only upload an image if the user chose one
       if (newEventModel.imageBytes != null) {
         // Generate the storage path for the image

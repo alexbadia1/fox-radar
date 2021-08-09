@@ -22,3 +22,4 @@ const String ATTRIBUTE_IMAGE_FIT_COVER = 'imageFitCover';
 const String ATTRIBUTE_EVENT_ID = 'eventID';
 const String ATTRIBUTE_SEARCH_ID = 'searchID';
 const String ATTRIBUTE_ACCOUNT_ID = 'accountID';
+const String ATTRIBUTE_PIN_COUNT = 'pinCount';
