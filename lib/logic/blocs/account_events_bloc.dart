@@ -77,7 +77,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
 
         /// Fail, since no document id's are listed in the user's createEvent doc.
         if (this._accountEventsHandler.isEmpty()) {
-          yield AccountEventsStateFailed("User has no created events listed in account events doc");
+          yield AccountEventsStateFailed("[Account Events State Failed] Account events doc has no events!");
           return;
         } // if
 
@@ -92,9 +92,10 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
             _docs.add(docSnap);
           }// if
         }// for
+        
         /// No events were retrieved on the FIRST retrieval, fail.
         if (_docs.isEmpty) {
-          yield AccountEventsStateFailed("No events retrieved from first fetch");
+          yield AccountEventsStateFailed("[Account Events State Failed] Failed to fetch the first ${this._paginationLimit} based on the account events doc!");
           return;
         } // if
 

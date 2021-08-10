@@ -203,7 +203,6 @@ class DatabaseRepository {
       /// }
       final DocumentReference _accountEventsDocRef = _userCreatedEventsCollection.doc(userId);
       _batch.update(_accountEventsDocRef, {
-        // TODO: Verify update can be used here!
         _eventsId: true,
       });
       await _batch.commit();
@@ -250,34 +249,19 @@ class DatabaseRepository {
     await _batch.commit();
   } // updateEvent
 
-  /// Saves an existing "Event" in firebase
-  ///
-  /// Batched is used to ensure atomicity, due
-  /// to the denormalized structure of the database.
-  Future<void> pinEvent(String eventId, String userId) async {
+  /// Pins an existing "Event" to the user account
+  /// Returns true or false, if the update succeded or not.
+  Future<bool> pinEvent(String eventId, String userId) async {
+    try {
     // User's doc containing all saved events and a count
     final DocumentReference docRef = this._userSavedEventsCollection.doc(userId);
 
-    FirebaseFirestore.instance.runTransaction((transaction) async {
-      final DocumentSnapshot docSnap = await transaction.get(docRef);
-
-      if (!docSnap.exists) {
-        return; // Tell user they are pinning a non-existent event
-      } // if
-
-      final int count = docSnap.get(ATTRIBUTE_PIN_COUNT);
-      if (count > 1000) {
-        return; // Tell user they've hit the max events
-      } // if
-
-      // All good!
-      //
-      // Pin event and increase number of pinned events
-      transaction.update(docRef, {
-        eventId: true,
-        ATTRIBUTE_PIN_COUNT: (count + 1),
-      });
-    });
+    await docRef.update({eventId: true});
+    return true;
+    }// try
+    catch (e) {
+      return false;
+    }// catch
   } // updateEvent
 
   /// Deletes an existing "Event" in firebase
@@ -297,8 +281,8 @@ class DatabaseRepository {
       // Delete
       _batch.delete(eventDocRef);
       _batch.delete(searchEventDocRef);
-      _batch.update(pinnedEventDocRef, {eventId: FieldValue.delete(), ATTRIBUTE_PIN_COUNT: FieldValue.increment(-1)});
-      _batch.update(pinnedEventDocRef, {eventId: FieldValue.delete(), ATTRIBUTE_PIN_COUNT: FieldValue.increment(-1)});
+      _batch.update(createdEventDocRef, {eventId: FieldValue.delete()});
+      _batch.update(pinnedEventDocRef, {eventId: FieldValue.delete()});
 
       _batch.commit();
     } // try

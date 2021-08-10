@@ -8,7 +8,7 @@ class AccountEventsHandler {
   } // AccountEventsHandler
 
   List<String> getEventIdsPaginated(int limit) {
-    if (this._curr == eventIds.length) { return []; } // No more events left to get
+    if (this._curr >= eventIds.length) { return []; } // No more events left to get
     if (limit <= 0) { return []; } // Can't get negative pages
 
     final int start = this._curr;

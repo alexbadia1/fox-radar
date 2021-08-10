@@ -22,6 +22,7 @@ class FetchFullEventSuccess extends FetchFullEventState {
       : assert(eventModel != null) {
     end = this.eventModel.rawEndDateAndTime;
     start = this.eventModel.rawStartDateAndTime;
+    this.formatEventDatesAndTimes();
   } // FetchFullEventSuccess
 
   void formatEventDatesAndTimes() {
@@ -177,6 +178,12 @@ class FetchFullEventSuccess extends FetchFullEventState {
 } // FetchEventSuccess
 
 class FetchFullEventFailure extends FetchFullEventState {
+  final String msg;
+
+  FetchFullEventFailure(this.msg) {
+    print("[Fetch Full Event Failure]: ${this.msg}");
+  }// FetchFullEventFailure
+  
   @override
-  List<Object> get props => [];
-} // FetchEventFailure
+  List<Object> get props => [this.msg];
+}// FetchEventFailure

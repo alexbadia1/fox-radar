@@ -164,9 +164,10 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
                                   /// Show each search result in an [EventCard] widget.
                                   /// When clicking on the card, the full event is retrieved.
                                   if (index < _accountEventsState.eventModels.length) {
+                                    final searchResult = _accountEventsState.eventModels.elementAt(index);
                                     return EventCard(
-                                      key: ObjectKey(_accountEventsState.eventModels.elementAt(index)),
-                                      newSearchResult: _accountEventsState.eventModels.elementAt(index),
+                                      key: ObjectKey(searchResult),
+                                      newSearchResult: searchResult,
                                       onEventCardVertMoreCallback: (imageBytes) {
                                         // Show a modal bottom sheet with
                                         // options to edit or delete an event.
@@ -188,8 +189,7 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
                                                 ),
                                               ],
                                               child: Builder(builder: (modalSheetContext) {
-                                                BlocProvider.of<FetchFullEventCubit>(modalSheetContext)
-                                                    .fetchEvent(documentId: _accountEventsState.eventModels.elementAt(index).eventId);
+                                                BlocProvider.of<FetchFullEventCubit>(modalSheetContext).fetchEvent(documentId: searchResult);
                                                 return AccountModalBottomSheet(
                                                   listViewIndex: index,
                                                   searchResultModel: _accountEventsState.eventModels.elementAt(index),
