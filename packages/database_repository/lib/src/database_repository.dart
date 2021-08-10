@@ -15,14 +15,10 @@ class DatabaseRepository {
   } // DatabaseRepository
 
   // Collection References
-  final CollectionReference _eventsCollection =
-      FirebaseFirestore.instance.collection(COLLECTION_EVENTS);
-  final CollectionReference _searchEventsCollection =
-      FirebaseFirestore.instance.collection(COLLECTION_SEARCH_EVENTS);
-  final CollectionReference _userCreatedEventsCollection =
-      FirebaseFirestore.instance.collection(COLLECTION_USER_CREATED_EVENTS);
-  final CollectionReference _userSavedEventsCollection =
-      FirebaseFirestore.instance.collection(COLLECTION_USER_SAVED_EVENTS);
+  final CollectionReference _eventsCollection = FirebaseFirestore.instance.collection(COLLECTION_EVENTS);
+  final CollectionReference _searchEventsCollection = FirebaseFirestore.instance.collection(COLLECTION_SEARCH_EVENTS);
+  final CollectionReference _userCreatedEventsCollection = FirebaseFirestore.instance.collection(COLLECTION_USER_CREATED_EVENTS);
+  final CollectionReference _userSavedEventsCollection = FirebaseFirestore.instance.collection(COLLECTION_USER_SAVED_EVENTS);
 
   /// Retrieves events from the "Search Events Collection" based on
   /// [category] and returns a [QueryDocumentSnapshot] with the events.
@@ -30,24 +26,15 @@ class DatabaseRepository {
   /// For pagination, continues query starting after the [lastEvent]
   /// and returns a number documents no bigger thant the [limit].
   Future<List<QueryDocumentSnapshot>> searchEventsByCategory(
-      {@required String category,
-      @required QueryDocumentSnapshot lastEvent,
-      @required int limit}) async {
+      {@required String category, @required QueryDocumentSnapshot lastEvent, @required int limit}) async {
     QuerySnapshot querySnap;
 
     if (lastEvent != null) {
-      querySnap = await _searchEventsCollection
-          .where(ATTRIBUTE_CATEGORY, isEqualTo: category)
-          .startAfterDocument(lastEvent)
-          .limit(limit)
-          .get();
+      querySnap = await _searchEventsCollection.where(ATTRIBUTE_CATEGORY, isEqualTo: category).startAfterDocument(lastEvent).limit(limit).get();
     } // if
 
     else {
-      querySnap = await _searchEventsCollection
-          .where(ATTRIBUTE_CATEGORY, isEqualTo: category)
-          .limit(limit)
-          .get();
+      querySnap = await _searchEventsCollection.where(ATTRIBUTE_CATEGORY, isEqualTo: category).limit(limit).get();
     } // else
 
     return querySnap.docs;
@@ -59,25 +46,19 @@ class DatabaseRepository {
   ///
   /// For pagination, continues query starting after the [lastEvent]
   /// and returns a number documents no bigger thant the [limit].
-  Future<List<QueryDocumentSnapshot>> searchEventsByStartDateAndTime(
-      {@required QueryDocumentSnapshot lastEvent, @required int limit}) async {
+  Future<List<QueryDocumentSnapshot>> searchEventsByStartDateAndTime({@required QueryDocumentSnapshot lastEvent, @required int limit}) async {
     QuerySnapshot querySnap;
 
     if (lastEvent != null) {
       querySnap = await _searchEventsCollection
-          .where(ATTRIBUTE_RAW_START_DATE_TIME,
-              isGreaterThanOrEqualTo: DateTime.now())
+          .where(ATTRIBUTE_RAW_START_DATE_TIME, isGreaterThanOrEqualTo: DateTime.now())
           .startAfterDocument(lastEvent)
           .limit(limit)
           .get();
     } // if
 
     else {
-      querySnap = await _searchEventsCollection
-          .where(ATTRIBUTE_RAW_START_DATE_TIME,
-              isGreaterThanOrEqualTo: DateTime.now())
-          .limit(limit)
-          .get();
+      querySnap = await _searchEventsCollection.where(ATTRIBUTE_RAW_START_DATE_TIME, isGreaterThanOrEqualTo: DateTime.now()).limit(limit).get();
     } // else
 
     return querySnap.docs;
@@ -86,7 +67,6 @@ class DatabaseRepository {
   Future<List<String>> getAccountEvents({@required String uid}) async {
     final DocumentSnapshot docSnap = await _userCreatedEventsCollection.doc(uid).get();
     try {
-
       // TODO: Move this to account events bloc,
       // Maybe do this on another isolate>
       final Map m = docSnap.data() as Map;
@@ -95,17 +75,29 @@ class DatabaseRepository {
         if (attribute is String) {
           if (attribute != ATTRIBUTE_PIN_COUNT) {
             docIds.add(attribute);
-          }// if
-        }// if
+          } // if
+        } // if
       });
 
       return docIds;
-    }// try 
-    catch(e) {
+    } // try
+    catch (e) {
       print(e);
       return null;
-    }//catch
-  }// getAccountEvents
+    } //catch
+  } // getAccountEvents
+
+  Future<DocumentSnapshot> getSearchEventById({@required String eventId}) async {
+    try {
+      final DocumentSnapshot docSnap = await _searchEventsCollection.doc(eventId).get();
+      return docSnap;
+    }// try
+
+    catch(e) {
+      print("[getSearchEventById] ${e.toString()}");
+      return null;
+    }// catch
+  }// getAccountEvent
 
   /// Retrieves events from the "User Created Events Collection > UserID > Created Events
   /// Collection" returns a [QueryDocumentSnapshot] of events belonging to the [accountID].
@@ -113,9 +105,7 @@ class DatabaseRepository {
   /// For pagination, continues query starting after the [lastEvent]
   /// and returns a number documents no bigger thant the [limit].
   Future<List<QueryDocumentSnapshot>> getAccountEventsDeprecated(
-      {@required String accountID,
-      @required QueryDocumentSnapshot lastEvent,
-      @required int limit}) async {
+      {@required String accountID, @required QueryDocumentSnapshot lastEvent, @required int limit}) async {
     QuerySnapshot querySnap;
 
     // Continue querying from where you left off
@@ -130,18 +120,13 @@ class DatabaseRepository {
 
     // First query
     else {
-      querySnap = await _userCreatedEventsCollection
-          .doc(accountID)
-          .collection(SUB_COLLECTION_CREATED_EVENTS)
-          .limit(limit)
-          .get();
+      querySnap = await _userCreatedEventsCollection.doc(accountID).collection(SUB_COLLECTION_CREATED_EVENTS).limit(limit).get();
     } // else
 
     return querySnap.docs;
   } // searchEventsByAccount
 
-  Future<DocumentSnapshot> getEventFromEventsCollection(
-      {@required String documentId}) async {
+  Future<DocumentSnapshot> getEventFromEventsCollection({@required String documentId}) async {
     return await _eventsCollection.doc(documentId).get();
   } // getEventsFromEventsCollection
 
@@ -152,7 +137,7 @@ class DatabaseRepository {
     try {
       final WriteBatch _batch = FirebaseFirestore.instance.batch();
 
-      // Generate a new ID, wthout necessarily creating a document
+      // Generate a new ID, without necessarily creating a document
       final DocumentReference _eventsDocRef = _eventsCollection.doc();
 
       /// Add the event to the "Events" Collection:
@@ -174,35 +159,10 @@ class DatabaseRepository {
       ///   ...
       /// }
       final String _eventsId = _eventsDocRef.id;
-      final attributeMap = Map<String, dynamic>();
 
-      /// Required fields
-      attributeMap[ATTRIBUTE_TITLE] = newEvent.title ?? '';
-      attributeMap[ATTRIBUTE_HOST] = newEvent.host ?? '';
-      attributeMap[ATTRIBUTE_LOCATION] = newEvent.location ?? '';
-      attributeMap[ATTRIBUTE_RAW_START_DATE_TIME] =
-          newEvent.rawStartDateAndTime ?? '';
-      attributeMap[ATTRIBUTE_CATEGORY] = newEvent.category ?? '';
-      attributeMap[ATTRIBUTE_IMAGE_FIT_COVER] = newEvent.imageFitCover ?? false;
-
-      /// Optional fields
-      if (newEvent.room != null) {
-        attributeMap[ATTRIBUTE_ROOM] = newEvent.room;
-      } // if
-      if (newEvent.rawEndDateAndTime != null) {
-        attributeMap[ATTRIBUTE_RAW_END_DATE_TIME] = newEvent.rawEndDateAndTime;
-      } // if
-      if (newEvent.highlights != null) {
-        attributeMap[ATTRIBUTE_HIGHLIGHTS] = newEvent.highlights;
-      } // if
-      if (newEvent.description != null) {
-        attributeMap[ATTRIBUTE_DESCRIPTION] = newEvent.description;
-      } // if
-      if (newEvent.imageFitCover != null) {
-        attributeMap[ATTRIBUTE_IMAGE_FIT_COVER] = newEvent.imageFitCover;
-      } // if
-
-      /// No longer necessary to include empty fields, if they're null assume default values on front end when parsing
+      /// No longer necessary to include empty fields, if they're
+      /// null, assume default values on front end when parsing.
+      final attributeMap = this.eventModelToMap(newEvent);
       _batch.set(_eventsDocRef, attributeMap);
 
       /// Add the event to the "Search" Collection:
@@ -219,8 +179,7 @@ class DatabaseRepository {
       ///   searchEventId: {...},
       ///   ...
       /// }
-      final DocumentReference searchEventsDocRef =
-          await _searchEventsCollection.add(_eventsId);
+      final DocumentReference searchEventsDocRef = _searchEventsCollection.doc(_eventsId);
       _batch.set(searchEventsDocRef, {
         ATTRIBUTE_TITLE: newEvent.title.toUpperCase() ?? '',
         ATTRIBUTE_HOST: newEvent.host.toLowerCase() ?? '',
@@ -242,9 +201,9 @@ class DatabaseRepository {
       ///   uid: {...},
       ///   ...
       /// }
-      final DocumentReference _accountEventsDocRef =
-          _userCreatedEventsCollection.doc(userId);
-      _batch.set(_accountEventsDocRef, {
+      final DocumentReference _accountEventsDocRef = _userCreatedEventsCollection.doc(userId);
+      _batch.update(_accountEventsDocRef, {
+        // TODO: Verify update can be used here!
         _eventsId: true,
       });
       await _batch.commit();
@@ -273,44 +232,12 @@ class DatabaseRepository {
     } // if
 
     // Get document references based on id
-    final DocumentReference _eventsDocRef =
-        _eventsCollection.doc(newEvent.eventID);
-    final DocumentReference _searchEventsDocRef =
-        _searchEventsCollection.doc(newEvent.eventID);
+    final DocumentReference _eventsDocRef = _eventsCollection.doc(newEvent.eventID);
+    final DocumentReference _searchEventsDocRef = _searchEventsCollection.doc(newEvent.eventID);
 
-    final attributeMap = Map<String, dynamic>();
-
-    /// Required fields
-    attributeMap[ATTRIBUTE_TITLE] = newEvent.title ?? '';
-    attributeMap[ATTRIBUTE_HOST] = newEvent.host ?? '';
-    attributeMap[ATTRIBUTE_LOCATION] = newEvent.location ?? '';
-    attributeMap[ATTRIBUTE_RAW_START_DATE_TIME] =
-        newEvent.rawStartDateAndTime ?? '';
-    attributeMap[ATTRIBUTE_CATEGORY] = newEvent.category ?? '';
-    attributeMap[ATTRIBUTE_IMAGE_FIT_COVER] = newEvent.imageFitCover ?? false;
-
-    /// Optional fields
-    if (newEvent.room != null) {
-      attributeMap[ATTRIBUTE_ROOM] = newEvent.room;
-    } // if
-
-    if (newEvent.rawEndDateAndTime != null) {
-      attributeMap[ATTRIBUTE_RAW_END_DATE_TIME] = newEvent.rawEndDateAndTime;
-    } // if
-
-    if (newEvent.highlights != null) {
-      attributeMap[ATTRIBUTE_HIGHLIGHTS] = newEvent.highlights;
-    } // if
-
-    if (newEvent.description != null) {
-      attributeMap[ATTRIBUTE_DESCRIPTION] = newEvent.description;
-    } // if
-
-    if (newEvent.imageFitCover != null) {
-      attributeMap[ATTRIBUTE_IMAGE_FIT_COVER] = newEvent.imageFitCover;
-    } // if
-
-    /// No longer necessary to include empty fields, if they're null assume default values on front end when parsing
+    /// No longer necessary to include empty fields, if they're
+    /// null assume default values on front end when parsing.
+    final attributeMap = this.eventModelToMap(newEvent);
     _batch.update(_eventsDocRef, attributeMap);
 
     _batch.update(_searchEventsDocRef, {
@@ -370,20 +297,14 @@ class DatabaseRepository {
       // Delete
       _batch.delete(eventDocRef);
       _batch.delete(searchEventDocRef);
-      _batch.update(pinnedEventDocRef, {
-        eventId: FieldValue.delete(),
-        ATTRIBUTE_PIN_COUNT: FieldValue.increment(-1)
-      });
-      _batch.update(pinnedEventDocRef, {
-        eventId: FieldValue.delete(),
-        ATTRIBUTE_PIN_COUNT: FieldValue.increment(-1)
-      });
+      _batch.update(pinnedEventDocRef, {eventId: FieldValue.delete(), ATTRIBUTE_PIN_COUNT: FieldValue.increment(-1)});
+      _batch.update(pinnedEventDocRef, {eventId: FieldValue.delete(), ATTRIBUTE_PIN_COUNT: FieldValue.increment(-1)});
 
       _batch.commit();
-    }// try
+    } // try
     catch (e) {
       print(e);
-    }// catch
+    } // catch
   } // deleteEvent
 
   /// Attempts to upload an image to firebase storage
@@ -392,19 +313,14 @@ class DatabaseRepository {
   /// Overwrites existing files (useful for updating an image).
   ///
   /// Returns a listenable upload task, to show upload progress.
-  UploadTask uploadImageToStorage(
-      {@required String eventID, @required Uint8List imageBytes}) {
+  UploadTask uploadImageToStorage({@required String eventID, @required Uint8List imageBytes}) {
     try {
-      return FirebaseStorage.instance
-          .ref()
-          .child(this.imagePath(eventID: eventID))
-          .putData(imageBytes);
+      return FirebaseStorage.instance.ref().child(this.imagePath(eventID: eventID)).putData(imageBytes);
     } // try
     catch (e) {
       return null;
     } // catch
   } // uploadImageToStorage
-
 
   /// Attempts to delete an image uploaded to firebase
   /// using the document id of the event as the image name.
@@ -412,22 +328,16 @@ class DatabaseRepository {
   /// Returns a listenable upload task, to show upload progress.
   Future<void> deleteImageFromStorage({@required String eventID}) {
     try {
-      return FirebaseStorage.instance
-          .ref()
-          .child(this.imagePath(eventID: eventID))
-          .delete();
+      return FirebaseStorage.instance.ref().child(this.imagePath(eventID: eventID)).delete();
     } // try
     catch (e) {
       return null;
     } // catch
   } // uploadImageToStorage
 
-    Future<Uint8List> getImageFromStorage({@required String eventID}) async {
+  Future<Uint8List> getImageFromStorage({@required String eventID}) async {
     try {
-      return await FirebaseStorage.instance
-          .ref()
-          .child(this.imagePath(eventID: eventID))
-          .getData(4194304);
+      return await FirebaseStorage.instance.ref().child(this.imagePath(eventID: eventID)).getData(4194304);
     } // try
     catch (e) {
       return null;
@@ -437,4 +347,43 @@ class DatabaseRepository {
   String imagePath({@required String eventID}) {
     return 'events/$eventID.jpg';
   } // _getGenerateImagePath
+
+  Map<String, dynamic> eventModelToMap(EventModel eventModel) {
+    final _map = Map<String, dynamic>();
+
+    /// Required fields
+    _map[ATTRIBUTE_TITLE] = eventModel.title ?? '';
+    _map[ATTRIBUTE_HOST] = eventModel.host ?? '';
+    _map[ATTRIBUTE_LOCATION] = eventModel.location ?? '';
+    _map[ATTRIBUTE_RAW_START_DATE_TIME] = eventModel.rawStartDateAndTime ?? '';
+    _map[ATTRIBUTE_CATEGORY] = eventModel.category ?? '';
+    _map[ATTRIBUTE_IMAGE_FIT_COVER] = eventModel.imageFitCover ?? false;
+
+    /// Optional fields
+    if (eventModel.room != null) {
+      if (eventModel.room.replaceAll(" ", '') != "") {
+        _map[ATTRIBUTE_ROOM] = eventModel.room;
+      } // if
+    } // if
+
+    if (eventModel.rawEndDateAndTime != null) {
+      _map[ATTRIBUTE_RAW_END_DATE_TIME] = eventModel.rawEndDateAndTime;
+    } // if
+
+    if (eventModel.highlights != null) {
+      _map[ATTRIBUTE_HIGHLIGHTS] = eventModel.highlights;
+    } // if
+
+    if (eventModel.description != null) {
+      if (eventModel.description.replaceAll(" ", '') != "") {
+        _map[ATTRIBUTE_DESCRIPTION] = eventModel.description;
+      } // if
+    } // if
+
+    if (eventModel.imageFitCover != null) {
+      _map[ATTRIBUTE_IMAGE_FIT_COVER] = eventModel.imageFitCover;
+    } // if
+
+    return _map;
+  } // eventModelToMap
 } //class

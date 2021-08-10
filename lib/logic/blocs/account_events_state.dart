@@ -9,13 +9,17 @@ abstract class AccountEventsState {
 
 class AccountEventsStateFetching extends AccountEventsState {} // AccountEventsStateFetching
 
-class AccountEventsStateFailed extends AccountEventsState {} // AccountEventsStateFailed
+class AccountEventsStateFailed extends AccountEventsState {
+  final String msg;
+
+  AccountEventsStateFailed(this.msg);
+} // AccountEventsStateFailed
 
 class AccountEventsStateReloadFailed extends AccountEventsState {} // AccountEventsStateReloadFailed
 
 class AccountEventsStateSuccess extends AccountEventsState {
   final List<SearchResultModel> eventModels;
-  final QueryDocumentSnapshot lastEvent;
+  final DocumentSnapshot lastEvent;
   final bool maxEvents;
   final bool isFetching;
   bool isDeleting = false;

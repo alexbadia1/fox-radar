@@ -25,11 +25,11 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
     if (suggestedEventsEvent is SuggestedEventsEventFetch) {
 
       // TODO: Move this to the pinned events bloc
-      this._isolateWorker = await IsolateWorker.instance();
-      final result = await this._isolateWorker.sendMessage(EventModel.nullConstructor());
-      if (result is EventModel){
-        print("[Suggested Events Bloc] ${result.toString()}");
-      }// if
+      // this._isolateWorker = await IsolateWorker.instance();
+      // final result = await this._isolateWorker.sendMessage(EventModel.nullConstructor());
+      // if (result is EventModel){
+      //   print("[Suggested Events Bloc] ${result.toString()}");
+      // }// if
 
       yield* _mapSuggestedEventsEventFetchToState();
     } // if
