@@ -273,7 +273,22 @@ class DatabaseRepository {
     catch (e) {
       return false;
     }// catch
-  } // updateEvent
+  } // pinEvent
+
+  /// Pins an existing "Event" to the user account
+  /// Returns true or false, if the update succeded or not.
+  Future<bool> unpinEvent(String eventId, String userId) async {
+    try {
+    // User's doc containing all saved events and a count
+    final DocumentReference docRef = this._userSavedEventsCollection.doc(userId);
+
+    await docRef.update({eventId: FieldValue.delete()});
+    return true;
+    }// try
+    catch (e) {
+      return false;
+    }// catch
+  } // unpinEvent
 
   /// Deletes an existing "Event" in firebase
   ///
