@@ -32,3 +32,7 @@ export 'account_events_state.dart';
 export 'saved_events_bloc.dart';
 export 'saved_events_event.dart';
 export 'saved_events_state.dart';
+
+export 'pinned_events_bloc.dart';
+export 'pinned_events_event.dart';
+export 'pinned_events_state.dart';

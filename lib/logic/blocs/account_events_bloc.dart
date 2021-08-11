@@ -21,7 +21,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
   final int _paginationLimit = PAGINATION_LIMIT;
 
   /// List containing all of the event document id's belonging to this user.
-  AccountEventsHandler _accountEventsHandler;
+  PaginationEventsHandler _accountEventsHandler;
 
   AccountEventsBloc({@required this.db, @required this.accountID})
       : assert(db != null),
@@ -72,8 +72,8 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
 
         /// Get user's created events document that lists
         /// all of the event id's that belong to this user.
-        final List<String> eventIds = await this.db.getAccountEvents(uid: this.accountID);
-        this._accountEventsHandler = AccountEventsHandler(eventIds);
+        final List<String> eventIds = await this.db.getAccountCreatedEvents(uid: this.accountID);
+        this._accountEventsHandler = PaginationEventsHandler(eventIds);
 
         /// Fail, since no document id's are listed in the user's createEvent doc.
         if (this._accountEventsHandler.isEmpty()) {
@@ -204,8 +204,8 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
 
       /// Get user's created events document that lists
       /// all of the event id's that belong to this user.
-      final List<String> eventIds = await this.db.getAccountEvents(uid: this.accountID);
-      this._accountEventsHandler = AccountEventsHandler(eventIds);
+      final List<String> eventIds = await this.db.getAccountCreatedEvents(uid: this.accountID);
+      this._accountEventsHandler = PaginationEventsHandler(eventIds);
 
       /// Fail, since no document id's are listed in the user's createEvent doc.
       if (this._accountEventsHandler.isEmpty()) {
@@ -362,14 +362,4 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
       );
     }).toList();
   } // _mapDocumentSnapshotsToSearchEventModels
-
-  @override
-  void onChange(Change<AccountEventsState> change) {
-    super.onChange(change);
-  } // onChange
-
-  @override
-  Future<void> close() {
-    return super.close();
-  } // close
 } // AccountEventsBloc

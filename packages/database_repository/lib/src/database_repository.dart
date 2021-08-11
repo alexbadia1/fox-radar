@@ -64,7 +64,18 @@ class DatabaseRepository {
     return querySnap.docs;
   } // searchEventsByStartDateAndTime
 
-  Future<List<String>> getAccountEvents({@required String uid}) async {
+  Future<DocumentSnapshot> getAccountPinnedEvents({@required String uid}) async {
+    try {
+      final DocumentSnapshot docSnap = await _userSavedEventsCollection.doc(uid).get();
+      return docSnap;
+    }// try
+    catch (error) {
+      print(error);
+      return null;
+    }// catch
+  }// getAccountPinnedEvents
+
+  Future<List<String>> getAccountCreatedEvents({@required String uid}) async {
     final DocumentSnapshot docSnap = await _userCreatedEventsCollection.doc(uid).get();
     try {
       // TODO: Move this to account events bloc,

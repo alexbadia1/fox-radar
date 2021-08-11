@@ -1,8 +1,8 @@
-class AccountEventsHandler {
+class PaginationEventsHandler {
   final List<String> eventIds;
   int _curr;
 
-  AccountEventsHandler(this.eventIds) {
+  PaginationEventsHandler(this.eventIds) {
     print('Event Handler received: ${this.eventIds.toString()}');
     this._curr = 0;
   } // AccountEventsHandler
