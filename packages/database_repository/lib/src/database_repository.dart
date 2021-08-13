@@ -30,11 +30,16 @@ class DatabaseRepository {
     QuerySnapshot querySnap;
 
     if (lastEvent != null) {
-      querySnap = await _searchEventsCollection.where(ATTRIBUTE_CATEGORY, isEqualTo: category).startAfterDocument(lastEvent).limit(limit).get();
+      querySnap = await _searchEventsCollection
+          .where(ATTRIBUTE_CATEGORY, isEqualTo: category)
+          .orderBy(ATTRIBUTE_CATEGORY)
+          .startAfterDocument(lastEvent)
+          .limit(limit)
+          .get();
     } // if
 
     else {
-      querySnap = await _searchEventsCollection.where(ATTRIBUTE_CATEGORY, isEqualTo: category).limit(limit).get();
+      querySnap = await _searchEventsCollection.where(ATTRIBUTE_CATEGORY, isEqualTo: category).orderBy(ATTRIBUTE_CATEGORY).limit(limit).get();
     } // else
 
     return querySnap.docs;
@@ -52,13 +57,18 @@ class DatabaseRepository {
     if (lastEvent != null) {
       querySnap = await _searchEventsCollection
           .where(ATTRIBUTE_RAW_START_DATE_TIME, isGreaterThanOrEqualTo: DateTime.now())
+          .orderBy(ATTRIBUTE_RAW_START_DATE_TIME)
           .startAfterDocument(lastEvent)
           .limit(limit)
           .get();
     } // if
 
     else {
-      querySnap = await _searchEventsCollection.where(ATTRIBUTE_RAW_START_DATE_TIME, isGreaterThanOrEqualTo: DateTime.now()).limit(limit).get();
+      querySnap = await _searchEventsCollection
+          .where(ATTRIBUTE_RAW_START_DATE_TIME, isGreaterThanOrEqualTo: DateTime.now())
+          .orderBy(ATTRIBUTE_RAW_START_DATE_TIME)
+          .limit(limit)
+          .get();
     } // else
 
     return querySnap.docs;
@@ -68,12 +78,12 @@ class DatabaseRepository {
     try {
       final DocumentSnapshot docSnap = await _userSavedEventsCollection.doc(uid).get();
       return docSnap;
-    }// try
+    } // try
     catch (error) {
       print(error);
       return null;
-    }// catch
-  }// getAccountPinnedEvents
+    } // catch
+  } // getAccountPinnedEvents
 
   Future<DocumentSnapshot> getAccountCreatedEvents({@required String uid}) async {
     try {
@@ -90,13 +100,13 @@ class DatabaseRepository {
     try {
       final DocumentSnapshot docSnap = await _searchEventsCollection.doc(eventId).get();
       return docSnap;
-    }// try
+    } // try
 
-    catch(e) {
+    catch (e) {
       print("[getSearchEventById] ${e.toString()}");
       return null;
-    }// catch
-  }// getAccountEvent
+    } // catch
+  } // getAccountEvent
 
   /// Retrieves events from the "User Created Events Collection > UserID > Created Events
   /// Collection" returns a [QueryDocumentSnapshot] of events belonging to the [accountID].
@@ -204,11 +214,11 @@ class DatabaseRepository {
       await _accountEventsDocRef.get().then((doc) {
         if (doc.exists) {
           _batch.update(_accountEventsDocRef, {_eventsId: true});
-        }// if
+        } // if
 
-        else{
+        else {
           _batch.set(_accountEventsDocRef, {_eventsId: true});
-        }// else
+        } // else
       });
 
       await _batch.commit();
@@ -259,30 +269,30 @@ class DatabaseRepository {
   /// Returns true or false, if the update succeded or not.
   Future<bool> pinEvent(String eventId, String userId) async {
     try {
-    // User's doc containing all saved events and a count
-    final DocumentReference docRef = this._userSavedEventsCollection.doc(userId);
+      // User's doc containing all saved events and a count
+      final DocumentReference docRef = this._userSavedEventsCollection.doc(userId);
 
-    await docRef.update({eventId: true});
-    return true;
-    }// try
+      await docRef.update({eventId: true});
+      return true;
+    } // try
     catch (e) {
       return false;
-    }// catch
+    } // catch
   } // pinEvent
 
   /// Pins an existing "Event" to the user account
   /// Returns true or false, if the update succeded or not.
   Future<bool> unpinEvent(String eventId, String userId) async {
     try {
-    // User's doc containing all saved events and a count
-    final DocumentReference docRef = this._userSavedEventsCollection.doc(userId);
+      // User's doc containing all saved events and a count
+      final DocumentReference docRef = this._userSavedEventsCollection.doc(userId);
 
-    await docRef.update({eventId: FieldValue.delete()});
-    return true;
-    }// try
+      await docRef.update({eventId: FieldValue.delete()});
+      return true;
+    } // try
     catch (e) {
       return false;
-    }// catch
+    } // catch
   } // unpinEvent
 
   /// Deletes an existing "Event" in firebase
