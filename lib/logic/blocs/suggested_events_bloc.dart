@@ -7,7 +7,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:database_repository/database_repository.dart';
 
 class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsState> {
-  IsolateWorker _isolateWorker;
   final DatabaseRepository db;
   final int paginationLimit = PAGINATION_LIMIT;
 
@@ -23,14 +22,6 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
   Stream<SuggestedEventsState> mapEventToState(SuggestedEventsEvent suggestedEventsEvent) async* {
     // Fetch some events
     if (suggestedEventsEvent is SuggestedEventsEventFetch) {
-
-      // TODO: Move this to the pinned events bloc
-      // this._isolateWorker = await IsolateWorker.instance();
-      // final result = await this._isolateWorker.sendMessage(EventModel.nullConstructor());
-      // if (result is EventModel){
-      //   print("[Suggested Events Bloc] ${result.toString()}");
-      // }// if
-
       yield* _mapSuggestedEventsEventFetchToState();
     } // if
 
@@ -196,10 +187,7 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
         newImageFitCover: docAsMap[ATTRIBUTE_IMAGE_FIT_COVER] ?? true,
 
         // DocumentId converted to [STRING] from [STRING] in firebase.
-        newEventId: docAsMap[ATTRIBUTE_EVENT_ID] ?? '',
-
-        // AccountID converted to [STRING] from [STRING] in firebase.
-        newAccountID: docAsMap[ATTRIBUTE_ACCOUNT_ID] ?? '',
+        newEventId: doc.id,
       );
     }).toList();
   } // _mapDocumentSnapshotsToSearchEventModels
@@ -233,11 +221,6 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
   @override
   Future<void> close() {
     print('Suggested Events Bloc Closed');
-
-    if (this._isolateWorker != null) {
-      print('Suggested Events Isolate Closed!');
-      this._isolateWorker.dispose();
-    }// if
     return super.close();
   } // close
 } // SuggestedEventsBloc

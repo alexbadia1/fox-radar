@@ -17,7 +17,9 @@ class LoginEventLogin extends LoginEvent {
       @required this.loginType})
       : assert(hashedEmail != null),
         assert(hashedPassword != null),
-        assert(loginType != null);
+        assert(loginType != null) {
+    print("Login: ${this.hashedEmail} : ${this.hashedPassword}");
+  }
 
   @override
   List<Object> get props => [this.hashedEmail, this.hashedPassword];

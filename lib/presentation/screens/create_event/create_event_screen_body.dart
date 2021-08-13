@@ -30,15 +30,15 @@ class CreateEventBody extends StatelessWidget {
                 height: MediaQuery.of(parentContext).size.height * .0725,
                 child: Stack(
                   children: <Widget>[
-                    Image(
-                        width: double.infinity,
-                        height: 100.0,
-                        image: ResizeImage(
-                          AssetImage("images/tenney.jpg"),
-                          width: 500,
-                          height: 100,
-                        ),
-                        fit: BoxFit.fill),
+                    // Image(
+                    //     width: double.infinity,
+                    //     height: 100.0,
+                    //     image: ResizeImage(
+                    //       AssetImage("images/tenney.jpg"),
+                    //       width: 500,
+                    //       height: 100,
+                    //     ),
+                    //     fit: BoxFit.fill),
                     Container(
                       decoration: BoxDecoration(gradient: cMaristGradientWashed),
                     ),

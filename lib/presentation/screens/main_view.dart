@@ -1,8 +1,10 @@
+import 'package:database_repository/database_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:communitytabs/logic/logic.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/presentation/presentation.dart';
+import 'package:authentication_repository/authentication_repository.dart';
 
 class MainView extends StatelessWidget {
   final RouteGeneratorMain routeGeneratorMain;
@@ -16,8 +18,18 @@ class MainView extends StatelessWidget {
     /// Top level screens are implemented in a single top level page view:
     ///   - Home Screen
     ///   - Account Screen
-    return BlocProvider<AppPageViewCubit>(
-      create: (context) => AppPageViewCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<AppPageViewCubit>(
+        create: (context) => AppPageViewCubit()
+        ),
+        BlocProvider<PinnedEventsBloc>(
+            create: (context) => PinnedEventsBloc(
+              db: RepositoryProvider.of<DatabaseRepository>(context),
+              accountID: RepositoryProvider.of<AuthenticationRepository>(context).getUserModel().userID,
+            )..add(PinnedEventsEventFetch())
+        ),
+      ],
       child: MaterialApp(
         initialRoute: '/',
         onGenerateRoute: this.routeGeneratorMain.onGenerateRoute,
