@@ -246,7 +246,10 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
                                                             icon: Icons.edit,
                                                             description: "Pin",
                                                             color: Colors.blueAccent,
-                                                            onPressed: () {},
+                                                            onPressed: () {
+                                                              BlocProvider.of<PinEventCubit>(context).pinEvent(_suggestedSearchEvent.eventId);
+                                                              Navigator.pop(context);
+                                                            },
                                                         ),
                                                       ],
                                                       cancel: true,
@@ -259,7 +262,10 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
                                                           icon: Icons.delete,
                                                           description: "Unpin",
                                                           color: Colors.redAccent,
-                                                          onPressed: () {},
+                                                          onPressed: () {
+                                                             BlocProvider.of<PinEventCubit>(context).unpinEvent(_suggestedSearchEvent.eventId);
+                                                             Navigator.pop(context);
+                                                          },
                                                       )
                                                     ],
                                                     cancel: true,

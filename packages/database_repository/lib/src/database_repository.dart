@@ -271,8 +271,15 @@ class DatabaseRepository {
     try {
       // User's doc containing all saved events and a count
       final DocumentReference docRef = this._userSavedEventsCollection.doc(userId);
+      await docRef.get().then((doc) {
+        if (doc.exists) {
+          docRef.update({eventId: true});
+        } // if
 
-      await docRef.update({eventId: true});
+        else {
+          docRef.set({eventId: true});
+        } // else
+      });
       return true;
     } // try
     catch (e) {
@@ -287,7 +294,14 @@ class DatabaseRepository {
       // User's doc containing all saved events and a count
       final DocumentReference docRef = this._userSavedEventsCollection.doc(userId);
 
-      await docRef.update({eventId: FieldValue.delete()});
+      await docRef.get().then((doc) {
+        if (doc.exists) {
+          docRef.update({eventId: FieldValue.delete()});
+        }// if
+        else {
+          docRef.set({eventId: FieldValue.delete()});
+        }// else
+      });
       return true;
     } // try
     catch (e) {
@@ -298,7 +312,7 @@ class DatabaseRepository {
   /// Deletes an existing "Event" in firebase
   ///
   /// Batched is used to ensure atomicity, due to the denormalized structure of the database.
-  Future<void> deleteEvent(String eventId, String userId) async {
+  Future<bool> deleteEvent(String eventId, String userId) async {
     try {
       // User's doc containing all saved events and a count
       final WriteBatch _batch = FirebaseFirestore.instance.batch();
@@ -315,10 +329,13 @@ class DatabaseRepository {
       _batch.update(createdEventDocRef, {eventId: FieldValue.delete()});
       _batch.update(pinnedEventDocRef, {eventId: FieldValue.delete()});
 
-      _batch.commit();
+      await _batch.commit();
+
+      return true;
     } // try
     catch (e) {
       print(e);
+      return false;
     } // catch
   } // deleteEvent
 
