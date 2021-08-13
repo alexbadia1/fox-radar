@@ -59,7 +59,7 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
       ///
       /// Initial state was fetching, user tried to fetch events from a failed state
       if (_currentState is PinnedEventsStateFetching || _currentState is PinnedEventsStateFailed) {
-        this._getListOfPinnedEvents();
+        await this._getListOfPinnedEvents();
 
         /// Fail, since no document id's are listed in the user's createEvent doc.
         if (this._pinnedEventsHandler.isEmpty()) {
@@ -232,20 +232,28 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
         } // if
       });
     } // try
-    catch (e) { print(e); } //catch
+    catch (e) {} //catch
 
     this._pinnedEventsHandler = PaginationEventsHandler(eventIds);
   }// getListOfPinnedEvents
 
   Future<List<DocumentSnapshot>> _fetchPinnedEventsPaginated ({@required eventIdsToFetch}) async {
     /// Fetch the first [paginationLimit] number of events
-    final List<DocumentSnapshot> _docs = [];
-    for (int i = 0; i < eventIdsToFetch.length; ++i) {
-      final DocumentSnapshot docSnap = await this.db.getSearchEventById(eventId: eventIdsToFetch[i]);
-      if (docSnap != null) {
-        _docs.add(docSnap);
-      }// if
-    }// for
+    final List<DocumentSnapshot> _docs = await Future.microtask(() async {
+      try {
+        final List<DocumentSnapshot> _tempDocs = [];
+        for (int i = 0; i < eventIdsToFetch.length; ++i) {
+          final DocumentSnapshot docSnap = await this.db.getSearchEventById(eventId: eventIdsToFetch[i]);
+          if (docSnap != null) {
+            _tempDocs.add(docSnap);
+          } // if
+        } // for
+        return _tempDocs;
+      }// try
+      catch(error) {
+        return [];
+      }// catch
+    });
 
     return _docs;
   }// _fetchPinnedEventsPaginated
@@ -291,4 +299,6 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
       );
     }).toList();
   } // _mapDocumentSnapshotsToSearchEventModels
+
+  get pinnedEvents => this._pinnedEventsHandler != null ? this._pinnedEventsHandler.eventIds : null;
 }// PinnedEventsBloc

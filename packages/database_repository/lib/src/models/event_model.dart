@@ -77,15 +77,8 @@ class EventModel {
   /// That contains all of the details of the event.
   String _eventID;
 
-  /// ID of the document that contains the
-  /// minimal details of the event for search
-  String _searchID;
-
   /// Account ID of of the Account that created this event
   String _accountID;
-
-  /// ID used keep track if an account pinned it
-  String _pinnedID;
 
   /// Full Constructor
   EventModel(
@@ -162,13 +155,8 @@ class EventModel {
     // Set the Event ID
     this._eventID = newEventID;
 
-    // Set the Search ID
-    this._searchID = newSearchID;
-
     // Set Account ID
     this._accountID = newAccountID;
-
-    this._pinnedID = newPinnedID;
   } // EventModel
 
   /// Null Constructor
@@ -184,9 +172,7 @@ class EventModel {
     this._imageFitCover = false;
     this._imagePath = '';
     this._eventID = '';
-    this._searchID = '';
     this._accountID = '';
-    this._pinnedID = '';
 
     this._rawStartDateAndTime = DateTime.now();
     this._startDate =
@@ -253,9 +239,7 @@ class EventModel {
       newImageFitCover: imageFitCover ?? this._imageFitCover,
       newImagePath: imagePath ?? this._imagePath,
       newEventID: eventID ?? this._eventID,
-      newSearchID: searchID ?? this._searchID,
       newAccountID: accountID ?? this._accountID,
-      newPinnedID: pinnedID ?? this._pinnedID,
     );
   } // copyWith
 
@@ -276,9 +260,7 @@ class EventModel {
   bool get imageFitCover => this._imageFitCover;
   String get imagePath => this._imagePath;
   String get eventID => this._eventID;
-  String get searchID => this._searchID;
   String get accountID => this._accountID;
-  String get pinnedID => this._pinnedID;
 
   set imagePath(String value) {
     this._imagePath = value;
@@ -292,16 +274,8 @@ class EventModel {
     this._eventID = value;
   }// eventId
 
-  set searchID(String value) {
-    this._searchID = value;
-  }// eventId
-
   set accountID(String value) {
     this._accountID = value;
-  }// accountId
-
-  set pinnedID(String value) {
-    this._pinnedID = value;
   }// accountId
 
   @override
@@ -320,9 +294,7 @@ class EventModel {
         "\tImage Fit Cover:  ${this.imageFitCover}\n"
         "\tImage Path: ${this._imagePath}\n"
         "\tEvent ID (Events Collection): ${this._eventID}\n"
-        "\tSearch ID (Events Collection): ${this._searchID}\n"
         "\tAccount ID (Owner of Event): ${this._accountID}\n"
-        "\Pinned ID (Pinner of Event): ${this._pinnedID}\n"
         "}\n";
   } // toString
 } //class

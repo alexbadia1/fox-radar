@@ -182,10 +182,7 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
         newImageFitCover: docAsMap[ATTRIBUTE_IMAGE_FIT_COVER] ?? true,
 
         // DocumentId converted to [STRING] from [STRING] in firebase.
-        newEventId: docAsMap[ATTRIBUTE_EVENT_ID] ?? '',
-
-        // AccountID converted to [STRING] from [STRING] in firebase.
-        newAccountID: docAsMap[ATTRIBUTE_ACCOUNT_ID] ?? '',
+        newEventId: doc.id,
       );
     }).toList();
   } // _mapDocumentSnapshotsToSearchEventModels

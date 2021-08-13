@@ -72,8 +72,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
 
         /// Get user's created events document that lists
         /// all of the event id's that belong to this user.
-        final List<String> eventIds = await this.db.getAccountCreatedEvents(uid: this.accountID);
-        this._accountEventsHandler = PaginationEventsHandler(eventIds);
+        await this._getListOfAccountEvents();
 
         /// Fail, since no document id's are listed in the user's createEvent doc.
         if (this._accountEventsHandler.isEmpty()) {
@@ -204,8 +203,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
 
       /// Get user's created events document that lists
       /// all of the event id's that belong to this user.
-      final List<String> eventIds = await this.db.getAccountCreatedEvents(uid: this.accountID);
-      this._accountEventsHandler = PaginationEventsHandler(eventIds);
+      await this._getListOfAccountEvents();
 
       /// Fail, since no document id's are listed in the user's createEvent doc.
       if (this._accountEventsHandler.isEmpty()) {
@@ -243,7 +241,6 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
         _maxEvents = true;
       } // if
 
-      print("Account Event Reload: ${_eventModels.toString()}");
       yield AccountEventsStateSuccess(
         eventModels: _eventModels,
         maxEvents: _maxEvents,
@@ -320,6 +317,25 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
       } // if
     } // if
   } // _mapAccountEventsEventRemoveToState
+
+  Future<void> _getListOfAccountEvents () async {
+    final DocumentSnapshot docSnap = await this.db.getAccountCreatedEvents(uid: this.accountID);
+
+    final List<String> eventIds = [];
+    try {
+      final Map m = docSnap.data() as Map;
+      m.forEach((attribute, boolVal) {
+        if (attribute is String) {
+            eventIds.add(attribute);
+        } // if
+      });
+    } // try
+    catch (e) {
+      print(e);
+    } //catch
+
+    this._accountEventsHandler = PaginationEventsHandler(eventIds);
+  }// getListOfPinnedEvents
 
   /// Name: _mapDocumentSnapshotsToSearchEventModels
   ///

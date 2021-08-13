@@ -124,8 +124,8 @@ class _SignUpFormState extends State<SignUpForm> {
                       BlocProvider.of<SignUpBloc>(context).add(
                         SignUpEventSignUp(
                           signUpType: SignUpType.emailAndPassword,
-                          hashedEmail: emailTextEditingController.text,
-                          hashedPassword: passwordTextEditingController.text,
+                          hashedEmail: emailTextEditingController.text.trim(),
+                          hashedPassword: passwordTextEditingController.text.trim(),
                         ),
                       );
                     } // if

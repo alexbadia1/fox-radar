@@ -126,8 +126,8 @@ class _LoginFormState extends State<LoginForm> {
                     if (this._loginFormKeyEmail.currentState.validate() && this._loginFormKeyPassword.currentState.validate()) {
                       BlocProvider.of<LoginBloc>(context).add(LoginEventLogin(
                         loginType: LoginType.emailAndPassword,
-                        hashedEmail: this._emailTextEditingController.text,
-                        hashedPassword: this._passwordTextEditingController.text,
+                        hashedEmail: this._emailTextEditingController.text.trim(),
+                        hashedPassword: this._passwordTextEditingController.text.trim(),
                       ));
                     } // if
                   },

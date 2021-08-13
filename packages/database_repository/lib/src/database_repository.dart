@@ -75,22 +75,10 @@ class DatabaseRepository {
     }// catch
   }// getAccountPinnedEvents
 
-  Future<List<String>> getAccountCreatedEvents({@required String uid}) async {
-    final DocumentSnapshot docSnap = await _userCreatedEventsCollection.doc(uid).get();
+  Future<DocumentSnapshot> getAccountCreatedEvents({@required String uid}) async {
     try {
-      // TODO: Move this to account events bloc,
-      // Maybe do this on another isolate>
-      final Map m = docSnap.data() as Map;
-      final List<String> docIds = [];
-      m.forEach((attribute, boolVal) {
-        if (attribute is String) {
-          if (attribute != ATTRIBUTE_PIN_COUNT) {
-            docIds.add(attribute);
-          } // if
-        } // if
-      });
-
-      return docIds;
+      final DocumentSnapshot docSnap = await _userCreatedEventsCollection.doc(uid).get();
+      return docSnap;
     } // try
     catch (e) {
       print(e);
@@ -213,9 +201,16 @@ class DatabaseRepository {
       ///   ...
       /// }
       final DocumentReference _accountEventsDocRef = _userCreatedEventsCollection.doc(userId);
-      _batch.update(_accountEventsDocRef, {
-        _eventsId: true,
+      await _accountEventsDocRef.get().then((doc) {
+        if (doc.exists) {
+          _batch.update(_accountEventsDocRef, {_eventsId: true});
+        }// if
+
+        else{
+          _batch.set(_accountEventsDocRef, {_eventsId: true});
+        }// else
       });
+
       await _batch.commit();
       return _eventsId;
     } // try
