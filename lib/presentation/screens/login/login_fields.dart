@@ -1,3 +1,4 @@
+import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/logic/logic.dart';
 import 'package:communitytabs/presentation/presentation.dart';
@@ -26,7 +27,7 @@ class EmailTextFormField extends StatelessWidget {
         decoration: customTextField.copyWith(labelText: 'Marist Email'),
         validator: (String email) {
           // Missing password
-          if (email.isEmpty || email.contains(' ')) {
+          if (!MARIST_EMAIL_REGEX.hasMatch(email)) {
             return '\u26A0 Enter a MARIST email.';
           } // if
 

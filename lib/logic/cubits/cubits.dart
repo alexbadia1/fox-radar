@@ -19,6 +19,9 @@ export 'category_page_state.dart';
 export 'home_page_view_cubit.dart';
 export 'home_page_view_state.dart';
 
+export 'account_page_view_cubit.dart';
+export 'account_page_view_state.dart';
+
 export 'app_page_view_cubit.dart';
 export 'app_page_view_state.dart';
 
@@ -27,7 +30,6 @@ export 'create_event_page_view_state.dart';
 
 export 'sliding_up_panel_cubit.dart';
 export 'sliding_up_panel_state.dart';
-
 
 // Expansion Panels
 export 'date_time_picker_cubit.dart';

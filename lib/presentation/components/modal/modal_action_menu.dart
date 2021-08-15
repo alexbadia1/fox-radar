@@ -74,7 +74,7 @@ class ModalActionMenu extends StatelessWidget {
     // If user chose a cancel button
     if (this.cancel) {
       // Add spacing for cancel button
-      widgets.add(SizedBox(height: MediaQuery.of(pContext).size.height * .04));
+      widgets.add(SizedBox(height: MediaQuery.of(pContext).size.height * .02));
 
       // Add actual "Cancel" Icon
       widgets.add(
@@ -98,8 +98,10 @@ class ModalActionMenu extends StatelessWidget {
         color: Color.fromRGBO(24, 24, 24, 1.0),
         child: Padding(
           padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-          child: SingleChildScrollView(
-            child: Column(children: widgets),
+          child: ListView(
+            physics: const ScrollPhysics(),
+            shrinkWrap: true,
+            children: widgets
           ),
         ),
       ),

@@ -28,3 +28,7 @@ export 'upload_event_state.dart';
 export 'account_events_bloc.dart';
 export 'account_events_event.dart';
 export 'account_events_state.dart';
+
+export 'pinned_events_bloc.dart';
+export 'pinned_events_event.dart';
+export 'pinned_events_state.dart';

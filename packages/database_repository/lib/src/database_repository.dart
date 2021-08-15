@@ -1,28 +1,24 @@
 import 'dart:typed_data';
-import 'package:database_repository/database_repository.dart';
-
 import 'models/models.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:database_repository/database_repository.dart';
 
 class DatabaseRepository {
   // Singleton
   static final DatabaseRepository _db = DatabaseRepository._internal();
-
-  // Collection References
-  final CollectionReference _eventsCollection =
-      FirebaseFirestore.instance.collection(COLLECTION_EVENTS);
-  final CollectionReference _searchEventsCollection =
-      FirebaseFirestore.instance.collection(COLLECTION_SEARCH_EVENTS);
-
-
+  DatabaseRepository._internal();
   factory DatabaseRepository() {
     return _db;
-  }// DatabaseRepository
+  } // DatabaseRepository
 
-  DatabaseRepository._internal();
+  // Collection References
+  final CollectionReference _eventsCollection = FirebaseFirestore.instance.collection(COLLECTION_EVENTS);
+  final CollectionReference _searchEventsCollection = FirebaseFirestore.instance.collection(COLLECTION_SEARCH_EVENTS);
+  final CollectionReference _userCreatedEventsCollection = FirebaseFirestore.instance.collection(COLLECTION_USER_CREATED_EVENTS);
+  final CollectionReference _userSavedEventsCollection = FirebaseFirestore.instance.collection(COLLECTION_USER_SAVED_EVENTS);
 
   /// Retrieves events from the "Search Events Collection" based on
   /// [category] and returns a [QueryDocumentSnapshot] with the events.
@@ -30,9 +26,7 @@ class DatabaseRepository {
   /// For pagination, continues query starting after the [lastEvent]
   /// and returns a number documents no bigger thant the [limit].
   Future<List<QueryDocumentSnapshot>> searchEventsByCategory(
-      {@required String category,
-      @required QueryDocumentSnapshot lastEvent,
-      @required int limit}) async {
+      {@required String category, @required QueryDocumentSnapshot lastEvent, @required int limit}) async {
     QuerySnapshot querySnap;
 
     if (lastEvent != null) {
@@ -44,10 +38,7 @@ class DatabaseRepository {
     } // if
 
     else {
-      querySnap = await _searchEventsCollection
-          .where(ATTRIBUTE_CATEGORY, isEqualTo: category)
-          .limit(limit)
-          .get();
+      querySnap = await _searchEventsCollection.where(ATTRIBUTE_CATEGORY, isEqualTo: category).limit(limit).get();
     } // else
 
     return querySnap.docs;
@@ -59,14 +50,13 @@ class DatabaseRepository {
   ///
   /// For pagination, continues query starting after the [lastEvent]
   /// and returns a number documents no bigger thant the [limit].
-  Future<List<QueryDocumentSnapshot>> searchEventsByStartDateAndTime(
-      {@required QueryDocumentSnapshot lastEvent, @required int limit}) async {
+  Future<List<QueryDocumentSnapshot>> searchEventsByStartDateAndTime({@required QueryDocumentSnapshot lastEvent, @required int limit}) async {
     QuerySnapshot querySnap;
 
     if (lastEvent != null) {
       querySnap = await _searchEventsCollection
-          .where(ATTRIBUTE_RAW_START_DATE_TIME,
-              isGreaterThanOrEqualTo: DateTime.now())
+          .where(ATTRIBUTE_RAW_START_DATE_TIME, isGreaterThanOrEqualTo: DateTime.now())
+          .orderBy(ATTRIBUTE_RAW_START_DATE_TIME)
           .startAfterDocument(lastEvent)
           .limit(limit)
           .get();
@@ -74,8 +64,8 @@ class DatabaseRepository {
 
     else {
       querySnap = await _searchEventsCollection
-          .where(ATTRIBUTE_RAW_START_DATE_TIME,
-              isGreaterThanOrEqualTo: DateTime.now())
+          .where(ATTRIBUTE_RAW_START_DATE_TIME, isGreaterThanOrEqualTo: DateTime.now())
+          .orderBy(ATTRIBUTE_RAW_START_DATE_TIME)
           .limit(limit)
           .get();
     } // else
@@ -83,21 +73,54 @@ class DatabaseRepository {
     return querySnap.docs;
   } // searchEventsByStartDateAndTime
 
-  /// Retrieves events from the "Search Events Collection" by [accountID] and
-  /// returns a [QueryDocumentSnapshot] of events belonging to the [accountID].
+  Future<DocumentSnapshot> getAccountPinnedEvents({@required String uid}) async {
+    try {
+      final DocumentSnapshot docSnap = await _userSavedEventsCollection.doc(uid).get();
+      return docSnap;
+    } // try
+    catch (error) {
+      print(error);
+      return null;
+    } // catch
+  } // getAccountPinnedEvents
+
+  Future<DocumentSnapshot> getAccountCreatedEvents({@required String uid}) async {
+    try {
+      final DocumentSnapshot docSnap = await _userCreatedEventsCollection.doc(uid).get();
+      return docSnap;
+    } // try
+    catch (e) {
+      print(e);
+      return null;
+    } //catch
+  } // getAccountEvents
+
+  Future<DocumentSnapshot> getSearchEventById({@required String eventId}) async {
+    try {
+      final DocumentSnapshot docSnap = await _searchEventsCollection.doc(eventId).get();
+      return docSnap;
+    } // try
+
+    catch (e) {
+      print("[getSearchEventById] ${e.toString()}");
+      return null;
+    } // catch
+  } // getAccountEvent
+
+  /// Retrieves events from the "User Created Events Collection > UserID > Created Events
+  /// Collection" returns a [QueryDocumentSnapshot] of events belonging to the [accountID].
   ///
   /// For pagination, continues query starting after the [lastEvent]
   /// and returns a number documents no bigger thant the [limit].
-  Future<List<QueryDocumentSnapshot>> searchEventsByAccount(
-      {@required String accountID,
-      @required QueryDocumentSnapshot lastEvent,
-      @required int limit}) async {
+  Future<List<QueryDocumentSnapshot>> getAccountEventsDeprecated(
+      {@required String accountID, @required QueryDocumentSnapshot lastEvent, @required int limit}) async {
     QuerySnapshot querySnap;
 
     // Continue querying from where you left off
     if (lastEvent != null) {
-      querySnap = await _searchEventsCollection
-          .where(ATTRIBUTE_ACCOUNT_ID, isEqualTo: accountID)
+      querySnap = await _userCreatedEventsCollection
+          .doc(accountID)
+          .collection(SUB_COLLECTION_CREATED_EVENTS)
           .startAfterDocument(lastEvent)
           .limit(limit)
           .get();
@@ -105,103 +128,218 @@ class DatabaseRepository {
 
     // First query
     else {
-      querySnap = await _searchEventsCollection
-          .where(ATTRIBUTE_ACCOUNT_ID, isEqualTo: accountID)
-          .limit(limit)
-          .get();
+      querySnap = await _userCreatedEventsCollection.doc(accountID).collection(SUB_COLLECTION_CREATED_EVENTS).limit(limit).get();
     } // else
 
     return querySnap.docs;
   } // searchEventsByAccount
 
-  Future<DocumentSnapshot> getEventFromEventsCollection(
-      {@required String documentId}) async {
+  Future<DocumentSnapshot> getEventFromEventsCollection({@required String documentId}) async {
     return await _eventsCollection.doc(documentId).get();
   } // getEventsFromEventsCollection
 
-  Future<Uint8List> getImageFromStorage({@required String eventID}) async {
-    try {
-      return await FirebaseStorage.instance
-          .ref()
-          .child(this.imagePath(eventID: eventID))
-          .getData(4194304);
-    } // try
-    catch (e) {
-      return null;
-    } // catch
-  } // getImageFromStorage
-
-  /// Creates an empty document in the Firestore cloud storage
-  /// Retrieves the id of the new empty document for later use
-  /// Uses the retrieve key to update the empty doc with the new data.
-  Future<String> insertNewEventToEventsCollection(
-      {@required EventModel newEvent}) async {
-    try {
-      // Calling ".doc" on a collection without a provided path
-      // will auto-generate a new document with a new "primary" key.
-      final DocumentReference _document = _eventsCollection.doc();
-
-      // Get the document id
-      final String _documentReferenceId = _document.id;
-
-      // Don't forget to update the local copy with the new id
-      newEvent.eventID = _documentReferenceId;
-
-      // Update the empty document with the new data
-      await _eventsCollection.doc('$_documentReferenceId').set({
-        ATTRIBUTE_TITLE: newEvent.title ?? '',
-        ATTRIBUTE_HOST: newEvent.host ?? '',
-        ATTRIBUTE_LOCATION: newEvent.location ?? '',
-        ATTRIBUTE_ROOM: newEvent.room ?? '',
-        ATTRIBUTE_RAW_START_DATE_TIME: newEvent.rawStartDateAndTime ?? null,
-        ATTRIBUTE_RAW_END_DATE_TIME: newEvent.rawEndDateAndTime ?? null,
-        ATTRIBUTE_CATEGORY: newEvent.category ?? '',
-        ATTRIBUTE_HIGHLIGHTS: newEvent.highlights ?? [],
-        ATTRIBUTE_DESCRIPTION: newEvent.description ?? '',
-        ATTRIBUTE_IMAGE_FIT_COVER: newEvent.imageFitCover ?? false,
-        ATTRIBUTE_EVENT_ID: newEvent.eventID ?? '',
-        ATTRIBUTE_ACCOUNT_ID: newEvent.accountID ?? '',
-      });
-
-      return _documentReferenceId;
-    } // try
-    catch (e) {
-      // print(e);
-      return null;
-    } // catch
-  } // insertNewEventToEventsCollection
-
-  /// Insert new event into the "Searchable" collection
-  /// only including the minimal attributes of an event.
+  /// Creates a new "Event" in firebase
   ///
-  /// Returns the document ID of the document in the "Searchable" Collection.
-  Future<String> insertNewEventToSearchableCollection(
-      {@required EventModel newEvent}) async {
+  /// Batched is used to ensure atomicity, due to the denormalized structure of the database.
+  Future<String> createEvent(EventModel newEvent, String userId) async {
     try {
-      // Calling ".doc" on a collection without a provided path
-      // will auto-generate a new document with a new "primary" key.
-      final DocumentReference _document = _searchEventsCollection.doc();
+      final WriteBatch _batch = FirebaseFirestore.instance.batch();
 
-      // Get the document id
-      final String _documentReferenceId = _document.id;
+      // Generate a new ID, without necessarily creating a document
+      final DocumentReference _eventsDocRef = _eventsCollection.doc();
 
-      await _searchEventsCollection.doc(_documentReferenceId).set({
-        ATTRIBUTE_TITLE: newEvent.title.toLowerCase() ?? '',
+      /// Add the event to the "Events" Collection:
+      ///
+      /// events : {
+      ///   eventId: {
+      ///     title: <String>,
+      ///     host: <String>,
+      ///     location: <String>,
+      ///     room: [<String>],
+      ///     category: <String>
+      ///     rawStartDateAndTime: <firebase_timestamp>,
+      ///     rawEndDateAndTime: [<firebase_timestamp>],
+      ///     highlights: [List<String>],
+      ///     description: [<String>],
+      ///     imageFitCover: <bool>
+      ///   },
+      ///   eventId: {...},
+      ///   ...
+      /// }
+      final String _eventsId = _eventsDocRef.id;
+
+      /// No longer necessary to include empty fields, if they're
+      /// null, assume default values on front end when parsing.
+      final attributeMap = this.eventModelToMap(newEvent);
+      _batch.set(_eventsDocRef, attributeMap);
+
+      /// Add the event to the "Search" Collection:
+      ///
+      /// searchEvents : {
+      ///   searchEventId: {
+      ///     title: <String>,
+      ///     host: <String>,
+      ///     location: <String>,
+      ///     category: <String>
+      ///     rawStartDateAndTime: <firebase_timestamp>,
+      ///     eventId: <String>
+      ///   },
+      ///   searchEventId: {...},
+      ///   ...
+      /// }
+      final DocumentReference searchEventsDocRef = _searchEventsCollection.doc(_eventsId);
+      _batch.set(searchEventsDocRef, {
+        ATTRIBUTE_TITLE: newEvent.title.toUpperCase() ?? '',
         ATTRIBUTE_HOST: newEvent.host.toLowerCase() ?? '',
         ATTRIBUTE_LOCATION: newEvent.location.toLowerCase() ?? '',
-        ATTRIBUTE_RAW_START_DATE_TIME: newEvent.rawStartDateAndTime ?? null,
         ATTRIBUTE_CATEGORY: newEvent.category ?? '',
-        ATTRIBUTE_EVENT_ID: newEvent.eventID ?? '',
-        ATTRIBUTE_ACCOUNT_ID: newEvent.accountID ?? '',
+        ATTRIBUTE_RAW_START_DATE_TIME: newEvent.rawStartDateAndTime ?? null
       });
 
-      return _documentReferenceId;
+      /// userCreatedEvents : {
+      ///   uid: {
+      ///     event_id: true,
+      ///     event_id: true,
+      ///     event_id: true,
+      ///     ...
+      ///   },
+      ///   uid: {
+      ///     event_id: true,
+      ///   },
+      ///   uid: {...},
+      ///   ...
+      /// }
+      final DocumentReference _accountEventsDocRef = _userCreatedEventsCollection.doc(userId);
+      await _accountEventsDocRef.get().then((doc) {
+        if (doc.exists) {
+          _batch.update(_accountEventsDocRef, {_eventsId: true});
+        } // if
+
+        else {
+          _batch.set(_accountEventsDocRef, {_eventsId: true});
+        } // else
+      });
+
+      await _batch.commit();
+      return _eventsId;
     } // try
     catch (e) {
-      // print(e);
+      print(e);
       return null;
     } // catch
-  } // insertNewEventToSearchableCollection
+  } // createEvent
+
+  /// Updates an existing "Event" in firebase
+  ///
+  /// Batched is used to ensure atomicity, due
+  /// to the denormalized structure of the database.
+  Future<void> updateEvent(EventModel newEvent) async {
+    final WriteBatch _batch = FirebaseFirestore.instance.batch();
+    // Can't update any of them
+    if (newEvent.eventID == null) {
+      return;
+    } // if
+
+    // Can't update any of them
+    if (newEvent.eventID.replaceAll(" ", "") == "") {
+      return;
+    } // if
+
+    // Get document references based on id
+    final DocumentReference _eventsDocRef = _eventsCollection.doc(newEvent.eventID);
+    final DocumentReference _searchEventsDocRef = _searchEventsCollection.doc(newEvent.eventID);
+
+    /// No longer necessary to include empty fields, if they're
+    /// null assume default values on front end when parsing.
+    final attributeMap = this.eventModelToMap(newEvent);
+    _batch.update(_eventsDocRef, attributeMap);
+
+    _batch.update(_searchEventsDocRef, {
+      ATTRIBUTE_TITLE: newEvent.title.toUpperCase() ?? '',
+      ATTRIBUTE_HOST: newEvent.host.toLowerCase() ?? '',
+      ATTRIBUTE_LOCATION: newEvent.location.toLowerCase() ?? '',
+      ATTRIBUTE_CATEGORY: newEvent.category ?? '',
+      ATTRIBUTE_RAW_START_DATE_TIME: newEvent.rawStartDateAndTime ?? null,
+    });
+    await _batch.commit();
+  } // updateEvent
+
+  /// Pins an existing "Event" to the user account
+  /// Returns true or false, if the update succeded or not.
+  Future<bool> pinEvent(String eventId, String userId) async {
+    try {
+      print("Pinning Event");
+      // User's doc containing all saved events and a count
+      final DocumentReference docRef = this._userSavedEventsCollection.doc(userId);
+      await docRef.get().then((doc) {
+        if (doc.exists) {
+          docRef.update({eventId: true});
+        } // if
+
+        else {
+          docRef.set({eventId: true});
+        } // else
+      });
+      return true;
+    } // try
+    catch (e) {
+      return false;
+    } // catch
+  } // pinEvent
+
+  /// Pins an existing "Event" to the user account
+  /// Returns true or false, if the update succeeded or not.
+  Future<bool> unpinEvent(String eventId, String userId) async {
+    try {
+      // User's doc containing all saved events and a count
+      final DocumentReference docRef = this._userSavedEventsCollection.doc(userId);
+
+      await docRef.get().then((doc) {
+        if (doc.exists) {
+          docRef.update({eventId: FieldValue.delete()});
+        }// if
+        else {
+          docRef.set({eventId: FieldValue.delete()});
+        }// else
+      });
+      return true;
+    } // try
+    catch (e) {
+      return false;
+    } // catch
+  } // unpinEvent
+
+  /// Deletes an existing "Event" in firebase
+  ///
+  /// Batched is used to ensure atomicity, due to the denormalized structure of the database.
+  Future<bool> deleteEvent(String eventId, String userId) async {
+    try {
+      // User's doc containing all saved events and a count
+      final WriteBatch _batch = FirebaseFirestore.instance.batch();
+
+      // Get document references
+      final DocumentReference eventDocRef = _eventsCollection.doc(eventId);
+      final DocumentReference searchEventDocRef = _searchEventsCollection.doc(eventId);
+      final DocumentReference createdEventDocRef = _userCreatedEventsCollection.doc(userId);
+      final DocumentReference pinnedEventDocRef = _userSavedEventsCollection.doc(userId);
+
+      // Delete
+      _batch.delete(eventDocRef);
+      _batch.delete(searchEventDocRef);
+      _batch.update(createdEventDocRef, {eventId: FieldValue.delete()});
+
+      // You can delete the event from the current user's pinned
+      // events document, but every other user will have a null pointer.
+      _batch.update(pinnedEventDocRef, {eventId: FieldValue.delete()});
+
+      await _batch.commit();
+      return true;
+    } // try
+    catch (e) {
+      print(e);
+      return false;
+    } // catch
+  } // deleteEvent
 
   /// Attempts to upload an image to firebase storage
   /// using the document id of the event as the image name.
@@ -209,92 +347,14 @@ class DatabaseRepository {
   /// Overwrites existing files (useful for updating an image).
   ///
   /// Returns a listenable upload task, to show upload progress.
-  UploadTask uploadImageToStorage(
-      {@required String eventID, @required Uint8List imageBytes}) {
+  UploadTask uploadImageToStorage({@required String eventID, @required Uint8List imageBytes}) {
     try {
-      return FirebaseStorage.instance
-          .ref()
-          .child(this.imagePath(eventID: eventID))
-          .putData(imageBytes);
+      return FirebaseStorage.instance.ref().child(this.imagePath(eventID: eventID)).putData(imageBytes);
     } // try
     catch (e) {
       return null;
     } // catch
   } // uploadImageToStorage
-
-  /// Updates an existing document in the "Search Events"
-  /// Collection, Fails if the document does not exist.
-  Future<void> updateEventInSearchEventsCollection(
-      {@required EventModel newEvent}) async {
-    try {
-      return await _searchEventsCollection.doc(newEvent.searchID).update({
-        ATTRIBUTE_TITLE: newEvent.title.toLowerCase() ?? '',
-        ATTRIBUTE_HOST: newEvent.host.toLowerCase() ?? '',
-        ATTRIBUTE_LOCATION: newEvent.location.toLowerCase() ?? '',
-        ATTRIBUTE_RAW_START_DATE_TIME: newEvent.rawStartDateAndTime ?? null,
-        ATTRIBUTE_CATEGORY: newEvent.category ?? '',
-        ATTRIBUTE_EVENT_ID: newEvent.eventID ?? '',
-        ATTRIBUTE_ACCOUNT_ID: newEvent.accountID ?? '',
-      });
-    } // try
-    catch (e) {
-      // print(e);
-      return null;
-    } // catch
-  } // updateEventInSearchEventsCollection
-
-  /// Updates an existing document in the "Events"
-  /// Collection, Fails if the document does not exist.
-  Future<void> updateEventInEventsCollection(
-      {@required EventModel newEvent}) async {
-    try {
-      return await _eventsCollection.doc(newEvent.eventID).update({
-        ATTRIBUTE_TITLE: newEvent.title,
-        ATTRIBUTE_HOST: newEvent.host,
-        ATTRIBUTE_LOCATION: newEvent.location,
-        ATTRIBUTE_ROOM: newEvent.room,
-        ATTRIBUTE_RAW_START_DATE_TIME: newEvent.rawStartDateAndTime,
-        ATTRIBUTE_RAW_END_DATE_TIME: newEvent.rawEndDateAndTime,
-        ATTRIBUTE_CATEGORY: newEvent.category,
-        ATTRIBUTE_HIGHLIGHTS: newEvent.highlights,
-        ATTRIBUTE_DESCRIPTION: newEvent.description,
-        ATTRIBUTE_IMAGE_FIT_COVER: newEvent.imageFitCover,
-        ATTRIBUTE_EVENT_ID: newEvent.eventID,
-        ATTRIBUTE_ACCOUNT_ID: newEvent.accountID ,
-      });
-    } // try
-    catch (e) {
-      // print(e);
-      return null;
-    } // catch
-  } // updateEventInEventsCollection
-
-
-  /// Deletes an document in Events Collection
-  Future<void> deleteNewEventFromEventsCollection(
-      {@required String documentReferenceID}) async {
-    try {
-      // Update the empty document with the new data
-      return await _eventsCollection.doc(documentReferenceID).delete();
-    } // try
-    catch (e) {
-      print(e);
-      return null;
-    } // catch
-  } // deleteNewEventFromEventsCollection
-
-  /// Deletes an document in Search Events Collection
-  Future<void> deleteNewEventFromSearchableCollection(
-      {@required String documentReferenceID}) async {
-    try {
-      // Update the empty document with the new data
-      return await _searchEventsCollection.doc(documentReferenceID).delete();
-    } // try
-    catch (e) {
-      print(e);
-      return null;
-    } // catch
-  } // deleteNewEventFromSearchableCollection
 
   /// Attempts to delete an image uploaded to firebase
   /// using the document id of the event as the image name.
@@ -302,17 +362,62 @@ class DatabaseRepository {
   /// Returns a listenable upload task, to show upload progress.
   Future<void> deleteImageFromStorage({@required String eventID}) {
     try {
-      return FirebaseStorage.instance
-          .ref()
-          .child(this.imagePath(eventID: eventID))
-          .delete();
+      return FirebaseStorage.instance.ref().child(this.imagePath(eventID: eventID)).delete();
     } // try
     catch (e) {
       return null;
     } // catch
   } // uploadImageToStorage
 
+  Future<Uint8List> getImageFromStorage({@required String eventID}) async {
+    try {
+      return await FirebaseStorage.instance.ref().child(this.imagePath(eventID: eventID)).getData(4194304);
+    } // try
+    catch (e) {
+      return null;
+    } // catch
+  } // getEventFromEventsCollection
+
   String imagePath({@required String eventID}) {
     return 'events/$eventID.jpg';
   } // _getGenerateImagePath
+
+  Map<String, dynamic> eventModelToMap(EventModel eventModel) {
+    final _map = Map<String, dynamic>();
+
+    /// Required fields
+    _map[ATTRIBUTE_TITLE] = eventModel.title ?? '';
+    _map[ATTRIBUTE_HOST] = eventModel.host ?? '';
+    _map[ATTRIBUTE_LOCATION] = eventModel.location ?? '';
+    _map[ATTRIBUTE_RAW_START_DATE_TIME] = eventModel.rawStartDateAndTime ?? '';
+    _map[ATTRIBUTE_CATEGORY] = eventModel.category ?? '';
+    _map[ATTRIBUTE_IMAGE_FIT_COVER] = eventModel.imageFitCover ?? false;
+
+    /// Optional fields
+    if (eventModel.room != null) {
+      if (eventModel.room.replaceAll(" ", '') != "") {
+        _map[ATTRIBUTE_ROOM] = eventModel.room;
+      } // if
+    } // if
+
+    if (eventModel.rawEndDateAndTime != null) {
+      _map[ATTRIBUTE_RAW_END_DATE_TIME] = eventModel.rawEndDateAndTime;
+    } // if
+
+    if (eventModel.highlights != null) {
+      _map[ATTRIBUTE_HIGHLIGHTS] = eventModel.highlights;
+    } // if
+
+    if (eventModel.description != null) {
+      if (eventModel.description.replaceAll(" ", '') != "") {
+        _map[ATTRIBUTE_DESCRIPTION] = eventModel.description;
+      } // if
+    } // if
+
+    if (eventModel.imageFitCover != null) {
+      _map[ATTRIBUTE_IMAGE_FIT_COVER] = eventModel.imageFitCover;
+    } // if
+
+    return _map;
+  } // eventModelToMap
 } //class

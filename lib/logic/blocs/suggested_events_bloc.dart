@@ -9,21 +9,16 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
   final DatabaseRepository db;
   final int paginationLimit = PAGINATION_LIMIT;
 
-  SuggestedEventsBloc({@required this.db})
-      : assert(db != null),
-        super(SuggestedEventsStateFetching());
+  SuggestedEventsBloc({@required this.db}) : assert(db != null), super(SuggestedEventsStateFetching());
 
   // Adds a debounce, to prevent the spamming of requesting events
   @override
-  Stream<Transition<SuggestedEventsEvent, SuggestedEventsState>>
-      transformEvents(Stream<SuggestedEventsEvent> events, transitionFn) {
-    return super.transformEvents(
-        events.debounceTime(const Duration(milliseconds: 0)), transitionFn);
+  Stream<Transition<SuggestedEventsEvent, SuggestedEventsState>> transformEvents(Stream<SuggestedEventsEvent> events, transitionFn) {
+    return super.transformEvents(events.debounceTime(const Duration(milliseconds: 0)), transitionFn);
   } // transformEvents
 
   @override
-  Stream<SuggestedEventsState> mapEventToState(
-      SuggestedEventsEvent suggestedEventsEvent) async* {
+  Stream<SuggestedEventsState> mapEventToState(SuggestedEventsEvent suggestedEventsEvent) async* {
     // Fetch some events
     if (suggestedEventsEvent is SuggestedEventsEventFetch) {
       yield* _mapSuggestedEventsEventFetchToState();
@@ -65,14 +60,11 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
         //
         // Give the user a good feeling that events are actually being searched for.
         await Future.delayed(Duration(milliseconds: 350));
-      }// if
+      } // if
 
       // No posts were fetched yet
-      final List<QueryDocumentSnapshot> _docs =
-          await _fetchEventsWithPagination(
-              lastEvent: null, limit: paginationLimit);
-      final List<SearchResultModel> _eventModels =
-          _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+      final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(lastEvent: null, limit: paginationLimit);
+      final List<SearchResultModel> _eventModels = _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
       // Failed Reload from a failed state
       if (_currentState is SuggestedEventsStateFailed && _docs.isEmpty) {
@@ -105,11 +97,8 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
     try {
       // No posts were fetched yet
       if (_currentState is SuggestedEventsStateFetching) {
-        final List<QueryDocumentSnapshot> _docs =
-            await _fetchEventsWithPagination(
-                lastEvent: null, limit: paginationLimit);
-        final List<SearchResultModel> _eventModels =
-            _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+        final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(lastEvent: null, limit: paginationLimit);
+        final List<SearchResultModel> _eventModels = _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
         if (_eventModels.length != this.paginationLimit) {
           _maxEvents = true;
@@ -125,9 +114,7 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
 
       // Some posts were fetched already, now fetch 20 more
       else if (_currentState is SuggestedEventsStateSuccess) {
-        final List<QueryDocumentSnapshot> _docs =
-            await _fetchEventsWithPagination(
-                lastEvent: _currentState.lastEvent, limit: paginationLimit);
+        final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(lastEvent: _currentState.lastEvent, limit: paginationLimit);
 
         // No event models were returned from the database
         if (_docs.isEmpty) {
@@ -141,8 +128,7 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
 
         // At least 1 event was returned from the database
         else {
-          final List<SearchResultModel> _eventModels =
-              _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+          final List<SearchResultModel> _eventModels = _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
           if (_eventModels.length != this.paginationLimit) {
             _maxEvents = true;
@@ -162,14 +148,11 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
     } // catch
   } // _mapSuggestedEventsEventFetchToState
 
-  Future<List<QueryDocumentSnapshot>> _fetchEventsWithPagination(
-      {@required QueryDocumentSnapshot lastEvent, @required int limit}) async {
-    return db.searchEventsByStartDateAndTime(
-        lastEvent: lastEvent, limit: limit);
+  Future<List<QueryDocumentSnapshot>> _fetchEventsWithPagination({@required QueryDocumentSnapshot lastEvent, @required int limit}) async {
+    return db.searchEventsByStartDateAndTime(lastEvent: lastEvent, limit: limit);
   } // _fetchEventsWithPagination
 
-  List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels(
-      {@required List<QueryDocumentSnapshot> docs}) {
+  List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels({@required List<QueryDocumentSnapshot> docs}) {
     return docs.map((doc) {
       Map<String, dynamic> docAsMap = doc.data();
 
@@ -177,10 +160,7 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
       DateTime tempRawStartDateAndTimeToDateTime;
       Timestamp _startTimestamp = docAsMap[ATTRIBUTE_RAW_START_DATE_TIME];
       if (_startTimestamp != null) {
-        tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(
-                _startTimestamp.millisecondsSinceEpoch)
-            .toUtc()
-            .toLocal();
+        tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(_startTimestamp.millisecondsSinceEpoch).toUtc().toLocal();
       } // if
       else {
         tempRawStartDateAndTimeToDateTime = null;
@@ -206,10 +186,7 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
         newImageFitCover: docAsMap[ATTRIBUTE_IMAGE_FIT_COVER] ?? true,
 
         // DocumentId converted to [STRING] from [STRING] in firebase.
-        newEventId: docAsMap[ATTRIBUTE_EVENT_ID] ?? '',
-
-        // AccountID converted to [STRING] from [STRING] in firebase.
-        newAccountID: docAsMap[ATTRIBUTE_ACCOUNT_ID] ?? '',
+        newEventId: doc.id,
       );
     }).toList();
   } // _mapDocumentSnapshotsToSearchEventModels

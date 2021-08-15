@@ -69,7 +69,7 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
               ],
             ),
           );
-        }// if
+        } // if
 
         if (!(_categoryEventsState is CategoryEventsStateFetching)) {
           // To stop the Refresh Indicator's loading widget,
@@ -102,13 +102,61 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
                   controller: this._listViewController,
                   addAutomaticKeepAlives: true,
                   itemCount: _nestedCategoryEventsState.eventModels.length + 1,
-                  itemBuilder: (BuildContext context, int index) {
+                  itemBuilder: (BuildContext listContext, int index) {
                     if (index < _nestedCategoryEventsState.eventModels.length) {
+                      final _categoryEvent = _nestedCategoryEventsState.eventModels.elementAt(index);
                       return EventCard(
-                        key: ObjectKey(_nestedCategoryEventsState.eventModels.elementAt(index)),
-                        newSearchResult: _nestedCategoryEventsState.eventModels.elementAt(index),
+                        key: ObjectKey(_categoryEvent),
+                        newSearchResult: _categoryEvent,
                         onEventCardVertMoreCallback: (imageBytes) {
-                          // TODO: Give user options to save or report events
+                          return showModalBottomSheet(
+                            context: listContext,
+                            builder: (modalSheetContext) {
+                              /// Pass the current AccountEventsBloc.
+                              ///
+                              /// Bottom Modal Sheet is built within
+                              /// its own context, that doesn't have
+                              /// access to the current widget's context.
+                              return BlocProvider<PinnedEventsBloc>.value(
+                                value: BlocProvider.of<PinnedEventsBloc>(modalSheetContext),
+                                child: Builder(builder: (modalSheetContext) {
+                                  // Not pinned, so let user pin the bloc
+                                  if (!BlocProvider.of<PinnedEventsBloc>(context).pinnedEvents.contains(_categoryEvent.eventId)) {
+                                    return ModalActionMenu(
+                                      actions: [
+                                        ModalActionMenuButton(
+                                          icon: Icons.edit,
+                                          description: "Pin",
+                                          color: Colors.blueAccent,
+                                          onPressed: () {
+                                            BlocProvider.of<PinnedEventsBloc>(modalSheetContext).add(PinnedEventsEventPin(_categoryEvent.eventId));
+                                            Navigator.pop(modalSheetContext);
+                                          },
+                                        ),
+                                      ],
+                                      cancel: true,
+                                    );
+                                  } // if
+
+                                  // Already pinned, so let user pin the bloc
+                                  return ModalActionMenu(
+                                    actions: [
+                                      ModalActionMenuButton(
+                                        icon: Icons.undo_rounded,
+                                        description: "Unpin",
+                                        color: Colors.redAccent,
+                                        onPressed: () {
+                                          BlocProvider.of<PinnedEventsBloc>(modalSheetContext).add(PinnedEventsEventUnpin(_categoryEvent.eventId));
+                                          Navigator.pop(modalSheetContext);
+                                        },
+                                      )
+                                    ],
+                                    cancel: true,
+                                  );
+                                }),
+                              );
+                            }, // builder
+                          );
                         },
                       );
                     } // if
@@ -161,7 +209,7 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
 
                           if (_state is CategoryEventsStateFetching) {
                             return CustomCircularProgressIndicator();
-                          }// if
+                          } // if
 
                           return TextButton(
                             child: Text(
@@ -182,7 +230,7 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
               /// CategoryEventsStateFetching is unreachable, and there are no other reachable states.
               else {
                 return Center(child: Text('Something went wrong!'));
-              }// else
+              } // else
             }),
           ),
         );

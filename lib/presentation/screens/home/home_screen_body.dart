@@ -76,9 +76,10 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
           /// whole screen. Otherwise, the loading widget should be hidden.
           Builder(
             builder: (loadingWidgetContext) {
+              final _pinnedEventsBloc = loadingWidgetContext.watch<PinnedEventsBloc>().state;
               final SuggestedEventsState _suggestedEventsState = loadingWidgetContext.watch<SuggestedEventsBloc>().state;
 
-              if (_suggestedEventsState is SuggestedEventsStateFetching) {
+              if (_suggestedEventsState is SuggestedEventsStateFetching || _pinnedEventsBloc is PinnedEventsStateFetching) {
                 return SliverFillRemaining(
                   child: Container(
                     width: double.infinity,
@@ -203,17 +204,63 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
                             if (_suggestedEventsState is SuggestedEventsStateSuccess) {
                               return SliverList(
                                 delegate: SliverChildBuilderDelegate(
-                                  (BuildContext context, int index) {
+                                  (BuildContext sliverListContext, int index) {
                                     /// Not at the bottom...
                                     ///
                                     /// Show each search result in an [EventCard] widget.
                                     /// When clicking on the card, the full event is retrieved.
                                     if (index < _suggestedEventsState.eventModels.length) {
+                                      final _suggestedSearchEvent = _suggestedEventsState.eventModels.elementAt(index);
                                       return EventCard(
-                                        key: ObjectKey(_suggestedEventsState.eventModels.elementAt(index)),
-                                        newSearchResult: _suggestedEventsState.eventModels.elementAt(index),
+                                        key: ObjectKey(_suggestedSearchEvent),
+                                        newSearchResult: _suggestedSearchEvent,
                                         onEventCardVertMoreCallback: (imageBytes) {
-                                          // TODO: Give user options to save or report events
+                                          return showModalBottomSheet(
+                                            context: sliverListContext,
+                                            builder: (modalSheetContext) {
+                                              /// Pass the current AccountEventsBloc.
+                                              ///
+                                              /// Bottom Modal Sheet is built within
+                                              /// its own context, that doesn't have
+                                              /// access to the current widget's context.
+                                              return BlocProvider<PinnedEventsBloc>.value(
+                                                value: BlocProvider.of<PinnedEventsBloc>(modalSheetContext),
+                                                child: Builder(builder: (modalSheetContext) {
+                                                  if (!BlocProvider.of<PinnedEventsBloc>(context).pinnedEvents.contains(_suggestedSearchEvent.eventId)) {
+                                                    return ModalActionMenu(
+                                                      actions: [
+                                                        ModalActionMenuButton(
+                                                            icon: Icons.edit,
+                                                            description: "Pin",
+                                                            color: Colors.blueAccent,
+                                                            onPressed: () {
+                                                              BlocProvider.of<PinnedEventsBloc>(modalSheetContext).add(PinnedEventsEventPin(_suggestedSearchEvent.eventId));
+                                                              Navigator.pop(modalSheetContext);
+                                                            },
+                                                        ),
+                                                      ],
+                                                      cancel: true,
+                                                    );
+                                                  } // if
+
+                                                  return ModalActionMenu(
+                                                    actions: [
+                                                      ModalActionMenuButton(
+                                                        icon: Icons.undo_rounded,
+                                                          description: "Unpin",
+                                                          color: Colors.redAccent,
+                                                          onPressed: () {
+                                                             BlocProvider.of<PinnedEventsBloc>(modalSheetContext).add(PinnedEventsEventUnpin(_suggestedSearchEvent.eventId));
+                                                             Navigator.pop(modalSheetContext);
+                                                          },
+                                                      )
+                                                    ],
+                                                    cancel: true,
+                                                  );
+                                                }),
+                                              );
+                                            }, // builder
+                                          );
                                         },
                                       );
                                     } // if

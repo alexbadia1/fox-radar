@@ -51,8 +51,7 @@ class EventScreen extends StatelessWidget {
                             context.watch<FetchFullEventCubit>().state;
 
                         if (_fetchEventState is FetchFullEventSuccess) {
-                          final EventModel _event =
-                              _fetchEventState.eventModel;
+                          final EventModel _event = _fetchEventState.eventModel;
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
@@ -60,38 +59,73 @@ class EventScreen extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
-                                    children: [
-                                      Subtitle(
-                                          icon: Icons.person,
-                                          text: _event.host),
-                                      Subtitle(
-                                          icon: Icons.location_on,
-                                          text:
-                                              '${_event.location} ${_event.room}'
-                                                  .trim()),
-                                      Subtitle(
-                                          icon: Icons.access_time,
-                                          text: _fetchEventState.startSubtitle),
-                                      Subtitle(
-                                          icon: Icons.access_time,
-                                          text: _fetchEventState.endSubtitle),
-                                    ],
-                                  ),
+                                  children: [
+                                    /// Host
+                                    ///
+                                    /// Only show [Icons.person] followed by host name if it was included
+                                    _event.host.replaceAll(" ", "").isNotEmpty
+                                        ? Subtitle(
+                                            icon: Icons.person,
+                                            text: _event.host)
+                                        : SizedBox(),
+
+                                    /// Location
+                                    ///
+                                    /// Only show [Icons.location_on] followed by location if it was included
+                                    _event.location
+                                            .replaceAll(" ", "")
+                                            .isNotEmpty
+                                        ? Subtitle(
+                                            icon: Icons.location_on,
+                                            text: _event.room
+                                                    .replaceAll(" ", "")
+                                                    .isNotEmpty
+                                                ? '${_event.location} ${_event.room}'
+                                                    .trim()
+                                                : _event.location.trim(),
+                                          )
+                                        : SizedBox(),
+
+                                    /// Start Date Time
+                                    ///
+                                    /// Only show [Icons.access_time] followed by Start Date and Time if it was included
+                                    _fetchEventState.startSubtitle
+                                            .replaceAll(" ", "")
+                                            .isNotEmpty
+                                        ? Subtitle(
+                                            icon: Icons.access_time,
+                                            text: _fetchEventState.startSubtitle,
+                                          )
+                                        : SizedBox(),
+
+                                    /// End Date Time
+                                    ///
+                                    /// Only show [Icons.access_time] followed by End Date and Time if it was included
+                                    /// _fetchEventState.startSubtitle
+                                    _fetchEventState.endSubtitle
+                                            .replaceAll(" ", "")
+                                            .isNotEmpty
+                                        ? Subtitle(
+                                            icon: Icons.access_time,
+                                            text: _fetchEventState.endSubtitle,
+                                          )
+                                        : SizedBox(),
+                                  ],
+                                ),
                               ),
-                              HeaderLevelTwo(text: 'Highlights'),
-                              HighlightsList(highlights: _event.highlights),
+                              _event.highlights.isNotEmpty ? HeaderLevelTwo(text: 'Highlights') : SizedBox(),
+                              _event.highlights.isNotEmpty ? HighlightsList(highlights: _event.highlights) : SizedBox(),
 
                               /// Summary Section
-                              HeaderLevelTwo(text: 'Summary'),
+                              _event.description.replaceAll(" ", "").isNotEmpty ? HeaderLevelTwo(text: 'Summary') : SizedBox(),
 
-                              Padding(
+                              _event.description.replaceAll(" ", "").isNotEmpty ? Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Row(
                                   children: <Widget>[
                                     SizedBox(
-                                      width:
-                                          MediaQuery.of(context).size.width *
-                                              .0875,
+                                      width: MediaQuery.of(context).size.width *
+                                          .0875,
                                     ),
                                     Expanded(
                                       flex: 9,
@@ -99,7 +133,7 @@ class EventScreen extends StatelessWidget {
                                         _event.description,
                                         style: TextStyle(
                                           color: cWhite70,
-                                          fontSize: 14.0,
+                                          fontSize: 12.0,
                                           fontWeight: FontWeight.bold,
                                           fontFamily: 'Lato',
                                         ),
@@ -110,7 +144,7 @@ class EventScreen extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                              ),
+                              ) : SizedBox(),
 
                               /// Back Button
                               Row(
@@ -132,8 +166,7 @@ class EventScreen extends StatelessWidget {
                                         ),
                                         Text(
                                           'Back',
-                                          style:
-                                              TextStyle(color: cIlearnGreen),
+                                          style: TextStyle(color: cIlearnGreen),
                                         )
                                       ],
                                     ),

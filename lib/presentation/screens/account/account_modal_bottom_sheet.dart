@@ -23,41 +23,39 @@ class AccountModalBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext pContext) {
-    return Builder(builder: (buildContext) {
-      return ModalActionMenu(
-        actions: [
-          ModalActionMenuButton(
-              icon: Icons.edit,
-              description: "Edit",
-              color: Colors.blueAccent,
-              onPressed: () {
-                final state = BlocProvider.of<FetchFullEventCubit>(buildContext).state;
-                if (state is FetchFullEventSuccess) {
-                  this.onEdit(state.eventModel);
-                } // if
-              }),
-          ModalActionMenuButton(
-            icon: Icons.delete,
-            description: "Delete",
-            color: Colors.redAccent,
+    return ModalActionMenu(
+      actions: [
+        ModalActionMenuButton(
+            icon: Icons.edit,
+            description: "Edit",
+            color: Colors.blueAccent,
             onPressed: () {
-              // Confirm Delete
-              showModalBottomSheet(
-                  // Make sure user is focused on task at hand only
-                  isDismissible: false,
-                  context: pContext,
-                  builder: (confirmDeleteButtonContext) {
-                    return BlocProvider.value(
-                      value: BlocProvider.of<AccountEventsBloc>(pContext),
-                      child: ConfirmDelete(searchResultModel: this.searchResultModel, listViewIndex: this.listViewIndex),
-                    );
-                  });
-            },
-          )
-        ],
-        cancel: true,
-      );
-    });
+              final state = BlocProvider.of<FetchFullEventCubit>(pContext).state;
+              if (state is FetchFullEventSuccess) {
+                this.onEdit(state.eventModel);
+              } // if
+            }),
+        ModalActionMenuButton(
+          icon: Icons.delete,
+          description: "Delete",
+          color: Colors.redAccent,
+          onPressed: () {
+            // Confirm Delete
+            showModalBottomSheet(
+                // Make sure user is focused on task at hand only
+                isDismissible: false,
+                context: pContext,
+                builder: (confirmDeleteButtonContext) {
+                  return BlocProvider.value(
+                    value: BlocProvider.of<AccountEventsBloc>(pContext),
+                    child: ConfirmDelete(searchResultModel: this.searchResultModel, listViewIndex: this.listViewIndex),
+                  );
+                });
+          },
+        )
+      ],
+      cancel: true,
+    );
   } // build
 } // AccountModalBottomSheet
 
@@ -93,6 +91,9 @@ class ConfirmDelete extends StatelessWidget {
         BlocProvider.of<AccountEventsBloc>(pContext).add(
           AccountEventsEventRemove(listIndex: this.listViewIndex, searchResultModel: this.searchResultModel),
         );
+
+        // Remove from local list
+        BlocProvider.of<PinnedEventsBloc>(pContext).add(PinnedEventsEventUnpin(this.searchResultModel.eventId));
 
         // Close all modal bottom sheets
         Navigator.of(pContext).popUntil((route) => route.isFirst);

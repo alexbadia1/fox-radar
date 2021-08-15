@@ -8,8 +8,7 @@ import 'package:communitytabs/presentation/presentation.dart';
 class CreateEventScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final SlidingUpPanelState _slidingUpPanelState =
-        context.watch<SlidingUpPanelCubit>().state;
+    final SlidingUpPanelState _slidingUpPanelState = context.watch<SlidingUpPanelCubit>().state;
 
     // Sliding Up Panel Closed
     // Show a blank container, background isn't white to avoid white flicker when closing the panel
@@ -21,8 +20,7 @@ class CreateEventScreen extends StatelessWidget {
     // Show a the actual event form
     else if (_slidingUpPanelState is SlidingUpPanelOpen) {
       CreateEventFormAction formAction = CreateEventFormAction.create;
-      CreateEventState initialState =
-          CreateEventInvalid(EventModel.nullConstructor());
+      CreateEventState initialState = CreateEventInvalid(EventModel.nullConstructor());
 
       // User wants to update an existing event.
       //
@@ -41,27 +39,18 @@ class CreateEventScreen extends StatelessWidget {
               return CreateEventBloc(
                 initialCreateEventState: initialState,
                 db: RepositoryProvider.of<DatabaseRepository>(parentContext),
-                accountID: RepositoryProvider.of<AuthenticationRepository>(
-                        parentContext)
-                    .getUserModel()
-                    .userID,
               );
             },
           ),
-          BlocProvider<CreateEventPageViewCubit>(
-              create: (parentContext) => CreateEventPageViewCubit()),
-          BlocProvider<DeviceImagesBloc>(
-              create: (parentContext) => DeviceImagesBloc()),
+          BlocProvider<CreateEventPageViewCubit>(create: (parentContext) => CreateEventPageViewCubit()),
+          BlocProvider<DeviceImagesBloc>(create: (parentContext) => DeviceImagesBloc()),
         ],
         child: CreateEventBody(createEventFormAction: formAction),
       );
     } // else-if
 
     else {
-      return Container(
-          child: Center(
-              child: Text(
-                  'Sliding Up Panel Cubit did not return a state that is either open or closed!')));
+      return Container(child: Center(child: Text('Sliding Up Panel Cubit did not return a state that is either open or closed!')));
     } // else
   }
 }

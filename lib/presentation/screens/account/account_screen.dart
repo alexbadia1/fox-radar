@@ -1,3 +1,4 @@
+import 'package:communitytabs/presentation/screens/account/account_events_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/logic/logic.dart';
@@ -16,23 +17,36 @@ class AccountScreen extends StatelessWidget {
             onPanelOpened: () {
               BlocProvider.of<SlidingUpPanelCubit>(context).openPanel();
             },
-            controller: BlocProvider.of<SlidingUpPanelCubit>(context)
-                .slidingUpPanelControl,
+            controller: BlocProvider.of<SlidingUpPanelCubit>(context).slidingUpPanelControl,
             minHeight: MediaQuery.of(context).size.height * .0625,
             maxHeight: MediaQuery.of(context).size.height,
             collapsed: AccountBottomNavigationBar(),
             isDraggable: false,
             panel: CreateEventScreen(),
-            body: BlocProvider<AccountEventsBloc>(
-              create: (context) => AccountEventsBloc(
-                db: RepositoryProvider.of<DatabaseRepository>(context),
-                accountID: RepositoryProvider.of<AuthenticationRepository>(context).getUserModel().userID,
-              )..add(AccountEventsEventFetch()),
-              child: AccountScreenBody(),
+            body: BlocProvider<AccountPageViewCubit>(
+              create: (context) => AccountPageViewCubit(),
+              child: Builder(
+                builder: (pageViewContext) {
+                  return PageView(
+                    controller: BlocProvider.of<AccountPageViewCubit>(pageViewContext).accountPageViewController,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: [
+                      PinnedEventsScreen(),
+                      BlocProvider<AccountEventsBloc>(
+                        create: (accountBlocProv) => AccountEventsBloc(
+                          db: RepositoryProvider.of<DatabaseRepository>(context),
+                          accountID: RepositoryProvider.of<AuthenticationRepository>(context).getUserModel().userID,
+                        )..add(AccountEventsEventFetch()),
+                        child: AccountEventsScreen(),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),
       ),
     );
-  }
-}
+  } // build
+}// AccountScreen

@@ -46,3 +46,12 @@ const int PAGINATION_LIMIT = 3;
 
 /// Highlights Limit
 const int HIGHLIGHTS_LIMIT = 5;
+
+/// Sorting Keys
+const SORT_KEY_ALPHABETICAL = "A-Z";
+const SORT_KEY_END_DATE_TIME = "END DATE TIME";
+const SORT_KEY_START_DATE_TIME = "START DATE TIME";
+
+/// Marist email syntax filter
+/// ECMAScript: ^(([a-z]|[0-9])*\.([a-z]|[0-9])*|([a-z]|[0-9])+)@marist\.edu$
+final MARIST_EMAIL_REGEX = RegExp("(([a-z]|[0-9])*\.([a-z]|[0-9])*|([a-z]|[0-9])+)@marist\.edu");
