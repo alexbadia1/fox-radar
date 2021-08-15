@@ -206,6 +206,7 @@ class _CreateEventImageState extends State<CreateEventImage> with WidgetsBinding
                         childAspectRatio: 1.1,
                       ),
                       itemBuilder: (BuildContext gridListContext, int index) {
+                        // TODO: Read AsBytesAsynchronously and then compress the image bytes in the bloc and change the state to hold the image bytes instead
                         final Uint8List _imageBytes = deviceImagesBlocState.images[index].readAsBytesSync();
                         return GestureDetector(
                           onTap: () {

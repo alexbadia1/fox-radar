@@ -62,6 +62,8 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
                     builder: (context) {
                       final FetchImageState _fetchImageState = context.watch<FetchImageCubit>().state;
                       if (_fetchImageState is FetchImageSuccess) {
+
+                        print("Image received, displaying Image.memory!");
                         _imageBytes = _fetchImageState.imageBytes;
                         return Image.memory(
                           _fetchImageState.imageBytes,
