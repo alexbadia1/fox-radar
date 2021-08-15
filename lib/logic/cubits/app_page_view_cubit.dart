@@ -7,18 +7,29 @@ class AppPageViewCubit extends Cubit<AppPageViewState> {
   final PageController _appPageViewController =
       new PageController(initialPage: HOME_PAGE_VIEW_INDEX, keepPage: true);
 
-  AppPageViewCubit() : super(AppPageViewInitial());
+  AppPageViewCubit() : super(AppPageViewStatePosition(HOME_PAGE_VIEW_INDEX));
 
   void jumpToHomePage() {
-    _appPageViewController.jumpToPage(HOME_PAGE_VIEW_INDEX);
+    if (this._appPageViewController.hasClients) {
+      _appPageViewController.jumpToPage(HOME_PAGE_VIEW_INDEX);
+      emit(AppPageViewStatePosition(HOME_PAGE_VIEW_INDEX));
+    }// if
   } // animateToNextPage
 
   void jumpToAccountPage() {
-    _appPageViewController.jumpToPage(ACCOUNT_PAGE_VIEW_INDEX);
+    if (this._appPageViewController.hasClients) {
+      _appPageViewController.jumpToPage(ACCOUNT_PAGE_VIEW_INDEX);
+      emit(AppPageViewStatePosition(ACCOUNT_PAGE_VIEW_INDEX));
+    }// if
   } // animateToNextPage
 
   double currentPage() {
-    return _appPageViewController.page;
+    if (this._appPageViewController.hasClients) {
+      return _appPageViewController.page;
+    }// if
+    else {
+      return 0;
+    }// else
   } // currentPage
 
   get appPageViewController => _appPageViewController;

@@ -327,6 +327,7 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
     if (newEventID.isNotEmpty) {
       this.pinnedEvents.add(newEventID);
       await this.db.pinEvent(newEventID, this.accountID);
+      this.add(PinnedEventsEventReload());
     }// if
   }// addPinnedEvent
 

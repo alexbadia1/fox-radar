@@ -30,7 +30,7 @@ class AuthenticationRepository {
         return _createModelUserFromFirebaseCredentials(user: user);
       } // if
       else {
-        return UserModel.empty;
+        return UserModel.nullConstructor();
       } // else
     });
   } //user

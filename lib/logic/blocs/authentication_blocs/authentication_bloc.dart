@@ -40,7 +40,7 @@ class AuthenticationBloc
   /// Check to see if the user is signed in...
   Stream<AuthenticationState> _mapAuthenticationStartedToState() async* {
     _userSubscription = _authenticationRepository.user.listen((UserModel user) {
-      if (user != UserModel.empty) {
+      if (user != UserModel.nullConstructor()) {
         this.add(AuthenticationLoggedIn());
       } // if
       else {

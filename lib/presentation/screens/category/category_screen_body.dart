@@ -60,63 +60,61 @@ class CategoryBody extends StatelessWidget {
     } //for
 
     /// TODO: Account for only 1 sub-Category in a Tab View, Maybe just use a different special widget
-    return SafeArea(
-      child: DefaultTabController(
-        length: this.tabNamesFromLtoR.length,
-        child: Scaffold(
-          appBar: PreferredSize(
-            preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * .15),
-            child: AppBar(
-              flexibleSpace: Stack(
-                fit: StackFit.expand,
-                children: <Widget>[
-                  Image(
-                    image: AssetImage("images/image1.jpg"),
-                    fit: BoxFit.cover,
-                  ),
-                  FullScreenGradient(
-                    gradient: cMaristGradientWashed,
-                    height: double.infinity,
-                  ),
-                ],
-              ),
-              leading: Padding(
-                padding: EdgeInsets.only(left: _width * .01),
-                child: IconButton(
-                  color: kHavenLightGray,
-                  splashColor: kActiveHavenLightGray,
-                  icon: Icon(Icons.chevron_left),
-                  onPressed: () => BlocProvider.of<HomePageViewCubit>(context).animateToHomePage(),
+    return DefaultTabController(
+      length: this.tabNamesFromLtoR.length,
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * .15),
+          child: AppBar(
+            flexibleSpace: Stack(
+              fit: StackFit.expand,
+              children: <Widget>[
+                Image(
+                  image: AssetImage("images/image1.jpg"),
+                  fit: BoxFit.cover,
                 ),
-              ),
-              leadingWidth: _width * .1,
-              centerTitle: false,
-              title: Text(
-                this.title,
-                style: TextStyle(color: kHavenLightGray, fontWeight: FontWeight.bold),
-              ),
-              actions: <Widget>[
-                IconButton(
-                  color: kHavenLightGray,
-                  splashColor: kActiveHavenLightGray,
-                  icon: Icon(Icons.search),
-                  onPressed: () async {
-                    // TODO: Re-implement searching
-                    // await showSearch(context: context, delegate: Search());
-                  },
-                )
+                FullScreenGradient(
+                  gradient: cMaristGradientWashed,
+                  height: double.infinity,
+                ),
               ],
-              bottom: TabBar(
-                labelStyle: TextStyle(color: kActiveHavenLightGray),
-                unselectedLabelColor: kHavenLightGray,
-                indicatorSize: TabBarIndicatorSize.tab,
-                indicatorColor: kHavenLightGray,
-                tabs: _tabs,
+            ),
+            leading: Padding(
+              padding: EdgeInsets.only(left: _width * .01),
+              child: IconButton(
+                color: kHavenLightGray,
+                splashColor: kActiveHavenLightGray,
+                icon: Icon(Icons.chevron_left),
+                onPressed: () => BlocProvider.of<HomePageViewCubit>(context).animateToHomePage(),
               ),
             ),
+            leadingWidth: _width * .1,
+            centerTitle: false,
+            title: Text(
+              this.title,
+              style: TextStyle(color: kHavenLightGray, fontWeight: FontWeight.bold),
+            ),
+            actions: <Widget>[
+              IconButton(
+                color: kHavenLightGray,
+                splashColor: kActiveHavenLightGray,
+                icon: Icon(Icons.search),
+                onPressed: () async {
+                  // TODO: Re-implement searching
+                  // await showSearch(context: context, delegate: Search());
+                },
+              )
+            ],
+            bottom: TabBar(
+              labelStyle: TextStyle(color: kActiveHavenLightGray),
+              unselectedLabelColor: kHavenLightGray,
+              indicatorSize: TabBarIndicatorSize.tab,
+              indicatorColor: kHavenLightGray,
+              tabs: _tabs,
+            ),
           ),
-          body: TabBarView(children: _pageView),
         ),
+        body: TabBarView(children: _pageView),
       ),
     );
   }

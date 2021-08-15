@@ -1,59 +1,60 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/logic/logic.dart';
 import 'package:database_repository/database_repository.dart';
 import 'package:communitytabs/presentation/presentation.dart';
 
 class CreateEventBody extends StatelessWidget {
-  final EventModel eventModelToUpdate;
+  /// Fills the form with the event model's data,
+  /// and assumes the user wants to update an event.
+  ///
+  /// Leave null, if the user is creating a new event.
+  final EventModel initialEventModel;
   final CreateEventFormAction createEventFormAction;
 
-  const CreateEventBody({Key key, @required this.createEventFormAction, this.eventModelToUpdate})
+  const CreateEventBody({Key key, @required this.createEventFormAction, this.initialEventModel})
       : assert(createEventFormAction != null),
         super(key: key);
 
   @override
   Widget build(BuildContext parentContext) {
+    final appBarHeight = MediaQuery.of(parentContext).size.height * .0725;
     final double height = MediaQuery.of(parentContext).size.height;
+    final double safePadding = WidgetsBinding.instance.window.padding.top / WidgetsBinding.instance.window.devicePixelRatio;
 
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Color.fromRGBO(24, 24, 24, 1.0),
-        body: Container(
-          color: Colors.transparent,
-          height: MediaQuery.of(parentContext).size.height,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                width: double.infinity,
-                height: MediaQuery.of(parentContext).size.height * .0725,
-                child: Stack(
-                  children: <Widget>[
-                    // Image(
-                    //     width: double.infinity,
-                    //     height: 100.0,
-                    //     image: ResizeImage(
-                    //       AssetImage("images/tenney.jpg"),
-                    //       width: 500,
-                    //       height: 100,
-                    //     ),
-                    //     fit: BoxFit.fill),
-                    Container(
-                      decoration: BoxDecoration(gradient: cMaristGradientWashed),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Builder(
-                          builder: (BuildContext context) {
-                            final createEventState = context.watch<CreateEventPageViewCubit>().state;
-                            if (createEventState is CreateEventPageViewEventPhoto) {
-                              return CustomBackButton(
+    return Scaffold(
+      backgroundColor: Color.fromRGBO(24, 24, 24, 1.0),
+      body: Container(
+        color: Colors.transparent,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              width: double.infinity,
+              height: appBarHeight + safePadding,
+              alignment: Alignment.bottomCenter,
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(gradient: cMaristGradientWashed),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Builder(
+                        builder: (BuildContext context) {
+                          final createEventState = context.watch<CreateEventPageViewCubit>().state;
+                          if (createEventState is CreateEventPageViewEventPhoto) {
+                            return Padding(
+                              padding: EdgeInsets.only(top: safePadding),
+                              child: CustomBackButton(
                                   onBack: () => BlocProvider.of<CreateEventPageViewCubit>(context).animateToEventForm(),
-                              );
-                            } // if
-                            return CustomCloseButton(
+                              ),
+                            );
+                          } // if
+                          return Padding(
+                            padding: EdgeInsets.only(top: safePadding),
+                            child: CustomCloseButton(
                               onClose: () {
                                 // Close keyboard
                                 FocusScope.of(context).unfocus();
@@ -67,8 +68,7 @@ class CreateEventBody extends StatelessWidget {
                                       confirmText: "DISCARD",
                                       confirmColor: Colors.redAccent,
                                       onConfirm: () {
-                                        BlocProvider.of<SlidingUpPanelCubit>(parentContext).closePanel();
-                                        Navigator.of(modalContext).pop();
+                                        Navigator.of(modalContext).popUntil((route) => route.isFirst);
                                       },
                                       cancelText: "KEEP EDITING",
                                       cancelColor: Colors.blueAccent,
@@ -79,23 +79,29 @@ class CreateEventBody extends StatelessWidget {
                                   },
                                 );
                               },
-                            );
-                          },
-                        ),
-                        Center(
+                            ),
+                          );
+                        },
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: safePadding),
+                        child: Center(
                           child: Text(
                             'Add Event',
                             style: TextStyle(color: kHavenLightGray, fontSize: 18.0, fontWeight: FontWeight.bold),
                           ),
                         ),
-                        // UploadImage(),
-                        Builder(builder: (context) {
-                          final createEventState = context.watch<CreateEventPageViewCubit>().state;
+                      ),
+                      // UploadImage(),
+                      Builder(builder: (context) {
+                        final createEventState = context.watch<CreateEventPageViewCubit>().state;
 
-                          /// Currently on the Event Photo Page
-                          /// Show a "post" button in the top right.
-                          if (createEventState is CreateEventPageViewEventPhoto) {
-                            return CreateEventFormSubmitButton(
+                        /// Currently on the Event Photo Page
+                        /// Show a "post" button in the top right.
+                        if (createEventState is CreateEventPageViewEventPhoto) {
+                          return Padding(
+                            padding: EdgeInsets.only(top: safePadding),
+                            child: CreateEventFormSubmitButton(
                               text: this.createEventFormAction == CreateEventFormAction.create ? "POST" : "UPDATE",
                               onSubmit: () {
                                 // Close keyboard
@@ -127,11 +133,12 @@ class CreateEventBody extends StatelessWidget {
                                   // Reset the upload event bloc
                                   BlocProvider.of<UploadEventBloc>(context).add(UploadEventReset());
 
-                                  // Navigate to the account screen
+                                  // Navigate to where the image upload progress would be
                                   BlocProvider.of<AppPageViewCubit>(parentContext).jumpToAccountPage();
+                                  BlocProvider.of<AccountPageViewCubit>(context).animateToPinnedEventsPage();
 
                                   // Close the sliding up panel, and destroy CreateEventBloc
-                                  BlocProvider.of<SlidingUpPanelCubit>(parentContext).closePanel();
+                                  Navigator.popUntil(context, (route) => route.isFirst);
 
                                   // Add an upload event to upload event bloc
                                   BlocProvider.of<UploadEventBloc>(context).add(
@@ -142,12 +149,15 @@ class CreateEventBody extends StatelessWidget {
                                   );
                                 } // else
                               }, // onCreate
-                            );
-                          } // if
+                            ),
+                          );
+                        } // if
 
-                          /// Currently on the Event Form Page
-                          /// Show a "next" button in the top right.
-                          return CustomNextButton(
+                        /// Currently on the Event Form Page
+                        /// Show a "next" button in the top right.
+                        return Padding(
+                          padding: EdgeInsets.only(top: safePadding),
+                          child: CustomNextButton(
                             onClose: () {
                               FocusScope.of(parentContext).unfocus();
                               if (!BlocProvider.of<CreateEventBloc>(context).isValidEndDate()) {
@@ -174,33 +184,33 @@ class CreateEventBody extends StatelessWidget {
                                 BlocProvider.of<CreateEventPageViewCubit>(context).animateToEventPhoto();
                               } // else
                             },
-                          );
-                        }),
-                      ],
-                    )
-                  ],
-                ),
+                          ),
+                        );
+                      }),
+                    ],
+                  )
+                ],
               ),
+            ),
 
-              // Actual Body of the Create Event Form
-              Expanded(
-                child: Builder(
-                  builder: (context) {
-                    // Logic for controlling the Create Event Page View
-                    // is stored in the "CreateEventPageViewBlock"
-                    return PageView(
-                      controller: BlocProvider.of<CreateEventPageViewCubit>(context).createEventPageViewController,
-                      physics: NeverScrollableScrollPhysics(),
-                      children: <Widget>[
-                        CreateEventForm(),
-                        CreateEventImage(),
-                      ],
-                    );
-                  },
-                ),
+            // Actual Body of the Create Event Form
+            Expanded(
+              child: Builder(
+                builder: (context) {
+                  // Logic for controlling the Create Event Page View
+                  // is stored in the "CreateEventPageViewBlock"
+                  return PageView(
+                    controller: BlocProvider.of<CreateEventPageViewCubit>(context).createEventPageViewController,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: <Widget>[
+                      CreateEventForm(),
+                      CreateEventImage(),
+                    ],
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

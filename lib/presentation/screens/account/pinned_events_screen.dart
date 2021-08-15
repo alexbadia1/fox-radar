@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/logic/logic.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:communitytabs/presentation/presentation.dart';
+
 class PinnedEventsScreen extends StatefulWidget {
   @override
   _PinnedEventsScreenState createState() => _PinnedEventsScreenState();
@@ -206,47 +208,86 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
                                     /// When clicking on the card, the full event is retrieved.
                                     if (index < _savedEventsState.eventModels.length) {
                                       final _pinnedEvent = _savedEventsState.eventModels.elementAt(index);
-                                      return EventCard(
-                                        key: ObjectKey(_pinnedEvent),
-                                        newSearchResult: _pinnedEvent,
-                                        onEventCardVertMoreCallback: (imageBytes) {
-                                          // Show a modal bottom sheet with
-                                          // options to edit or delete an event.
-                                          return showModalBottomSheet(
-                                            context: sliverListContext,
-                                            builder: (modalSheetContext) {
-                                              /// Pass the current SavedEventsBloc.
-                                              ///
-                                              /// Bottom Modal Sheet is built within
-                                              /// its own context, that doesn't have
-                                              /// access to the current widget's context.
-                                              return BlocProvider<PinnedEventsBloc>.value(
-                                                value: BlocProvider.of<PinnedEventsBloc>(context),
-                                                child: Builder(
-                                                  builder: (modalSheetContext) {
-                                                    // Events shown on rhe screen should already be unpinned
-                                                    return ModalActionMenu(
-                                                      actions: [
-                                                        ModalActionMenuButton(
-                                                          icon: Icons.undo_rounded,
-                                                          description: "Unpin Event",
-                                                          color: Colors.redAccent,
-                                                          onPressed: () {
-                                                            // Remove from local list
-                                                            BlocProvider.of<PinnedEventsBloc>(modalSheetContext)
-                                                                .add(PinnedEventsEventUnpin(_pinnedEvent.eventId));
-                                                            Navigator.pop(modalSheetContext);
-                                                          },
+                                      return Slidable(
+                                        enabled: true,
+                                        direction: Axis.horizontal,
+                                        actionPane: SlidableStrechActionPane(),
+                                        actionExtentRatio: 0.3,
+                                        child: EventCard(
+                                          key: ObjectKey(_pinnedEvent),
+                                          newSearchResult: _pinnedEvent,
+                                          onEventCardVertMoreCallback: (imageBytes) {
+                                            // Show a modal bottom sheet with
+                                            // options to edit or delete an event.
+                                            return showModalBottomSheet(
+                                              context: sliverListContext,
+                                              builder: (modalSheetContext) {
+                                                /// Pass the current SavedEventsBloc.
+                                                ///
+                                                /// Bottom Modal Sheet is built within
+                                                /// its own context, that doesn't have
+                                                /// access to the current widget's context.
+                                                return BlocProvider<PinnedEventsBloc>.value(
+                                                  value: BlocProvider.of<PinnedEventsBloc>(context),
+                                                  child: Builder(
+                                                    builder: (modalSheetContext) {
+                                                      // Events shown on rhe screen should already be unpinned
+                                                      return ModalActionMenu(
+                                                        actions: [
+                                                          ModalActionMenuButton(
+                                                            icon: Icons.undo_rounded,
+                                                            description: "Unpin Event",
+                                                            color: Colors.redAccent,
+                                                            onPressed: () {
+                                                              // Remove from local list
+                                                              BlocProvider.of<PinnedEventsBloc>(modalSheetContext)
+                                                                  .add(PinnedEventsEventUnpin(_pinnedEvent.eventId));
+                                                              Navigator.pop(modalSheetContext);
+                                                            },
+                                                          ),
+                                                        ],
+                                                        cancel: true,
+                                                      );
+                                                    },
+                                                  ),
+                                                );
+                                              }, // builder
+                                            );
+                                          },
+                                        ),
+                                        secondaryActions: <Widget>[
+                                          Builder(builder: (context) {
+                                            return GestureDetector(
+                                              onTap: () {
+                                                Slidable.of(context).close();
+                                                // Remove from local list
+                                                BlocProvider.of<PinnedEventsBloc>(context).add(PinnedEventsEventUnpin(_pinnedEvent.eventId));
+                                              },
+                                              child: Container(
+                                                color: Colors.red,
+                                                child: Center(
+                                                  child: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      Icon(
+                                                        Icons.undo_rounded,
+                                                        key: UniqueKey(),
+                                                        color: Colors.white,
+                                                      ),
+                                                      Text(
+                                                        "Unpin",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 12,
                                                         ),
-                                                      ],
-                                                      cancel: true,
-                                                    );
-                                                  },
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                              );
-                                            }, // builder
-                                          );
-                                        },
+                                              ),
+                                            );
+                                          })
+                                        ],
                                       );
                                     } // if
 
@@ -264,7 +305,7 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
                                           /// are more events to retrieve. Otherwise
                                           /// show an empty container as a bottom margin.
                                           if (_state is PinnedEventsStateSuccess) {
-                                            return !_state.maxEvents ? BottomLoadingWidget() : Container(height: _realHeight * .1);
+                                            return !_state.maxEvents ? BottomLoadingWidget() : Container();
                                           } // if
                                           else {
                                             return Container();

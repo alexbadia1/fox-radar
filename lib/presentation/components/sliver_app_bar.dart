@@ -33,17 +33,20 @@ class MaristSliverAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double appBarHeight = MediaQuery.of(context).size.height * 0.0725;
+    final double safePaddingTop = WidgetsBinding.instance.window.padding.top / WidgetsBinding.instance.window.devicePixelRatio;
+
     precacheImage(_backgroundImage.image, context);
     return SliverAppBar(
       foregroundColor: Colors.transparent,
       backgroundColor: Colors.transparent,
-      toolbarHeight: MediaQuery.of(context).size.height * 0.0725,
+      toolbarHeight: appBarHeight,
       elevation: 1.0,
       pinned: true,
       actions: [this.action], // Scaffold inherits drawer
       flexibleSpace: Container(
         width: double.infinity,
-        height: MediaQuery.of(context).size.height * 0.0725,
+        height:  appBarHeight + safePaddingTop,
         child: Stack(
           children: <Widget>[
             /// TODO: Figure out how to load this faster!
@@ -55,15 +58,28 @@ class MaristSliverAppBar extends StatelessWidget {
               children: <Widget>[
                 Expanded(flex: 1, child: SizedBox()),
                 Expanded(
-                    flex: 4,
-                    child: this.icon != null
-                        ? IconButton(
+                  flex: 4,
+                  child: this.icon != null
+                      ? Padding(
+                          padding: EdgeInsets.only(top: safePaddingTop),
+                          child: IconButton(
                             onPressed: this.onIconPressed,
                             icon: Icon(this.icon, color: kHavenLightGray),
-                          )
-                        : MaristFoxLogo()),
+                          ),
+                        )
+                      : Padding(
+                          padding: EdgeInsets.only(top: safePaddingTop),
+                          child: MaristFoxLogo(),
+                        ),
+                ),
                 Expanded(flex: 1, child: SizedBox()),
-                Expanded(flex: 30, child: MaristSliverAppBarTitle(title: this.title)),
+                Expanded(
+                  flex: 30,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: safePaddingTop),
+                    child: MaristSliverAppBarTitle(title: this.title),
+                  ),
+                ),
                 Expanded(flex: 2, child: SizedBox()),
               ],
             ),

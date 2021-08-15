@@ -112,7 +112,7 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
                       return IconButton(
                         icon: Icon(Icons.more_vert),
                         color: cWhite70,
-                        onPressed: () {},
+                        onPressed: () => this.widget.onEventCardVertMoreCallback(null),
                       );
                     },
                   ),
