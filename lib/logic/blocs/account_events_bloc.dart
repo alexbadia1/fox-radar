@@ -69,7 +69,6 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
       ///
       /// Initial state was fetching, user tried to fetch events from a failed state
       if (_currentState is AccountEventsStateFetching || _currentState is AccountEventsStateFailed) {
-
         /// Get user's created events document that lists
         /// all of the event id's that belong to this user.
         await this._getListOfAccountEvents();
@@ -89,12 +88,13 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
           final DocumentSnapshot docSnap = await this.db.getSearchEventById(eventId: _eventIdsToFetch[i]);
           if (docSnap != null) {
             _docs.add(docSnap);
-          }// if
-        }// for
-        
+          } // if
+        } // for
+
         /// No events were retrieved on the FIRST retrieval, fail.
         if (_docs.isEmpty) {
-          yield AccountEventsStateFailed("[Account Events State Failed] Failed to fetch the first ${this._paginationLimit} based on the account events doc!");
+          yield AccountEventsStateFailed(
+              "[Account Events State Failed] Failed to fetch the first ${this._paginationLimit} based on the account events doc!");
           return;
         } // if
 
@@ -139,8 +139,8 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
           final DocumentSnapshot docSnap = await this.db.getSearchEventById(eventId: _eventIdsToFetch[i]);
           if (docSnap != null) {
             _docs.add(docSnap);
-          }// if
-        }// for
+          } // if
+        } // for
 
         /// No events were retrieved on the FIRST retrieval, fail.
         if (_docs.isEmpty) {
@@ -220,8 +220,8 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
         final DocumentSnapshot docSnap = await this.db.getSearchEventById(eventId: _eventIdsToFetch[i]);
         if (docSnap != null) {
           _docs.add(docSnap);
-        }// if
-      }// for
+        } // if
+      } // for
 
       if (_currentState is AccountEventsStateFailed) {
         yield AccountEventsStateReloadFailed();
@@ -231,7 +231,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
       if (_docs.isEmpty) {
         yield AccountEventsStateFailed("No events retrieved");
         return;
-      }// if
+      } // if
 
       // Map the events to a list of "Search Result Models"
       final List<SearchResultModel> _eventModels = _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
@@ -282,20 +282,13 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
           newEventModelReference.addAll(currentState.eventModels);
         } // if
 
-        // TODO: Enable this code to actually delete and event
-        // // Remove image from storage
-        // this.db.deleteImageFromStorage(
-        //     eventID: accountEventsEventRemove.searchResultModel.eventId);
+        // Delete event from firebase cloud
+        await this.db.deleteEvent(accountEventsEventRemove.searchResultModel.eventId, this.accountID);
+
+        // Remove image from storage
         //
-        // // Remove from "search" collection
-        // this.db.deleteNewEventFromSearchableCollection(
-        //     documentReferenceID:
-        //     accountEventsEventRemove.searchResultModel.searchID);
-        //
-        // // Remove from the "events" collection
-        // this.db.deleteNewEventFromEventsCollection(
-        //     documentReferenceID:
-        //     accountEventsEventRemove.searchResultModel.eventId);
+        // It's ok if this fails, since orphaned images will be deleted by cloud functions (hopefully)
+        await this.db.deleteImageFromStorage(eventID: accountEventsEventRemove.searchResultModel.eventId);
 
         // Deleted the last event (on the device)
         //
@@ -318,7 +311,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
     } // if
   } // _mapAccountEventsEventRemoveToState
 
-  Future<void> _getListOfAccountEvents () async {
+  Future<void> _getListOfAccountEvents() async {
     final DocumentSnapshot docSnap = await this.db.getAccountCreatedEvents(uid: this.accountID);
 
     final List<String> eventIds = [];
@@ -326,7 +319,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
       final Map m = docSnap.data() as Map;
       m.forEach((attribute, boolVal) {
         if (attribute is String) {
-            eventIds.add(attribute);
+          eventIds.add(attribute);
         } // if
       });
     } // try
@@ -335,7 +328,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
     } //catch
 
     this._accountEventsHandler = PaginationEventsHandler(eventIds);
-  }// getListOfPinnedEvents
+  } // getListOfPinnedEvents
 
   /// Name: _mapDocumentSnapshotsToSearchEventModels
   ///

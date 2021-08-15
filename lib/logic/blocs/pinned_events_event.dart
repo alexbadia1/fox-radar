@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
-import 'package:database_repository/database_repository.dart';
 
 abstract class PinnedEventsEvent extends Equatable {
   const PinnedEventsEvent();
@@ -16,15 +14,27 @@ class PinnedEventsEventReload extends PinnedEventsEvent {
   List<Object> get props => [];
 } // PinnedEventsEventReload
 
-class PinnedEventsEventRemove extends PinnedEventsEvent {
-  final int listIndex;
-  final SearchResultModel searchResultModel;
+class PinnedEventsEventUnpin extends PinnedEventsEvent {
+  final String eventId;
 
-  PinnedEventsEventRemove(
-      {@required this.listIndex, @required this.searchResultModel})
-      : assert(listIndex != null && listIndex > -1),
-        assert(searchResultModel != null);
+  PinnedEventsEventUnpin(this.eventId);
 
   @override
-  List<Object> get props => [this.listIndex, this.searchResultModel];
-} // PinnedEventsEventRemove
+  List<Object> get props => [];
+} // PinnedEventsEventUnpin
+
+class PinnedEventsEventPin extends PinnedEventsEvent {
+  final String eventId;
+
+  PinnedEventsEventPin(this.eventId);
+  @override
+  List<Object> get props => [];
+} // PinnedEventsEventPin
+
+class PinnedEventsEventSort extends PinnedEventsEvent {
+  final String sortKey;
+  PinnedEventsEventSort(this.sortKey);
+
+  @override
+  List<Object> get props => [this.sortKey];
+}// PinnedEventsEventSort

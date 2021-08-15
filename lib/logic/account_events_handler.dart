@@ -18,6 +18,7 @@ class PaginationEventsHandler {
 
     this._curr = end;
 
+    print(eventIds.getRange(start, end).toList().toString());
     return eventIds.getRange(start, end).toList();
   } // getEventIdsPaginated
 

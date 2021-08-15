@@ -92,6 +92,9 @@ class ConfirmDelete extends StatelessWidget {
           AccountEventsEventRemove(listIndex: this.listViewIndex, searchResultModel: this.searchResultModel),
         );
 
+        // Remove from local list
+        BlocProvider.of<PinnedEventsBloc>(pContext).add(PinnedEventsEventUnpin(this.searchResultModel.eventId));
+
         // Close all modal bottom sheets
         Navigator.of(pContext).popUntil((route) => route.isFirst);
       },

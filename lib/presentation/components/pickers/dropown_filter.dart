@@ -1,7 +1,5 @@
-import 'dart:isolate';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/logic/logic.dart';
-import 'package:database_repository/database_repository.dart';
 import 'package:communitytabs/presentation/presentation.dart';
 
 class DropdownEventsFilter extends StatefulWidget {
@@ -37,27 +35,10 @@ class _DropdownEventsFilterState extends State<DropdownEventsFilter> {
           }).toList();
         },
         onChanged: (String sortKey) {
-          // // Add a sort event to the PinnedEventsBloc
-          // // TODO: Listen to PinnedEventsBloc to retrieve
-          // // // the list or maybe just add pass the to this list?
-          // final EventModels events = BlocProvider.of<PinnedEventsBloc>(context).state.eventModels;
-          // if (events.length >= 50) {
-          //   // Use the dart isolate
-          // }// if
-          //
-          // else {
-          //   this.sortEventModels(
-          //     sortKey: sortKey,
-          //     events: BlocProvider
-          //         .of<PinnedEventsBloc>(context)
-          //         .state
-          //         .eventModels,
-          //   );
-          // }
-
-          // setState(() {
-          //   this.dropdownValue = sortKey;
-          // });
+          BlocProvider.of<PinnedEventsBloc>(context).add(PinnedEventsEventSort(sortKey));
+          setState(() {
+            this.dropdownValue = sortKey;
+          });
         },
         items: this.filters.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(

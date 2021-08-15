@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/logic/logic.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/presentation/presentation.dart';
-
 class PinnedEventsScreen extends StatefulWidget {
   @override
   _PinnedEventsScreenState createState() => _PinnedEventsScreenState();
@@ -26,16 +24,16 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
 
     // When nearing the bottom of the page, fetch more events
     this._scrollController.addListener(() {
-      SavedEventsState _currentState = BlocProvider.of<SavedEventsBloc>(context).state;
+      PinnedEventsState _currentState = BlocProvider.of<PinnedEventsBloc>(context).state;
 
       // User is about 2/3 to the bottom of the list, fetch more
       // events, in an effort to load events before they get to the bottom.
       if (this._scrollController.position.pixels >= this._scrollController.position.maxScrollExtent / 3) {
         // Check the current state to prevent spamming bloc with fetch events
-        if (_currentState is SavedEventsStateSuccess) {
+        if (_currentState is PinnedEventsStateSuccess) {
           if (!_currentState.maxEvents) {
             // Add a fetch event to the SavedEventsBloc
-            BlocProvider.of<SavedEventsBloc>(context).add(SavedEventsEventFetch());
+            BlocProvider.of<PinnedEventsBloc>(context).add(PinnedEventsEventFetch());
           } // if
         } // if
       } // else-if
@@ -80,9 +78,9 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
               ),
             ),
             Builder(builder: (loadingWidgetContext) {
-              final _accountSavedEventsBlocState = loadingWidgetContext.watch<SavedEventsBloc>().state;
+              final _accountSavedEventsBlocState = loadingWidgetContext.watch<PinnedEventsBloc>().state;
 
-              if (_accountSavedEventsBlocState is SavedEventsStateFetching) {
+              if (_accountSavedEventsBlocState is PinnedEventsStateFetching) {
                 return SliverFillRemaining(
                   child: Container(
                     width: double.infinity,
@@ -100,10 +98,10 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
 
               return SliverFillRemaining(
                 child: Builder(builder: (BuildContext refreshIndicatorContext) {
-                  final _savedEventState = refreshIndicatorContext.watch<SavedEventsBloc>().state;
+                  final _savedEventState = refreshIndicatorContext.watch<PinnedEventsBloc>().state;
                   // SavedEventsBloc must either be [SavedEventsStateSuccess]
                   // or [SavedEventsStateFailed] (Not [SavedEventsStateFetching])
-                  if (!(_savedEventState is SavedEventsStateFetching)) {
+                  if (!(_savedEventState is PinnedEventsStateFetching)) {
                     // To stop the Refresh Indicator's loading widget,
                     // complete [complete()] the completer [_refreshCompleter].
                     this._refreshCompleter.complete();
@@ -117,7 +115,7 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
                     displacement: 15,
                     backgroundColor: Colors.transparent,
                     onRefresh: () async {
-                      BlocProvider.of<SavedEventsBloc>(refreshIndicatorContext).add(SavedEventsEventReload());
+                      BlocProvider.of<PinnedEventsBloc>(refreshIndicatorContext).add(PinnedEventsEventReload());
                       BlocProvider.of<UploadEventBloc>(refreshIndicatorContext).add(UploadEventReset());
                       final _future = await this._refreshCompleter.future;
                       return _future;
@@ -160,9 +158,9 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
                           /// Description: Only show header, if the
                           ///              user events were retrieved.
                           Builder(builder: (headerContext) {
-                            final SavedEventsState _savedEventsState = headerContext.watch<SavedEventsBloc>().state;
+                            final PinnedEventsState _savedEventsState = headerContext.watch<PinnedEventsBloc>().state;
 
-                            if (_savedEventsState is SavedEventsStateFetching) {
+                            if (_savedEventsState is PinnedEventsStateFetching) {
                               return SliverToBoxAdapter(child: Container());
                             } // if
 
@@ -180,9 +178,9 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
                           /// Description: Only show header, if the
                           ///              user events were retrieved.
                           Builder(builder: (headerContext) {
-                            final SavedEventsState _savedEventsState = headerContext.watch<SavedEventsBloc>().state;
+                            final PinnedEventsState _savedEventsState = headerContext.watch<PinnedEventsBloc>().state;
 
-                            if (_savedEventsState is SavedEventsStateFetching) {
+                            if (_savedEventsState is PinnedEventsStateFetching) {
                               return SliverToBoxAdapter(child: Container());
                             } // if
 
@@ -195,10 +193,10 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
                           /// and builds "Event Cards" for each event, with
                           /// the last widget being a loading widget if necessary.
                           Builder(builder: (pinnedEventsContext) {
-                            final _savedEventsState = pinnedEventsContext.watch<SavedEventsBloc>().state;
+                            final _savedEventsState = pinnedEventsContext.watch<PinnedEventsBloc>().state;
 
                             // Show a paginated list view of events pinned by the account
-                            if (_savedEventsState is SavedEventsStateSuccess) {
+                            if (_savedEventsState is PinnedEventsStateSuccess) {
                               return SliverList(
                                 delegate: SliverChildBuilderDelegate(
                                   (BuildContext sliverListContext, int index) {
@@ -207,35 +205,44 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
                                     /// Show each search result in an [EventCard] widget.
                                     /// When clicking on the card, the full event is retrieved.
                                     if (index < _savedEventsState.eventModels.length) {
+                                      final _pinnedEvent = _savedEventsState.eventModels.elementAt(index);
                                       return EventCard(
-                                        key: ObjectKey(_savedEventsState.eventModels.elementAt(index)),
-                                        newSearchResult: _savedEventsState.eventModels.elementAt(index),
+                                        key: ObjectKey(_pinnedEvent),
+                                        newSearchResult: _pinnedEvent,
                                         onEventCardVertMoreCallback: (imageBytes) {
                                           // Show a modal bottom sheet with
                                           // options to edit or delete an event.
-                                          showModalBottomSheet(
-                                            context: pinnedEventsContext,
+                                          return showModalBottomSheet(
+                                            context: sliverListContext,
                                             builder: (modalSheetContext) {
                                               /// Pass the current SavedEventsBloc.
                                               ///
                                               /// Bottom Modal Sheet is built within
                                               /// its own context, that doesn't have
                                               /// access to the current widget's context.
-                                              return Builder(
-                                                builder: (modalSheetContext) {
-                                                  // Events shown on rhe screen should already be unpinned
-                                                  return ModalActionMenu(
-                                                    prompt: "Upinning the event will make it no longer viewable on the Account Screen.",
-                                                    actions: [
-                                                      ModalActionMenuButton(
+                                              return BlocProvider<PinnedEventsBloc>.value(
+                                                value: BlocProvider.of<PinnedEventsBloc>(context),
+                                                child: Builder(
+                                                  builder: (modalSheetContext) {
+                                                    // Events shown on rhe screen should already be unpinned
+                                                    return ModalActionMenu(
+                                                      actions: [
+                                                        ModalActionMenuButton(
                                                           icon: Icons.undo_rounded,
                                                           description: "Unpin Event",
-                                                          color: Colors.blueAccent,
-                                                          onPressed: () {}),
-                                                    ],
-                                                    cancel: true,
-                                                  );
-                                                },
+                                                          color: Colors.redAccent,
+                                                          onPressed: () {
+                                                            // Remove from local list
+                                                            BlocProvider.of<PinnedEventsBloc>(modalSheetContext)
+                                                                .add(PinnedEventsEventUnpin(_pinnedEvent.eventId));
+                                                            Navigator.pop(modalSheetContext);
+                                                          },
+                                                        ),
+                                                      ],
+                                                      cancel: true,
+                                                    );
+                                                  },
+                                                ),
                                               );
                                             }, // builder
                                           );
@@ -251,12 +258,12 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
                                     else {
                                       return Builder(
                                         builder: (bottomListContext) {
-                                          final _state = pinnedEventsContext.watch<SavedEventsBloc>().state;
+                                          final _state = pinnedEventsContext.watch<PinnedEventsBloc>().state;
 
                                           /// Only return a loading widget if there are
                                           /// are more events to retrieve. Otherwise
                                           /// show an empty container as a bottom margin.
-                                          if (_state is SavedEventsStateSuccess) {
+                                          if (_state is PinnedEventsStateSuccess) {
                                             return !_state.maxEvents ? BottomLoadingWidget() : Container(height: _realHeight * .1);
                                           } // if
                                           else {
@@ -276,7 +283,7 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
                             ///
                             /// "Expired" events will be deleted by the database.
                             /// An event is expired when "TBD"...
-                            else if (_savedEventsState is SavedEventsStateFailed) {
+                            else if (_savedEventsState is PinnedEventsStateFailed) {
                               /// Lonely Panda with an inspirational message.
                               /// Trying to inspire the user to make something happen!
                               return SliverToBoxAdapter(
@@ -301,7 +308,7 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
                                         style: TextStyle(color: Colors.blueAccent, fontSize: 16.0),
                                       ),
                                       onPressed: () {
-                                        BlocProvider.of<SavedEventsBloc>(refreshIndicatorContext).add(SavedEventsEventReload());
+                                        BlocProvider.of<PinnedEventsBloc>(refreshIndicatorContext).add(PinnedEventsEventReload());
                                         BlocProvider.of<UploadEventBloc>(refreshIndicatorContext).add(UploadEventReset());
                                       },
                                     ),
@@ -312,12 +319,12 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
 
                             // Don't show the sliver list, since events are still being fetched,
                             // Also don't know if the event fetch failed, so can't return the cactus dog image.
-                            else if (_savedEventsState is SavedEventsStateFetching) {
+                            else if (_savedEventsState is PinnedEventsStateFetching) {
                               return SliverToBoxAdapter(child: Container(color: Color.fromRGBO(61, 61, 61, 1.0)));
                             } // else if
 
                             // Don't show anything, since a reload failure should immediately be followed by an event fetch failure
-                            else if (_savedEventsState is SavedEventsStateReloadFailed) {
+                            else if (_savedEventsState is PinnedEventsStateReloadFailed) {
                               return SliverToBoxAdapter(child: Container(color: Color.fromRGBO(61, 61, 61, 1.0)));
                             } // else if
 

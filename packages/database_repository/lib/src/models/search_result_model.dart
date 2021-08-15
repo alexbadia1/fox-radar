@@ -17,6 +17,8 @@ class SearchResultModel {
   /// locations like "Beach", "River", "Campus Green".
   String _location = '[Event Location]';
 
+  DateTime _rawStartDateAndTime;
+
   /// Event Start Date (Required)
   ///
   /// The start date is parsed from the [rawStartDateAndTime] stored in firebase.
@@ -67,6 +69,8 @@ class SearchResultModel {
     // Set the Event Category
     this._category = newCategory;
 
+    this._rawStartDateAndTime = newRawStartDateAndTime;
+
     // Parse the Start DATE from [rawStartDateAndTime]
     newRawStartDateAndTime == null
         ? this._startDate = ''
@@ -101,6 +105,7 @@ class SearchResultModel {
   String get eventId => this._eventId;
   String get searchID => this._searchID;
   String get accountID => this._accountID;
+  DateTime get rawStartDateAndTime => this._rawStartDateAndTime;
 
   @override
   String toString() {

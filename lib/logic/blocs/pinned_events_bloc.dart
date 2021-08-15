@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:communitytabs/logic/logic.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:database_repository/database_repository.dart';
@@ -43,6 +44,19 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
       yield* _mapPinnedEventsEventReloadToState();
     } // else if
 
+    // Pin events
+    else if (event is PinnedEventsEventPin) {
+      yield* _mapPinnedEventsEventPinToState(event.eventId);
+    }// else if
+
+    // Unpin events
+    else if (event is PinnedEventsEventUnpin) {
+      yield* _mapPinnedEventsEventUnpinToState(event.eventId);
+    }// else if
+
+    else if (event is PinnedEventsEventSort) {
+      yield* _mapPinnedEventsEventSortToState(event.sortKey);
+    }// else if
     // The event added to the bloc has not associated state
     // either create one, or check the [account_events_state.dart]
     else {
@@ -174,17 +188,18 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
 
       /// Get user's created events document that lists
       /// all of the event id's that belong to this user.
-      this._getListOfPinnedEvents();
+      await this._getListOfPinnedEvents();
 
       /// Fail, since no document id's are listed in the user's createEvent doc.
       if (this._pinnedEventsHandler.isEmpty()) {
-        yield PinnedEventsStateFailed("[Account Events State Failed] Account events doc has no events!");
+        yield PinnedEventsStateFailed("[Pinned Events State Failed] Pinned events doc has no events!");
         return;
       } // if
 
       /// Get the first [paginationLimit] number of event id's from the [AccountEventsHandler]
       final List<String> _ids = this._pinnedEventsHandler.getEventIdsPaginated(this._paginationLimit);
       final List<DocumentSnapshot> _docs = await this._fetchPinnedEventsPaginated(eventIdsToFetch: _ids);
+
 
       if (_currentState is PinnedEventsStateFailed) {
         yield PinnedEventsStateReloadFailed();
@@ -203,7 +218,6 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
       if (_eventModels.length != this._paginationLimit) {
         _maxEvents = true;
       } // if
-
       yield PinnedEventsStateSuccess(
         eventModels: _eventModels,
         maxEvents: _maxEvents,
@@ -226,9 +240,7 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
       final Map m = docSnap.data() as Map;
       m.forEach((attribute, boolVal) {
         if (attribute is String) {
-          if (attribute != ATTRIBUTE_PIN_COUNT) {
             eventIds.add(attribute);
-          } // if
         } // if
       });
     } // try
@@ -300,5 +312,94 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
     }).toList();
   } // _mapDocumentSnapshotsToSearchEventModels
 
-  get pinnedEvents => this._pinnedEventsHandler != null ? this._pinnedEventsHandler.eventIds : null;
+  List<String> get pinnedEvents => this._pinnedEventsHandler != null ? this._pinnedEventsHandler.eventIds : null;
+
+  Stream<PinnedEventsState> _mapPinnedEventsEventPinToState(String newEventID) async* {
+    if (this.pinnedEvents == null) { return; }// if
+    if (newEventID == null) { return; }// if
+    if (newEventID.isNotEmpty) {
+      this.pinnedEvents.add(newEventID);
+      await this.db.pinEvent(newEventID, this.accountID);
+    }// if
+  }// addPinnedEvent
+
+  Stream<PinnedEventsState> _mapPinnedEventsEventUnpinToState(String newEventID) async* {
+    final currState = this.state;
+
+    if (this.pinnedEvents == null) { return; }// if
+    if (newEventID == null) { return; }// if
+    if (newEventID.isNotEmpty) {
+      this.pinnedEvents.remove(newEventID);
+      await this.db.unpinEvent(newEventID, this.accountID);
+      // Not last event
+      if (this.pinnedEvents.isNotEmpty && currState is PinnedEventsStateSuccess) {
+        currState.eventModels.removeWhere((element) => element.eventId == newEventID);
+        yield PinnedEventsStateSuccess(
+          eventModels: currState.eventModels,
+          lastEvent: currState.lastEvent,
+          maxEvents: currState.maxEvents,
+          isFetching: currState.isFetching,
+        );
+      }// if
+
+      else {
+        yield PinnedEventsStateFailed("Unpinned last event");
+      }// else
+    }// if
+  }// addPinnedEvent
+
+  Stream<PinnedEventsState> _mapPinnedEventsEventSortToState(String sortKey) async* {
+    final currState = this.state;
+
+    // Only sort if there are actually events to sort
+    if (currState is PinnedEventsStateSuccess) {
+      // Used to pass multiple arguments to a function on another isolate
+      Map argsForCompute = {
+        "SearchResultModels" : currState.eventModels,
+        "SortKey" : sortKey,
+      };// argsForCompute
+
+      // A new list reference should for listeners to update
+      List<SearchResultModel> sortedSearchResults = [];
+
+      // Too many events to sort on the main thread
+      if (currState.eventModels.length >= 50) {
+        sortedSearchResults = await compute(sortSearchEventModels, argsForCompute);
+      }// if
+      else {
+        sortedSearchResults = await sortSearchEventModels(argsForCompute);
+      }// else
+
+      // Send sorted list to the UI
+      yield PinnedEventsStateSuccess(
+        eventModels: sortedSearchResults,
+        lastEvent: currState.lastEvent,
+        maxEvents: currState.maxEvents,
+        isFetching: currState.isFetching,
+      );
+    }// if
+  }//_mapPinnedEventsEventSortToState
+
+  static Future<List<SearchResultModel>> sortSearchEventModels(Map args) async {
+    // Parse arguments, just in case this is run on another isolate
+    final String sortKey = args['SortKey'];
+    final List<SearchResultModel> searchResultModels = args['SearchResultModels'];
+
+    try {
+      switch (sortKey) {
+        case SORT_KEY_ALPHABETICAL:
+          searchResultModels.sort((a, b) => a.title.compareTo(b.title));
+          break;
+        default: // Default to sort by time
+          searchResultModels.sort((a, b) => a.rawStartDateAndTime.compareTo(b.rawStartDateAndTime));
+          break;
+      } // switch
+    }// try
+
+    catch(error) {}// catch
+
+    // Returns the sorted search results, if the
+    // sort failed it should be the original list.
+    return searchResultModels;
+  }// sortSearchEventModels
 }// PinnedEventsBloc

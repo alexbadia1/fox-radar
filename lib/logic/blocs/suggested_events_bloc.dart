@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:isolate';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/logic/logic.dart';
@@ -191,26 +190,6 @@ class SuggestedEventsBloc extends Bloc<SuggestedEventsEvent, SuggestedEventsStat
       );
     }).toList();
   } // _mapDocumentSnapshotsToSearchEventModels
-
-  static List<EventModel> _sortEventModels(SendPort sendPort, {@required List<EventModel> events, @required String sortKey}) {
-    switch (sortKey) {
-      case START_DATE_TIME:
-        events.sort((a, b) => a.rawStartDateAndTime.compareTo(b.rawStartDateAndTime));
-        break;
-      case END_DATE_TIME:
-      // Events with no end date should be listed first, using 0 should ensure that.
-        events.sort((a, b) => a.rawEndDateAndTime.compareTo(b.rawEndDateAndTime ?? 0));
-        break;
-      case ALPHABETICAL:
-        events.sort((a, b) => a.title.compareTo(b.title));
-        break;
-      default:
-        events.sort((a, b) => a.title.compareTo(b.title));
-        break;
-    }// switch
-
-    return events;
-  }//sortList
 
   @override
   void onChange(Change<SuggestedEventsState> change) {

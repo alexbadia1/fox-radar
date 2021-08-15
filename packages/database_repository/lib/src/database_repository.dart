@@ -32,14 +32,13 @@ class DatabaseRepository {
     if (lastEvent != null) {
       querySnap = await _searchEventsCollection
           .where(ATTRIBUTE_CATEGORY, isEqualTo: category)
-          .orderBy(ATTRIBUTE_CATEGORY)
           .startAfterDocument(lastEvent)
           .limit(limit)
           .get();
     } // if
 
     else {
-      querySnap = await _searchEventsCollection.where(ATTRIBUTE_CATEGORY, isEqualTo: category).orderBy(ATTRIBUTE_CATEGORY).limit(limit).get();
+      querySnap = await _searchEventsCollection.where(ATTRIBUTE_CATEGORY, isEqualTo: category).limit(limit).get();
     } // else
 
     return querySnap.docs;
@@ -269,6 +268,7 @@ class DatabaseRepository {
   /// Returns true or false, if the update succeded or not.
   Future<bool> pinEvent(String eventId, String userId) async {
     try {
+      print("Pinning Event");
       // User's doc containing all saved events and a count
       final DocumentReference docRef = this._userSavedEventsCollection.doc(userId);
       await docRef.get().then((doc) {
@@ -288,7 +288,7 @@ class DatabaseRepository {
   } // pinEvent
 
   /// Pins an existing "Event" to the user account
-  /// Returns true or false, if the update succeded or not.
+  /// Returns true or false, if the update succeeded or not.
   Future<bool> unpinEvent(String eventId, String userId) async {
     try {
       // User's doc containing all saved events and a count
@@ -327,10 +327,12 @@ class DatabaseRepository {
       _batch.delete(eventDocRef);
       _batch.delete(searchEventDocRef);
       _batch.update(createdEventDocRef, {eventId: FieldValue.delete()});
+
+      // You can delete the event from the current user's pinned
+      // events document, but every other user will have a null pointer.
       _batch.update(pinnedEventDocRef, {eventId: FieldValue.delete()});
 
       await _batch.commit();
-
       return true;
     } // try
     catch (e) {

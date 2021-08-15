@@ -31,10 +31,7 @@ class AccountScreen extends StatelessWidget {
                     controller: BlocProvider.of<AccountPageViewCubit>(pageViewContext).accountPageViewController,
                     physics: NeverScrollableScrollPhysics(),
                     children: [
-                      BlocProvider<SavedEventsBloc>(
-                        create: (context) => SavedEventsBloc(),
-                        child: PinnedEventsScreen(),
-                      ),
+                      PinnedEventsScreen(),
                       BlocProvider<AccountEventsBloc>(
                         create: (accountBlocProv) => AccountEventsBloc(
                           db: RepositoryProvider.of<DatabaseRepository>(context),

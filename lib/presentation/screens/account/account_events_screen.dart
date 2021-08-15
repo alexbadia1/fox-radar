@@ -182,6 +182,7 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
                                             return MultiBlocProvider(
                                               providers: [
                                                 BlocProvider.value(value: BlocProvider.of<AccountEventsBloc>(sliverListContext)),
+                                                BlocProvider.value(value: BlocProvider.of<PinnedEventsBloc>(sliverListContext)),
                                                 BlocProvider(
                                                   create: (fetchEventCubitContext) => FetchFullEventCubit(
                                                     db: RepositoryProvider.of<DatabaseRepository>(sliverListContext),
@@ -189,7 +190,7 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
                                                 ),
                                               ],
                                               child: Builder(builder: (modalSheetContext) {
-                                                BlocProvider.of<FetchFullEventCubit>(modalSheetContext).fetchEvent(documentId: searchResult);
+                                                BlocProvider.of<FetchFullEventCubit>(modalSheetContext).fetchEvent(documentId: searchResult.eventId);
                                                 return AccountModalBottomSheet(
                                                   listViewIndex: index,
                                                   searchResultModel: _accountEventsState.eventModels.elementAt(index),

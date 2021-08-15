@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'package:authentication_repository/authentication_repository.dart';
-import 'package:database_repository/database_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/logic/logic.dart';
@@ -217,7 +215,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
                                         key: ObjectKey(_suggestedSearchEvent),
                                         newSearchResult: _suggestedSearchEvent,
                                         onEventCardVertMoreCallback: (imageBytes) {
-                                          showModalBottomSheet(
+                                          return showModalBottomSheet(
                                             context: sliverListContext,
                                             builder: (modalSheetContext) {
                                               /// Pass the current AccountEventsBloc.
@@ -225,21 +223,10 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
                                               /// Bottom Modal Sheet is built within
                                               /// its own context, that doesn't have
                                               /// access to the current widget's context.
-                                              return MultiBlocProvider(
-                                                providers: [
-                                                  BlocProvider<PinEventCubit>(
-                                                    create: (context) => PinEventCubit.instance(
-                                                      db: RepositoryProvider.of<DatabaseRepository>(context),
-                                                      pinnedEvents: BlocProvider.of<PinnedEventsBloc>(context).pinnedEvents,
-                                                      eventId: _suggestedSearchEvent.eventId,
-                                                      uid: RepositoryProvider.of<AuthenticationRepository>(context).getUserModel().userID,
-                                                    ),
-                                                  ),
-                                                ],
+                                              return BlocProvider<PinnedEventsBloc>.value(
+                                                value: BlocProvider.of<PinnedEventsBloc>(modalSheetContext),
                                                 child: Builder(builder: (modalSheetContext) {
-                                                  final PinEventState pinnedState = modalSheetContext.watch<PinEventCubit>().state;
-
-                                                  if (pinnedState is PinEventStateUnpinned) {
+                                                  if (!BlocProvider.of<PinnedEventsBloc>(context).pinnedEvents.contains(_suggestedSearchEvent.eventId)) {
                                                     return ModalActionMenu(
                                                       actions: [
                                                         ModalActionMenuButton(
@@ -247,8 +234,8 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
                                                             description: "Pin",
                                                             color: Colors.blueAccent,
                                                             onPressed: () {
-                                                              BlocProvider.of<PinEventCubit>(context).pinEvent(_suggestedSearchEvent.eventId);
-                                                              Navigator.pop(context);
+                                                              BlocProvider.of<PinnedEventsBloc>(modalSheetContext).add(PinnedEventsEventPin(_suggestedSearchEvent.eventId));
+                                                              Navigator.pop(modalSheetContext);
                                                             },
                                                         ),
                                                       ],
@@ -259,12 +246,12 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
                                                   return ModalActionMenu(
                                                     actions: [
                                                       ModalActionMenuButton(
-                                                          icon: Icons.delete,
+                                                        icon: Icons.undo_rounded,
                                                           description: "Unpin",
                                                           color: Colors.redAccent,
                                                           onPressed: () {
-                                                             BlocProvider.of<PinEventCubit>(context).unpinEvent(_suggestedSearchEvent.eventId);
-                                                             Navigator.pop(context);
+                                                             BlocProvider.of<PinnedEventsBloc>(modalSheetContext).add(PinnedEventsEventUnpin(_suggestedSearchEvent.eventId));
+                                                             Navigator.pop(modalSheetContext);
                                                           },
                                                       )
                                                     ],
