@@ -37,6 +37,9 @@ dependencies:
   # Better Stream Control
   rxdart: ^0.25.0
 
+  # Monitoring wifi
+  connectivity_plus: ^1.0.6
+  
   # Encryption
   crypto: ^2.1.5
 
@@ -46,18 +49,12 @@ dependencies:
   intl: ^0.17.0
 
   # Camera access
-  # image_picker >= 0.7.0 conflicts with firebase
   # Shouldn't be a problem when switching backend to sql.
   # Bugged: image_picker: ^0.6.7+22
   image_picker: ^0.8.2
   photo_manager: ^1.2.8
   image_cropper: ^1.4.0
   flutter_image_compress: ^1.1.0
-
-#  # Local storage
-#  flutter_cache_manager: ^1.4.1
-#  path_provider: ^1.6.11
-
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
