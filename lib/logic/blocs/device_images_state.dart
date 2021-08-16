@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 
@@ -26,7 +27,7 @@ class DeviceImagesStateDenied extends DeviceImagesState {
 } // DeviceImagesStateDenied
 
 class DeviceImagesStateSuccess extends DeviceImagesState {
-  final List<File> images;
+  final List<Uint8List> images;
   final int lastPage;
   final bool maxImages;
   final bool isFetching;

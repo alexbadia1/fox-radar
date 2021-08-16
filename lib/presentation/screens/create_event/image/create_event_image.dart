@@ -206,14 +206,13 @@ class _CreateEventImageState extends State<CreateEventImage> with WidgetsBinding
                         childAspectRatio: 1.1,
                       ),
                       itemBuilder: (BuildContext gridListContext, int index) {
-                        // TODO: Read AsBytesAsynchronously and then compress the image bytes in the bloc and change the state to hold the image bytes instead
-                        final Uint8List _imageBytes = deviceImagesBlocState.images[index].readAsBytesSync();
+                        final Uint8List _imageBytes = deviceImagesBlocState.images[index];
                         return GestureDetector(
                           onTap: () {
                             BlocProvider.of<CreateEventBloc>(gridListContext).add(CreateEventSetImage(imageBytes: _imageBytes));
                             BlocProvider.of<CreateEventBloc>(context).add(CreateEventSetImageFitCover(fitCover: false));
-                            BlocProvider.of<CreateEventBloc>(gridListContext)
-                                .add(CreateEventSetImagePath(imagePath: deviceImagesBlocState.images[index].path));
+                            // TODO: Verifiy that this is redundant since the path is generated in the UploadEventsBloc when uploading...
+                            // BlocProvider.of<CreateEventBloc>(gridListContext).add(CreateEventSetImagePath(imagePath: deviceImagesBlocState.images[index].path));
                           },
                           child: Image.memory(
                             _imageBytes,
