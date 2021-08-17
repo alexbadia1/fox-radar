@@ -1,7 +1,5 @@
-import 'package:database_repository/database_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:communitytabs/logic/blocs/blocs.dart';
+import 'package:communitytabs/logic/logic.dart';
 import 'package:communitytabs/presentation/presentation.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 
@@ -14,7 +12,6 @@ class _ViewsWrapperState extends State<ViewsWrapper> {
   @override
   Widget build(BuildContext context) {
     final _authRepo = RepositoryProvider.of<AuthenticationRepository>(context);
-
     return Builder(
       builder: (context) {
         final _authenticationBlocState = context.watch<AuthenticationBloc>().state;

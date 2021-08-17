@@ -8,7 +8,7 @@ class DropdownEventsFilter extends StatefulWidget {
 } // DropdownEventsFilter
 
 class _DropdownEventsFilterState extends State<DropdownEventsFilter> {
-  final filters = ["Starts", "Ends", "A-Z"];
+  final filters = [SORT_KEY_START_DATE_TIME, SORT_KEY_ALPHABETICAL];
   String dropdownValue;
 
   @override

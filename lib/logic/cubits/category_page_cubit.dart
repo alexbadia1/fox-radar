@@ -1,6 +1,4 @@
-import 'package:bloc/bloc.dart';
-import 'package:communitytabs/logic/cubits/cubits.dart';
-import 'category_page_state.dart';
+import 'package:communitytabs/logic/logic.dart';
 
 class CategoryPageCubit extends Cubit<CategoryPageState> {
   String _category = '[Category Title]';

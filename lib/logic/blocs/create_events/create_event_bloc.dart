@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:typed_data';
-import 'package:bloc/bloc.dart';
-import 'create_event_event.dart';
 import 'create_event_state.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/logic/logic.dart';

@@ -90,7 +90,20 @@ class _SignUpFormState extends State<SignUpForm> {
         Listener(
           onPointerDown: (_) => FocusScope.of(context).unfocus(),
           behavior: HitTestBehavior.opaque,
-          child: SignUpMessage(),
+          child: Builder(builder: (context) {
+            final _signUpState = context.watch<SignUpBloc>().state;
+            final _networkState = context.watch<DeviceNetworkBloc>().state;
+
+            if (_networkState is DeviceNetworkStateNone) {
+              return SignUpMessage(msg: "\u26A0 No Internet Connection!");
+            } // if
+            else if (_signUpState is SignUpStateFailed) {
+              return SignUpMessage(msg: _signUpState.msg);
+            } // if
+            else {
+              return cVerticalMarginSmall(context);
+            } // else
+          }),
         ),
         IntrinsicHeight(
           child: Stack(
@@ -119,8 +132,11 @@ class _SignUpFormState extends State<SignUpForm> {
                       ),
                     ),
                   ),
-                  onPressed: () async {
-                    if (_signUpFormKeyEmail.currentState.validate() && _signUpFormKeyPassword.currentState.validate()) {
+                  onPressed: () {
+                    final _networkState = BlocProvider.of<DeviceNetworkBloc>(context).state;
+                    if (!(_networkState is DeviceNetworkStateNone) &&
+                        _signUpFormKeyEmail.currentState.validate() &&
+                        _signUpFormKeyPassword.currentState.validate()) {
                       BlocProvider.of<SignUpBloc>(context).add(
                         SignUpEventSignUp(
                           signUpType: SignUpType.emailAndPassword,
@@ -151,26 +167,22 @@ class _SignUpFormState extends State<SignUpForm> {
 } // _SignUpFormState
 
 class SignUpMessage extends StatelessWidget {
+  final String msg;
   const SignUpMessage({
     Key key,
+    @required this.msg,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final _signUpState = context.watch<SignUpBloc>().state;
-
-    if (_signUpState is SignUpStateFailed) {
-      return Container(
-        width: double.infinity,
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
-            child: Text('${_signUpState.msg}'),
-          ),
+    return Container(
+      width: double.infinity,
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
+          child: Text(this.msg),
         ),
-      );
-    } // if
-
-    return cVerticalMarginSmall(context);
+      ),
+    );
   } // build
 } // SignUpMessage

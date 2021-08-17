@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'package:bloc/bloc.dart';
-import 'account_events_event.dart';
 import 'account_events_state.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter/material.dart';
@@ -288,7 +286,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
         // Remove image from storage
         //
         // It's ok if this fails, since orphaned images will be deleted by cloud functions (hopefully)
-        await this.db.deleteImageFromStorage(eventID: accountEventsEventRemove.searchResultModel.eventId);
+        // await this.db.deleteImageFromStorage(eventID: accountEventsEventRemove.searchResultModel.eventId);
 
         // Deleted the last event (on the device)
         //

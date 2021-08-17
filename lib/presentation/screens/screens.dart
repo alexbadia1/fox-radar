@@ -11,3 +11,4 @@ export 'account/account.dart';
 export 'create_event/create_event.dart';
 export 'event/event.dart';
 export 'app_page_view.dart';
+export 'bottom_navigation_bar.dart';

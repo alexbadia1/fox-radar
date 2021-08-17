@@ -88,7 +88,20 @@ class _LoginFormState extends State<LoginForm> {
         Listener(
           onPointerDown: (_) => FocusScope.of(context).unfocus(),
           behavior: HitTestBehavior.opaque,
-          child: LoginMessage(),
+          child: Builder(builder: (context) {
+            final _loginState = context.watch<LoginBloc>().state;
+            final _networkState = context.watch<DeviceNetworkBloc>().state;
+            print("$_networkState");
+            if (_networkState is DeviceNetworkStateNone) {
+              return LoginMessage(msg: "\u26A0 No Internet Connection!");
+            } // if
+            else if (_loginState is LoginStateLoggedOut) {
+              return LoginMessage(msg: _loginState.msg);
+            } // if
+            else {
+              return cVerticalMarginSmall(context);
+            } // else
+          }),
         ),
         IntrinsicHeight(
           child: Stack(
@@ -122,13 +135,18 @@ class _LoginFormState extends State<LoginForm> {
                       ),
                     ),
                   ),
-                  onPressed: () async {
-                    if (this._loginFormKeyEmail.currentState.validate() && this._loginFormKeyPassword.currentState.validate()) {
-                      BlocProvider.of<LoginBloc>(context).add(LoginEventLogin(
-                        loginType: LoginType.emailAndPassword,
-                        hashedEmail: this._emailTextEditingController.text.trim(),
-                        hashedPassword: this._passwordTextEditingController.text.trim(),
-                      ));
+                  onPressed: () {
+                    final _networkState = BlocProvider.of<DeviceNetworkBloc>(context).state;
+                    if (!(_networkState is DeviceNetworkStateNone) &&
+                        this._loginFormKeyEmail.currentState.validate() &&
+                        this._loginFormKeyPassword.currentState.validate()) {
+                      BlocProvider.of<LoginBloc>(context).add(
+                        LoginEventLogin(
+                          loginType: LoginType.emailAndPassword,
+                          hashedEmail: this._emailTextEditingController.text.trim(),
+                          hashedPassword: this._passwordTextEditingController.text.trim(),
+                        ),
+                      );
                     } // if
                   },
                   onLongPress: () {}, // Do nothing, to let user cancel selection
@@ -149,29 +167,26 @@ class _LoginFormState extends State<LoginForm> {
     this._passwordTextEditingController.dispose();
     super.dispose();
   } // dispose
-}
+} // _LoginFormState
 
 class LoginMessage extends StatelessWidget {
+  final String msg;
   const LoginMessage({
     Key key,
-  }) : super(key: key);
+    @required this.msg,
+  })  : assert(msg != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final _loginState = context.watch<LoginBloc>().state;
-
-    if (_loginState is LoginStateLoggedOut) {
-      return Container(
-        width: double.infinity,
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
-            child: Text('${_loginState.msg}'),
-          ),
+    return Container(
+      width: double.infinity,
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
+          child: Text(msg),
         ),
-      );
-    } // if
-
-    return cVerticalMarginSmall(context);
+      ),
+    );
   } // build
 } // LoginMessage

@@ -259,6 +259,13 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
           if (docSnap != null) {
             _tempDocs.add(docSnap);
           } // if
+
+          else {
+            // TODO: Tell user the event was deleted somehow
+
+            // Delete event, but don't wait for it to complete
+            // this.db.unpinEvent(eventIdsToFetch[i], this.accountID);
+          }// else
         } // for
         return _tempDocs;
       }// try
@@ -320,6 +327,7 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
     if (newEventID.isNotEmpty) {
       this.pinnedEvents.add(newEventID);
       await this.db.pinEvent(newEventID, this.accountID);
+      this.add(PinnedEventsEventReload());
     }// if
   }// addPinnedEvent
 

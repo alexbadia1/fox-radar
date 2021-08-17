@@ -105,6 +105,7 @@ class Highlights extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.only(left: 12.0),
                         child: CreateEventFormTextField(
+                          // TODO: A better key would be an object called Highlight()
                           key: Key(_highlights[i]),
                           height: _height,
                           width: _width,

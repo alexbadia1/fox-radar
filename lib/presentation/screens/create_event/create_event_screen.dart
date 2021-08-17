@@ -1,56 +1,55 @@
-import 'package:authentication_repository/authentication_repository.dart';
-import 'package:database_repository/database_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:communitytabs/logic/logic.dart';
+import 'package:database_repository/database_repository.dart';
 import 'package:communitytabs/presentation/presentation.dart';
 
+/*
+  CreateEventScreen
+
+  Implemented by a modalBottomSheet, the CreateEventScreen decides whether
+  the form is being used to update an existing event or create a new event.
+ */
 class CreateEventScreen extends StatelessWidget {
+  /// Fills the form with the event model's data,
+  /// and assumes the user wants to update an event.
+  ///
+  /// Leave null, if the user is creating a new event.
+  final EventModel initialEventModel;
+
+  const CreateEventScreen({Key key, this.initialEventModel}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    final SlidingUpPanelState _slidingUpPanelState = context.watch<SlidingUpPanelCubit>().state;
+    CreateEventFormAction formAction = CreateEventFormAction.create;
+    CreateEventState initialState = CreateEventInvalid(EventModel.nullConstructor());
 
-    // Sliding Up Panel Closed
-    // Show a blank container, background isn't white to avoid white flicker when closing the panel
-    if (_slidingUpPanelState is SlidingUpPanelClosed) {
-      return Container(color: cBackground);
+    /// User wants to UPDATE an event.
+    ///
+    /// Give the [CreateEventBloc] the initial event model and set
+    /// the form action [formAction] to CreateEventFormAction.update.
+    if (this.initialEventModel != null) {
+      formAction = CreateEventFormAction.update;
+      initialState = CreateEventValid(this.initialEventModel);
     } // if
 
-    // Sliding Up Panel Open
-    // Show a the actual event form
-    else if (_slidingUpPanelState is SlidingUpPanelOpen) {
-      CreateEventFormAction formAction = CreateEventFormAction.create;
-      CreateEventState initialState = CreateEventInvalid(EventModel.nullConstructor());
-
-      // User wants to update an existing event.
-      //
-      // Must change the initial state
-      // and form action of the [CreateEventBloc].
-      if (_slidingUpPanelState.initialEventModel != null) {
-        formAction = CreateEventFormAction.update;
-        initialState = CreateEventValid(_slidingUpPanelState.initialEventModel);
-      } // if
-
-      return MultiBlocProvider(
-        providers: [
-          BlocProvider<CreateEventBloc>(
-            create: (parentContext) {
-              // User is creating a new event
-              return CreateEventBloc(
-                initialCreateEventState: initialState,
-                db: RepositoryProvider.of<DatabaseRepository>(parentContext),
-              );
-            },
-          ),
-          BlocProvider<CreateEventPageViewCubit>(create: (parentContext) => CreateEventPageViewCubit()),
-          BlocProvider<DeviceImagesBloc>(create: (parentContext) => DeviceImagesBloc()),
-        ],
-        child: CreateEventBody(createEventFormAction: formAction),
-      );
-    } // else-if
-
-    else {
-      return Container(child: Center(child: Text('Sliding Up Panel Cubit did not return a state that is either open or closed!')));
-    } // else
-  }
-}
+    /// User wants to CREATE an event.
+    ///
+    /// Give the [CreateEventBloc] a blank event model and set
+    /// the form action [formAction] to CreateEventFormAction.create.
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<DeviceImagesBloc>(create: (parentContext) => DeviceImagesBloc()),
+        BlocProvider<CreateEventPageViewCubit>(create: (parentContext) => CreateEventPageViewCubit()),
+        BlocProvider<CreateEventBloc>(
+          create: (parentContext) {
+            return CreateEventBloc(
+              initialCreateEventState: initialState,
+              db: RepositoryProvider.of<DatabaseRepository>(parentContext),
+            );
+          },
+        ),
+      ],
+      child: CreateEventBody(createEventFormAction: formAction),
+    );
+  }// build
+}// CreateEventScreen

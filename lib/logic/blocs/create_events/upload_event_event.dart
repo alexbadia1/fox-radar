@@ -1,7 +1,7 @@
-import 'package:communitytabs/logic/constants/enums.dart';
-import 'package:database_repository/database_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
+import 'package:communitytabs/logic/logic.dart';
+import 'package:database_repository/database_repository.dart';
 
 abstract class UploadEventEvent extends Equatable {} // UploadEventEvent
 

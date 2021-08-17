@@ -24,34 +24,38 @@ void main() async {
   final AuthenticationRepository authenticationRepository = new AuthenticationRepository();
 
   /// Resolve image assets
-  // await loadImage(
-  //     imageProvider: AssetImage('images/image1.jpg'),
-  //     devicePixelRatio:  widgetsBinding.window.devicePixelRatio,
-  // );
-  // await loadImage(
-  //   imageProvider: AssetImage('images/everlasting_banner.png'),
-  //   devicePixelRatio:  widgetsBinding.window.devicePixelRatio,
-  // );
-  // await loadImage(
-  //   imageProvider: AssetImage('images/fresh_milk_banner.png'),
-  //   devicePixelRatio:  widgetsBinding.window.devicePixelRatio,
-  // );
-  // await loadImage(
-  //   imageProvider: AssetImage('images/sharp_blue_banner.png'),
-  //   devicePixelRatio:  widgetsBinding.window.devicePixelRatio,
-  // );
-  // await loadImage(
-  //   imageProvider: AssetImage('images/soft_green_banner.png'),
-  //   devicePixelRatio:  widgetsBinding.window.devicePixelRatio,
-  // );
-  // await loadImage(
-  //   imageProvider: AssetImage('images/soft_red_banner.jpg'),
-  //   devicePixelRatio:  widgetsBinding.window.devicePixelRatio,
-  // );
-  // await loadImage(
-  //   imageProvider: AssetImage('images/soft_yellow_banner.jpg'),
-  //   devicePixelRatio:  widgetsBinding.window.devicePixelRatio,
-  // );
+  await loadImage(
+      imageProvider: AssetImage('images/image1.jpg'),
+      devicePixelRatio:  widgetsBinding.window.devicePixelRatio,
+  );
+  await loadImage(
+    imageProvider: AssetImage('images/everlasting_banner.png'),
+    devicePixelRatio:  widgetsBinding.window.devicePixelRatio,
+  );
+  await loadImage(
+    imageProvider: AssetImage('images/fresh_milk_banner.png'),
+    devicePixelRatio:  widgetsBinding.window.devicePixelRatio,
+  );
+  await loadImage(
+    imageProvider: AssetImage('images/sharp_blue_banner.png'),
+    devicePixelRatio:  widgetsBinding.window.devicePixelRatio,
+  );
+  await loadImage(
+    imageProvider: AssetImage('images/soft_green_banner.png'),
+    devicePixelRatio:  widgetsBinding.window.devicePixelRatio,
+  );
+  await loadImage(
+    imageProvider: AssetImage('images/soft_red_banner.jpg'),
+    devicePixelRatio:  widgetsBinding.window.devicePixelRatio,
+  );
+  await loadImage(
+    imageProvider: AssetImage('images/soft_yellow_banner.jpg'),
+    devicePixelRatio:  widgetsBinding.window.devicePixelRatio,
+  );
+  await loadImage(
+      imageProvider: AssetImage('images/lonely_panda.png'),
+      devicePixelRatio:  widgetsBinding.window.devicePixelRatio,
+  );
 
   return runApp(
     MultiRepositoryProvider(
@@ -64,6 +68,7 @@ void main() async {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(create: (context) => AuthenticationBloc(authenticationRepository)),
+          BlocProvider(create: (context) => DeviceNetworkBloc()..add(DeviceNetworkEventListen())),
           BlocProvider(create: (context) => LoginBloc(authenticationRepository: authenticationRepository)),
         ],
           child: ViewsWrapper(),

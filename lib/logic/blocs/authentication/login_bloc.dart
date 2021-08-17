@@ -1,8 +1,6 @@
-import 'authentication_blocs.dart';
 import 'dart:async';
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:communitytabs/logic/constants/enums.dart';
+import 'package:communitytabs/logic/logic.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {

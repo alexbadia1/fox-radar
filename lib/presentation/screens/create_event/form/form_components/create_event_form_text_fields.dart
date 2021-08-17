@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:communitytabs/presentation/presentation.dart';
 
-
 typedef OnEditingCompleteOrLostFocusCallBack = void Function(String eventDetail);
 
 /// A custom abstraction of the Form Field that implements a FocusNode with a listener
@@ -11,7 +10,6 @@ typedef OnEditingCompleteOrLostFocusCallBack = void Function(String eventDetail)
 /// Also combines the onEditingComplete callback
 /// and loss focus callback in one callback function onEditingCompleteOrLostFocus.
 class CreateEventFormTextField extends StatefulWidget {
-
   /// Text that appears in the TextFormField
   final String initialTextValue;
 
@@ -53,12 +51,14 @@ class CreateEventFormTextField extends StatefulWidget {
     @required this.hintText,
     @required this.height,
     @required this.width,
-    @required this.onEditingCompleteOrLostFocus, this.keyboardType, this.maxLines, this.minLines,
+    @required this.onEditingCompleteOrLostFocus,
+    this.keyboardType,
+    this.maxLines,
+    this.minLines,
   }) : super(key: key);
 
   @override
-  _CreateEventFormTextFieldState createState() =>
-      _CreateEventFormTextFieldState();
+  _CreateEventFormTextFieldState createState() => _CreateEventFormTextFieldState();
 } // CreateEventFormTextField
 
 class _CreateEventFormTextFieldState extends State<CreateEventFormTextField> {
@@ -87,12 +87,13 @@ class _CreateEventFormTextFieldState extends State<CreateEventFormTextField> {
         } // else
       } // if
     });
+
+    // Declare here, in order to remember cursor position
+    _textEditingController = new TextEditingController(text: this.widget.initialTextValue);
   } // initState
 
   @override
   Widget build(BuildContext context) {
-
-    _textEditingController = new TextEditingController(text: this.widget.initialTextValue);
     temporaryTextFieldValue = this.widget.initialTextValue;
 
     return Container(
@@ -107,12 +108,11 @@ class _CreateEventFormTextFieldState extends State<CreateEventFormTextField> {
               keyboardType: this.widget.keyboardType,
               maxLines: this.widget.maxLines ?? 1,
               minLines: this.widget.minLines ?? 1,
-              controller: _textEditingController,
+              controller: this._textEditingController,
               focusNode: _focusNode,
               style: TextStyle(color: cWhite100),
               textInputAction: TextInputAction.done,
               decoration: cAddEventTextFormFieldDecoration.copyWith(hintText: this.widget.hintText),
-
               // Clear empty text when form editing is completed
               //
               // onEditingComplete ONLY triggers when the keyboard 'complete' button is pressed by the user

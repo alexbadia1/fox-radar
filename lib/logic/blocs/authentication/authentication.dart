@@ -1,4 +1,4 @@
-library authentication_blocs;
+library authentication;
 
 // Authentication
 export 'authentication_bloc.dart';

@@ -1,7 +1,7 @@
-import 'package:database_repository/database_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:database_repository/database_repository.dart';
 
 abstract class UploadEventState extends Equatable {
   const UploadEventState();

@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'package:bloc/bloc.dart';
-import 'upload_event_event.dart';
-import 'upload_event_state.dart';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/logic/logic.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:database_repository/database_repository.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
   final DatabaseRepository db;
@@ -49,7 +48,7 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
     if (uploadEventUpload.newEventModel != null) {
       CreateEventFormAction action = uploadEventUpload.createEventFormAction;
 
-      // New Event Model tricks equatable into viewing the 
+      // New Event Model tricks equatable into viewing the
       // the next [UploadEventStateUploading] as a new state.
       EventModel newEventModel = uploadEventUpload.newEventModel;
 
@@ -64,16 +63,19 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
       } // else if
 
       // TODO: Consider letting the user deleting an image
-      
+
       // Only upload an image if the user chose one
       if (newEventModel.imageBytes != null) {
+        // Begin compression...
+        final Future<Uint8List> compressedBytes = this._compressImage(newEventModel.imageBytes);
+
         // Generate the storage path for the image
         newEventModel.imagePath = this.db.imagePath(eventID: newEventModel.eventID);
 
         // Upload image bytes to firebase storage bucket using
         // the new event's document id as a the name for the image.
         if (newEventModel.eventID != null && newEventModel.eventID.isNotEmpty) {
-          this.uploadTask = this.db.uploadImageToStorage(eventID: newEventModel.eventID, imageBytes: newEventModel.imageBytes);
+          this.uploadTask = this.db.uploadImageToStorage(eventID: newEventModel.eventID, imageBytes: await compressedBytes);
 
           yield UploadEventStateUploading(
             uploadTask: this.uploadTask,
@@ -115,14 +117,44 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
     } // if
   } // _mapUploadEventCompleteToState
 
-  // TODO: Remove print when Create Event Bloc changes
+  Future<Uint8List> _compressImage(Uint8List bytes) async {
+    final megabytes = (bytes.lengthInBytes / 1024.0) / 1000;
+
+    // Allow max size to be around 1.5 MB before compression
+    if (megabytes.round() <= 1) {
+      return bytes;
+    } // if
+
+    // Compress
+    try {
+      // Turns out the quality factor does not scale linearly
+      // quality = 50 does not mean the image size is reduced by 50%.
+      int quality = 100 ~/ megabytes + 60;
+
+      // Add max and min
+      quality = quality < 1 ? 1 : quality;
+      quality = quality > 100 ? 100 : quality;
+
+      final Uint8List compressedBytes = await FlutterImageCompress.compressWithList(
+        bytes,
+        minHeight: 1350,
+        minWidth: 1080,
+        quality: quality ?? 100,
+        format: CompressFormat.jpeg,
+      );
+      return compressedBytes;
+    } // try
+    catch (error) {
+      return bytes; // Compression failed, return the original image
+    } // catch
+  } // compressUint8List
+
   @override
   void onChange(Change<UploadEventState> change) {
     print('Upload Event Bloc $change');
     super.onChange(change);
   } // onChange
 
-  // TODO: Remove print when Create Event Bloc is closed
   @override
   Future<void> close() {
     print('Upload Event Bloc Closed!');

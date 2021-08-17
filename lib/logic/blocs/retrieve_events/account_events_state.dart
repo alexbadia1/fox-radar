@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:database_repository/database_repository.dart';
 

@@ -1,10 +1,6 @@
 import 'dart:async';
-import 'sign_up_state.dart';
-import 'sign_up_event.dart';
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:communitytabs/logic/blocs/blocs.dart';
-import 'package:communitytabs/logic/constants/enums.dart';
+import 'package:communitytabs/logic/logic.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 
 class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {

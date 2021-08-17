@@ -53,7 +53,7 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
     /// The Category Events Bloc is generated and passed directly into the list view
     /// The Category Events Bloc will be closed in the Widget above: Category Screen Body
     return Container(
-      color: Color.fromRGBO(24, 24, 24, 1.0),
+      color: cBackground,
       child: Builder(builder: (context) {
         final CategoryEventsState _categoryEventsState = context.watch<CategoryEventsBloc>().state;
 
@@ -168,7 +168,7 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
                             return BottomLoadingWidget();
                           } // if
                           else {
-                            return Container(height: _realHeight * .1);
+                            return Container();
                           } // else
                         } // if
                         else {
@@ -189,18 +189,29 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       cVerticalMarginSmall(context),
-                      Image(
-                        image: AssetImage(
-                          'images/cactus_bulldog.png',
-                        ),
-                        height: _realHeight * .35,
-                        width: _realScreenWidth * .35,
-                      ),
-                      Text(
-                        'No events, but we found this on our servers...',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: cWhite70),
+                      cVerticalMarginSmall(context),
+                      cVerticalMarginSmall(context),
+                      LonelyPandaImage(),
+                      Builder(
+                        builder: (BuildContext context) {
+                          final _connection = context.watch<DeviceNetworkBloc>().state;
+
+                          // Check internet connection first
+                          if (_connection is DeviceNetworkStateNone) {
+                            return Text(
+                              'No Internet Connection',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(color: cWhite70, fontSize: 16.0),
+                            );
+                          } // if
+                          return Text(
+                            'No events, make something happen!',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(color: cWhite70),
+                          );
+                        },
                       ),
                       cVerticalMarginSmall(context),
                       Builder(

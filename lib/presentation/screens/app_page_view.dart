@@ -8,35 +8,37 @@ import 'package:communitytabs/presentation/presentation.dart';
 class AppPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<UploadEventBloc>(
-      create: (context) => UploadEventBloc(
-        uid: RepositoryProvider.of<AuthenticationRepository>(context).getUserModel().userID,
-        db: RepositoryProvider.of<DatabaseRepository>(context),
-      ),
-      child: PageView(
-        controller: BlocProvider.of<AppPageViewCubit>(context).appPageViewController,
-        physics: NeverScrollableScrollPhysics(),
-        children: [
-          MultiBlocProvider(
-            providers: [
-              BlocProvider<SlidingUpPanelCubit>(
-                create: (context) => SlidingUpPanelCubit(),
-              ),
-              BlocProvider<HomePageViewCubit>(
-                create: (context) => HomePageViewCubit(),
-              ),
-            ],
-            child: HomeScreen(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<UploadEventBloc>(
+          create: (context) => UploadEventBloc(
+            uid: RepositoryProvider.of<AuthenticationRepository>(context).getUserModel().userID,
+            db: RepositoryProvider.of<DatabaseRepository>(context),
           ),
-          MultiBlocProvider(
-            providers: [
-              BlocProvider<SlidingUpPanelCubit>(
-                create: (context) => SlidingUpPanelCubit(),
-              ),
-            ],
-            child: AccountScreen(),
-          ),
-        ],
+        ),
+
+        /// Declared here, to allow bottom navigation to change
+        /// to the home page view from the category page view
+        BlocProvider<HomePageViewCubit>(
+          create: (context) => HomePageViewCubit(),
+        ),
+
+        /// Declared here, to allow bottom navigation to change
+        /// to the created page view from the pinned page view
+        BlocProvider<AccountPageViewCubit>(
+          create: (context) => AccountPageViewCubit(),
+        ),
+      ],
+      child: Scaffold(
+        bottomNavigationBar: CustomBottomNavigationBar(),
+        body: PageView(
+          controller: BlocProvider.of<AppPageViewCubit>(context).appPageViewController,
+          physics: NeverScrollableScrollPhysics(),
+          children: [
+            HomeScreen(),
+            AccountScreen(),
+          ],
+        ),
       ),
     );
   } // build

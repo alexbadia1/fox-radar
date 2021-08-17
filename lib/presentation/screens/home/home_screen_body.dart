@@ -54,7 +54,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
     final _realHeight = screenHeight - screenPaddingTop - screenPaddingBottom + screenInsetsBottom;
 
     return Container(
-      color: Color.fromRGBO(24, 24, 24, 1.0),
+      color: cBackground,
 
       /// Name: CustomScrollView
       ///
@@ -79,7 +79,8 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
               final _pinnedEventsBloc = loadingWidgetContext.watch<PinnedEventsBloc>().state;
               final SuggestedEventsState _suggestedEventsState = loadingWidgetContext.watch<SuggestedEventsBloc>().state;
 
-              if (_suggestedEventsState is SuggestedEventsStateFetching || _pinnedEventsBloc is PinnedEventsStateFetching) {
+              if (_suggestedEventsState is SuggestedEventsStateFetching ||
+                  (_pinnedEventsBloc is PinnedEventsStateFetching && _suggestedEventsState is SuggestedEventsStateFetching)) {
                 return SliverFillRemaining(
                   child: Container(
                     width: double.infinity,
@@ -226,17 +227,20 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
                                               return BlocProvider<PinnedEventsBloc>.value(
                                                 value: BlocProvider.of<PinnedEventsBloc>(modalSheetContext),
                                                 child: Builder(builder: (modalSheetContext) {
-                                                  if (!BlocProvider.of<PinnedEventsBloc>(context).pinnedEvents.contains(_suggestedSearchEvent.eventId)) {
+                                                  if (!BlocProvider.of<PinnedEventsBloc>(context)
+                                                      .pinnedEvents
+                                                      .contains(_suggestedSearchEvent.eventId)) {
                                                     return ModalActionMenu(
                                                       actions: [
                                                         ModalActionMenuButton(
-                                                            icon: Icons.edit,
-                                                            description: "Pin",
-                                                            color: Colors.blueAccent,
-                                                            onPressed: () {
-                                                              BlocProvider.of<PinnedEventsBloc>(modalSheetContext).add(PinnedEventsEventPin(_suggestedSearchEvent.eventId));
-                                                              Navigator.pop(modalSheetContext);
-                                                            },
+                                                          icon: Icons.edit,
+                                                          description: "Pin",
+                                                          color: Colors.blueAccent,
+                                                          onPressed: () {
+                                                            BlocProvider.of<PinnedEventsBloc>(modalSheetContext)
+                                                                .add(PinnedEventsEventPin(_suggestedSearchEvent.eventId));
+                                                            Navigator.pop(modalSheetContext);
+                                                          },
                                                         ),
                                                       ],
                                                       cancel: true,
@@ -247,12 +251,13 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
                                                     actions: [
                                                       ModalActionMenuButton(
                                                         icon: Icons.undo_rounded,
-                                                          description: "Unpin",
-                                                          color: Colors.redAccent,
-                                                          onPressed: () {
-                                                             BlocProvider.of<PinnedEventsBloc>(modalSheetContext).add(PinnedEventsEventUnpin(_suggestedSearchEvent.eventId));
-                                                             Navigator.pop(modalSheetContext);
-                                                          },
+                                                        description: "Unpin",
+                                                        color: Colors.redAccent,
+                                                        onPressed: () {
+                                                          BlocProvider.of<PinnedEventsBloc>(modalSheetContext)
+                                                              .add(PinnedEventsEventUnpin(_suggestedSearchEvent.eventId));
+                                                          Navigator.pop(modalSheetContext);
+                                                        },
                                                       )
                                                     ],
                                                     cancel: true,
@@ -282,7 +287,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
                                             return BottomLoadingWidget();
                                           } // if
                                           else {
-                                            return Container(height: _realHeight * .1);
+                                            return Container();
                                           } // else
                                         } // if
                                         else {
@@ -305,20 +310,29 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Image(
-                                      image: AssetImage(
-                                        'images/cactus_bulldog.png',
-                                      ),
-                                      height: _realHeight * .29,
-                                      width: screenWidth * .29,
-                                    ),
-                                    Text(
-                                      'No events, but we found this on our servers...',
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(color: cWhite70, fontSize: 16.0),
-                                    ),
                                     cVerticalMarginSmall(context),
+                                    LonelyPandaImage(),
+                                    Builder(
+                                      builder: (BuildContext context) {
+                                        final _connection = loadingWidgetContext.watch<DeviceNetworkBloc>().state;
+
+                                        // Check internet connection first
+                                        if (_connection is DeviceNetworkStateNone) {
+                                          return Text(
+                                            'No Internet Connection',
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(color: cWhite70, fontSize: 16.0),
+                                          );
+                                        } // if
+                                        return Text(
+                                          'No events, make something happen!',
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(color: cWhite70, fontSize: 16.0),
+                                        );
+                                      },
+                                    ),
                                     Builder(
                                       builder: (retryContext) {
                                         final _state = retryContext.watch<SuggestedEventsBloc>().state;

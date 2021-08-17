@@ -24,7 +24,7 @@ class Required extends StatelessWidget {
                     _currentCreateEventBlocState.eventModel.title,
                 hintText: 'Title (Required)',
                 height: _textFormFieldHeight,
-                width: _textFormFieldWidth,
+                width: double.infinity,
                 onEditingCompleteOrLostFocus: (eventDetail) {
                   BlocProvider.of<CreateEventBloc>(context)
                       .add(CreateEventSetTitle(newTitle: eventDetail));

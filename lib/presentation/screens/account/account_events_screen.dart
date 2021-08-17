@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/logic/logic.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:communitytabs/presentation/presentation.dart';
 import 'package:database_repository/database_repository.dart';
 
@@ -165,47 +166,160 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
                                   /// When clicking on the card, the full event is retrieved.
                                   if (index < _accountEventsState.eventModels.length) {
                                     final searchResult = _accountEventsState.eventModels.elementAt(index);
-                                    return EventCard(
-                                      key: ObjectKey(searchResult),
-                                      newSearchResult: searchResult,
-                                      onEventCardVertMoreCallback: (imageBytes) {
-                                        // Show a modal bottom sheet with
-                                        // options to edit or delete an event.
-                                        showModalBottomSheet(
-                                          context: sliverListContext,
-                                          builder: (modalSheetContext) {
-                                            /// Pass the current AccountEventsBloc.
-                                            ///
-                                            /// Bottom Modal Sheet is built within
-                                            /// its own context, that doesn't have
-                                            /// access to the current widget's context.
-                                            return MultiBlocProvider(
-                                              providers: [
-                                                BlocProvider.value(value: BlocProvider.of<AccountEventsBloc>(sliverListContext)),
-                                                BlocProvider.value(value: BlocProvider.of<PinnedEventsBloc>(sliverListContext)),
-                                                BlocProvider(
-                                                  create: (fetchEventCubitContext) => FetchFullEventCubit(
-                                                    db: RepositoryProvider.of<DatabaseRepository>(sliverListContext),
+                                    return Slidable(
+                                      enabled: true,
+                                      direction: Axis.horizontal,
+                                      actionPane: SlidableStrechActionPane(),
+                                      actionExtentRatio: 0.3,
+                                      child: EventCard(
+                                        key: ObjectKey(searchResult),
+                                        newSearchResult: searchResult,
+                                        onEventCardVertMoreCallback: (imageBytes) {
+                                          // Show a modal bottom sheet with
+                                          // options to edit or delete an event.
+                                          showModalBottomSheet(
+                                            context: sliverListContext,
+                                            builder: (modalSheetContext) {
+                                              /// Pass the current AccountEventsBloc.
+                                              ///
+                                              /// Bottom Modal Sheet is built within
+                                              /// its own context, that doesn't have
+                                              /// access to the current widget's context.
+                                              return MultiBlocProvider(
+                                                providers: [
+                                                  BlocProvider.value(value: BlocProvider.of<AccountEventsBloc>(sliverListContext)),
+                                                  BlocProvider.value(value: BlocProvider.of<PinnedEventsBloc>(sliverListContext)),
+                                                  BlocProvider.value(value: BlocProvider.of<UploadEventBloc>(sliverListContext)),
+                                                  BlocProvider(
+                                                    create: (fetchEventCubitContext) => FetchFullEventCubit(
+                                                      db: RepositoryProvider.of<DatabaseRepository>(sliverListContext),
+                                                    ),
                                                   ),
+                                                ],
+                                                child: Builder(builder: (modalSheetContext) {
+                                                  BlocProvider.of<FetchFullEventCubit>(modalSheetContext)
+                                                      .fetchEvent(documentId: searchResult.eventId);
+                                                  return AccountModalBottomSheet(
+                                                    listViewIndex: index,
+                                                    searchResultModel: _accountEventsState.eventModels.elementAt(index),
+                                                    onEdit: (EventModel fullEvent) {
+                                                      // Set image bytes to the event model, before passing on
+                                                      fullEvent.imageBytes = imageBytes;
+                                                      final _uploadState = BlocProvider.of<UploadEventBloc>(context).state;
+
+                                                      if (_uploadState is UploadEventStateUploading && !_uploadState.complete) {
+                                                        showModalBottomSheet<void>(
+                                                          context: context,
+                                                          builder: (BuildContext context) {
+                                                            return BlocProvider.value(
+                                                              value: BlocProvider.of<UploadEventBloc>(context),
+                                                              child: ModalConfirmation(
+                                                                prompt:
+                                                                    'An event is already currently being upload. Please wait for, or cancel, that event!',
+                                                                cancelText: 'CANCEL CURRENT UPLOAD',
+                                                                cancelColor: Colors.redAccent,
+                                                                onCancel: () {
+                                                                  showModalBottomSheet(
+                                                                      context: context,
+                                                                      builder: (context) {
+                                                                        return ModalConfirmation(
+                                                                          cancelText: 'CANCEL CURRENT UPLOAD',
+                                                                          cancelColor: Colors.redAccent,
+                                                                          onCancel: () {
+                                                                            BlocProvider.of<UploadEventBloc>(context).add(UploadEventCancel());
+
+                                                                            Navigator.popUntil(context, (route) => route.isFirst);
+                                                                          },
+                                                                          confirmText: "NEVERMIND",
+                                                                          confirmColor: Colors.blueAccent,
+                                                                          onConfirm: () => Navigator.popUntil(context, (route) => route.isFirst),
+                                                                        );
+                                                                      });
+                                                                },
+                                                                confirmText: 'I CAN WAIT',
+                                                                confirmColor: Colors.blueAccent,
+                                                                onConfirm: () => Navigator.pop(context),
+                                                              ),
+                                                            );
+                                                          },
+                                                        );
+                                                      } // if
+
+                                                      else {
+                                                        if (_uploadState is UploadEventStateUploading && _uploadState.complete) {
+                                                          // Reset the upload event bloc
+                                                          BlocProvider.of<UploadEventBloc>(context).add(UploadEventReset());
+                                                        } // if
+                                                        showModalBottomSheet(
+                                                          isScrollControlled: true,
+                                                          enableDrag: false,
+                                                          context: context,
+                                                          builder: (bottomModalSheetContext) {
+                                                            return MultiBlocProvider(
+                                                              providers: [
+                                                                BlocProvider.value(
+                                                                  value: BlocProvider.of<UploadEventBloc>(context),
+                                                                ),
+                                                                BlocProvider.value(
+                                                                  value: BlocProvider.of<AccountPageViewCubit>(context),
+                                                                ),
+                                                              ],
+                                                              child: CreateEventScreen(initialEventModel: fullEvent),
+                                                            );
+                                                          }, // builder
+                                                        );
+                                                      } // else
+                                                    },
+                                                  );
+                                                }),
+                                              );
+                                            }, // builder
+                                          );
+                                        },
+                                      ),
+                                      secondaryActions: <Widget>[
+                                        Builder(builder: (context) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              Slidable.of(context).close();
+
+                                              // Confirm Delete
+                                              showModalBottomSheet(
+                                                // Make sure user is focused on task at hand only
+                                                  isDismissible: false,
+                                                  context: context,
+                                                  builder: (confirmDeleteButtonContext) {
+                                                    return BlocProvider.value(
+                                                      value: BlocProvider.of<AccountEventsBloc>(context),
+                                                      child: ConfirmDelete(searchResultModel: searchResult, listViewIndex: index),
+                                                    );
+                                                  });
+                                            },
+                                            child: Container(
+                                              color: Colors.red,
+                                              child: Center(
+                                                child: Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.delete,
+                                                      key: UniqueKey(),
+                                                      color: Colors.white,
+                                                    ),
+                                                    Text(
+                                                      "Delete",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 12,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ],
-                                              child: Builder(builder: (modalSheetContext) {
-                                                BlocProvider.of<FetchFullEventCubit>(modalSheetContext).fetchEvent(documentId: searchResult.eventId);
-                                                return AccountModalBottomSheet(
-                                                  listViewIndex: index,
-                                                  searchResultModel: _accountEventsState.eventModels.elementAt(index),
-                                                  onEdit: (EventModel fullEvent) {
-                                                    // Set image bytes to the event model, before passing on
-                                                    fullEvent.imageBytes = imageBytes;
-                                                    BlocProvider.of<SlidingUpPanelCubit>(sliverListContext).openPanel(initialEventModel: fullEvent);
-                                                    Navigator.pop(sliverListContext);
-                                                  },
-                                                );
-                                              }),
-                                            );
-                                          }, // builder
-                                        );
-                                      },
+                                              ),
+                                            ),
+                                          );
+                                        })
+                                      ],
                                     );
                                   } // if
 
@@ -223,7 +337,7 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
                                         /// are more events to retrieve. Otherwise
                                         /// show an empty container as a bottom margin.
                                         if (_accountEventsState is AccountEventsStateSuccess) {
-                                          return !_accountEventsState.maxEvents ? BottomLoadingWidget() : Container(height: _realHeight * .1);
+                                          return !_accountEventsState.maxEvents ? BottomLoadingWidget() : Container();
                                         } // if
                                         else {
                                           return Container();
@@ -249,16 +363,29 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
                               child: Column(
                                 children: [
                                   cVerticalMarginSmall(context),
-                                  Image(
-                                    image: AssetImage(
-                                      'images/lonely_panda.png',
-                                    ),
-                                    height: _realHeight * .35,
-                                    width: screenWidth * .35,
-                                  ),
-                                  Text(
-                                    'Stop hibernating, make something happen!',
-                                    style: TextStyle(color: cWhite70, fontSize: 16.0),
+                                  cVerticalMarginSmall(context),
+                                  cVerticalMarginSmall(context),
+                                  LonelyPandaImage(),
+                                  Builder(
+                                    builder: (BuildContext context) {
+                                      final _connection = loadingWidgetContext.watch<DeviceNetworkBloc>().state;
+
+                                      // Check internet connection first
+                                      if (_connection is DeviceNetworkStateNone) {
+                                        return Text(
+                                          'No Internet Connection',
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(color: cWhite70, fontSize: 16.0),
+                                        );
+                                      } // if
+                                      return Text(
+                                        'Stop hibernating, make something happen!',
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(color: cWhite70, fontSize: 16.0),
+                                      );
+                                    },
                                   ),
                                   cVerticalMarginSmall(context),
                                   TextButton(
