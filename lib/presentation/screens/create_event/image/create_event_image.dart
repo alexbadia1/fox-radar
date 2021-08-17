@@ -211,7 +211,7 @@ class _CreateEventImageState extends State<CreateEventImage> with WidgetsBinding
                           onTap: () {
                             BlocProvider.of<CreateEventBloc>(gridListContext).add(CreateEventSetImage(imageBytes: _imageBytes));
                             BlocProvider.of<CreateEventBloc>(context).add(CreateEventSetImageFitCover(fitCover: false));
-                            // TODO: Verifiy that this is redundant since the path is generated in the UploadEventsBloc when uploading...
+                            // TODO: Verify that this is redundant since the path is generated in the UploadEventsBloc when uploading...
                             // BlocProvider.of<CreateEventBloc>(gridListContext).add(CreateEventSetImagePath(imagePath: deviceImagesBlocState.images[index].path));
                           },
                           child: Image.memory(

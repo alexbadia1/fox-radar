@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:async';
 import 'dart:typed_data';
@@ -58,19 +59,22 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
           final List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(onlyAll: true, type: RequestType.image);
 
           // Get photos
+          print("Getting photos");
           final List<AssetEntity> photos = await albums[0]?.getAssetListPaged(0, this.paginationLimit);
 
           // Map photos to file data type
-          List<File> tempFiles = await _mapPhotosToFiles(photos: photos);
-
-          // Compress images
-          final List<Uint8List> compressedImageBytes = await _mapFilesToCompressedUint8List(tempFiles);
+          print("Mapping photos to files");
+          List<Uint8List> tempFiles = await _mapPhotosToFiles(photos: photos);
 
           if (tempFiles.length != this.paginationLimit) {
             _maxImages = true;
           } // if
 
-          yield DeviceImagesStateSuccess(images: compressedImageBytes, lastPage: 0, maxImages: _maxImages, isFetching: false);
+          // Compress images
+          // print("Compressing images");
+          // final List<Uint8List> compressedImageBytes = await _mapFilesToCompressedUint8List(tempFiles);
+
+          yield DeviceImagesStateSuccess(images: tempFiles, lastPage: 0, maxImages: _maxImages, isFetching: false);
         } // if
 
         // Some images were already fetched from storage, get more
@@ -82,10 +86,10 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
           final List<AssetEntity> photos = await albums[0]?.getAssetListPaged(_currentState.lastPage + 1, paginationLimit);
 
           // Map photos to file data type
-          List<File> tempFiles = await _mapPhotosToFiles(photos: photos);
+          List<Uint8List> tempFiles = await _mapPhotosToFiles(photos: photos);
 
-          // Compress images
-          final List<Uint8List> compressedImageBytes = await _mapFilesToCompressedUint8List(tempFiles);
+          // // Compress images
+          // final List<Uint8List> compressedImageBytes = await _mapFilesToCompressedUint8List(tempFiles);
 
           // No images were retrieved
           if (tempFiles.isEmpty) {
@@ -98,7 +102,7 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
             } // if
 
             yield DeviceImagesStateSuccess(
-              images: _currentState.images + compressedImageBytes,
+              images: _currentState.images + tempFiles,
               maxImages: _maxImages,
               lastPage: _currentState.lastPage + 1,
               isFetching: false,
@@ -124,16 +128,19 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
     } // catch
   } // _mapDeviceImagesEventFetchToDeviceImagesState
 
-  Future<List<File>> _mapPhotosToFiles({@required List<AssetEntity> photos}) async {
-    List<File> ans = [];
+  Future<List<Uint8List>> _mapPhotosToFiles({@required List<AssetEntity> photos}) async {
+    List<Uint8List> ans = [];
 
     ans = await Future.microtask(() async {
       for (int i = 0; i < photos.length; ++i) {
-        ans.add(await photos[i].originFile);
+        final Uint8List f = await photos[i].originBytes;
+        ans.add(f);
       } // for
 
       return ans;
     });
+
+    return ans;
   } // _mapPhotosToFiles
 
   Future<List<Uint8List>> _mapFilesToCompressedUint8List(List<File> files) async {
@@ -144,27 +151,46 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
 
       try {
         for (int i = 0; i < files.length; ++i) {
-          final uncompressedFile = await files[i].readAsBytes();
-          final compressedFile = await FlutterImageCompress.compressWithList(
-            uncompressedFile,
-            minHeight: 1920,
-            minWidth: 1080,
-            quality: 100
-          );
-          print("File compressed from ${uncompressedFile.length} Bytes to ${compressedFile.length} Bytes");
-          compressedFiles.add(compressedFile);
-        }// for
+          final Uint8List uncompressedFile = await files[i].readAsBytes();
+
+          if (uncompressedFile.lengthInBytes > 1000000) {
+            int quality = 100;
+            double megabytes = uncompressedFile.lengthInBytes / 1000000;
+            if (megabytes > 1) {
+              quality = 100 ~/ megabytes + 60;
+
+              // Add max and min
+              quality = quality < 1 ? 1 : quality;
+              quality = quality > 100 ? 100 : quality;
+            } // if
+
+            final compressedFile = await FlutterImageCompress.compressWithList(
+              uncompressedFile,
+              minHeight: 1350,
+              minWidth: 1080,
+              format: CompressFormat.jpeg,
+            );
+            compressedFiles.add(compressedFile);
+            print(
+                "File compressed from ${uncompressedFile.lengthInBytes / 1000000} MB to ${compressedFile.lengthInBytes / 1000000} MB, quality factor: $quality");
+          } // if
+          else {
+            print("File compression skipped since ${uncompressedFile.lengthInBytes / 1000000} MB is less than 1 MB");
+            compressedFiles.add(uncompressedFile);
+          } // else
+        } // for
 
         return compressedFiles;
-      }// try
+      } // try
 
       catch (error) {
+        print(error);
         return [];
-      }// catch
+      } // catch
     });
 
     return result;
-  }// compressUint8List
+  } // compressUint8List
 
   @override
   void onChange(Change<DeviceImagesState> change) {

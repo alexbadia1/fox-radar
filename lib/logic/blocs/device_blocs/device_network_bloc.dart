@@ -17,30 +17,36 @@ class DeviceNetworkBloc extends Bloc<DeviceNetworkEvent, DeviceNetworkState> {
     } // if
 
     else if (event is DeviceNetworkEventChanged) {
-      switch (event.connectivityResult){
-          case ConnectivityResult.wifi:
-            yield DeviceNetworkStateWifi();
-            break;
-          case ConnectivityResult.mobile:
-            yield DeviceNetworkStateMobile();
-            break;
-          case ConnectivityResult.none:
-            yield DeviceNetworkStateNone();
-            break;
-          default:
-            yield DeviceNetworkStateNone();
-            break;
-        }// switch
+      switch (event.connectivityResult) {
+        case ConnectivityResult.wifi:
+          yield DeviceNetworkStateWifi();
+          break;
+        case ConnectivityResult.mobile:
+          yield DeviceNetworkStateMobile();
+          break;
+        case ConnectivityResult.none:
+          yield DeviceNetworkStateNone();
+          break;
+        default:
+          yield DeviceNetworkStateNone();
+          break;
+      } // switch
     } // else if
 
     else {
       // Unknown event received
     } // else
-  }// mapEventToState
+  } // mapEventToState
 
-    @override
+  @override
+  void onChange(Change<DeviceNetworkState> change) {
+    print("[Device Network Bloc] $change");
+    super.onChange(change);
+  } // onChange
+
+  @override
   Future<void> close() {
     this._streamSubscription.cancel();
     return super.close();
-  }// close
-}// DeviceNetworkBloc
+  } // close
+} // DeviceNetworkBloc
