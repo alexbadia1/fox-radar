@@ -311,13 +311,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     cVerticalMarginSmall(context),
-                                    Image(
-                                      image: AssetImage(
-                                        'images/lonely_panda.png',
-                                      ),
-                                      height: _realHeight * .25,
-                                      width: screenWidth * .25,
-                                    ),
+                                    LonelyPandaImage(),
                                     Builder(
                                       builder: (BuildContext context) {
                                         final _connection = loadingWidgetContext.watch<DeviceNetworkBloc>().state;

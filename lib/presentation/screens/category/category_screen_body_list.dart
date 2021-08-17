@@ -190,13 +190,8 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
                     children: [
                       cVerticalMarginSmall(context),
                       cVerticalMarginSmall(context),
-                      Image(
-                        image: AssetImage(
-                          'images/lonely_panda.png',
-                        ),
-                        height: _realHeight * .35,
-                        width: _realScreenWidth * .35,
-                      ),
+                      cVerticalMarginSmall(context),
+                      LonelyPandaImage(),
                       Builder(
                         builder: (BuildContext context) {
                           final _connection = context.watch<DeviceNetworkBloc>().state;

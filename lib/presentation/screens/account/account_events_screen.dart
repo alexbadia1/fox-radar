@@ -364,13 +364,8 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
                                 children: [
                                   cVerticalMarginSmall(context),
                                   cVerticalMarginSmall(context),
-                                  Image(
-                                    image: AssetImage(
-                                      'images/lonely_panda.png',
-                                    ),
-                                    height: _realHeight * .35,
-                                    width: screenWidth * .35,
-                                  ),
+                                  cVerticalMarginSmall(context),
+                                  LonelyPandaImage(),
                                   Builder(
                                     builder: (BuildContext context) {
                                       final _connection = loadingWidgetContext.watch<DeviceNetworkBloc>().state;
