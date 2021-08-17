@@ -318,11 +318,26 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
                                       height: _realHeight * .25,
                                       width: screenWidth * .25,
                                     ),
-                                    Text(
-                                      'No events, make something happen!',
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(color: cWhite70, fontSize: 16.0),
+                                    Builder(
+                                      builder: (BuildContext context) {
+                                        final _connection = loadingWidgetContext.watch<DeviceNetworkBloc>().state;
+
+                                        // Check internet connection first
+                                        if (_connection is DeviceNetworkStateNone) {
+                                          return Text(
+                                            'No Internet Connection',
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(color: cWhite70, fontSize: 16.0),
+                                          );
+                                        } // if
+                                        return Text(
+                                          'No events, make something happen!',
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(color: cWhite70, fontSize: 16.0),
+                                        );
+                                      },
                                     ),
                                     Builder(
                                       builder: (retryContext) {

@@ -68,6 +68,7 @@ void main() async {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(create: (context) => AuthenticationBloc(authenticationRepository)),
+          BlocProvider(create: (context) => DeviceNetworkBloc()..add(DeviceNetworkEventListen())),
           BlocProvider(create: (context) => LoginBloc(authenticationRepository: authenticationRepository)),
         ],
           child: ViewsWrapper(),

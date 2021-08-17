@@ -1,5 +1,4 @@
-import 'package:bloc/bloc.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:communitytabs/logic/logic.dart';
 
 class AccountPageViewCubit extends Cubit<AccountPageViewState> {

@@ -197,11 +197,26 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
                         height: _realHeight * .35,
                         width: _realScreenWidth * .35,
                       ),
-                      Text(
-                        'No events, make something happen!',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: cWhite70),
+                      Builder(
+                        builder: (BuildContext context) {
+                          final _connection = context.watch<DeviceNetworkBloc>().state;
+
+                          // Check internet connection first
+                          if (_connection is DeviceNetworkStateNone) {
+                            return Text(
+                              'No Internet Connection',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(color: cWhite70, fontSize: 16.0),
+                            );
+                          } // if
+                          return Text(
+                            'No events, make something happen!',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(color: cWhite70),
+                          );
+                        },
                       ),
                       cVerticalMarginSmall(context),
                       Builder(

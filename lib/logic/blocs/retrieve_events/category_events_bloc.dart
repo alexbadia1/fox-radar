@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:bloc/bloc.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter/material.dart';
 import 'package:communitytabs/logic/logic.dart';
@@ -56,7 +55,7 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
         // Retry will fail to quickly,
         //
         // Give the user a good feeling that events are actually being searched for.
-        await Future.delayed(Duration(milliseconds: 350));
+        await Future.delayed(Duration(milliseconds: 100));
       } // if
 
       // No posts were fetched yet

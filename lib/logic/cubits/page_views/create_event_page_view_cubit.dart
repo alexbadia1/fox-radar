@@ -1,7 +1,5 @@
-import 'package:bloc/bloc.dart';
-import 'package:communitytabs/logic/cubits/cubits.dart';
 import 'package:flutter/material.dart';
-import 'create_event_page_view_state.dart';
+import 'package:communitytabs/logic/logic.dart';
 
 class CreateEventPageViewCubit extends Cubit<CreateEventPageViewState> {
   final PageController _createEventPageViewController = new PageController(initialPage: 0, keepPage: true);

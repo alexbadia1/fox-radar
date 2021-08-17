@@ -1,6 +1,5 @@
-import 'package:bloc/bloc.dart';
-import 'home_page_view_state.dart';
 import 'package:flutter/material.dart';
+import 'package:communitytabs/logic/logic.dart';
 
 class HomePageViewCubit extends Cubit<HomePageViewState> {
   final PageController _homePageViewController = new PageController(initialPage: 0, keepPage: true);

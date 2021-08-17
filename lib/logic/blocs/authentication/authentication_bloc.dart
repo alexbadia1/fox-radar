@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'authentication_blocs.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'authentication.dart';
+import 'package:communitytabs/logic/logic.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 
 /// Authentication Bloc

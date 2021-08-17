@@ -371,9 +371,26 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
                                     height: _realHeight * .35,
                                     width: screenWidth * .35,
                                   ),
-                                  Text(
-                                    'Stop hibernating, make something happen!',
-                                    style: TextStyle(color: cWhite70, fontSize: 16.0),
+                                  Builder(
+                                    builder: (BuildContext context) {
+                                      final _connection = loadingWidgetContext.watch<DeviceNetworkBloc>().state;
+
+                                      // Check internet connection first
+                                      if (_connection is DeviceNetworkStateNone) {
+                                        return Text(
+                                          'No Internet Connection',
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(color: cWhite70, fontSize: 16.0),
+                                        );
+                                      } // if
+                                      return Text(
+                                        'Stop hibernating, make something happen!',
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(color: cWhite70, fontSize: 16.0),
+                                      );
+                                    },
                                   ),
                                   cVerticalMarginSmall(context),
                                   TextButton(

@@ -4,14 +4,14 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 
 class DeviceNetworkBloc extends Bloc<DeviceNetworkEvent, DeviceNetworkState> {
   DeviceNetworkBloc() : super(DeviceNetworkStateUnknown());
-
+  final Connectivity _connectivity = Connectivity();
   // Subscription used to monitor th devices network connectivity state
   StreamSubscription _streamSubscription;
 
   @override
   Stream<DeviceNetworkState> mapEventToState(DeviceNetworkEvent event) async* {
     if (event is DeviceNetworkEventListen) {
-      _streamSubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      _streamSubscription = _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
         this.add(DeviceNetworkEventChanged(result));
       }); // _streamSubscription
     } // if

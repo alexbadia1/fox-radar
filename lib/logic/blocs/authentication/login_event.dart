@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
-import 'package:communitytabs/logic/constants/enums.dart';
+import 'package:communitytabs/logic/logic.dart';
 
 abstract class LoginEvent extends Equatable {
   const LoginEvent();

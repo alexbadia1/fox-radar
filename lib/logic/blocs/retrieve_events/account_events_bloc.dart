@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'package:bloc/bloc.dart';
-import 'account_events_event.dart';
 import 'account_events_state.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter/material.dart';

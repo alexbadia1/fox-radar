@@ -1,12 +1,9 @@
-import 'dart:ffi';
-import 'dart:io';
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:communitytabs/logic/logic.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
   final int paginationLimit = 10;
@@ -142,55 +139,6 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
 
     return ans;
   } // _mapPhotosToFiles
-
-  Future<List<Uint8List>> _mapFilesToCompressedUint8List(List<File> files) async {
-    List<Uint8List> result = [];
-
-    result = await Future.microtask(() async {
-      final List<Uint8List> compressedFiles = [];
-
-      try {
-        for (int i = 0; i < files.length; ++i) {
-          final Uint8List uncompressedFile = await files[i].readAsBytes();
-
-          if (uncompressedFile.lengthInBytes > 1000000) {
-            int quality = 100;
-            double megabytes = uncompressedFile.lengthInBytes / 1000000;
-            if (megabytes > 1) {
-              quality = 100 ~/ megabytes + 60;
-
-              // Add max and min
-              quality = quality < 1 ? 1 : quality;
-              quality = quality > 100 ? 100 : quality;
-            } // if
-
-            final compressedFile = await FlutterImageCompress.compressWithList(
-              uncompressedFile,
-              minHeight: 1350,
-              minWidth: 1080,
-              format: CompressFormat.jpeg,
-            );
-            compressedFiles.add(compressedFile);
-            print(
-                "File compressed from ${uncompressedFile.lengthInBytes / 1000000} MB to ${compressedFile.lengthInBytes / 1000000} MB, quality factor: $quality");
-          } // if
-          else {
-            print("File compression skipped since ${uncompressedFile.lengthInBytes / 1000000} MB is less than 1 MB");
-            compressedFiles.add(uncompressedFile);
-          } // else
-        } // for
-
-        return compressedFiles;
-      } // try
-
-      catch (error) {
-        print(error);
-        return [];
-      } // catch
-    });
-
-    return result;
-  } // compressUint8List
 
   @override
   void onChange(Change<DeviceImagesState> change) {
