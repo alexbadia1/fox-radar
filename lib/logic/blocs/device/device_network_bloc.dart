@@ -14,6 +14,12 @@ class DeviceNetworkBloc extends Bloc<DeviceNetworkEvent, DeviceNetworkState> {
       _streamSubscription = _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
         this.add(DeviceNetworkEventChanged(result));
       }); // _streamSubscription
+
+      // Stream only fires on change, so must check for initial state
+      if (state is DeviceNetworkStateUnknown) {
+        final ConnectivityResult _connectivityResult = await _connectivity.checkConnectivity();
+        this.add(DeviceNetworkEventChanged(_connectivityResult));
+      } // if
     } // if
 
     else if (event is DeviceNetworkEventChanged) {

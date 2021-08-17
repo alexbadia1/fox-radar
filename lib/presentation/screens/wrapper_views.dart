@@ -12,7 +12,6 @@ class _ViewsWrapperState extends State<ViewsWrapper> {
   @override
   Widget build(BuildContext context) {
     final _authRepo = RepositoryProvider.of<AuthenticationRepository>(context);
-    BlocProvider.of<DeviceNetworkBloc>(context).add(DeviceNetworkEventListen());
     return Builder(
       builder: (context) {
         final _authenticationBlocState = context.watch<AuthenticationBloc>().state;

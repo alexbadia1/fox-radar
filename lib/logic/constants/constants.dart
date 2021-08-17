@@ -54,4 +54,4 @@ const SORT_KEY_START_DATE_TIME = "Starts";
 
 /// Marist email syntax filter
 /// ECMAScript: ^(([a-z]|[0-9])*\.([a-z]|[0-9])*|([a-z]|[0-9])+)@marist\.edu$
-final MARIST_EMAIL_REGEX = RegExp("^(([a-z]|[0-9])*\.([a-z]|[0-9])*|([a-z]|[0-9])+)@marist\.edu\$");
+final MARIST_EMAIL_REGEX = RegExp(r"^(([a-z]|[0-9])*\.([a-z]|[0-9])*|([a-z]|[0-9])+)@marist\.edu$");

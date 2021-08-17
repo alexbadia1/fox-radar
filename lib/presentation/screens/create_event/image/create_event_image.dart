@@ -195,7 +195,7 @@ class _CreateEventImageState extends State<CreateEventImage> with WidgetsBinding
                 return Container(
                   alignment: Alignment.topLeft,
                   child: GridView.builder(
-                      physics: AlwaysScrollableScrollPhysics(),
+                      physics: const ScrollPhysics(),
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
                       itemCount: deviceImagesBlocState.images.length,
