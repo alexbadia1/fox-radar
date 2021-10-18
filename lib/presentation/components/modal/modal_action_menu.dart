@@ -12,7 +12,21 @@ class ModalActionMenu extends StatelessWidget {
   /// Maps an Icon and it's description in a row,
   /// where each row is displayed vertically,
   /// in the order that they are listed.
+  ///
+  /// Displayed above the cancel button
   final List<ModalActionMenuButton> actions;
+
+  /// Message displayed under the Cancel Button
+  ///
+  /// Allows for [actions] to be added below the cancel button
+  final String bottomActionsTitle;
+
+  /// Maps an Icon and it's description in a row,
+  /// where each row is displayed vertically,
+  /// in the order that they are listed.
+  ///
+  /// Displayed under the cancel button
+  final List<ModalActionMenuButton> bottomActions;
 
   /// Whether or not a cancel button is
   /// included at the bottom of the modal sheet.
@@ -28,14 +42,23 @@ class ModalActionMenu extends StatelessWidget {
   /// Change to manipulate the space around the icon and text widgets.
   final smallGutterFexFactor;
 
+  /// Special widget placed directly underneath the
+  /// bottom title but above the bottom actions.
+  final Widget featureWidget;
+
+  final maxHeight;
+
   const ModalActionMenu(
       {Key key,
-      @required this.actions,
+      this.actions,
+      this.featureWidget,
+      this.bottomActions,
+      this.bottomActionsTitle = "",
       this.prompt = '',
       this.cancel = false,
       this.iconFlexFactor = 2,
       this.textFlexFactor = 19,
-      this.smallGutterFexFactor = 1})
+      this.smallGutterFexFactor = 1, this.maxHeight})
       : super(key: key);
 
   @override
@@ -67,9 +90,12 @@ class ModalActionMenu extends StatelessWidget {
     } // if
 
     // Add the choices to menu
-    this.actions.forEach((ModalActionMenuButton btn) {
-      widgets.add(btn);
-    });
+    // User wants bottom actions
+    if (this.actions != null) {
+      this.actions.forEach((ModalActionMenuButton btn) {
+        widgets.add(btn);
+      });
+    } // if
 
     // If user chose a cancel button
     if (this.cancel) {
@@ -82,7 +108,7 @@ class ModalActionMenu extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: ModalActionMenuButton(
-              icon: Icons.cancel,
+              icon: Icons.close,
               description: 'Cancel',
               onPressed: () => Navigator.of(pContext).pop(),
             ),
@@ -91,18 +117,41 @@ class ModalActionMenu extends StatelessWidget {
       );
     } // if
 
+    if (this.bottomActionsTitle != null && !this.cancel) {
+      // Add actual "Cancel" Icon
+      widgets.add(
+        BorderBottom(
+          child: ModalActionMenuButton(
+            icon: Icons.close,
+            description: this.bottomActionsTitle,
+            onPressed: () => Navigator.of(pContext).popUntil((route) => route.isFirst),
+          ),
+        ),
+      );
+    } // if
+
+    if (this.featureWidget != null) {
+      widgets.add(featureWidget);
+    } // if
+
+    // User wants bottom actions
+    if (this.bottomActions != null) {
+      // Add spacing below title
+      widgets.add(SizedBox(height: MediaQuery.of(pContext).size.height * .02));
+
+      // Add the choices to menu
+      this.bottomActions.forEach((ModalActionMenuButton btn) {
+        widgets.add(btn);
+      });
+    } // if
+
     return ConstrainedBox(
-      constraints: BoxConstraints(
-          minWidth: double.infinity, maxHeight: _realHeight * .3),
+      constraints: BoxConstraints(minWidth: double.infinity, maxHeight: this.maxHeight ?? _realHeight * .3),
       child: Container(
         color: Color.fromRGBO(24, 24, 24, 1.0),
         child: Padding(
           padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-          child: ListView(
-            physics: const ScrollPhysics(),
-            shrinkWrap: true,
-            children: widgets
-          ),
+          child: ListView(physics: const ScrollPhysics(), shrinkWrap: true, children: widgets),
         ),
       ),
     );

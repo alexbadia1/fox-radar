@@ -45,8 +45,6 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
   @override
   Widget build(BuildContext context) {
     super.build(context); // AutomaticKeepAliveClientMixin require this.
-    final screenWidth = MediaQuery.of(context).size.width;
-
     final _realHeight = MediaQuery.of(context).size.height -
         MediaQuery.of(context).padding.top -
         MediaQuery.of(context).padding.bottom +
@@ -55,7 +53,6 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
     return Scaffold(
         key: this._scaffoldKey,
         backgroundColor: cBackground,
-        endDrawer: AccountDrawerContents(),
         body: CustomScrollView(
           physics: NeverScrollableScrollPhysics(),
           slivers: [
@@ -72,8 +69,20 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
                 builder: (accountDrawerButtonContext) {
                   return AccountDrawerButton(
                     openDrawerCallback: () {
-                      // End Drawer is inherited from scaffold
-                      Scaffold.of(accountDrawerButtonContext).openEndDrawer();
+                      return showModalBottomSheet(
+                        context: context,
+                        enableDrag: false,
+                        isScrollControlled: true,
+                        builder: (context) {
+                          return MultiBlocProvider(
+                            providers: [
+                              BlocProvider<LoginBloc>.value(value: BlocProvider.of<LoginBloc>(accountDrawerButtonContext)),
+                              BlocProvider<UpdateProfileBloc>.value(value: BlocProvider.of<UpdateProfileBloc>(accountDrawerButtonContext)),
+                            ],
+                            child: AccountDrawerContents(),
+                          );
+                        },
+                      );
                     },
                   );
                 },

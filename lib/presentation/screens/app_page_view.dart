@@ -12,8 +12,8 @@ class AppPageView extends StatelessWidget {
       providers: [
         BlocProvider<UploadEventBloc>(
           create: (context) => UploadEventBloc(
-            uid: RepositoryProvider.of<AuthenticationRepository>(context).getUserModel().userID,
             db: RepositoryProvider.of<DatabaseRepository>(context),
+            uid: RepositoryProvider.of<AuthenticationRepository>(context).getUserModel().userID,
           ),
         ),
 

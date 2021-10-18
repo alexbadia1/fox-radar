@@ -43,7 +43,7 @@ class MaristSliverAppBar extends StatelessWidget {
       toolbarHeight: appBarHeight,
       elevation: 1.0,
       pinned: true,
-      actions: [this.action], // Scaffold inherits drawer
+      actions: [this.action],
       flexibleSpace: Container(
         width: double.infinity,
         height:  appBarHeight + safePaddingTop,

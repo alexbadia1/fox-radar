@@ -19,6 +19,11 @@ class MainView extends StatelessWidget {
     ///   - Account Screen
     return MultiBlocProvider(
       providers: [
+        BlocProvider<UpdateProfileBloc>(
+          create: (context) => UpdateProfileBloc(
+            RepositoryProvider.of<AuthenticationRepository>(context).getUserModel(),
+          ),
+        ),
         BlocProvider<AppPageViewCubit>(
         create: (context) => AppPageViewCubit()
         ),

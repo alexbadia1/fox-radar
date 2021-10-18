@@ -1,14 +1,21 @@
-import 'package:equatable/equatable.dart';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:equatable/equatable.dart';
 
 class UserModel extends Equatable {
   String userID;
   String email;
+  String imagePath;
+  Uint8List imageBytes;
   String _firstName = "";
   String _lastName = "";
 
-  UserModel({@required this.userID, @required this.email})
-      : assert(userID != null),
+  UserModel({
+    this.imagePath,
+    @required this.userID,
+    @required this.email,
+  })  : assert(userID != null),
         assert(email != null) {
     int i = 0;
 
@@ -18,7 +25,7 @@ class UserModel extends Equatable {
     } // for
     if (this._firstName.isEmpty) {
       this._firstName = "User";
-    }// if
+    } // if
 
     // Skip over the "."
     i++;
@@ -29,16 +36,18 @@ class UserModel extends Equatable {
     } // for
     if (this._lastName.isEmpty) {
       this._lastName = "";
-    }// if
+    } // if
   } // UserModel
 
   UserModel.nullConstructor() {
     this.userID = "";
     this.email = "";
-  }// UserModel.nullConstructor
+    this.imagePath = null;
+  } // UserModel.nullConstructor
 
   @override
   List<Object> get props => [this.userID];
 
   String get firstName => this._firstName;
+  String get lastName => this._lastName;
 } // User

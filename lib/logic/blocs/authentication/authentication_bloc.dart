@@ -10,8 +10,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 ///   Authentication Events
 /// Outputs:
 ///   Authentication States
-class AuthenticationBloc
-    extends Bloc<AuthenticationEvent, AuthenticationState> {
+class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   final AuthenticationRepository _authenticationRepository;
   StreamSubscription _userSubscription;
 
@@ -22,14 +21,13 @@ class AuthenticationBloc
   }
 
   @override
-  Stream<AuthenticationState> mapEventToState(
-      AuthenticationEvent event) async* {
+  Stream<AuthenticationState> mapEventToState(AuthenticationEvent event) async* {
     if (event is AuthenticationStarted) {
       yield* _mapAuthenticationStartedToState();
     } // if
 
     if (event is AuthenticationLoggedIn) {
-      yield* _mapAuthenticationLoggedInToState();
+      yield* _mapAuthenticationLoggedInToState(event.user);
     } // else-if
 
     else if (event is AuthenticationLoggedOut) {
@@ -41,7 +39,7 @@ class AuthenticationBloc
   Stream<AuthenticationState> _mapAuthenticationStartedToState() async* {
     _userSubscription = _authenticationRepository.user.listen((UserModel user) {
       if (user != UserModel.nullConstructor()) {
-        this.add(AuthenticationLoggedIn());
+        this.add(AuthenticationLoggedIn(user));
       } // if
       else {
         this.add(AuthenticationLoggedOut());
@@ -49,8 +47,8 @@ class AuthenticationBloc
     });
   } // _mapAuthenticationEventToState
 
-  Stream<AuthenticationState> _mapAuthenticationLoggedInToState() async* {
-    yield AuthenticationStateAuthenticated();
+  Stream<AuthenticationState> _mapAuthenticationLoggedInToState(UserModel user) async* {
+    yield AuthenticationStateAuthenticated(user);
   } // _mapAuthenticationEventToState
 
   Stream<AuthenticationState> _mapAuthenticationLoggedOutToState() async* {
@@ -58,14 +56,8 @@ class AuthenticationBloc
   } // _mapAuthenticationEventToState
 
   @override
-  void onChange(Change<AuthenticationState> change) {
-    print('Authentication Bloc: $change');
-    super.onChange(change);
-  } // onChange
-
-  @override
   Future<void> close() {
     _userSubscription.cancel();
     return super.close();
   } // close
-}
+}// AuthenticationBloc

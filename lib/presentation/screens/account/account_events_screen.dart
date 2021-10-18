@@ -46,7 +46,6 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
   @override
   Widget build(BuildContext context) {
     super.build(context); // AutomaticKeepAliveClientMixin require this.
-    final screenWidth = MediaQuery.of(context).size.width;
     final _realHeight = MediaQuery.of(context).size.height -
         MediaQuery.of(context).padding.top -
         MediaQuery.of(context).padding.bottom +
@@ -55,7 +54,6 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
     return Scaffold(
       key: this._scaffoldKey,
       backgroundColor: cBackground,
-      endDrawer: AccountDrawerContents(),
       body: CustomScrollView(
         physics: NeverScrollableScrollPhysics(),
         slivers: [
@@ -76,8 +74,20 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
               builder: (accountDrawerButtonContext) {
                 return AccountDrawerButton(
                   openDrawerCallback: () {
-                    // End Drawer is inherited from scaffold
-                    Scaffold.of(accountDrawerButtonContext).openEndDrawer();
+                    return showModalBottomSheet(
+                      context: context,
+                      enableDrag: false,
+                      isScrollControlled: true,
+                      builder: (context) {
+                        return MultiBlocProvider(
+                          providers: [
+                            BlocProvider<LoginBloc>.value(value: BlocProvider.of<LoginBloc>(accountDrawerButtonContext)),
+                            BlocProvider<UpdateProfileBloc>.value(value: BlocProvider.of<UpdateProfileBloc>(accountDrawerButtonContext)),
+                          ],
+                          child: AccountDrawerContents(),
+                        );
+                      },
+                    );
                   },
                 );
               },
@@ -285,7 +295,7 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
 
                                               // Confirm Delete
                                               showModalBottomSheet(
-                                                // Make sure user is focused on task at hand only
+                                                  // Make sure user is focused on task at hand only
                                                   isDismissible: false,
                                                   context: context,
                                                   builder: (confirmDeleteButtonContext) {
