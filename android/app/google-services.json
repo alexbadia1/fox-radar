@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "53662614301",
+    "project_id": "fox-radar-f8810",
+    "storage_bucket": "fox-radar-f8810.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:53662614301:android:824ecccd482c7bcfb317f4",
+        "android_client_info": {
+          "package_name": "com.example.fox_radar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "53662614301-m8gm19jr7ks7dqpem0vqdc834vgb82cv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDhbOrV4VcsnoxmkGG5AL0zxgN4JzmnOQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "53662614301-m8gm19jr7ks7dqpem0vqdc834vgb82cv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
