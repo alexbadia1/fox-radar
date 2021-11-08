@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:53662614301:android:824ecccd482c7bcfb317f4",
+        "mobilesdk_app_id": "1:53662614301:android:5b6608e9da8b312eb317f4",
         "android_client_info": {
-          "package_name": "com.example.fox_radar"
+          "package_name": "com.marist.fox_radar"
         }
       },
       "oauth_client": [

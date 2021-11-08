@@ -40,7 +40,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.example.fox_radar"
+        applicationId "com.marist.fox_radar"
         minSdkVersion 16
         targetSdkVersion 30
         multiDexEnabled true
