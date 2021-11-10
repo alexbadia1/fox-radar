@@ -4,10 +4,12 @@ A small application showing users all events occuring at Marist
 
 ## Getting Started
 
-![Signup Login Home](images/thumbnail_1.png)
+![Authentication](images/thumbnail_auth.png)
 
 
-![Creating an event](images/create_event_thumbnail.png)
+![Create Event](images/thumbnail_create_event.png)
 
 
-![Looking for events](images/thumbnail_3.png)
+![Events](images/thumbnail_events.png)
+
+![More Events](images/thumbnail_more_events.png)
