@@ -4,13 +4,11 @@ A small application showing users all events occuring at Marist
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+![Signup Login Home](https://github.com/alexbadia1/fox_radar/blob/bd7a7feaedd7769430b1194b7abe84416e176c4f/images/thumbnail_1.png)
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+![Creating an event](https://github.com/alexbadia1/fox_radar/blob/bd7a7feaedd7769430b1194b7abe84416e176c4f/images/thumbnail_2.png)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+![Looking for events](https://github.com/alexbadia1/fox_radar/blob/bd7a7feaedd7769430b1194b7abe84416e176c4f/images/thumbnail_2.png)
+
