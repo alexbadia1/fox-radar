@@ -2,7 +2,7 @@
 
 A small application showing users all events occuring at Marist
 
-## Getting Started
+## Screenshots
 
 ![Authentication](images/thumbnail_auth.png)
 
