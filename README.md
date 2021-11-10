@@ -1,16 +1,16 @@
 # fox_radar
 
-A small application showing users all events occuring at Marist
+A small application showing users all events occurring at Marist.
 
-## Screenshots (compressed)
+## Screenshots
 
-Sorry for the poor quality screehots!
-
-![Signup Login Home](https://github.com/alexbadia1/fox_radar/blob/bd7a7feaedd7769430b1194b7abe84416e176c4f/images/thumbnail_1.png)
+![Authentication](https://github.com/alexbadia1/fox_radar/blob/add987acb5c834296a9d7cc4479ceb611c569d79/images/thumbnail_auth.png)
 
 
-![Creating an event](https://github.com/alexbadia1/fox_radar/blob/bd7a7feaedd7769430b1194b7abe84416e176c4f/images/thumbnail_2.png)
+![Create Event](https://github.com/alexbadia1/fox_radar/blob/add987acb5c834296a9d7cc4479ceb611c569d79/images/thumbnail_create_event.png)
 
 
-![Looking for events](https://github.com/alexbadia1/fox_radar/blob/bd7a7feaedd7769430b1194b7abe84416e176c4f/images/thumbnail_2.png)
+![Events](https://github.com/alexbadia1/fox_radar/blob/add987acb5c834296a9d7cc4479ceb611c569d79/images/thumbnail_events.png)
+
+![More Events](https://github.com/alexbadia1/fox_radar/blob/add987acb5c834296a9d7cc4479ceb611c569d79/images/thumbnail_more_events.png)
 
