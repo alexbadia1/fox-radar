@@ -26,7 +26,7 @@ class DatabaseRepository {
   /// For pagination, continues query starting after the [lastEvent]
   /// and returns a number documents no bigger thant the [limit].
   Future<List<QueryDocumentSnapshot>> searchEventsByCategory(
-      {@required String category, @required QueryDocumentSnapshot lastEvent, @required int limit}) async {
+      {required String category, required QueryDocumentSnapshot lastEvent, required int limit}) async {
     QuerySnapshot querySnap;
 
     if (lastEvent != null) {
@@ -50,7 +50,7 @@ class DatabaseRepository {
   ///
   /// For pagination, continues query starting after the [lastEvent]
   /// and returns a number documents no bigger thant the [limit].
-  Future<List<QueryDocumentSnapshot>> searchEventsByStartDateAndTime({@required QueryDocumentSnapshot lastEvent, @required int limit}) async {
+  Future<List<QueryDocumentSnapshot>> searchEventsByStartDateAndTime({required QueryDocumentSnapshot lastEvent, required int limit}) async {
     QuerySnapshot querySnap;
 
     if (lastEvent != null) {
@@ -73,7 +73,7 @@ class DatabaseRepository {
     return querySnap.docs;
   } // searchEventsByStartDateAndTime
 
-  Future<DocumentSnapshot> getAccountPinnedEvents({@required String uid}) async {
+  Future<DocumentSnapshot?> getAccountPinnedEvents({required String uid}) async {
     try {
       final DocumentSnapshot docSnap = await _userSavedEventsCollection.doc(uid).get();
       return docSnap;
@@ -84,7 +84,7 @@ class DatabaseRepository {
     } // catch
   } // getAccountPinnedEvents
 
-  Future<DocumentSnapshot> getAccountCreatedEvents({@required String uid}) async {
+  Future<DocumentSnapshot?> getAccountCreatedEvents({required String uid}) async {
     try {
       final DocumentSnapshot docSnap = await _userCreatedEventsCollection.doc(uid).get();
       return docSnap;
@@ -95,7 +95,7 @@ class DatabaseRepository {
     } //catch
   } // getAccountEvents
 
-  Future<DocumentSnapshot> getSearchEventById({@required String eventId}) async {
+  Future<DocumentSnapshot?> getSearchEventById({required String eventId}) async {
     try {
       final DocumentSnapshot docSnap = await _searchEventsCollection.doc(eventId).get();
       return docSnap;
@@ -113,7 +113,7 @@ class DatabaseRepository {
   /// For pagination, continues query starting after the [lastEvent]
   /// and returns a number documents no bigger thant the [limit].
   Future<List<QueryDocumentSnapshot>> getAccountEventsDeprecated(
-      {@required String accountID, @required QueryDocumentSnapshot lastEvent, @required int limit}) async {
+      {required String accountID, required QueryDocumentSnapshot lastEvent, required int limit}) async {
     QuerySnapshot querySnap;
 
     // Continue querying from where you left off
@@ -134,14 +134,14 @@ class DatabaseRepository {
     return querySnap.docs;
   } // searchEventsByAccount
 
-  Future<DocumentSnapshot> getEventFromEventsCollection({@required String documentId}) async {
+  Future<DocumentSnapshot> getEventFromEventsCollection({required String documentId}) async {
     return await _eventsCollection.doc(documentId).get();
   } // getEventsFromEventsCollection
 
   /// Creates a new "Event" in firebase
   ///
   /// Batched is used to ensure atomicity, due to the denormalized structure of the database.
-  Future<String> createEvent(EventModel newEvent, String userId) async {
+  Future<String?> createEvent(EventModel newEvent, String userId) async {
     try {
       final WriteBatch _batch = FirebaseFirestore.instance.batch();
 
@@ -189,9 +189,9 @@ class DatabaseRepository {
       /// }
       final DocumentReference searchEventsDocRef = _searchEventsCollection.doc(_eventsId);
       _batch.set(searchEventsDocRef, {
-        ATTRIBUTE_TITLE: newEvent.title.toUpperCase() ?? '',
-        ATTRIBUTE_HOST: newEvent.host.toLowerCase() ?? '',
-        ATTRIBUTE_LOCATION: newEvent.location.toLowerCase() ?? '',
+        ATTRIBUTE_TITLE: newEvent.title!.toUpperCase() ?? '',
+        ATTRIBUTE_HOST: newEvent.host!.toLowerCase() ?? '',
+        ATTRIBUTE_LOCATION: newEvent.location!.toLowerCase() ?? '',
         ATTRIBUTE_CATEGORY: newEvent.category ?? '',
         ATTRIBUTE_RAW_START_DATE_TIME: newEvent.rawStartDateAndTime ?? null
       });
@@ -241,7 +241,7 @@ class DatabaseRepository {
     } // if
 
     // Can't update any of them
-    if (newEvent.eventID.replaceAll(" ", "") == "") {
+    if (newEvent.eventID!.replaceAll(" ", "") == "") {
       return;
     } // if
 
@@ -255,9 +255,9 @@ class DatabaseRepository {
     _batch.update(_eventsDocRef, attributeMap);
 
     _batch.update(_searchEventsDocRef, {
-      ATTRIBUTE_TITLE: newEvent.title.toUpperCase() ?? '',
-      ATTRIBUTE_HOST: newEvent.host.toLowerCase() ?? '',
-      ATTRIBUTE_LOCATION: newEvent.location.toLowerCase() ?? '',
+      ATTRIBUTE_TITLE: newEvent.title!.toUpperCase() ?? '',
+      ATTRIBUTE_HOST: newEvent.host!.toLowerCase() ?? '',
+      ATTRIBUTE_LOCATION: newEvent.location!.toLowerCase() ?? '',
       ATTRIBUTE_CATEGORY: newEvent.category ?? '',
       ATTRIBUTE_RAW_START_DATE_TIME: newEvent.rawStartDateAndTime ?? null,
     });
@@ -347,7 +347,7 @@ class DatabaseRepository {
   /// Overwrites existing files (useful for updating an image).
   ///
   /// Returns a listenable upload task, to show upload progress.
-  UploadTask uploadImageToStorage({@required String eventID, @required Uint8List imageBytes}) {
+  UploadTask? uploadImageToStorage({required String eventID, required Uint8List imageBytes}) {
     try {
       return FirebaseStorage.instance.ref().child(this.imagePath(eventID: eventID)).putData(imageBytes);
     } // try
@@ -360,7 +360,7 @@ class DatabaseRepository {
   /// using the document id of the event as the image name.
   ///
   /// Returns a listenable upload task, to show upload progress.
-  Future<void> deleteImageFromStorage({@required String eventID}) {
+  Future<void>? deleteImageFromStorage({required String eventID}) {
     try {
       return FirebaseStorage.instance.ref().child(this.imagePath(eventID: eventID)).delete();
     } // try
@@ -369,7 +369,7 @@ class DatabaseRepository {
     } // catch
   } // uploadImageToStorage
 
-  Future<Uint8List> getImageFromStorage({@required String eventID}) async {
+  Future<Uint8List?> getImageFromStorage({required String eventID}) async {
     try {
       return await FirebaseStorage.instance.ref().child(this.imagePath(eventID: eventID)).getData(4194304);
     } // try
@@ -378,7 +378,7 @@ class DatabaseRepository {
     } // catch
   } // getEventFromEventsCollection
 
-  String imagePath({@required String eventID}) {
+  String imagePath({required String eventID}) {
     return 'events/$eventID.jpg';
   } // _getGenerateImagePath
 
@@ -395,7 +395,7 @@ class DatabaseRepository {
 
     /// Optional fields
     if (eventModel.room != null) {
-      if (eventModel.room.replaceAll(" ", '') != "") {
+      if (eventModel.room!.replaceAll(" ", '') != "") {
         _map[ATTRIBUTE_ROOM] = eventModel.room;
       } // if
     } // if
@@ -409,7 +409,7 @@ class DatabaseRepository {
     } // if
 
     if (eventModel.description != null) {
-      if (eventModel.description.replaceAll(" ", '') != "") {
+      if (eventModel.description!.replaceAll(" ", '') != "") {
         _map[ATTRIBUTE_DESCRIPTION] = eventModel.description;
       } // if
     } // if
