@@ -154,7 +154,7 @@ class EventScreen extends StatelessWidget {
                                     width: MediaQuery.of(context).size.width *
                                         .001,
                                   ),
-                                  FlatButton(
+                                  TextButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },

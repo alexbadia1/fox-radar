@@ -15,7 +15,7 @@ class PinnedEventsEventReload extends PinnedEventsEvent {
 } // PinnedEventsEventReload
 
 class PinnedEventsEventUnpin extends PinnedEventsEvent {
-  final String eventId;
+  final String? eventId;
 
   PinnedEventsEventUnpin(this.eventId);
 

@@ -28,7 +28,7 @@ class CategoryBody extends StatelessWidget {
   /// equal to the List's value at the largest index (typically where, i = list.length - 1).
   final List<String> tabNamesFromLtoR;
 
-  CategoryBody({@required this.title, @required this.tabNamesFromLtoR});
+  CategoryBody({required this.title, required this.tabNamesFromLtoR});
 
   @override
   Widget build(BuildContext context) {

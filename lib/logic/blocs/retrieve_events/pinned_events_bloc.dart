@@ -319,7 +319,7 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
     }
   }
 
-  Stream<PinnedEventsState> _mapPinnedEventsEventUnpinToState(String newEventID) async* {
+  Stream<PinnedEventsState> _mapPinnedEventsEventUnpinToState(String? newEventID) async* {
     final currState = this.state;
 
     if (this.pinnedEvents == null) { return; }// if

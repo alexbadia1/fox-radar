@@ -10,14 +10,14 @@ category_screen_body_list.dart
   Each List View is able to be refreshed and lazily retrieve events of a specified category.
  */
 class SingleCategoryView extends StatefulWidget {
-  const SingleCategoryView({Key key}) : super(key: key);
+  const SingleCategoryView({Key? key}) : super(key: key);
   @override
   _SingleCategoryViewState createState() => _SingleCategoryViewState();
 } // SingleCategoryView
 
 class _SingleCategoryViewState extends State<SingleCategoryView> {
-  Completer _refreshCompleter;
-  ScrollController _listViewController;
+  late Completer _refreshCompleter;
+  late ScrollController _listViewController;
 
   @override
   void initState() {
@@ -121,7 +121,7 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
                                 value: BlocProvider.of<PinnedEventsBloc>(modalSheetContext),
                                 child: Builder(builder: (modalSheetContext) {
                                   // Not pinned, so let user pin the bloc
-                                  if (!BlocProvider.of<PinnedEventsBloc>(context).pinnedEvents.contains(_categoryEvent.eventId)) {
+                                  if (!BlocProvider.of<PinnedEventsBloc>(context).pinnedEvents!.contains(_categoryEvent.eventId)) {
                                     return ModalActionMenu(
                                       actions: [
                                         ModalActionMenuButton(
@@ -129,7 +129,7 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
                                           description: "Pin",
                                           color: Colors.blueAccent,
                                           onPressed: () {
-                                            BlocProvider.of<PinnedEventsBloc>(modalSheetContext).add(PinnedEventsEventPin(_categoryEvent.eventId));
+                                            BlocProvider.of<PinnedEventsBloc>(modalSheetContext).add(PinnedEventsEventPin(_categoryEvent.eventId!));
                                             Navigator.pop(modalSheetContext);
                                           },
                                         ),
@@ -146,7 +146,7 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
                                         description: "Unpin",
                                         color: Colors.redAccent,
                                         onPressed: () {
-                                          BlocProvider.of<PinnedEventsBloc>(modalSheetContext).add(PinnedEventsEventUnpin(_categoryEvent.eventId));
+                                          BlocProvider.of<PinnedEventsBloc>(modalSheetContext).add(PinnedEventsEventUnpin(_categoryEvent.eventId!));
                                           Navigator.pop(modalSheetContext);
                                         },
                                       )

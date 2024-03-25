@@ -26,7 +26,7 @@ class RouteGeneratorMain {
         // Get the route arguments that hold:
         //   - documentId: used to retrieve the full event from firebase
         //   - imageBytes: used to show the events image
-        final EventScreenArguments args = settings.arguments;
+        final EventScreenArguments args = settings.arguments as EventScreenArguments;
 
         return PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) => EventScreen(

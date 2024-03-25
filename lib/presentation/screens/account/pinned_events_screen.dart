@@ -7,11 +7,11 @@ import 'package:fox_radar/presentation/presentation.dart';
 class PinnedEventsScreen extends StatefulWidget {
   @override
   _PinnedEventsScreenState createState() => _PinnedEventsScreenState();
-} // PinnedEventsScreen
+}
 
 class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticKeepAliveClientMixin {
-  Completer<void> _refreshCompleter;
-  ScrollController _scrollController;
+  late Completer<void> _refreshCompleter;
+  late ScrollController _scrollController;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
@@ -69,7 +69,7 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
                 builder: (accountDrawerButtonContext) {
                   return AccountDrawerButton(
                     openDrawerCallback: () {
-                      return showModalBottomSheet(
+                      showModalBottomSheet(
                         context: context,
                         enableDrag: false,
                         isScrollControlled: true,
@@ -250,7 +250,7 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
                                                             onPressed: () {
                                                               // Remove from local list
                                                               BlocProvider.of<PinnedEventsBloc>(modalSheetContext)
-                                                                  .add(PinnedEventsEventUnpin(_pinnedEvent.eventId));
+                                                                  .add(PinnedEventsEventUnpin(_pinnedEvent.eventId!));
                                                               Navigator.pop(modalSheetContext);
                                                             },
                                                           ),
@@ -268,7 +268,7 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
                                           Builder(builder: (context) {
                                             return GestureDetector(
                                               onTap: () {
-                                                Slidable.of(context).close();
+                                                Slidable.of(context)?.close();
                                                 // Remove from local list
                                                 BlocProvider.of<PinnedEventsBloc>(context).add(PinnedEventsEventUnpin(_pinnedEvent.eventId));
                                               },
