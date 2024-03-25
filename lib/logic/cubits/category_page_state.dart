@@ -6,13 +6,13 @@ abstract class CategoryPageState extends Equatable{}
 
 class CategoryPageInitial extends CategoryPageState {
   @override
-  List<Object> get props => [];
-}// CategoryCategoryInitial
+  List<Object?> get props => [];
+}
 
 class CategoryPageCategory extends CategoryPageState {
   final String category;
-  CategoryPageCategory({@required this.category});
+  CategoryPageCategory({required this.category});
 
   @override
-  List<Object> get props => [category];
-}// CategoryPageCategory
+  List<Object?> get props => [category];
+}

@@ -170,7 +170,7 @@ class _LoginFormState extends State<LoginForm> {
 } // _LoginFormState
 
 class LoginMessage extends StatelessWidget {
-  final String msg;
+  final String? msg;
   const LoginMessage({
     Key? key,
     required this.msg,
@@ -183,7 +183,7 @@ class LoginMessage extends StatelessWidget {
       child: Center(
         child: Padding(
           padding: const EdgeInsets.only(top: 16.0, bottom: 16.0),
-          child: Text(msg),
+          child: Text(msg ?? "[LoginMessage]"),
         ),
       ),
     );

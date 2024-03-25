@@ -9,16 +9,16 @@ class CreateEventPageViewCubit extends Cubit<CreateEventPageViewState> {
   void animateToEventForm() {
     _createEventPageViewController.animateToPage(0, duration: const Duration(milliseconds: 150), curve: Curves.easeIn);
     emit(CreateEventPageViewEventDetails());
-  } // animateToNextPage
+  }
 
   void animateToEventPhoto() {
     _createEventPageViewController.animateToPage(1, duration: const Duration(milliseconds: 150), curve: Curves.easeIn);
     emit(CreateEventPageViewEventPhoto());
-  } // animateToNextPage
+  }
 
-  double currentPage () {
+  double? currentPage () {
     return _createEventPageViewController.page;
-  }// currentPage
+  }
 
   get createEventPageViewController => _createEventPageViewController;
 
@@ -26,12 +26,12 @@ class CreateEventPageViewCubit extends Cubit<CreateEventPageViewState> {
   void onChange(Change<CreateEventPageViewState> change) {
     print('Create Event Page View Cubit Change $change');
     super.onChange(change);
-  }// onChange
+  }
 
   @override
   Future<void> close() {
     print('Create Event Page View Cubit Change Closed!');
     _createEventPageViewController.dispose();
     return super.close();
-  }// close
-}// CreateEventPageViewCubit
+  }
+}

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class DateTimePickerState extends Equatable {
@@ -11,34 +10,34 @@ abstract class DateTimePickerState extends Equatable {
   final DateTime tempDateTime;
 
   const DateTimePickerState(this.isOpen, this.tempDateTime);
-} // ExpansionPanelState
+}
 
 class DateTimePickerClosed extends DateTimePickerState {
   DateTimePickerClosed(
-      {@required bool isOpen,
-      @required DateTime tempDateTime})
+      {required bool isOpen,
+      required DateTime tempDateTime})
       : super(isOpen, tempDateTime);
 
   @override
-  List<Object> get props => [super.isOpen, this.tempDateTime];
-} // ExpansionPanelClosed
+  List<Object?> get props => [super.isOpen, this.tempDateTime];
+}
 
 class DateTimePickerOpenShowDatePicker extends DateTimePickerState {
   DateTimePickerOpenShowDatePicker(
-      {@required bool isOpen,
-      @required DateTime tempDateTime})
+      {required bool isOpen,
+      required DateTime tempDateTime})
       : super(isOpen, tempDateTime);
 
   @override
   List<Object> get props => [super.isOpen, this.tempDateTime];
-} // ExpansionPanelOpenShowDatePicker
+}
 
 class DateTimePickerOpenShowTimePicker extends DateTimePickerState {
   DateTimePickerOpenShowTimePicker(
-      {@required bool isOpen,
-      @required DateTime tempDateTime})
+      {required bool isOpen,
+      required DateTime tempDateTime})
       : super(isOpen, tempDateTime);
 
   @override
-  List<Object> get props => [super.isOpen, this.tempDateTime];
-} // ExpansionPanelOpenShowDatePicker
+  List<Object?> get props => [super.isOpen, this.tempDateTime];
+}

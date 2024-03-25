@@ -134,7 +134,7 @@ class DatabaseRepository {
     return querySnap.docs;
   } // searchEventsByAccount
 
-  Future<DocumentSnapshot> getEventFromEventsCollection({required String documentId}) async {
+  Future<DocumentSnapshot?> getEventFromEventsCollection({required String documentId}) async {
     return await _eventsCollection.doc(documentId).get();
   } // getEventsFromEventsCollection
 

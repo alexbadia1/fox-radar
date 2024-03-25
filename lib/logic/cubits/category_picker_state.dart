@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class CategoryPickerState extends Equatable {
@@ -13,20 +12,20 @@ abstract class CategoryPickerState extends Equatable {
   final int index;
 
   const CategoryPickerState(this.isOpen, this.index);
-} // CategoryPickerState
+}
 
 class CategoryPickerClosed extends CategoryPickerState {
-  CategoryPickerClosed({@required bool isOpen, @required int index})
+  CategoryPickerClosed({required bool isOpen, required int index})
       : super(isOpen, index);
 
   @override
   List<Object> get props => [super.isOpen, this.index];
-} // CategoryPickerClosed
+}
 
 class CategoryPickerOpen extends CategoryPickerState {
-  CategoryPickerOpen({@required bool isOpen, @required int index})
+  CategoryPickerOpen({required bool isOpen, required int index})
       : super(isOpen, index);
 
   @override
   List<Object> get props => [super.isOpen, this.index];
-} // CategoryPickerOpen
+}

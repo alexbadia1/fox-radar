@@ -11,24 +11,24 @@ class AppPageViewCubit extends Cubit<AppPageViewState> {
     if (this._appPageViewController.hasClients) {
       _appPageViewController.jumpToPage(HOME_PAGE_VIEW_INDEX);
       emit(AppPageViewStatePosition(HOME_PAGE_VIEW_INDEX));
-    }// if
-  } // animateToNextPage
+    }
+  }
 
   void jumpToAccountPage() {
     if (this._appPageViewController.hasClients) {
       _appPageViewController.jumpToPage(ACCOUNT_PAGE_VIEW_INDEX);
       emit(AppPageViewStatePosition(ACCOUNT_PAGE_VIEW_INDEX));
-    }// if
-  } // animateToNextPage
+    }
+  }
 
-  double currentPage() {
+  double? currentPage() {
     if (this._appPageViewController.hasClients) {
       return _appPageViewController.page;
-    }// if
+    }
     else {
       return 0;
-    }// else
-  } // currentPage
+    }
+  }
 
   get appPageViewController => _appPageViewController;
 
@@ -36,5 +36,5 @@ class AppPageViewCubit extends Cubit<AppPageViewState> {
   Future<void> close() {
     _appPageViewController.dispose();
     return super.close();
-  } // close
-}// AppPageViewCubit
+  }
+}

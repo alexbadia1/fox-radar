@@ -8,15 +8,15 @@ class HomePageViewCubit extends Cubit<HomePageViewState> {
 
   void animateToHomePage() {
     _homePageViewController.animateToPage(0, duration: const Duration(milliseconds: 150), curve: Curves.easeIn);
-  } // animateToNextPage
+  }
 
   void animateToCategoryPage() {
     _homePageViewController.animateToPage(1, duration: const Duration(milliseconds: 150), curve: Curves.easeIn);
-  } // animateToNextPage
+  }
 
-  double currentPage () {
+  double? currentPage () {
     return _homePageViewController.page;
-  }// currentPage
+  }
 
   get homePageViewController => _homePageViewController;
 
@@ -24,5 +24,5 @@ class HomePageViewCubit extends Cubit<HomePageViewState> {
   Future<void> close() {
     _homePageViewController.dispose();
     return super.close();
-  }// close
-}// HomePageViewCubit
+  }
+}

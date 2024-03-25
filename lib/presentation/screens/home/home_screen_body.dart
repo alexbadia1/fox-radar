@@ -229,7 +229,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
                                                 child: Builder(builder: (modalSheetContext) {
                                                   if (!BlocProvider.of<PinnedEventsBloc>(context)
                                                       .pinnedEvents
-                                                      .contains(_suggestedSearchEvent.eventId)) {
+                                                      !.contains(_suggestedSearchEvent.eventId)) {
                                                     return ModalActionMenu(
                                                       actions: [
                                                         ModalActionMenuButton(

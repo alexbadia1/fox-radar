@@ -9,20 +9,20 @@ abstract class FetchFullEventState extends Equatable {}
 class FetchFullEventInitial extends FetchFullEventState {
   @override
   List<Object> get props => [];
-} // FetchEventInitial
+}
 
 class FetchFullEventSuccess extends FetchFullEventState {
   final EventModel eventModel;
   late DateTime? end;
   late DateTime? start;
-  String endSubtitle;
-  String startSubtitle;
+  late String endSubtitle;
+  late String startSubtitle;
 
   FetchFullEventSuccess({required this.eventModel}) {
     end = this.eventModel.rawEndDateAndTime;
     start = this.eventModel.rawStartDateAndTime;
     this.formatEventDatesAndTimes();
-  } // FetchFullEventSuccess
+  }
 
   void formatEventDatesAndTimes() {
 
@@ -50,53 +50,39 @@ class FetchFullEventSuccess extends FetchFullEventState {
     if (startDiffInDays == 0) {
       if (startDiffInMinutes == 0) {
         startSubtitle = "Event Starts Now!";
-      } // if
-
-      else if (startDiffInMinutes < 60) {
+      } else if (startDiffInMinutes < 60) {
         startSubtitle = "Started $startDiffInMinutes minutes ago.";
-      } // if
-
-      else if (startDiffInHours <= 24) {
+      } else if (startDiffInHours <= 24) {
         startSubtitle = "Started $startDiffInHours hours ago.";
-      } // if
-
-      else {
+      } else {
         // This should never be reached
         startSubtitle = "Start $startDiffInHours hours ago.";
-      } // else
-    } // if
+      }
+    }
 
     // In the Future
     else if (startDiffInDays < 0) {
       if (startDiffInDays == -1) {
         // Starts tomorrow at [Insert Time]
         startSubtitle = "Starts tomorrow at $formattedStartTime";
-      } // if
-
-      else if (startDiffInDays > -7) {
+      } else if (startDiffInDays > -7) {
         // Starts in ${startDiffInDays} at [Time]
         startSubtitle = "Starts in $startDiffInDays at $formattedStartTime";
-      } // if
-
-      else if (startDiffInDays == -7) {
+      } else if (startDiffInDays == -7) {
         startSubtitle = "Starts next ${this.start!.weekday} at $formattedStartTime";
-      } // if
-
-      else {
+      } else {
         startSubtitle = "Starts $formattedStartDate at $formattedStartTime";
-      } // else
-    } // else if
+      }
+    }
 
     // In the Past
     else {
       if (startDiffInDays == 1) {
         startSubtitle = "Started yesterday at $formattedStartTime";
-      } // if
-
-      else {
+      } else {
         startSubtitle = "Started since $formattedStartDate at $formattedStartTime";
-      } // if
-    } // else
+      }
+    }
 
     if (this.end != null) {
 
@@ -112,77 +98,63 @@ class FetchFullEventSuccess extends FetchFullEventState {
       if (endDiffInDays == 0) {
         if (endDiffInMinutes == 0) {
           endSubtitle = "Event is about to end now!";
-        } // if
-
-        else if (endDiffInMinutes > -60) {
+        } else if (endDiffInMinutes > -60) {
           endSubtitle = "Ends in $endDiffInMinutes minutes.";
-        } // if
-
-        else if (endDiffInHours >= -24) {
+        } else if (endDiffInHours >= -24) {
           endSubtitle = "Ends in $startDiffInHours hours.";
-        } // if
-
-        else {
+        } else {
           // This should never be reached
           endSubtitle = "Ends $formattedEndDate at $formattedEndTime";
-        } // else
-      } // if
+        }
+      }
 
       // In the Future
       else if (endDiffInDays < 0) {
         if (endDiffInDays == -1) {
           endSubtitle = "Ends tomorrow at $formattedEndTime";
-        } // if
-
-        else if (endDiffInDays > -7) {
+        } else if (endDiffInDays > -7) {
           endSubtitle = "Ends in $startDiffInDays days at $formattedEndTime";
-        } // if
-
-        else if (endDiffInDays == -7) {
+        } else if (endDiffInDays == -7) {
           endSubtitle = "Ends next ${this.start!.weekday} at $formattedEndTime";
-        } // if
-
-        else {
+        } else {
           endSubtitle = "Ends $formattedEndDate at $formattedEndTime";
-        } // else
-      } // else if
+        }
+      }
 
       // In the Past
       else {
         if (endDiffInDays == 1) {
           // Started yesterday since [Insert Time]
           endSubtitle = "Ended yesterday at $formattedEndTime";
-        } // if
-
-        else {
+        } else {
           // Started since [Date] at [Time]
           endSubtitle = "Ended $formattedEndDate at $formattedEndTime";
-        } // if
-      } // else
-    }// else 
+        }
+      }
+    }
     
     else {
       endSubtitle = "";
-    } // else
-  } // _formatEventDatesAndTimes
+    }
+  }
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         eventModel,
         end,
         start,
         endSubtitle,
         startSubtitle,
       ];
-} // FetchEventSuccess
+}
 
 class FetchFullEventFailure extends FetchFullEventState {
   final String msg;
 
   FetchFullEventFailure(this.msg) {
     print("[Fetch Full Event Failure]: ${this.msg}");
-  }// FetchFullEventFailure
+  }
   
   @override
-  List<Object> get props => [this.msg];
-}// FetchEventFailure
+  List<Object?> get props => [this.msg];
+}

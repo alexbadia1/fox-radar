@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 @immutable
-abstract class AppPageViewState {}// AppPageViewState
+abstract class AppPageViewState {}
 
 class AppPageViewStatePosition extends AppPageViewState {
   final int index;
 
   AppPageViewStatePosition(this.index);
-}// AppPageViewPosition
+}

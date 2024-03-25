@@ -11,12 +11,12 @@ class CategoryPageCubit extends Cubit<CategoryPageState> {
     if (_category != newCategory) {
       _category = newCategory;
       emit(CategoryPageCategory(category: newCategory));
-    }// if
-  }// setCategory
+    }
+  }
 
 @override
   void onChange(Change<CategoryPageState> change) {
     print('Category Cubit: $change');
     super.onChange(change);
   }
-}// CategoryTitleCubit
+}
