@@ -9,7 +9,7 @@ class DropdownEventsFilter extends StatefulWidget {
 
 class _DropdownEventsFilterState extends State<DropdownEventsFilter> {
   final filters = [SORT_KEY_START_DATE_TIME, SORT_KEY_ALPHABETICAL];
-  String dropdownValue;
+  late String dropdownValue;
 
   @override
   void initState() {
@@ -34,8 +34,8 @@ class _DropdownEventsFilterState extends State<DropdownEventsFilter> {
             return Text(value, style: TextStyle(fontSize: 14.0, color: cWhite100));
           }).toList();
         },
-        onChanged: (String sortKey) {
-          BlocProvider.of<PinnedEventsBloc>(context).add(PinnedEventsEventSort(sortKey));
+        onChanged: (String? sortKey) {
+          BlocProvider.of<PinnedEventsBloc>(context).add(PinnedEventsEventSort(sortKey!));
           setState(() {
             this.dropdownValue = sortKey;
           });

@@ -5,27 +5,27 @@ import 'package:authentication_repository/authentication_repository.dart';
 
 abstract class AuthenticationState extends Equatable {
   @override
-  List<Object> get props => [];
-}// AuthenticationState
+  List<Object?> get props => [];
+}
 
-/// Authenticated
+// Authenticated
 class AuthenticationStateAuthenticated extends AuthenticationState {
-  final UserModel user;
-  final Uint8List imageBytes;
+  final UserModel? user;
+  final Uint8List? imageBytes;
   AuthenticationStateAuthenticated(this.user, [this.imageBytes]);
 
   @override
-  List<Object> get props => [user];
-}// AuthenticationStateAuthenticated
+  List<Object?> get props => [user];
+}
 
 /// Unauthenticated
 class AuthenticationStateUnauthenticated extends AuthenticationState {
   @override
-  List<Object> get props => [];
-}// AuthenticationStateUnauthenticated
+  List<Object?> get props => [];
+}
 
 /// Authenticating
 class AuthenticationStateAuthenticating extends AuthenticationState {
   @override
-  List<Object> get props => [];
-}// AuthenticationStateAuthenticating
+  List<Object?> get props => [];
+}

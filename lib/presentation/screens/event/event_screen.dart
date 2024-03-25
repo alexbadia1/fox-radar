@@ -6,8 +6,8 @@ import 'package:database_repository/database_repository.dart';
 import 'package:fox_radar/presentation/presentation.dart';
 
 class EventScreen extends StatelessWidget {
-  final String eventId;
-  final Uint8List imageBytes;
+  final String? eventId;
+  final Uint8List? imageBytes;
   EventScreen({this.eventId, this.imageBytes});
 
   @override
@@ -41,7 +41,7 @@ class EventScreen extends StatelessWidget {
                     backgroundColor: Colors.black,
                     automaticallyImplyLeading: false,
                     flexibleSpace: EventSliverAppBarFlexibleSpace(
-                        imageBytes: this.imageBytes),
+                        imageBytes: this.imageBytes!),
                     expandedHeight: (9 * _screenWidth) / 16,
                   ),
                   SliverToBoxAdapter(
@@ -55,7 +55,7 @@ class EventScreen extends StatelessWidget {
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
-                              HeaderLevelOne(text: _event.title),
+                              HeaderLevelOne(text: _event.title!),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
@@ -63,7 +63,7 @@ class EventScreen extends StatelessWidget {
                                     /// Host
                                     ///
                                     /// Only show [Icons.person] followed by host name if it was included
-                                    _event.host.replaceAll(" ", "").isNotEmpty
+                                    _event.host!.replaceAll(" ", "").isNotEmpty
                                         ? Subtitle(
                                             icon: Icons.person,
                                             text: _event.host)
@@ -73,16 +73,16 @@ class EventScreen extends StatelessWidget {
                                     ///
                                     /// Only show [Icons.location_on] followed by location if it was included
                                     _event.location
-                                            .replaceAll(" ", "")
+                                            !.replaceAll(" ", "")
                                             .isNotEmpty
                                         ? Subtitle(
                                             icon: Icons.location_on,
                                             text: _event.room
-                                                    .replaceAll(" ", "")
+                                                    !.replaceAll(" ", "")
                                                     .isNotEmpty
                                                 ? '${_event.location} ${_event.room}'
                                                     .trim()
-                                                : _event.location.trim(),
+                                                : _event.location!.trim(),
                                           )
                                         : SizedBox(),
 
@@ -113,13 +113,13 @@ class EventScreen extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              _event.highlights.isNotEmpty ? HeaderLevelTwo(text: 'Highlights') : SizedBox(),
-                              _event.highlights.isNotEmpty ? HighlightsList(highlights: _event.highlights) : SizedBox(),
+                              _event.highlights!.isNotEmpty ? HeaderLevelTwo(text: 'Highlights') : SizedBox(),
+                              _event.highlights!.isNotEmpty ? HighlightsList(highlights: _event.highlights!) : SizedBox(),
 
                               /// Summary Section
-                              _event.description.replaceAll(" ", "").isNotEmpty ? HeaderLevelTwo(text: 'Summary') : SizedBox(),
+                              _event.description!.replaceAll(" ", "").isNotEmpty ? HeaderLevelTwo(text: 'Summary') : SizedBox(),
 
-                              _event.description.replaceAll(" ", "").isNotEmpty ? Padding(
+                              _event.description!.replaceAll(" ", "").isNotEmpty ? Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Row(
                                   children: <Widget>[
@@ -130,7 +130,7 @@ class EventScreen extends StatelessWidget {
                                     Expanded(
                                       flex: 9,
                                       child: Text(
-                                        _event.description,
+                                        _event.description!,
                                         style: TextStyle(
                                           color: cWhite70,
                                           fontSize: 12.0,

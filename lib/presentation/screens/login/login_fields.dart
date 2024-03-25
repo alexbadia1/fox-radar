@@ -5,10 +5,10 @@ import 'package:fox_radar/presentation/presentation.dart';
 
 class EmailTextFormField extends StatelessWidget {
   const EmailTextFormField({
-    Key key,
-    @required GlobalKey<FormState> loginFormKeyEmail,
-    @required this.emailFocusNode,
-    @required this.emailTextEditingController,
+    Key? key,
+    required GlobalKey<FormState> loginFormKeyEmail,
+    required this.emailFocusNode,
+    required this.emailTextEditingController,
   })  : _loginFormKeyEmail = loginFormKeyEmail,
         super(key: key);
 
@@ -25,9 +25,9 @@ class EmailTextFormField extends StatelessWidget {
         controller: emailTextEditingController,
         textInputAction: TextInputAction.done,
         decoration: customTextField.copyWith(labelText: 'Marist Email'),
-        validator: (String email) {
+        validator: (String? email) {
           // Missing password
-          if (!MARIST_EMAIL_REGEX.hasMatch(email)) {
+          if (!MARIST_EMAIL_REGEX.hasMatch(email!)) {
             return '\u26A0 Enter a MARIST email.';
           } // if
 
@@ -40,10 +40,10 @@ class EmailTextFormField extends StatelessWidget {
 
 class PasswordTextFormField extends StatelessWidget {
   const PasswordTextFormField({
-    Key key,
-    @required GlobalKey<FormState> loginFormKeyPassword,
-    @required this.passwordFocusNode,
-    @required this.passwordTextEditingController,
+    Key? key,
+    required GlobalKey<FormState> loginFormKeyPassword,
+    required this.passwordFocusNode,
+    required this.passwordTextEditingController,
   }) : _loginFormKeyPassword = loginFormKeyPassword, super(key: key);
 
   final GlobalKey<FormState> _loginFormKeyPassword;
@@ -75,13 +75,13 @@ class PasswordTextFormField extends StatelessWidget {
                   },
                 ),
               ),
-              validator: (String password) {
+              validator: (String? password) {
                 // Missing password
-                if (password.isEmpty) {
+                if (password!.isEmpty) {
                   return '\u26A0 Enter a password.';
                 } // if
                 // No Spaces
-                if (password.contains(' ')) {
+                if (password!.contains(' ')) {
                   return '\u26A0 Password cannot contain spaces.';
                 } // if
                 return null;

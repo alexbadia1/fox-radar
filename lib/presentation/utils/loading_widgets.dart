@@ -4,8 +4,8 @@ import 'package:loading_fixed/indicators/indicators.dart';
 import 'package:fox_radar/presentation/presentation.dart';
 
 class LoadingWidget extends StatelessWidget {
-  final double size;
-  final Color color;
+  final double? size;
+  final Color? color;
   LoadingWidget({this.size, this.color});
   @override
   Widget build(BuildContext context) {

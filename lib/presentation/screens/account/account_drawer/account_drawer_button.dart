@@ -8,7 +8,7 @@ typedef OpenDrawerCallback = void Function();
 
 class AccountDrawerButton extends StatelessWidget {
   final OpenDrawerCallback openDrawerCallback;
-  const AccountDrawerButton({Key key, @required this.openDrawerCallback}) : super(key: key);
+  const AccountDrawerButton({Key? key, required this.openDrawerCallback}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

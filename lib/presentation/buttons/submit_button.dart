@@ -9,7 +9,7 @@ class CreateEventFormSubmitButton extends StatelessWidget {
   final OnSubmit onSubmit;
 
   const CreateEventFormSubmitButton(
-      {Key key, @required this.onSubmit, @required this.text})
+      {Key? key, required this.onSubmit, required this.text})
       : assert(text != null),
         super(key: key);
 

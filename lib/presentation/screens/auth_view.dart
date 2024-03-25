@@ -5,7 +5,7 @@ import 'package:fox_radar/presentation/presentation.dart';
 class AuthView extends StatefulWidget {
   final RouteGeneratorAuthentication routeGeneratorAuthentication;
 
-  AuthView({@required this.routeGeneratorAuthentication, Key key}) : super(key: key);
+  AuthView({required this.routeGeneratorAuthentication, Key? key}) : super(key: key);
   @override
   _AuthViewState createState() => _AuthViewState();
 }// AuthView

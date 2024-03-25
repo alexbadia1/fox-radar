@@ -26,7 +26,7 @@ class DatabaseRepository {
   /// For pagination, continues query starting after the [lastEvent]
   /// and returns a number documents no bigger thant the [limit].
   Future<List<QueryDocumentSnapshot>> searchEventsByCategory(
-      {required String category, required QueryDocumentSnapshot lastEvent, required int limit}) async {
+      {required String category, required QueryDocumentSnapshot? lastEvent, required int limit}) async {
     QuerySnapshot querySnap;
 
     if (lastEvent != null) {
@@ -35,14 +35,14 @@ class DatabaseRepository {
           .startAfterDocument(lastEvent)
           .limit(limit)
           .get();
-    } // if
+    }
 
     else {
       querySnap = await _searchEventsCollection.where(ATTRIBUTE_CATEGORY, isEqualTo: category).limit(limit).get();
-    } // else
+    }
 
     return querySnap.docs;
-  } // searchEventsByCategory
+  }
 
   /// Retrieves events from the "Search Events Collection"
   /// by [rawStartDateAndTime] and returns a [QueryDocumentSnapshot]
@@ -50,7 +50,7 @@ class DatabaseRepository {
   ///
   /// For pagination, continues query starting after the [lastEvent]
   /// and returns a number documents no bigger thant the [limit].
-  Future<List<QueryDocumentSnapshot>> searchEventsByStartDateAndTime({required QueryDocumentSnapshot lastEvent, required int limit}) async {
+  Future<List<QueryDocumentSnapshot>> searchEventsByStartDateAndTime({required QueryDocumentSnapshot? lastEvent, required int limit}) async {
     QuerySnapshot querySnap;
 
     if (lastEvent != null) {

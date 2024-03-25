@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 
-Future<void> loadImage({ImageProvider imageProvider, double devicePixelRatio}) {
+Future<void> loadImage({ImageProvider? imageProvider, double? devicePixelRatio}) {
   final config = ImageConfiguration(
     bundle: rootBundle,
     devicePixelRatio: devicePixelRatio,
@@ -11,17 +11,17 @@ Future<void> loadImage({ImageProvider imageProvider, double devicePixelRatio}) {
   );
 
   final Completer<void> completer = Completer();
-  final ImageStream stream = imageProvider.resolve(config);
+  final ImageStream stream = imageProvider!.resolve(config);
 
-  ImageStreamListener listener;
+  ImageStreamListener? listener;
 
   listener = ImageStreamListener((ImageInfo image, bool sync) {
     debugPrint("Image ${image.debugLabel} finished loading");
     completer.complete();
-    stream.removeListener(listener);
+    stream.removeListener(listener!);
   }, onError: (exception, stackTrace) {
     completer.complete();
-    stream.removeListener(listener);
+    stream.removeListener(listener!);
     FlutterError.reportError(
       FlutterErrorDetails(
         context: ErrorDescription('Image failed to load'),

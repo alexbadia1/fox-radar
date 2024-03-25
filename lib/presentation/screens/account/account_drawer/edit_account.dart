@@ -7,44 +7,52 @@ import 'package:fox_radar/logic/logic.dart';
 import 'package:fox_radar/presentation/presentation.dart';
 
 class EditAccountScreen extends StatefulWidget {
-  final Uint8List imageBytes;
-  const EditAccountScreen({Key key, this.imageBytes}) : super(key: key);
+  final Uint8List? imageBytes;
+  const EditAccountScreen({Key? key, this.imageBytes}) : super(key: key);
 
   @override
   _EditAccountScreenState createState() => _EditAccountScreenState();
-}// EditAccountScreen
+}
 
 class _EditAccountScreenState extends State<EditAccountScreen> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  Completer<bool> _profileUpdateCompleter = new Completer();
-  ImagePicker _picker;
+  late final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  late Completer<bool> _profileUpdateCompleter = new Completer();
+  late ImagePicker? _picker;
 
   Future getImageFromDeviceGallery(BuildContext context) async {
     try {
       Navigator.of(context).pop();
-      XFile image = await this._picker.pickImage(source: ImageSource.gallery, maxWidth: 1080, maxHeight: 1350);
+      XFile? image = await this._picker?.pickImage(
+          source: ImageSource.gallery,
+          maxWidth: 1080,
+          maxHeight: 1350
+      );
 
       if (image != null) {
         final bytes = await image.readAsBytes();
         BlocProvider.of<UpdateProfileBloc>(context).add(UpdateProfileEventSetImage(bytes));
         this._profileUpdateCompleter = new Completer();
         _showSnackBar(context, bytes);
-      } // if
-    } // try
-    catch (e) {} // catch
-  }// getImageFromDeviceGallery
+      }
+    }
+    catch (e) {}
+  }
 
   Future getImageFromCamera(BuildContext context) async {
     try {
       Navigator.of(context).pop();
-      XFile image = await this._picker.pickImage(source: ImageSource.camera, maxWidth: 1080, maxHeight: 1350);
+      XFile? image = await this._picker?.pickImage(
+          source: ImageSource.camera,
+          maxWidth: 1080,
+          maxHeight: 1350
+      );
       if (image != null) {
         final bytes = await image.readAsBytes();
         BlocProvider.of<UpdateProfileBloc>(context).add(UpdateProfileEventSetImage(bytes));
         this._profileUpdateCompleter = new Completer();
         _showSnackBar(context, bytes);
-      }// if
-    }// try
+      }
+    }
 
     /// Error opening the camera
     catch (platformException) {
@@ -64,8 +72,8 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
           ],
         ),
       );
-    }// catch
-  }// getImageFromCamera
+    }
+  }
 
   /// Can't call showSnackbar in a Build() widget, so must use a completer instead
   Future<void> _showSnackBar(BuildContext context, Uint8List retryImageBytes) async {
@@ -86,7 +94,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
           ),
         ),
       );
-    }// if
+    }
 
     else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -94,14 +102,14 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
           content: Text("Profile image successfully updated!"),
         ),
       );
-    }// else
-  }// _showSnackBar
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     this._picker = new ImagePicker();
-  } // initState
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,32 +141,32 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 
                         if (_updateProfileState is UpdateProfileStateUpdating) {
                           return CustomCircularProgressIndicator();
-                        } // if
+                        }
 
                         /// Profile Successfully uploaded
                         if (_updateProfileState is UpdateProfileStateSuccess) {
                           this._profileUpdateCompleter.complete(true);
-                        } // if
+                        }
 
                         if (_updateProfileState is UpdateProfileStateFailed) {
                           this._profileUpdateCompleter.complete(false);
-                        } // if
+                        }
 
                         /// Try to show profile image
                         if (_updateProfileState.imageBytes != null) {
                           return Image.memory(_updateProfileState.imageBytes, fit: BoxFit.cover);
-                        } // if
+                        }
 
                         /// Show initials, if no profile image
                         else {
                           final String firstInitial = _auth.user.firstName[0]?.toUpperCase() ?? '';
                           final String lastInitial = _auth.user.lastName[0]?.toUpperCase() ?? '';
                           return Text('$firstInitial$lastInitial');
-                        } // else
+                        }
                       },
                     ),
                   );
-                } // if
+                }
                 return Icon(Icons.account_circle_outlined, color: kHavenLightGray);
               },
             ),
@@ -170,18 +178,17 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
               onPressed: () {
                 final _updateProfileState = BlocProvider.of<UpdateProfileBloc>(context).state;
 
-                /// Profile picture already being uploaded
                 if (_updateProfileState is UpdateProfileStateUpdating) {
-                  return ScaffoldMessenger.of(context).showSnackBar(
+                  // Profile picture already being uploaded
+                  ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text("A Profile picture is already uploading!"),
                     ),
                   );
-                } // if
-
-                /// Update profile picture
+                }
                 else {
-                  return showModalBottomSheet(
+                  // Update profile picture
+                  showModalBottomSheet(
                       context: context,
                       builder: (chooseImageContext) {
                         return MultiBlocProvider(
@@ -206,7 +213,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                           ),
                         );
                       });
-                } // else
+                }
               },
             ),
             Builder(builder: (userTypeContext) {
@@ -220,7 +227,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                     style: TextStyle(color: cWhite70, fontSize: 14.0),
                   ),
                 );
-              } // if
+              }
 
               return Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -240,7 +247,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                   maxLines: 2,
                   style: TextStyle(color: cWhite70, fontSize: 14.0),
                 );
-              } // if
+              }
 
               return Text(
                 'email: example.com@marist.edu',
@@ -252,4 +259,4 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
       ),
     );
   }
-} // EditAccountScreen
+}

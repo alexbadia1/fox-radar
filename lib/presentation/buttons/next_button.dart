@@ -7,7 +7,7 @@ typedef OnTapCallbackCutsomNextButton = void Function();
 class CustomNextButton extends StatelessWidget {
   final OnTapCallbackCutsomNextButton onClose;
 
-  const CustomNextButton({Key key, @required this.onClose}) : super(key: key);
+  const CustomNextButton({Key? key, required this.onClose}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -7,7 +7,7 @@ class CustomCloseButton extends StatelessWidget {
 
   final OnTapCallback onClose;
 
-  const CustomCloseButton({Key key, @required this.onClose}) : super(key: key);
+  const CustomCloseButton({Key? key, required this.onClose}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

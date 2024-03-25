@@ -22,12 +22,12 @@ class ModalActionMenuButton extends StatelessWidget {
   final smallGutterFexFactor;
 
   /// Action performed when the button is pressed
-  final Function onPressed;
+  final Function? onPressed;
 
   const ModalActionMenuButton(
-      {Key key,
-        @required this.icon,
-        @required this.description,
+      {Key? key,
+        required this.icon,
+        required this.description,
         this.onPressed,
         this.color = cWhite70,
         this.iconFlexFactor = 2,
@@ -60,7 +60,11 @@ class ModalActionMenuButton extends StatelessWidget {
           Expanded(flex: this.smallGutterFexFactor, child: SizedBox()),
         ],
       ),
-      onPressed: onPressed,
+      onPressed: () {
+        if (onPressed != null) {
+          onPressed!();
+        }
+      },
       onLongPress: () {}, // Let user cancel choice on long press
     );
   } // build

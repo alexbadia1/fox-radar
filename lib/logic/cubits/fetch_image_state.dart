@@ -17,7 +17,7 @@ class FetchImageInitial extends FetchImageState {
 class FetchImageSuccess extends FetchImageState {
   Uint8List imageBytes;
 
-  FetchImageSuccess({@required this.imageBytes});
+  FetchImageSuccess({required this.imageBytes});
 
   @override
   List<Object> get props => [imageBytes];

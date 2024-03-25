@@ -12,9 +12,9 @@ class TimePicker extends StatelessWidget {
   final OnDateTimeChangedCallback onDateTimeChangedCallback;
 
   const TimePicker({
-    Key key,
-    @required this.initialDateTime,
-    @required this.onDateTimeChangedCallback,
+    Key? key,
+    required this.initialDateTime,
+    required this.onDateTimeChangedCallback,
   }) : super(key: key);
 
   @override

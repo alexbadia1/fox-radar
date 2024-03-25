@@ -1,20 +1,19 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:database_repository/database_repository.dart';
 
 abstract class AccountEventsState {
   const AccountEventsState();
-} // AccountEventsState
+}
 
-class AccountEventsStateFetching extends AccountEventsState {} // AccountEventsStateFetching
+class AccountEventsStateFetching extends AccountEventsState {}
 
 class AccountEventsStateFailed extends AccountEventsState {
   final String msg;
 
   AccountEventsStateFailed(this.msg);
-} // AccountEventsStateFailed
+}
 
-class AccountEventsStateReloadFailed extends AccountEventsState {} // AccountEventsStateReloadFailed
+class AccountEventsStateReloadFailed extends AccountEventsState {}
 
 class AccountEventsStateSuccess extends AccountEventsState {
   final List<SearchResultModel> eventModels;
@@ -24,16 +23,16 @@ class AccountEventsStateSuccess extends AccountEventsState {
   bool isDeleting = false;
 
   AccountEventsStateSuccess(
-      {@required this.eventModels,
-      @required this.lastEvent,
-      @required this.maxEvents,
-      @required this.isFetching,
+      {required this.eventModels,
+      required this.lastEvent,
+      required this.maxEvents,
+      required this.isFetching,
       isDeleting});
 
   set deleting(bool newIsDeleting) {
     this.isDeleting = newIsDeleting;
     if (isFetching) {
       this.isDeleting = false;
-    } // if
-  } // isDeleting
-} // AccountEventsStateSuccess
+    }
+  }
+}

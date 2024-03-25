@@ -4,7 +4,7 @@ import 'package:database_repository/database_repository.dart';
 
 abstract class PinnedEventsState {
   const PinnedEventsState();
-} // AccountEventsState
+}
 
 class PinnedEventsStateFetching extends PinnedEventsState {} // PinnedEventsStateFetching
 
@@ -14,7 +14,7 @@ class PinnedEventsStateFailed extends PinnedEventsState {
   PinnedEventsStateFailed(this.msg){
     print(this.msg);
   }
-} // PinnedEventsStateFailed
+}
 
 class PinnedEventsStateReloadFailed extends PinnedEventsState {} // PinnedEventsStateReloadFailed
 
@@ -25,8 +25,8 @@ class PinnedEventsStateSuccess extends PinnedEventsState {
   final bool isFetching;
 
   PinnedEventsStateSuccess(
-      {@required this.eventModels,
-        @required this.lastEvent,
-        @required this.maxEvents,
-        @required this.isFetching});
-} // PinnedEventsStateSuccess
+      {required this.eventModels,
+        required this.lastEvent,
+        required this.maxEvents,
+        required this.isFetching});
+}

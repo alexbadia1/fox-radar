@@ -9,15 +9,15 @@ typedef OnEditCallback = Function(EventModel);
 class AccountModalBottomSheet extends StatelessWidget {
   /// The position the event in the list
   /// view the opened this modal bottom sheet.
-  final int listViewIndex;
+  final int? listViewIndex;
 
   /// The search result that the user
   /// clicked on the "More Vert Bar" icon.
   final SearchResultModel searchResultModel;
 
-  final OnEditCallback onEdit;
+  final OnEditCallback? onEdit;
 
-  const AccountModalBottomSheet({Key key, @required this.searchResultModel, this.listViewIndex, this.onEdit})
+  const AccountModalBottomSheet({Key? key, required this.searchResultModel, this.listViewIndex, this.onEdit})
       : assert(searchResultModel != null),
         super(key: key);
 
@@ -32,7 +32,9 @@ class AccountModalBottomSheet extends StatelessWidget {
             onPressed: () {
               final state = BlocProvider.of<FetchFullEventCubit>(pContext).state;
               if (state is FetchFullEventSuccess) {
-                this.onEdit(state.eventModel);
+                if (this.onEdit != null) {
+                  this.onEdit!(state.eventModel);
+                }
               } // if
             }),
         ModalActionMenuButton(
@@ -62,13 +64,13 @@ class AccountModalBottomSheet extends StatelessWidget {
 class ConfirmDelete extends StatelessWidget {
   /// The position the event in the list
   /// view the opened this modal bottom sheet.
-  final int listViewIndex;
+  final int? listViewIndex;
 
   /// The search result that the user
   /// clicked on the "More Vert Bar" icon.
-  final SearchResultModel searchResultModel;
+  final SearchResultModel? searchResultModel;
 
-  const ConfirmDelete({Key key, @required this.searchResultModel, @required this.listViewIndex})
+  const ConfirmDelete({Key? key, @required this.searchResultModel, @required this.listViewIndex})
       : assert(searchResultModel != null),
         assert(listViewIndex != null),
         super(key: key);

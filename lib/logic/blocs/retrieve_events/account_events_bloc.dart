@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'account_events_state.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:flutter/material.dart';
 import 'package:fox_radar/logic/logic.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:database_repository/database_repository.dart';
@@ -9,28 +8,26 @@ import 'package:database_repository/database_repository.dart';
 class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
   /// Used to retrieve a firebase document containing
   /// all of the event document id's, belonging to this user.
-  final String accountID;
+  late final String accountID;
 
   /// Database instance used to communicate with (in
   /// this case) Firebase Firestore and Firebase Storage.
-  final DatabaseRepository db;
+  late final DatabaseRepository db;
 
   /// Sets the limit on the max number of events retrieved in a query.
   final int _paginationLimit = PAGINATION_LIMIT;
 
   /// List containing all of the event document id's belonging to this user.
-  PaginationEventsHandler _accountEventsHandler;
+  late PaginationEventsHandler _accountEventsHandler;
 
-  AccountEventsBloc({@required this.db, @required this.accountID})
-      : assert(db != null),
-        assert(accountID != null),
-        super(AccountEventsStateFetching());
+  AccountEventsBloc({required this.db, required this.accountID})
+      : super(AccountEventsStateFetching());
 
   // Adds a debounce, to prevent the spamming of requesting events
   @override
-  Stream<Transition<AccountEventsEvent, AccountEventsState>> transformEvents(Stream<AccountEventsEvent> events, transitionFn) {
-    return super.transformEvents(events.debounceTime(const Duration(milliseconds: 0)), transitionFn);
-  } // transformEvents
+  Stream<Transition<AccountEventsEvent, AccountEventsState>> transform(Stream<AccountEventsEvent> events, transitionFn) {
+    return events.debounceTime(const Duration(milliseconds: 0)).switchMap(transitionFn);
+  }
 
   @override
   Stream<AccountEventsState> mapEventToState(
@@ -83,7 +80,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
         /// Fetch the first [paginationLimit] number of events
         final List<DocumentSnapshot> _docs = [];
         for (int i = 0; i < _eventIdsToFetch.length; ++i) {
-          final DocumentSnapshot docSnap = await this.db.getSearchEventById(eventId: _eventIdsToFetch[i]);
+          final DocumentSnapshot? docSnap = await this.db.getSearchEventById(eventId: _eventIdsToFetch[i]);
           if (docSnap != null) {
             _docs.add(docSnap);
           } // if
@@ -134,7 +131,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
         /// Fetch the next [paginationLimit] number of events
         final List<DocumentSnapshot> _docs = [];
         for (int i = 0; i < _eventIdsToFetch.length; ++i) {
-          final DocumentSnapshot docSnap = await this.db.getSearchEventById(eventId: _eventIdsToFetch[i]);
+          final DocumentSnapshot? docSnap = await this.db.getSearchEventById(eventId: _eventIdsToFetch[i]);
           if (docSnap != null) {
             _docs.add(docSnap);
           } // if
@@ -215,7 +212,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
       /// Fetch the first [paginationLimit] number of events
       final List<DocumentSnapshot> _docs = [];
       for (int i = 0; i < _eventIdsToFetch.length; ++i) {
-        final DocumentSnapshot docSnap = await this.db.getSearchEventById(eventId: _eventIdsToFetch[i]);
+        final DocumentSnapshot? docSnap = await this.db.getSearchEventById(eventId: _eventIdsToFetch[i]);
         if (docSnap != null) {
           _docs.add(docSnap);
         } // if
@@ -251,7 +248,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
     } // catch
   } // _mapAccountEventsEventReloadToState
 
-  Stream<AccountEventsState> _mapAccountEventsEventRemoveToState({@required AccountEventsEventRemove accountEventsEventRemove}) async* {
+  Stream<AccountEventsState> _mapAccountEventsEventRemoveToState({required AccountEventsEventRemove accountEventsEventRemove}) async* {
     final currentState = this.state;
 
     if (currentState is AccountEventsStateSuccess) {
@@ -281,7 +278,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
         } // if
 
         // Delete event from firebase cloud
-        await this.db.deleteEvent(accountEventsEventRemove.searchResultModel.eventId, this.accountID);
+        await this.db.deleteEvent(accountEventsEventRemove.searchResultModel.eventId!, this.accountID);
 
         // Remove image from storage
         //
@@ -310,11 +307,11 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
   } // _mapAccountEventsEventRemoveToState
 
   Future<void> _getListOfAccountEvents() async {
-    final DocumentSnapshot docSnap = await this.db.getAccountCreatedEvents(uid: this.accountID);
+    final DocumentSnapshot? docSnap = await this.db.getAccountCreatedEvents(uid: this.accountID);
 
     final List<String> eventIds = [];
     try {
-      final Map m = docSnap.data() as Map;
+      final Map m = docSnap!.data() as Map;
       m.forEach((attribute, boolVal) {
         if (attribute is String) {
           eventIds.add(attribute);
@@ -331,13 +328,13 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
   /// Name: _mapDocumentSnapshotsToSearchEventModels
   ///
   /// Description: maps the document snapshot from firebase to the event model
-  List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels({@required List<DocumentSnapshot> docs}) {
+  List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels({required List<DocumentSnapshot?> docs}) {
     return docs.map((doc) {
-      Map<String, dynamic> docAsMap = doc.data();
+      Map<String, dynamic>? docAsMap = doc?.data() as Map<String, dynamic>?;
 
       // Convert the firebase timestamp to a DateTime
-      DateTime tempRawStartDateAndTimeToDateTime;
-      Timestamp _startTimestamp = docAsMap[ATTRIBUTE_RAW_START_DATE_TIME];
+      DateTime? tempRawStartDateAndTimeToDateTime;
+      Timestamp _startTimestamp = docAsMap?[ATTRIBUTE_RAW_START_DATE_TIME];
       if (_startTimestamp != null) {
         tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(_startTimestamp.millisecondsSinceEpoch).toUtc().toLocal();
       } // if
@@ -347,26 +344,26 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
 
       return SearchResultModel(
         // Title converted to [STRING] from [STRING] in Firebase.
-        newTitle: docAsMap[ATTRIBUTE_TITLE] ?? '',
+        newTitle: docAsMap?[ATTRIBUTE_TITLE] ?? '',
 
         // Host converted to [STRING] from [STRING] in Firebase.
-        newHost: docAsMap[ATTRIBUTE_HOST] ?? '',
+        newHost: docAsMap?[ATTRIBUTE_HOST] ?? '',
 
         // Location Converted to [] from [] in Firebase.
-        newLocation: docAsMap[ATTRIBUTE_LOCATION] ?? '',
+        newLocation: docAsMap?[ATTRIBUTE_LOCATION] ?? '',
 
         // RawStartDate converted to [DATETIME] from [TIMESTAMP] in Firebase.
         newRawStartDateAndTime: tempRawStartDateAndTimeToDateTime ?? null,
 
         // Category converted to [STRING] from [STRING] in Firebase.
-        newCategory: docAsMap[ATTRIBUTE_CATEGORY] ?? '',
+        newCategory: docAsMap?[ATTRIBUTE_CATEGORY] ?? '',
 
         // Implement Firebase Images.
-        newImageFitCover: docAsMap[ATTRIBUTE_IMAGE_FIT_COVER] ?? true,
+        newImageFitCover: docAsMap?[ATTRIBUTE_IMAGE_FIT_COVER] ?? true,
 
         // Doc ID is the same as the event ID
-        newEventId: doc.id ?? '',
+        newEventId: doc?.id ?? '',
       );
     }).toList();
-  } // _mapDocumentSnapshotsToSearchEventModels
-} // AccountEventsBloc
+  }
+}

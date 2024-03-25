@@ -6,5 +6,5 @@ abstract class DeviceImagesEvent extends Equatable {
 
 class DeviceImagesEventFetch extends DeviceImagesEvent {
   @override
-  List<Object> get props => [];
-}// SuggestedEventsFetch
+  List<Object?> get props => [];
+}

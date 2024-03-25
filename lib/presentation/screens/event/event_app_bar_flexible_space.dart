@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class EventSliverAppBarFlexibleSpace extends StatelessWidget {
 
-  final Uint8List imageBytes;
+  final Uint8List? imageBytes;
 
   const EventSliverAppBarFlexibleSpace({this.imageBytes});
 
@@ -22,7 +22,7 @@ class EventSliverAppBarFlexibleSpace extends StatelessWidget {
 
     // Event has image
     if (imageBytes != null) {
-      return Image.memory(this.imageBytes, fit: BoxFit.cover);
+      return Image.memory(this.imageBytes!, fit: BoxFit.cover);
     }// if
 
     // Event doesn't have image

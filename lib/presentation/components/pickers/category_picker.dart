@@ -15,9 +15,9 @@ class CategoryPicker extends StatelessWidget {
   ///
   /// The argument passed 'index' [int] changes when the item closest to the center changes.
   /// NOTE: This callback is only triggered when scrolling settles, not during scrolls or ballistic flings.
-  final OnSelectedItemChangedCallback onSelectedItemChangedCallback;
+  final OnSelectedItemChangedCallback? onSelectedItemChangedCallback;
 
-  const CategoryPicker({Key key, @required this.onSelectedItemChangedCallback}) : super(key: key);
+  const CategoryPicker({Key? key, @required this.onSelectedItemChangedCallback}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -82,7 +82,9 @@ class CategoryPicker extends StatelessWidget {
             ),
           ],
           onSelectedItemChanged: (index) {
-            this.onSelectedItemChangedCallback(index);
+            if (this.onSelectedItemChangedCallback != null) {
+              this.onSelectedItemChangedCallback!(index);
+            }
           },
         ),
       ),

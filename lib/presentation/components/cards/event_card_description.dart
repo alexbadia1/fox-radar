@@ -3,13 +3,13 @@ import 'package:fox_radar/presentation/presentation.dart';
 
 class EventCardDescription extends StatelessWidget {
   const EventCardDescription({
-    Key key,
-    @required this.profilePicture,
-    @required this.title,
-    @required this.location,
-    @required this.startDate,
-    @required this.startTime,
-    @required this.trailingActions,
+    Key? key,
+    required this.profilePicture,
+    required this.title,
+    required this.location,
+    required this.startDate,
+    required this.startTime,
+    required this.trailingActions,
   }) : super(key: key);
 
   final Widget profilePicture;

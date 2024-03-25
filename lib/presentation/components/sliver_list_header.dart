@@ -3,13 +3,11 @@ import 'package:fox_radar/presentation/presentation.dart';
 
 class SliverListHeader extends StatelessWidget {
   final String text;
-  final IconData icon;
-  final Widget trailing;
-  final Function onPressed;
+  final IconData? icon;
+  final Widget? trailing;
+  final Function? onPressed;
 
-  const SliverListHeader({Key key, @required this.text, this.onPressed, this.icon, this.trailing})
-      : assert(text != null),
-        super(key: key);
+  const SliverListHeader({Key? key, required this.text, this.onPressed, this.icon, this.trailing}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +16,11 @@ class SliverListHeader extends StatelessWidget {
     if (this.onPressed != null) {
       return SliverToBoxAdapter(
         child: GestureDetector(
-          onTap: this.onPressed,
+          onTap: () {
+            if (this.onPressed != null) {
+              this.onPressed!();
+            }
+          },
           child: Container(
             height: screenHeight * .09,
             alignment: Alignment.centerLeft,

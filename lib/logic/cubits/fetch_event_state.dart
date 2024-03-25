@@ -13,13 +13,12 @@ class FetchFullEventInitial extends FetchFullEventState {
 
 class FetchFullEventSuccess extends FetchFullEventState {
   final EventModel eventModel;
-  DateTime end;
-  DateTime start;
+  late DateTime? end;
+  late DateTime? start;
   String endSubtitle;
   String startSubtitle;
 
-  FetchFullEventSuccess({@required this.eventModel})
-      : assert(eventModel != null) {
+  FetchFullEventSuccess({required this.eventModel}) {
     end = this.eventModel.rawEndDateAndTime;
     start = this.eventModel.rawStartDateAndTime;
     this.formatEventDatesAndTimes();
@@ -40,12 +39,12 @@ class FetchFullEventSuccess extends FetchFullEventState {
     // Format start times
 
     // Compare start time to now
-    final int startDiffInDays = myCurrent.difference(this.start).inDays;
-    final int startDiffInHours = myCurrent.difference(this.start).inHours;
-    final int startDiffInMinutes = myCurrent.difference(this.start).inMinutes;
+    final int startDiffInDays = myCurrent.difference(this.start!).inDays;
+    final int startDiffInHours = myCurrent.difference(this.start!).inHours;
+    final int startDiffInMinutes = myCurrent.difference(this.start!).inMinutes;
 
-    final formattedStartTime = DateFormat.jm().format(this.start);
-    final formattedStartDate = DateFormat('E, MMMM d, y').format(this.start);
+    final formattedStartTime = DateFormat.jm().format(this.start!);
+    final formattedStartDate = DateFormat('E, MMMM d, y').format(this.start!);
 
     // Event is today now
     if (startDiffInDays == 0) {
@@ -80,7 +79,7 @@ class FetchFullEventSuccess extends FetchFullEventState {
       } // if
 
       else if (startDiffInDays == -7) {
-        startSubtitle = "Starts next ${this.start.weekday} at $formattedStartTime";
+        startSubtitle = "Starts next ${this.start!.weekday} at $formattedStartTime";
       } // if
 
       else {
@@ -102,12 +101,12 @@ class FetchFullEventSuccess extends FetchFullEventState {
     if (this.end != null) {
 
       // Compare start time to now
-      final int endDiffInDays = myCurrent.difference(this.end).inDays;
-      final int endDiffInHours = myCurrent.difference(this.end).inHours;
-      final int endDiffInMinutes = myCurrent.difference(this.end).inMinutes;
+      final int endDiffInDays = myCurrent.difference(this.end!).inDays;
+      final int endDiffInHours = myCurrent.difference(this.end!).inHours;
+      final int endDiffInMinutes = myCurrent.difference(this.end!).inMinutes;
 
-      final formattedEndTime = DateFormat.jm().format(this.end);
-      final formattedEndDate = DateFormat('E, MMMM d, y').format(this.end);
+      final formattedEndTime = DateFormat.jm().format(this.end!);
+      final formattedEndDate = DateFormat('E, MMMM d, y').format(this.end!);
 
       // Event ends today
       if (endDiffInDays == 0) {
@@ -140,7 +139,7 @@ class FetchFullEventSuccess extends FetchFullEventState {
         } // if
 
         else if (endDiffInDays == -7) {
-          endSubtitle = "Ends next ${this.start.weekday} at $formattedEndTime";
+          endSubtitle = "Ends next ${this.start!.weekday} at $formattedEndTime";
         } // if
 
         else {

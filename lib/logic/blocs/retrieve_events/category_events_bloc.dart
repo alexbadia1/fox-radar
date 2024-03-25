@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:rxdart/rxdart.dart';
-import 'package:flutter/material.dart';
 import 'package:fox_radar/logic/logic.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:database_repository/database_repository.dart';
@@ -10,29 +9,23 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
   final DatabaseRepository db;
   final int paginationLimit = PAGINATION_LIMIT;
 
-  CategoryEventsBloc({@required this.db, @required this.category})
-      : assert(db != null),
-        assert(category != null),
-        super(CategoryEventsStateFetching());
+  CategoryEventsBloc({required this.db, required this.category})
+      : super(CategoryEventsStateFetching());
 
   @override
   Stream<CategoryEventsState> mapEventToState(CategoryEventsEvent categoryEventsEvent) async* {
-    /// Fetch some events
     if (categoryEventsEvent is CategoryEventsEventFetch) {
+      /// Fetch some events
       yield* _mapCategoryEventsEventFetchToState();
-    } // if
-
-    /// Reload the events list
-    else if (categoryEventsEvent is CategoryEventsEventReload) {
+    } else if (categoryEventsEvent is CategoryEventsEventReload) {
+      /// Reload the events list
       yield* _mapCategoryEventsEventReloadToState();
-    } // else if
-
-    /// The event added to the bloc has not associated state
-    /// either create one, or check all the available CategoryEvents
-    else {
+    } else {
+      /// The event added to the bloc has not associated state
+      /// either create one, or check all the available CategoryEvents
       yield CategoryEventsStateFailed();
-    } // else
-  } // mapEventToState
+    }
+  }
 
   Stream<CategoryEventsState> _mapCategoryEventsEventReloadToState() async* {
     /// Get the current state for later use...
@@ -46,7 +39,7 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
         lastEvent: _currentState.lastEvent,
         isFetching: true,
       );
-    } // if
+    }
 
     try {
       // User is fetching events from a failed state
@@ -56,7 +49,7 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
         //
         // Give the user a good feeling that events are actually being searched for.
         await Future.delayed(Duration(milliseconds: 100));
-      } // if
+      }
 
       // No posts were fetched yet
       final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(lastEvent: null, limit: paginationLimit);
@@ -67,11 +60,11 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
         yield CategoryEventsStateReloadFailed();
         yield CategoryEventsStateFailed();
         return;
-      } // if
+      }
 
       if (_eventModels.length != this.paginationLimit) {
         _maxEvents = true;
-      } // if
+      }
 
       yield CategoryEventsStateSuccess(
         eventModels: _eventModels,
@@ -79,11 +72,10 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
         lastEvent: _docs.last,
         isFetching: false,
       );
-    } // try
-    catch (e) {
+    } catch (e) {
       yield CategoryEventsStateFailed();
-    } // catch
-  } // _mapCategoryEventsEventReloadToState
+    }
+  }
 
   Stream<CategoryEventsState> _mapCategoryEventsEventFetchToState() async* {
     /// Get the current state for later use...
@@ -98,7 +90,7 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
 
         if (_eventModels.length != this.paginationLimit) {
           _maxEvents = true;
-        } // if
+        }
 
         yield CategoryEventsStateSuccess(
           eventModels: _eventModels,
@@ -106,7 +98,7 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
           lastEvent: _docs.last,
           isFetching: false,
         );
-      } // if
+      }
 
       /// Some posts were fetched already, now fetch 20 more
       else if (_currentState is CategoryEventsStateSuccess) {
@@ -120,7 +112,7 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
             lastEvent: _currentState.lastEvent,
             isFetching: false,
           );
-        } // if
+        }
 
         /// At least 1 event was returned from the database
         else {
@@ -128,7 +120,7 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
 
           if (_eventModels.length != this.paginationLimit) {
             _maxEvents = true;
-          } // if
+          }
 
           yield CategoryEventsStateSuccess(
             eventModels: _currentState.eventModels + _eventModels,
@@ -136,24 +128,24 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
             lastEvent: _docs?.last ?? _currentState.lastEvent,
             isFetching: false,
           );
-        } // else
-      } // if
+        }
+      }
     } catch (e) {
       yield CategoryEventsStateFailed();
-    } // catch
-  } // _mapCategoryEventsEventFetchToState
+    }
+  }
 
-  Future<List<QueryDocumentSnapshot>> _fetchEventsWithPagination({@required QueryDocumentSnapshot lastEvent, @required int limit}) async {
+  Future<List<QueryDocumentSnapshot>> _fetchEventsWithPagination({required QueryDocumentSnapshot? lastEvent, required int limit}) async {
     return db.searchEventsByCategory(category: this.category, lastEvent: lastEvent, limit: limit);
-  } // _fetchEventsWithPagination
+  }
 
-  List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels({@required List<QueryDocumentSnapshot> docs}) {
+  List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels({required List<QueryDocumentSnapshot> docs}) {
     return docs.map((doc) {
-      Map<String, dynamic> docAsMap = doc.data();
+      Map<String, dynamic> docAsMap = doc.data() as Map<String, dynamic>;
 
       // Convert the firebase timestamp to a DateTime
-      DateTime tempRawStartDateAndTimeToDateTime;
-      Timestamp _startTimestamp = docAsMap[ATTRIBUTE_RAW_START_DATE_TIME];
+      DateTime? tempRawStartDateAndTimeToDateTime;
+      Timestamp? _startTimestamp = docAsMap[ATTRIBUTE_RAW_START_DATE_TIME];
       if (_startTimestamp != null) {
         tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(_startTimestamp.millisecondsSinceEpoch).toUtc().toLocal();
       } // if
@@ -184,20 +176,20 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
         newEventId: doc.id,
       );
     }).toList();
-  } // _mapDocumentSnapshotsToSearchEventModels
+  }
 
   @override
-  Stream<Transition<CategoryEventsEvent, CategoryEventsState>> transformEvents(Stream<CategoryEventsEvent> events, transitionFn) {
-    return super.transformEvents(events.debounceTime(const Duration(milliseconds: 0)), transitionFn);
-  } // transformEvents
+  Stream<Transition<CategoryEventsEvent, CategoryEventsState>> transform(Stream<CategoryEventsEvent> events, transitionFn) {
+    return events.debounceTime(const Duration(milliseconds: 0)).switchMap(transitionFn);
+  }
 
   @override
   void onChange(Change<CategoryEventsState> change) {
     super.onChange(change);
-  } // onChange
+  }
 
   @override
   Future<void> close() {
     return super.close();
-  } // close
-} // CategoryEventsBloc
+  }
+}

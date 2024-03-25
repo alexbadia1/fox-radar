@@ -7,7 +7,7 @@ class CustomBackButton extends StatelessWidget {
 
   final OnTapCallbackBackButton onBack;
 
-  const CustomBackButton({Key key, @required this.onBack}) : super(key: key);
+  const CustomBackButton({Key? key, required this.onBack}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

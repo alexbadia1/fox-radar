@@ -1,6 +1,6 @@
 class PaginationEventsHandler {
-  final List<String> eventIds;
-  int _curr;
+  late final List<String> eventIds;
+  late int _curr;
 
   PaginationEventsHandler(this.eventIds) {
     print('Event Handler received: ${this.eventIds.toString()}');

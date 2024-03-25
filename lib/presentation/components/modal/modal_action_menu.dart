@@ -14,7 +14,7 @@ class ModalActionMenu extends StatelessWidget {
   /// in the order that they are listed.
   ///
   /// Displayed above the cancel button
-  final List<ModalActionMenuButton> actions;
+  final List<ModalActionMenuButton>? actions;
 
   /// Message displayed under the Cancel Button
   ///
@@ -26,7 +26,7 @@ class ModalActionMenu extends StatelessWidget {
   /// in the order that they are listed.
   ///
   /// Displayed under the cancel button
-  final List<ModalActionMenuButton> bottomActions;
+  final List<ModalActionMenuButton>? bottomActions;
 
   /// Whether or not a cancel button is
   /// included at the bottom of the modal sheet.
@@ -44,12 +44,12 @@ class ModalActionMenu extends StatelessWidget {
 
   /// Special widget placed directly underneath the
   /// bottom title but above the bottom actions.
-  final Widget featureWidget;
+  final Widget? featureWidget;
 
   final maxHeight;
 
   const ModalActionMenu(
-      {Key key,
+      {Key? key,
       this.actions,
       this.featureWidget,
       this.bottomActions,
@@ -92,7 +92,7 @@ class ModalActionMenu extends StatelessWidget {
     // Add the choices to menu
     // User wants bottom actions
     if (this.actions != null) {
-      this.actions.forEach((ModalActionMenuButton btn) {
+      this.actions!.forEach((ModalActionMenuButton btn) {
         widgets.add(btn);
       });
     } // if
@@ -131,7 +131,7 @@ class ModalActionMenu extends StatelessWidget {
     } // if
 
     if (this.featureWidget != null) {
-      widgets.add(featureWidget);
+      widgets.add(featureWidget!);
     } // if
 
     // User wants bottom actions
@@ -140,7 +140,7 @@ class ModalActionMenu extends StatelessWidget {
       widgets.add(SizedBox(height: MediaQuery.of(pContext).size.height * .02));
 
       // Add the choices to menu
-      this.bottomActions.forEach((ModalActionMenuButton btn) {
+      this.bottomActions!.forEach((ModalActionMenuButton btn) {
         widgets.add(btn);
       });
     } // if

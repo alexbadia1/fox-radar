@@ -9,60 +9,49 @@ import 'package:database_repository/database_repository.dart';
 class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
   /// Used to retrieve a firebase document containing
   /// all pinned event document id's, belonging to this user.
-  final String accountID;
+  late final String accountID;
 
   /// Database instance used to communicate with (in
   /// this case) Firebase Firestore and Firebase Storage.
-  final DatabaseRepository db;
+  late final DatabaseRepository db;
 
   /// Sets the limit on the max number of events retrieved in a query.
   final int _paginationLimit = PAGINATION_LIMIT;
 
   /// List containing all of the event document id's belonging to this user.
-  PaginationEventsHandler _pinnedEventsHandler;
+  late PaginationEventsHandler _pinnedEventsHandler;
 
-  PinnedEventsBloc({@required this.db, @required this.accountID})
-      : assert(db != null),
-        assert(accountID != null),
-        super(PinnedEventsStateFetching());
+  PinnedEventsBloc({required this.db, required this.accountID})
+      : super(PinnedEventsStateFetching());
 
   // Adds a debounce, to prevent the spamming of requesting events
   @override
-  Stream<Transition<PinnedEventsEvent, PinnedEventsState>> transformEvents(Stream<PinnedEventsEvent> events, transitionFn) {
-    return super.transformEvents(events.debounceTime(const Duration(milliseconds: 0)), transitionFn);
-  } // transformEvents
+  Stream<Transition<PinnedEventsEvent, PinnedEventsState>> transform(Stream<PinnedEventsEvent> events, transitionFn) {
+    return events.debounceTime(const Duration(milliseconds: 0)).switchMap(transitionFn);
+  }
 
   @override
   Stream<PinnedEventsState> mapEventToState(PinnedEventsEvent event) async* {
-    // Fetch some events
     if (event is PinnedEventsEventFetch) {
+      // Fetch some events
       yield* _mapPinnedEventsEventFetchToState();
-    } // if
-
-    // Reload the events list
-    else if (event is PinnedEventsEventReload) {
+    } else if (event is PinnedEventsEventReload) {
+      // Reload the events list
       yield* _mapPinnedEventsEventReloadToState();
-    } // else if
-
-    // Pin events
-    else if (event is PinnedEventsEventPin) {
+    } else if (event is PinnedEventsEventPin) {
+      // Pin events
       yield* _mapPinnedEventsEventPinToState(event.eventId);
-    }// else if
-
-    // Unpin events
-    else if (event is PinnedEventsEventUnpin) {
+    } else if (event is PinnedEventsEventUnpin) {
+      // Unpin events
       yield* _mapPinnedEventsEventUnpinToState(event.eventId);
-    }// else if
-
-    else if (event is PinnedEventsEventSort) {
+    } else if (event is PinnedEventsEventSort) {
       yield* _mapPinnedEventsEventSortToState(event.sortKey);
-    }// else if
-    // The event added to the bloc has not associated state
-    // either create one, or check the [account_events_state.dart]
-    else {
+    } else {
+      // The event added to the bloc has not associated state
+      // either create one, or check the [account_events_state.dart]
       yield PinnedEventsStateFailed("[PinnedEventsBloc] Invalid event received");
-    } // else
-  } // mapEventToState
+    }
+  }
 
   Stream<PinnedEventsState> _mapPinnedEventsEventFetchToState() async* {
     final _currentState = this.state;
@@ -79,7 +68,7 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
         if (this._pinnedEventsHandler.isEmpty()) {
           yield PinnedEventsStateFailed("[Account Events State Failed] Account events doc has no events!");
           return;
-        } // if
+        }
 
         /// Get the first [paginationLimit] number of event id's from the [AccountEventsHandler]
         final List<String> _ids = this._pinnedEventsHandler.getEventIdsPaginated(this._paginationLimit);
@@ -89,7 +78,7 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
         if (_docs.isEmpty) {
           yield PinnedEventsStateFailed("[Account Events State Failed] Failed to fetch the first ${this._paginationLimit} based on the account events doc!");
           return;
-        } // if
+        }
 
         /// Map the events to a list of "Search Result Models"
         final List<SearchResultModel> _eventModels = _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
@@ -97,7 +86,7 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
         /// The last remaining events where retrieved
         if (_eventModels.length != this._paginationLimit) {
           _maxEvents = true;
-        } // if
+        }
 
         /// First fetch, all good!
         yield PinnedEventsStateSuccess(
@@ -106,7 +95,7 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
           lastEvent: _docs.last,
           isFetching: false,
         );
-      } // if
+      }
 
       // Posts were fetched already, now fetch [paginationLimit] more events.
       else if (_currentState is PinnedEventsStateSuccess) {
@@ -137,7 +126,7 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
             isFetching: false,
           );
           return;
-        } // if
+        }
 
         /// At least 1 event was returned from the database, update
         /// the AccountEventBloc's State by adding the new events.
@@ -147,7 +136,7 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
         /// The last remaining events where retrieved
         if (_eventModels.length != this._paginationLimit) {
           _maxEvents = true;
-        } // if
+        }
 
         yield PinnedEventsStateSuccess(
           eventModels: _currentState.eventModels + _eventModels,
@@ -155,11 +144,11 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
           lastEvent: _docs?.last ?? _currentState.lastEvent,
           isFetching: false,
         );
-      } // else if
+      }
     } catch (e) {
       yield PinnedEventsStateFailed(e.toString());
-    } // catch
-  } // _mapPinnedEventsEventFetchToState
+    }
+  }
 
   Stream<PinnedEventsState> _mapPinnedEventsEventReloadToState() async* {
     final _currentState = this.state;
@@ -174,7 +163,7 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
         lastEvent: _currentState.lastEvent,
         isFetching: true,
       );
-    } // if
+    }
 
     try {
       // User is fetching events from a failed state
@@ -184,7 +173,7 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
         //
         // Give the user a good feeling that events are actually being searched for.
         await Future.delayed(Duration(milliseconds: 350));
-      } // if
+      }
 
       /// Get user's created events document that lists
       /// all of the event id's that belong to this user.
@@ -194,7 +183,7 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
       if (this._pinnedEventsHandler.isEmpty()) {
         yield PinnedEventsStateFailed("[Pinned Events State Failed] Pinned events doc has no events!");
         return;
-      } // if
+      }
 
       /// Get the first [paginationLimit] number of event id's from the [AccountEventsHandler]
       final List<String> _ids = this._pinnedEventsHandler.getEventIdsPaginated(this._paginationLimit);
@@ -203,13 +192,13 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
 
       if (_currentState is PinnedEventsStateFailed) {
         yield PinnedEventsStateReloadFailed();
-      } // if
+      }
 
       /// No events were retrieved on the FIRST retrieval, fail.
       if (_docs.isEmpty) {
         yield PinnedEventsStateFailed("No events retrieved");
         return;
-      }// if
+      }
 
       // Map the events to a list of "Search Result Models"
       final List<SearchResultModel> _eventModels = _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
@@ -217,27 +206,26 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
       // The last remaining events where retrieved
       if (_eventModels.length != this._paginationLimit) {
         _maxEvents = true;
-      } // if
+      }
       yield PinnedEventsStateSuccess(
         eventModels: _eventModels,
         maxEvents: _maxEvents,
         lastEvent: _docs.last,
         isFetching: false,
       );
-    } // try
-    catch (e) {
+    } catch (e) {
       yield PinnedEventsStateFailed(e.toString());
-    } // catch
-  } // _mapPinnedEventsEventReloadToState
+    }
+  }
 
   /// Get user's created events document that lists
   /// all of the event id's that belong to this user.
   Future<void> _getListOfPinnedEvents () async {
-    final DocumentSnapshot docSnap = await this.db.getAccountPinnedEvents(uid: this.accountID);
+    final DocumentSnapshot? docSnap = await this.db.getAccountPinnedEvents(uid: this.accountID);
 
     final List<String> eventIds = [];
     try {
-      final Map m = docSnap.data() as Map;
+      final Map m = docSnap?.data() as Map;
       m.forEach((attribute, boolVal) {
         if (attribute is String) {
             eventIds.add(attribute);
@@ -255,7 +243,7 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
       try {
         final List<DocumentSnapshot> _tempDocs = [];
         for (int i = 0; i < eventIdsToFetch.length; ++i) {
-          final DocumentSnapshot docSnap = await this.db.getSearchEventById(eventId: eventIdsToFetch[i]);
+          final DocumentSnapshot? docSnap = await this.db.getSearchEventById(eventId: eventIdsToFetch[i]);
           if (docSnap != null) {
             _tempDocs.add(docSnap);
           } // if
@@ -280,13 +268,13 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
   /// Name: _mapDocumentSnapshotsToSearchEventModels
   ///
   /// Description: maps the document snapshot from firebase to the event model
-  List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels({@required List<DocumentSnapshot> docs}) {
+  List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels({required List<DocumentSnapshot> docs}) {
     return docs.map((doc) {
-      Map<String, dynamic> docAsMap = doc.data() as Map;
+      Map<String, dynamic> docAsMap = doc.data() as Map<String, dynamic>;
 
       // Convert the firebase timestamp to a DateTime
-      DateTime tempRawStartDateAndTimeToDateTime;
-      Timestamp _startTimestamp = docAsMap[ATTRIBUTE_RAW_START_DATE_TIME];
+      DateTime? tempRawStartDateAndTimeToDateTime;
+      Timestamp? _startTimestamp = docAsMap[ATTRIBUTE_RAW_START_DATE_TIME];
       if (_startTimestamp != null) {
         tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(_startTimestamp.millisecondsSinceEpoch).toUtc().toLocal();
       } // if
@@ -317,19 +305,19 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
         newEventId: doc.id ?? '',
       );
     }).toList();
-  } // _mapDocumentSnapshotsToSearchEventModels
+  }
 
-  List<String> get pinnedEvents => this._pinnedEventsHandler != null ? this._pinnedEventsHandler.eventIds : null;
+  List<String>? get pinnedEvents => this._pinnedEventsHandler != null ? this._pinnedEventsHandler.eventIds : null;
 
   Stream<PinnedEventsState> _mapPinnedEventsEventPinToState(String newEventID) async* {
     if (this.pinnedEvents == null) { return; }// if
     if (newEventID == null) { return; }// if
     if (newEventID.isNotEmpty) {
-      this.pinnedEvents.add(newEventID);
+      this.pinnedEvents?.add(newEventID);
       await this.db.pinEvent(newEventID, this.accountID);
       this.add(PinnedEventsEventReload());
-    }// if
-  }// addPinnedEvent
+    }
+  }
 
   Stream<PinnedEventsState> _mapPinnedEventsEventUnpinToState(String newEventID) async* {
     final currState = this.state;
@@ -337,10 +325,10 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
     if (this.pinnedEvents == null) { return; }// if
     if (newEventID == null) { return; }// if
     if (newEventID.isNotEmpty) {
-      this.pinnedEvents.remove(newEventID);
+      this.pinnedEvents?.remove(newEventID);
       await this.db.unpinEvent(newEventID, this.accountID);
       // Not last event
-      if (this.pinnedEvents.isNotEmpty && currState is PinnedEventsStateSuccess) {
+      if (this.pinnedEvents!.isNotEmpty && currState is PinnedEventsStateSuccess) {
         currState.eventModels.removeWhere((element) => element.eventId == newEventID);
         yield PinnedEventsStateSuccess(
           eventModels: currState.eventModels,
@@ -348,13 +336,11 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
           maxEvents: currState.maxEvents,
           isFetching: currState.isFetching,
         );
-      }// if
-
-      else {
+      } else {
         yield PinnedEventsStateFailed("Unpinned last event");
-      }// else
-    }// if
-  }// addPinnedEvent
+      }
+    }
+  }
 
   Stream<PinnedEventsState> _mapPinnedEventsEventSortToState(String sortKey) async* {
     final currState = this.state;
@@ -365,7 +351,7 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
       Map argsForCompute = {
         "SearchResultModels" : currState.eventModels,
         "SortKey" : sortKey,
-      };// argsForCompute
+      };
 
       // A new list reference should for listeners to update
       List<SearchResultModel> sortedSearchResults = [];
@@ -373,10 +359,9 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
       // Too many events to sort on the main thread
       if (currState.eventModels.length >= 50) {
         sortedSearchResults = await compute(sortSearchEventModels, argsForCompute);
-      }// if
-      else {
+      } else {
         sortedSearchResults = await sortSearchEventModels(argsForCompute);
-      }// else
+      }
 
       // Send sorted list to the UI
       yield PinnedEventsStateSuccess(
@@ -385,8 +370,8 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
         maxEvents: currState.maxEvents,
         isFetching: currState.isFetching,
       );
-    }// if
-  }//_mapPinnedEventsEventSortToState
+    }
+  }
 
   static Future<List<SearchResultModel>> sortSearchEventModels(Map args) async {
     // Parse arguments, just in case this is run on another isolate
@@ -396,18 +381,18 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
     try {
       switch (sortKey) {
         case SORT_KEY_ALPHABETICAL:
-          searchResultModels.sort((a, b) => a.title.compareTo(b.title));
+          searchResultModels.sort((a, b) => a.title!.compareTo(b.title!));
           break;
         default: // Default to sort by time
-          searchResultModels.sort((a, b) => a.rawStartDateAndTime.compareTo(b.rawStartDateAndTime));
+          searchResultModels.sort((a, b) => a.rawStartDateAndTime!.compareTo(b.rawStartDateAndTime!));
           break;
-      } // switch
-    }// try
+      }
+    }
 
-    catch(error) {}// catch
+    catch(error) {}
 
     // Returns the sorted search results, if the
     // sort failed it should be the original list.
     return searchResultModels;
-  }// sortSearchEventModels
-}// PinnedEventsBloc
+  }
+}

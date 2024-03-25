@@ -4,7 +4,7 @@ import 'package:fox_radar/presentation/presentation.dart';
 class BorderTop extends StatelessWidget {
   final Widget child;
 
-  const BorderTop({Key key, @required this.child}) : super(key: key);
+  const BorderTop({Key? key, required this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class BorderTop extends StatelessWidget {
 class BorderLeft extends StatelessWidget {
   final Widget child;
 
-  const BorderLeft({Key key, @required this.child}) : super(key: key);
+  const BorderLeft({Key? key, required this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class BorderLeft extends StatelessWidget {
 class BorderBottom extends StatelessWidget {
   final Widget child;
 
-  const BorderBottom({Key key, @required this.child}) : super(key: key);
+  const BorderBottom({Key? key, required this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -65,11 +65,11 @@ class BorderBottom extends StatelessWidget {
 }// BorderTop
 
 class BorderTopBottom extends StatelessWidget {
-  final Widget child;
-  final double width;
-  final double height;
+  final Widget? child;
+  final double? width;
+  final double? height;
 
-  const BorderTopBottom({Key key, @required this.child, this.width, this.height}) : super(key: key);
+  const BorderTopBottom({Key? key, required this.child, this.width, this.height}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

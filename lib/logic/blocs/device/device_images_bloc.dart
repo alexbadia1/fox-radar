@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:typed_data';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fox_radar/logic/logic.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -14,12 +13,10 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
   Stream<DeviceImagesState> mapEventToState(DeviceImagesEvent event) async* {
     if (event is DeviceImagesEventFetch) {
       yield* _mapDeviceImagesEventFetchToDeviceImagesState();
-    } // if
-
-    else {
+    } else {
       // error
     }
-  } // mapEventToState
+  }
 
   Stream<DeviceImagesState> _mapDeviceImagesEventFetchToDeviceImagesState() async* {
     // Get the current state for later use...
@@ -29,7 +26,7 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
     // Fetch called fom fail state
     if (_currentState is DeviceImagesStateFailed) {
       yield DeviceImagesStateFetching();
-    } // if
+    }
 
     try {
       bool hasPermission = false;
@@ -37,16 +34,13 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
       try {
         final PermissionState result = await PhotoManager.requestPermissionExtend();
         hasPermission = result.isAuth;
-      } // try
-
-      catch (newApiError) {
+      } catch (newApiError) {
         try {
           await PhotoManager.forceOldApi();
           hasPermission = await PhotoManager.requestPermission();
-        } // try
-        catch (oldApiError) {
+        } catch (oldApiError) {
           yield DeviceImagesStateFailed(failedAttempts: this.failedAttempts++);
-        } // catch
+        }
       }
 
       if (hasPermission) {
@@ -56,15 +50,15 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
           final List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(onlyAll: true, type: RequestType.image);
 
           // Get photos
-          final List<AssetEntity> photos = await albums[0]?.getAssetListPaged(0, this.paginationLimit);
+          final List<AssetEntity>? photos = await albums[0]?.getAssetListPaged(0, this.paginationLimit);
 
           // Map photos to file data type
-          List<Uint8List> tempFiles = await _mapPhotosToFiles(photos: photos);
-          List<String> tempFilesPaths = await _mapPhotosToFilePaths(photos: photos);
+          List<Uint8List> tempFiles = await _mapPhotosToFiles(photos: photos!);
+          List<String> tempFilesPaths = await _mapPhotosToFilePaths(photos: photos!);
 
           if (tempFiles.length != this.paginationLimit) {
             _maxImages = true;
-          } // if
+          }
 
           // Compress images
           // print("Compressing images");
@@ -77,7 +71,7 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
               maxImages: _maxImages,
               isFetching: false
           );
-        } // if
+        }
 
         // Some images were already fetched from storage, get more
         else if (_currentState is DeviceImagesStateSuccess) {
@@ -85,11 +79,11 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
           final List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(onlyAll: true, type: RequestType.image);
 
           // Get photos
-          final List<AssetEntity> photos = await albums[0]?.getAssetListPaged(_currentState.lastPage + 1, paginationLimit);
+          final List<AssetEntity>? photos = await albums[0]?.getAssetListPaged(_currentState.lastPage + 1, paginationLimit);
 
           // Map photos to file data type
-          List<Uint8List> tempFiles = await _mapPhotosToFiles(photos: photos);
-          List<String> tempFilesPaths = await _mapPhotosToFilePaths(photos: photos);
+          List<Uint8List> tempFiles = await _mapPhotosToFiles(photos: photos!);
+          List<String> tempFilesPaths = await _mapPhotosToFilePaths(photos: photos!);
 
           // // Compress images
           // final List<Uint8List> compressedImageBytes = await _mapFilesToCompressedUint8List(tempFiles);
@@ -103,12 +97,12 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
                 maxImages: true,
                 isFetching: false
             );
-          } // if
+          }
 
           else {
             if (tempFiles.length != this.paginationLimit) {
               _maxImages = true;
-            } // if
+            }
 
             yield DeviceImagesStateSuccess(
               paths: _currentState.paths + tempFilesPaths,
@@ -117,66 +111,63 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
               lastPage: _currentState.lastPage + 1,
               isFetching: false,
             );
-          } // else
-        } // else-if
+          }
+        }
 
-      } // if
-
-      else {
+      } else {
         yield DeviceImagesStateDenied();
-      } //else
-    } // try
-    catch (e) {
+      }
+    } catch (e) {
       print(e);
       if (e is PlatformException) {
         if (e.code == 'Request for permission failed.') {
           yield DeviceImagesStateDenied();
-        } // if
-      } // if
+        }
+      }
 
       yield DeviceImagesStateFailed(failedAttempts: this.failedAttempts++);
-    } // catch
-  } // _mapDeviceImagesEventFetchToDeviceImagesState
+    }
+  }
 
-  Future<List<Uint8List>> _mapPhotosToFiles({@required List<AssetEntity> photos}) async {
+  Future<List<Uint8List>> _mapPhotosToFiles({required List<AssetEntity> photos}) async {
     List<Uint8List> ans = [];
 
     ans = await Future.microtask(() async {
       for (int i = 0; i < photos.length; ++i) {
-        final Uint8List f = await photos[i].originBytes;
-        ans.add(f);
-      } // for
+        final Uint8List? f = await photos[i].originBytes;
+        ans.add(f!);
+      }
 
       return ans;
     });
 
     return ans;
-  } // _mapPhotosToFiles
+  }
 
-  Future<List<String>> _mapPhotosToFilePaths({@required List<AssetEntity> photos}) async {
+  Future<List<String>> _mapPhotosToFilePaths({required List<AssetEntity> photos}) async {
     List<String> ans = [];
 
     ans = await Future.microtask(() async {
       for (int i = 0; i < photos.length; ++i) {
         final f = await photos[i].file;
-        ans.add(f.path);
+        ans.add(f!.path);
       } // for
 
       return ans;
     });
 
     return ans;
-  } // _mapPhotosToFiles
+  }
 
   @override
   void onChange(Change<DeviceImagesState> change) {
     print('Device Images Bloc: $change');
     super.onChange(change);
-  } // onChange
+  }
 
   @override
   Future<void> close() {
     print('Device Images Bloc Closed');
     return super.close();
-  } // close
+  }
 }

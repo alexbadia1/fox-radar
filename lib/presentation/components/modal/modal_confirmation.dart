@@ -21,13 +21,13 @@ class ModalConfirmation extends StatelessWidget {
   final Color confirmColor;
 
   /// Function performed when the "Cancel" Button (Button on the LEFT) is pressed
-  final Function onCancel;
+  final Function? onCancel;
 
   /// Function performed when the "Cancel" Button (Button on the RIGHT) is pressed
-  final Function onConfirm;
+  final Function? onConfirm;
 
   const ModalConfirmation(
-      {Key key,
+      {Key? key,
       this.prompt = '',
       this.cancelText = 'CANCEL',
       this.cancelColor = cWhite70,
@@ -82,7 +82,11 @@ class ModalConfirmation extends StatelessWidget {
                         color: this.cancelColor,
                       ),
                     ),
-                    onPressed: this.onCancel,
+                    onPressed: () {
+                      if (this.onCancel != null) {
+                        this.onCancel!();
+                      }
+                    },
                     // Let user cancel choice
                     onLongPress: () {}, //Let user cancel choice on long press
                   ),
@@ -95,7 +99,11 @@ class ModalConfirmation extends StatelessWidget {
                         color: this.confirmColor,
                       ),
                     ),
-                    onPressed: this.onConfirm,
+                    onPressed: () {
+                      if (this.onConfirm != null) {
+                        this.onConfirm!();
+                      }
+                    },
                     onLongPress: () {}, //Let user cancel choice on long press
                   ),
                   Expanded(flex: 1, child: SizedBox()),

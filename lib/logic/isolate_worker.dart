@@ -6,19 +6,19 @@ import 'package:database_repository/database_repository.dart';
 class IsolateWorker {
   /// SendPort used by the main thread to communicate
   /// with the worker isolate [_sendPort.send(dynamic)].
-  SendPort _mainSendPort;
+  late SendPort _mainSendPort;
 
   /// SendPort used by the main thread to communicate
   /// with the worker isolate [_sendPort.send(dynamic)].
-  Isolate _workerIsolate;
+  late Isolate _workerIsolate;
 
   /// Completer is [complete] when the [isolate] is finished spawning.
   ///
   /// Factory method waits on this to return an [IsolateWorker] instance.
-  final _workerReady = Completer<void>();
+  late final _workerReady = Completer<void>();
 
   /// Completer is [complete] when the [isolate] finishes the [task] given
-  Completer<dynamic> _results = Completer<dynamic>();
+  late Completer<dynamic> _results = Completer<dynamic>();
 
   /// No public constructor
   ///
@@ -53,7 +53,7 @@ class IsolateWorker {
   }// sendMessage
 
   static void _workerMessageHandler(dynamic message) {
-    SendPort workerSendPort;
+    late SendPort workerSendPort;
     final workerReceivePort = ReceivePort();
     workerReceivePort.listen((dynamic message) {
       print("[Worker Isolate] Message Received!");

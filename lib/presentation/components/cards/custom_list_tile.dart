@@ -9,11 +9,11 @@ import 'package:fox_radar/presentation/presentation.dart';
   the leading widget, and having trailing Icon buttons actually centered correctly.
  */
 class CustomListTile extends StatelessWidget {
-  final Widget leading;
-  final Widget title;
-  final Widget subtitle;
-  final Widget description;
-  final Widget trailing;
+  final Widget? leading;
+  final Widget? title;
+  final Widget? subtitle;
+  final Widget? description;
+  final Widget? trailing;
 
   /// Adds a thin light gray top and
   /// bottom border to the custom list title.
@@ -22,7 +22,7 @@ class CustomListTile extends StatelessWidget {
   final bool enableBorders;
 
   const CustomListTile({
-    Key key,
+    Key? key,
     this.leading,
     this.title,
     this.subtitle,
@@ -120,16 +120,16 @@ class CustomListTile extends StatelessWidget {
 
 class CustomListTileDescription extends StatelessWidget {
   /// Widget shown in the first line.
-  final Widget title;
+  final Widget? title;
 
   /// Widget shown in the second line.
-  final Widget subtitle;
+  final Widget? subtitle;
 
   /// Widget shown in the third line.
-  final Widget description;
+  final Widget? description;
 
   const CustomListTileDescription({
-    Key key,
+    Key? key,
     this.title,
     this.subtitle,
     this.description,

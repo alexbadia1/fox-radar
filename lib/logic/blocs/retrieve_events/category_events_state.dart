@@ -8,18 +8,18 @@ abstract class CategoryEventsState extends Equatable {}
 
 class CategoryEventsStateFetching extends CategoryEventsState {
   @override
-  List<Object> get props => [];
-} // CategoryEventsStateFetching
+  List<Object?> get props => [];
+}
 
 class CategoryEventsStateFailed extends CategoryEventsState {
   @override
-  List<Object> get props => [];
-} // CategoryEventsStateFailed
+  List<Object?> get props => [];
+}
 
 class CategoryEventsStateReloadFailed extends CategoryEventsState {
   @override
-  List<Object> get props => [];
-} // CategoryEventsStateReloadFailed
+  List<Object?> get props => [];
+}
 
 class CategoryEventsStateSuccess extends CategoryEventsState {
   final List<SearchResultModel> eventModels;
@@ -28,10 +28,10 @@ class CategoryEventsStateSuccess extends CategoryEventsState {
   final bool isFetching;
 
   CategoryEventsStateSuccess(
-      {@required this.eventModels,
-        @required this.lastEvent,
-        @required this.maxEvents,
-        @required this.isFetching});
+      {required this.eventModels,
+        required this.lastEvent,
+        required this.maxEvents,
+        required this.isFetching});
   @override
-  List<Object> get props => [eventModels, maxEvents, lastEvent, isFetching];
-} // CategoryEventsStateSuccess
+  List<Object?> get props => [eventModels, maxEvents, lastEvent, isFetching];
+}

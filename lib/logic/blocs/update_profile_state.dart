@@ -1,20 +1,19 @@
 import 'dart:typed_data';
-import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class UpdateProfileState extends Equatable {
-  final Uint8List imageBytes;
+  final Uint8List? imageBytes;
   const UpdateProfileState(this.imageBytes);
-} // ProfileState
+}
 
 /// Profile bloc is ready
 class UpdateProfileStateReady extends UpdateProfileState {
-  final Uint8List oldImageBytes;
-  UpdateProfileStateReady({@required this.oldImageBytes}) : super(oldImageBytes);
+  final Uint8List? oldImageBytes;
+  UpdateProfileStateReady({required this.oldImageBytes}) : super(oldImageBytes);
 
   @override
-  List<Object> get props => [];
-} // ProfileStateReady
+  List<Object?> get props => [];
+}
 
 /// Make sure the UI shows a loading widget in
 /// place of the CircleAvatar as the image uploads.
@@ -26,8 +25,8 @@ class UpdateProfileStateUpdating extends UpdateProfileState {
   UpdateProfileStateUpdating() : super(null);
 
   @override
-  List<Object> get props => [];
-} // ProfileStateUpdating
+  List<Object?> get props => [];
+}
 
 /// Show a snackbar saying the upload failed.
 ///
@@ -35,21 +34,21 @@ class UpdateProfileStateUpdating extends UpdateProfileState {
 ///
 /// On snackbar dismissal, return back to ProfileStateReady
 class UpdateProfileStateFailed extends UpdateProfileState {
-  final Uint8List oldImageBytes;
-  final Uint8List newImageBytes;
-  UpdateProfileStateFailed({@required this.oldImageBytes, @required this.newImageBytes}) : super(oldImageBytes);
+  final Uint8List? oldImageBytes;
+  final Uint8List? newImageBytes;
+  UpdateProfileStateFailed({required this.oldImageBytes, required this.newImageBytes}) : super(oldImageBytes);
 
   @override
-  List<Object> get props => [this.imageBytes];
-} // ProfileStateFailed
+  List<Object?> get props => [this.imageBytes];
+}
 
 /// Show a snackbar saying the upload succeeded.
 ///
 /// On snackbar dismissal, return back to ProfileStateReady
 class UpdateProfileStateSuccess extends UpdateProfileState {
-  final Uint8List imageBytes;
+  final Uint8List? imageBytes;
   UpdateProfileStateSuccess(this.imageBytes) : super(imageBytes);
 
   @override
-  List<Object> get props => [this.imageBytes];
-} // ProfileStateSuccess
+  List<Object?> get props => [this.imageBytes];
+}

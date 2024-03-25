@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:database_repository/database_repository.dart';
 
 abstract class UploadEventState extends Equatable {
   const UploadEventState();
-} // UploadEventState
+}
 
 /// Initial state is returned to after the event
 /// either successfully or failed to upload.
@@ -14,8 +13,8 @@ abstract class UploadEventState extends Equatable {
 /// uploaded successfully, is uploading, or failed to upload.
 class UploadEventStateInitial extends UploadEventState {
   @override
-  List<Object> get props => [];
-} // UploadEventStateInitial
+  List<Object?> get props => [];
+}
 
 /// New event was is uploading,
 /// expose the upload stream to the UI.
@@ -26,15 +25,13 @@ class UploadEventStateUploading extends UploadEventState {
   bool _complete = false;
 
   UploadEventStateUploading(
-      {@required this.uploadTask, @required this.eventModel})
-      : assert(uploadTask != null),
-        assert(eventModel != null);
+      {required this.uploadTask, required this.eventModel});
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 
   void uploadComplete() {
     this._complete = true;
-  } // uploadComplete
+  }
 
   get complete => this._complete;
-} // UploadEventStateUploading
+}

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class Utils {
   final BuildContext context;
 
-  Utils({@required this.context}) : assert (context != null);
+  Utils({required this.context}) : assert (context != null);
 
   /// Calculated
   double get safeHeight => (this.rawHeight - this.topPadding - this.bottomPadding + this.bottomInsets);

@@ -16,15 +16,15 @@ class DatePicker extends StatefulWidget {
   ///
   /// When this function is called, you should add an event
   /// to the Bloc managing the Date, to update it as the user chooses.
-  final UpdateBlocCallback updateBlocCallback;
+  final UpdateBlocCallback? updateBlocCallback;
 
   /// General purpose function triggered whenever a new date is selected.
   final OnDateSelectedCallback onDateSelectedCallback;
 
   const DatePicker(
-      {Key key,
-      @required this.initialSelectedDate,
-      @required this.onDateSelectedCallback,
+      {Key? key,
+      required this.initialSelectedDate,
+      required this.onDateSelectedCallback,
       this.updateBlocCallback})
       : super(key: key);
   @override

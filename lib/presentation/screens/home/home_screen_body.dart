@@ -10,8 +10,8 @@ class HomeScreenBody extends StatefulWidget {
 } // HomeScreenBody
 
 class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAliveClientMixin {
-  Completer<void> _refreshCompleter;
-  ScrollController _sliverController;
+  late Completer<void> _refreshCompleter;
+  late ScrollController _sliverController;
   GlobalKey navigation = new GlobalKey();
 
   @override
@@ -238,7 +238,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
                                                           color: Colors.blueAccent,
                                                           onPressed: () {
                                                             BlocProvider.of<PinnedEventsBloc>(modalSheetContext)
-                                                                .add(PinnedEventsEventPin(_suggestedSearchEvent.eventId));
+                                                                .add(PinnedEventsEventPin(_suggestedSearchEvent.eventId!));
                                                             Navigator.pop(modalSheetContext);
                                                           },
                                                         ),
@@ -255,7 +255,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
                                                         color: Colors.redAccent,
                                                         onPressed: () {
                                                           BlocProvider.of<PinnedEventsBloc>(modalSheetContext)
-                                                              .add(PinnedEventsEventUnpin(_suggestedSearchEvent.eventId));
+                                                              .add(PinnedEventsEventUnpin(_suggestedSearchEvent.eventId!));
                                                           Navigator.pop(modalSheetContext);
                                                         },
                                                       )

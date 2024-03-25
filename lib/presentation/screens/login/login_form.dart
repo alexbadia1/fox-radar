@@ -11,10 +11,10 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final GlobalKey<FormState> _loginFormKeyEmail = new GlobalKey<FormState>();
   final GlobalKey<FormState> _loginFormKeyPassword = new GlobalKey<FormState>();
-  FocusNode _emailFocusNode;
-  FocusNode _passwordFocusNode;
-  TextEditingController _emailTextEditingController;
-  TextEditingController _passwordTextEditingController;
+  late FocusNode _emailFocusNode;
+  late FocusNode _passwordFocusNode;
+  late TextEditingController _emailTextEditingController;
+  late TextEditingController _passwordTextEditingController;
 
   @override
   void initState() {
@@ -22,14 +22,14 @@ class _LoginFormState extends State<LoginForm> {
     this._emailFocusNode = new FocusNode();
     this._emailFocusNode.addListener(() {
       if (!this._emailFocusNode.hasFocus) {
-        this._loginFormKeyEmail.currentState.validate();
+        this._loginFormKeyEmail.currentState!.validate();
       } // if
     });
 
     this._passwordFocusNode = new FocusNode();
     this._passwordFocusNode.addListener(() {
       if (!this._passwordFocusNode.hasFocus) {
-        this._loginFormKeyPassword.currentState.validate();
+        this._loginFormKeyPassword.currentState!.validate();
       } // if
     });
 
@@ -138,8 +138,8 @@ class _LoginFormState extends State<LoginForm> {
                   onPressed: () {
                     final _networkState = BlocProvider.of<DeviceNetworkBloc>(context).state;
                     if (!(_networkState is DeviceNetworkStateNone) &&
-                        this._loginFormKeyEmail.currentState.validate() &&
-                        this._loginFormKeyPassword.currentState.validate()) {
+                        this._loginFormKeyEmail.currentState!.validate() &&
+                        this._loginFormKeyPassword.currentState!.validate()) {
                       BlocProvider.of<LoginBloc>(context).add(
                         LoginEventLogin(
                           loginType: LoginType.emailAndPassword,
@@ -172,10 +172,9 @@ class _LoginFormState extends State<LoginForm> {
 class LoginMessage extends StatelessWidget {
   final String msg;
   const LoginMessage({
-    Key key,
-    @required this.msg,
-  })  : assert(msg != null),
-        super(key: key);
+    Key? key,
+    required this.msg,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -14,9 +14,9 @@ class CreateEventScreen extends StatelessWidget {
   /// and assumes the user wants to update an event.
   ///
   /// Leave null, if the user is creating a new event.
-  final EventModel initialEventModel;
+  final EventModel? initialEventModel;
 
-  const CreateEventScreen({Key key, this.initialEventModel}) : super(key: key);
+  const CreateEventScreen({Key? key, this.initialEventModel}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class CreateEventScreen extends StatelessWidget {
     /// the form action [formAction] to CreateEventFormAction.update.
     if (this.initialEventModel != null) {
       formAction = CreateEventFormAction.update;
-      initialState = CreateEventValid(this.initialEventModel);
+      initialState = CreateEventValid(this.initialEventModel!);
     } // if
 
     /// User wants to CREATE an event.

@@ -14,7 +14,7 @@ class RouteGeneratorAuthentication {
   final SignUpBloc signUpBloc;
 
   RouteGeneratorAuthentication(
-      {@required this.authenticationRepository, @required this.authenticationBloc, @required this.loginBloc, @required this.signUpBloc})
+      {required this.authenticationRepository, required this.authenticationBloc, required this.loginBloc, required this.signUpBloc})
       : assert(authenticationRepository != null),
         assert(authenticationBloc != null),
         assert(loginBloc != null),

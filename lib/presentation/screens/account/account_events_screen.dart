@@ -74,7 +74,7 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
               builder: (accountDrawerButtonContext) {
                 return AccountDrawerButton(
                   openDrawerCallback: () {
-                    return showModalBottomSheet(
+                    showModalBottomSheet(
                       context: context,
                       enableDrag: false,
                       isScrollControlled: true,
@@ -179,7 +179,7 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
                                     return Slidable(
                                       enabled: true,
                                       direction: Axis.horizontal,
-                                      actionPane: SlidableStrechActionPane(),
+                                      endActionPane: SlidableStrechActionPane(),
                                       actionExtentRatio: 0.3,
                                       child: EventCard(
                                         key: ObjectKey(searchResult),

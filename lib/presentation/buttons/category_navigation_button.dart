@@ -7,13 +7,13 @@ class CategoryNavigationButton extends StatefulWidget {
   final String imagePath;
   final IconData icon;
 
-  CategoryNavigationButton({@required this.category, @required this.imagePath, @required this.icon});
+  CategoryNavigationButton({required this.category, required this.imagePath, required this.icon});
   @override
   _CategoryNavigationButtonState createState() => _CategoryNavigationButtonState();
 }
 
 class _CategoryNavigationButtonState extends State<CategoryNavigationButton> {
-  Image maristArtImage;
+  late Image maristArtImage;
 
   @override
   void initState() {

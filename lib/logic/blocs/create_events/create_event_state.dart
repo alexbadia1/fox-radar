@@ -8,19 +8,19 @@ abstract class CreateEventState extends Equatable{
   CreateEventState(this.eventModel);
 
   @override
-  List<Object> get props => [eventModel];
-}// CreateEventState
+  List<Object?> get props => [eventModel];
+}
 
 class CreateEventValid extends CreateEventState {
   CreateEventValid(EventModel eventModel) : super(eventModel);
 
   @override
-  List<Object> get props => [super.eventModel];
-}// CreateEventValid
+  List<Object?> get props => [super.eventModel];
+}
 
 class CreateEventInvalid extends CreateEventState {
   CreateEventInvalid(EventModel eventModel) : super(eventModel);
 
   @override
-  List<Object> get props => [super.eventModel];
-}// CreateEventInvalid
+  List<Object?> get props => [super.eventModel];
+}

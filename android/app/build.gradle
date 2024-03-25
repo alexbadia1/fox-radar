@@ -41,7 +41,7 @@ android {
 
     defaultConfig {
         applicationId "com.marist.fox_radar"
-        minSdkVersion 16
+        minSdkVersion flutter.minSdkVersion
         targetSdkVersion 30
         multiDexEnabled true
         versionCode flutterVersionCode.toInteger()

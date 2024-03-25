@@ -5,7 +5,7 @@ import 'package:fox_radar/logic/logic.dart';
 import 'package:database_repository/database_repository.dart';
 import 'package:fox_radar/presentation/presentation.dart';
 
-typedef OnEventCardVertMoreCallback = Function(Uint8List);
+typedef OnEventCardVertMoreCallback = Function(Uint8List?);
 
 class EventCard extends StatefulWidget {
   /// The search result, from firebase
@@ -15,9 +15,9 @@ class EventCard extends StatefulWidget {
   /// more options to handle the search result.
   ///
   /// The options will should be displayed using a modal bottom sheet
-  final OnEventCardVertMoreCallback onEventCardVertMoreCallback;
+  final OnEventCardVertMoreCallback? onEventCardVertMoreCallback;
 
-  EventCard({Key key, @required this.newSearchResult, this.onEventCardVertMoreCallback})
+  EventCard({Key? key, required this.newSearchResult, this.onEventCardVertMoreCallback})
       : assert(newSearchResult != null),
         super(key: key);
 
@@ -26,7 +26,7 @@ class EventCard extends StatefulWidget {
 } // EventCard
 
 class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixin {
-  Uint8List _imageBytes;
+  late Uint8List _imageBytes;
 
   @override
   Widget build(BuildContext context) {
@@ -34,12 +34,12 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
     return BlocProvider(
       create: (context) => FetchImageCubit(
         db: RepositoryProvider.of<DatabaseRepository>(context),
-      )..fetchImage(eventID: this.widget.newSearchResult.eventId),
+      )..fetchImage(eventID: this.widget.newSearchResult.eventId ?? ""),
       child: GestureDetector(
         onTap: () => Navigator.of(context).pushNamed(
           '/event',
           arguments: EventScreenArguments(
-              documentId: this.widget.newSearchResult.eventId,
+              documentId: this.widget.newSearchResult.eventId ?? "",
               imageBytes: _imageBytes,
           ),
         ),
@@ -67,7 +67,7 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
                         _imageBytes = _fetchImageState.imageBytes;
                         return Image.memory(
                           _fetchImageState.imageBytes,
-                          fit: this.widget.newSearchResult.imageFitCover ? BoxFit.cover : BoxFit.contain,
+                          fit: this.widget.newSearchResult.imageFitCover?? false ? BoxFit.cover : BoxFit.contain,
                         );
                       } // if
 
@@ -89,10 +89,10 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
               ),
               EventCardDescription(
                 profilePicture: Icon(Icons.person),
-                title: this.widget.newSearchResult.title,
-                location: this.widget.newSearchResult.location,
-                startDate: this.widget.newSearchResult.startDate,
-                startTime: this.widget.newSearchResult.startTime,
+                title: this.widget.newSearchResult?.title ?? "",
+                location: this.widget.newSearchResult?.location ?? "",
+                startDate: this.widget.newSearchResult?.startDate ?? "",
+                startTime: this.widget.newSearchResult?.startTime ?? "",
                 trailingActions: [
                   Builder(
                     builder: (iconButtonContext) {
@@ -102,7 +102,11 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
                         return IconButton(
                           icon: Icon(Icons.more_vert),
                           color: cWhite70,
-                          onPressed: () => this.widget.onEventCardVertMoreCallback(imageState.imageBytes),
+                          onPressed: () {
+                            if (this.widget.onEventCardVertMoreCallback != null) {
+                              this.widget.onEventCardVertMoreCallback!(imageState.imageBytes);
+                            }
+                          },
                         );
                       } // if
 
@@ -114,7 +118,11 @@ class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixi
                       return IconButton(
                         icon: Icon(Icons.more_vert),
                         color: cWhite70,
-                        onPressed: () => this.widget.onEventCardVertMoreCallback(null),
+                        onPressed: () {
+                          if (this.widget.onEventCardVertMoreCallback != null) {
+                            this.widget.onEventCardVertMoreCallback!(null);
+                          }
+                        },
                       );
                     },
                   ),

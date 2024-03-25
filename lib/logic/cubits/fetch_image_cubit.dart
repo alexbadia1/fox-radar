@@ -6,10 +6,10 @@ import 'package:database_repository/database_repository.dart';
 
 class FetchImageCubit extends Cubit<FetchImageState> {
   final DatabaseRepository db;
-  FetchImageCubit({@required this.db}) : super(FetchImageInitial());
+  FetchImageCubit({required this.db}) : super(FetchImageInitial());
 
-  void fetchImage({@required String eventID}) async {
-    Uint8List _bytes;
+  void fetchImage({required String eventID}) async {
+    Uint8List? _bytes;
     try {
       _bytes = await db.getImageFromStorage(eventID: eventID);
 
