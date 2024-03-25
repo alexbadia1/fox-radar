@@ -3,7 +3,7 @@ description: Original package class DateUtils conflicts with darts material pack
 version: 1.0.7
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
