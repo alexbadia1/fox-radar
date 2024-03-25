@@ -5,7 +5,7 @@ import 'indicators/fixed_ball_scale_indicator.dart';
 
 // ignore: must_be_immutable
 class FixedLoadingWidget extends StatefulWidget {
-  Indicator indicator;
+  Indicator? indicator;
   double size;
   Color color;
 
@@ -19,7 +19,7 @@ class FixedLoadingWidget extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return FixedLoadingWidgetState(indicator, size);
+    return FixedLoadingWidgetState(indicator!, size);
   }
 }
 
@@ -54,7 +54,7 @@ class FixedLoadingWidgetState extends State<FixedLoadingWidget> with TickerProvi
 class _Painter extends CustomPainter {
   Indicator indicator;
   Color color;
-  Paint defaultPaint;
+  late Paint defaultPaint;
 
   _Painter(this.indicator, this.color) {
     defaultPaint = Paint()

@@ -3,8 +3,8 @@ import 'package:flutter/widgets.dart';
 
 
 abstract class Indicator {
-  FixedLoadingWidgetState context;
-  List<AnimationController> animationControllers;
+  late FixedLoadingWidgetState context;
+  late List<AnimationController> animationControllers;
 
   paint(Canvas canvas, Paint paint, Size size);
 
