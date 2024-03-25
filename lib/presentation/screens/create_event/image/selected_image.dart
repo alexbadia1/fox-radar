@@ -96,7 +96,7 @@ class _SelectedImageState extends State<SelectedImage> {
                   ),
                   onTap: () async {
                     try {
-                      File croppedFile = await ImageCropper.cropImage(
+                      File croppedFile = await ImageCropper().cropImage(
                         sourcePath: BlocProvider.of<CreateEventBloc>(context).state.eventModel.imagePath,
                         aspectRatioPresets: Platform.isAndroid
                             ? [

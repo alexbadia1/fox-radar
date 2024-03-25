@@ -4,19 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 
 class UserModel extends Equatable {
-  String userID;
-  String email;
-  String imagePath;
-  Uint8List imageBytes;
+  late String userID;
+  late String email;
+  late String? imagePath;
+  late Uint8List imageBytes;
   String _firstName = "";
   String _lastName = "";
 
   UserModel({
     this.imagePath,
-    @required this.userID,
-    @required this.email,
-  })  : assert(userID != null),
-        assert(email != null) {
+    required this.userID,
+    required this.email,
+  }) {
     int i = 0;
 
     // Get first name

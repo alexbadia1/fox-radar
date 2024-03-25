@@ -24,7 +24,7 @@ class AuthenticationRepository {
 
   /// Listen to a firebase authentication stream and create a user model
   Stream<UserModel> get user {
-    return _auth.authStateChanges().map((User user) {
+    return _auth.authStateChanges().map((User? user) {
       print(user);
       if (user != null) {
         return _createModelUserFromFirebaseCredentials(user: user);
@@ -42,7 +42,7 @@ class AuthenticationRepository {
       UserCredential _userCredential = await _auth.signInAnonymously();
 
       /// FirebaseUser changed to "User"
-      User user = _userCredential.user;
+      User? user = _userCredential.user;
 
       /// Create a model for the anonymous user
       return _createModelUserFromFirebaseCredentials(user: user);
@@ -61,13 +61,13 @@ class AuthenticationRepository {
   } // getUser
 
   /// Try an anonymous sign in
-  Future<UserModel> signIn() async {
+  Future<UserModel?> signIn() async {
     try {
       /// AuthResult changed to "UserCredential"
       UserCredential _userCredential = await _auth.signInWithEmailAndPassword(email: '', password: '');
 
       /// FirebaseUser changed to "User"
-      User user = _userCredential.user;
+      User? user = _userCredential.user;
 
       /// Create a model for the anonymous user
       return _createModelUserFromFirebaseCredentials(user: user);
@@ -81,7 +81,7 @@ class AuthenticationRepository {
   Future signInWithEmailAndPassword(String newEmail, String newPassword) async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(email: newEmail, password: newPassword);
-      User user = userCredential.user;
+      User? user = userCredential.user;
       return _createModelUserFromFirebaseCredentials(user: user);
     } catch (e) {
       print(e);
@@ -97,7 +97,7 @@ class AuthenticationRepository {
       UserCredential result = await _auth.createUserWithEmailAndPassword(email: newEmail, password: newPassword);
 
       print('Received user sign up task results...');
-      User user = result.user;
+      User? user = result.user;
 
       /// TODO: Add new user to the database, move to bloc
       /// await new DatabaseService(uid: user.uid).updateUserData(newEmail, newPassword);
