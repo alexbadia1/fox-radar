@@ -27,11 +27,12 @@ class SuggestedEventsStateSuccess extends SuggestedEventsState {
   final bool maxEvents;
   final bool isFetching;
 
-  SuggestedEventsStateSuccess(
-      {required this.eventModels,
-      required this.lastEvent,
-      required this.maxEvents,
-      required this.isFetching});
+  SuggestedEventsStateSuccess({
+    required this.eventModels,
+    required this.lastEvent,
+    required this.maxEvents,
+    required this.isFetching,
+  });
   @override
   List<Object?> get props => [eventModels, maxEvents, lastEvent, isFetching];
 }

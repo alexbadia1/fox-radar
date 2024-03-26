@@ -33,7 +33,7 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
 
       // New Event Model tricks equatable into viewing the
       // the next [UploadEventStateUploading] as a new state.
-      EventModel newEventModel = uploadEventUpload.newEventModel;
+      EventModel newEventModel = uploadEventUpload.newEventModel!;
 
       // Form Action Create
       if (action == CreateEventFormAction.create) {
@@ -138,7 +138,7 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
         bytes,
         minHeight: 1350,
         minWidth: 1080,
-        quality: quality ?? 100,
+        quality: quality,
         format: CompressFormat.jpeg,
       );
       return compressedBytes;

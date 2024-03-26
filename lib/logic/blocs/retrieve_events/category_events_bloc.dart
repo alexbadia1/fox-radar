@@ -1,50 +1,44 @@
 import 'dart:async';
-import 'package:rxdart/rxdart.dart';
 import 'package:fox_radar/logic/logic.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:database_repository/database_repository.dart';
 
-class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> {
+class CategoryEventsBloc
+    extends Bloc<CategoryEventsEvent, CategoryEventsState> {
   final String category;
   final DatabaseRepository db;
   final int paginationLimit = PAGINATION_LIMIT;
 
   CategoryEventsBloc({required this.db, required this.category})
-      : super(CategoryEventsStateFetching());
-
-  @override
-  Stream<CategoryEventsState> mapEventToState(CategoryEventsEvent categoryEventsEvent) async* {
-    if (categoryEventsEvent is CategoryEventsEventFetch) {
-      /// Fetch some events
-      yield* _mapCategoryEventsEventFetchToState();
-    } else if (categoryEventsEvent is CategoryEventsEventReload) {
-      /// Reload the events list
-      yield* _mapCategoryEventsEventReloadToState();
-    } else {
-      /// The event added to the bloc has not associated state
-      /// either create one, or check all the available CategoryEvents
-      yield CategoryEventsStateFailed();
-    }
+      : super(CategoryEventsStateFetching()) {
+    on<CategoryEventsEventReload>(_mapCategoryEventsEventReloadToState);
+    on<CategoryEventsEventFetch>(_mapCategoryEventsEventFetchToState);
   }
 
-  Stream<CategoryEventsState> _mapCategoryEventsEventReloadToState() async* {
+  void _mapCategoryEventsEventReloadToState(
+    CategoryEventsEventReload event,
+    Emitter<CategoryEventsState> emitter,
+  ) async {
     /// Get the current state for later use...
     final _currentState = this.state;
     bool _maxEvents = false;
 
     if (_currentState is CategoryEventsStateSuccess) {
-      yield CategoryEventsStateSuccess(
-        eventModels: _currentState.eventModels,
-        maxEvents: _currentState.maxEvents,
-        lastEvent: _currentState.lastEvent,
-        isFetching: true,
+      emitter(
+        CategoryEventsStateSuccess(
+          eventModels: _currentState.eventModels,
+          maxEvents: _currentState.maxEvents,
+          lastEvent: _currentState.lastEvent,
+          isFetching: true,
+        ),
       );
     }
 
     try {
       // User is fetching events from a failed state
-      if (!(_currentState is CategoryEventsStateFetching) && !(_currentState is CategoryEventsStateSuccess)) {
-        yield CategoryEventsStateFetching();
+      if (!(_currentState is CategoryEventsStateFetching) &&
+          !(_currentState is CategoryEventsStateSuccess)) {
+        emitter(CategoryEventsStateFetching());
         // Retry will fail to quickly,
         //
         // Give the user a good feeling that events are actually being searched for.
@@ -52,13 +46,16 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
       }
 
       // No posts were fetched yet
-      final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(lastEvent: null, limit: paginationLimit);
-      final List<SearchResultModel> _eventModels = _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+      final List<QueryDocumentSnapshot> _docs =
+          await _fetchEventsWithPagination(
+              lastEvent: null, limit: paginationLimit);
+      final List<SearchResultModel> _eventModels =
+          _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
       // Failed Reload from a failed state
       if (_currentState is CategoryEventsStateFailed && _docs.isEmpty) {
-        yield CategoryEventsStateReloadFailed();
-        yield CategoryEventsStateFailed();
+        emitter(CategoryEventsStateReloadFailed());
+        emitter(CategoryEventsStateFailed());
         return;
       }
 
@@ -66,18 +63,23 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
         _maxEvents = true;
       }
 
-      yield CategoryEventsStateSuccess(
-        eventModels: _eventModels,
-        maxEvents: _maxEvents,
-        lastEvent: _docs.last,
-        isFetching: false,
+      emitter(
+        CategoryEventsStateSuccess(
+          eventModels: _eventModels,
+          maxEvents: _maxEvents,
+          lastEvent: _docs.last,
+          isFetching: false,
+        ),
       );
     } catch (e) {
-      yield CategoryEventsStateFailed();
+      emitter(CategoryEventsStateFailed());
     }
   }
 
-  Stream<CategoryEventsState> _mapCategoryEventsEventFetchToState() async* {
+  void _mapCategoryEventsEventFetchToState(
+    CategoryEventsEventFetch event,
+    Emitter<CategoryEventsState> emitter,
+  ) async {
     /// Get the current state for later use...
     final _currentState = this.state;
     bool _maxEvents = false;
@@ -85,61 +87,76 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
     try {
       /// No posts were fetched yet
       if (_currentState is CategoryEventsStateFetching) {
-        final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(lastEvent: null, limit: paginationLimit);
-        final List<SearchResultModel> _eventModels = _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+        final List<QueryDocumentSnapshot> _docs =
+            await _fetchEventsWithPagination(
+                lastEvent: null, limit: paginationLimit);
+        final List<SearchResultModel> _eventModels =
+            _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
         if (_eventModels.length != this.paginationLimit) {
           _maxEvents = true;
         }
 
-        yield CategoryEventsStateSuccess(
-          eventModels: _eventModels,
-          maxEvents: _maxEvents,
-          lastEvent: _docs.last,
-          isFetching: false,
+        emitter(
+          CategoryEventsStateSuccess(
+            eventModels: _eventModels,
+            maxEvents: _maxEvents,
+            lastEvent: _docs.last,
+            isFetching: false,
+          ),
         );
       }
 
       /// Some posts were fetched already, now fetch 20 more
       else if (_currentState is CategoryEventsStateSuccess) {
-        final List<QueryDocumentSnapshot> _docs = await _fetchEventsWithPagination(lastEvent: _currentState.lastEvent, limit: paginationLimit);
+        final List<QueryDocumentSnapshot> _docs =
+            await _fetchEventsWithPagination(
+                lastEvent: _currentState.lastEvent, limit: paginationLimit);
 
         /// No event models were returned from the database
         if (_docs.isEmpty) {
-          yield CategoryEventsStateSuccess(
-            eventModels: _currentState.eventModels,
-            maxEvents: true,
-            lastEvent: _currentState.lastEvent,
-            isFetching: false,
+          emitter(
+            CategoryEventsStateSuccess(
+              eventModels: _currentState.eventModels,
+              maxEvents: true,
+              lastEvent: _currentState.lastEvent,
+              isFetching: false,
+            ),
           );
         }
 
         /// At least 1 event was returned from the database
         else {
-          final List<SearchResultModel> _eventModels = _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+          final List<SearchResultModel> _eventModels =
+              _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
           if (_eventModels.length != this.paginationLimit) {
             _maxEvents = true;
           }
 
-          yield CategoryEventsStateSuccess(
-            eventModels: _currentState.eventModels + _eventModels,
-            maxEvents: _maxEvents,
-            lastEvent: _docs?.last ?? _currentState.lastEvent,
-            isFetching: false,
+          emitter(
+            CategoryEventsStateSuccess(
+              eventModels: _currentState.eventModels + _eventModels,
+              maxEvents: _maxEvents,
+              lastEvent: _docs?.last ?? _currentState.lastEvent,
+              isFetching: false,
+            ),
           );
         }
       }
     } catch (e) {
-      yield CategoryEventsStateFailed();
+      emitter(CategoryEventsStateFailed());
     }
   }
 
-  Future<List<QueryDocumentSnapshot>> _fetchEventsWithPagination({required QueryDocumentSnapshot? lastEvent, required int limit}) async {
-    return db.searchEventsByCategory(category: this.category, lastEvent: lastEvent, limit: limit);
+  Future<List<QueryDocumentSnapshot>> _fetchEventsWithPagination(
+      {required QueryDocumentSnapshot? lastEvent, required int limit}) async {
+    return db.searchEventsByCategory(
+        category: this.category, lastEvent: lastEvent, limit: limit);
   }
 
-  List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels({required List<QueryDocumentSnapshot> docs}) {
+  List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels(
+      {required List<QueryDocumentSnapshot> docs}) {
     return docs.map((doc) {
       Map<String, dynamic> docAsMap = doc.data() as Map<String, dynamic>;
 
@@ -147,11 +164,13 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
       DateTime? tempRawStartDateAndTimeToDateTime;
       Timestamp? _startTimestamp = docAsMap[ATTRIBUTE_RAW_START_DATE_TIME];
       if (_startTimestamp != null) {
-        tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(_startTimestamp.millisecondsSinceEpoch).toUtc().toLocal();
-      } // if
-      else {
+        tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(
+                _startTimestamp.millisecondsSinceEpoch)
+            .toUtc()
+            .toLocal();
+      } else {
         tempRawStartDateAndTimeToDateTime = null;
-      } // else
+      }
 
       return SearchResultModel(
         // Title converted to [STRING] from [STRING] in Firebase.
@@ -176,11 +195,6 @@ class CategoryEventsBloc extends Bloc<CategoryEventsEvent, CategoryEventsState> 
         newEventId: doc.id,
       );
     }).toList();
-  }
-
-  @override
-  Stream<Transition<CategoryEventsEvent, CategoryEventsState>> transform(Stream<CategoryEventsEvent> events, transitionFn) {
-    return events.debounceTime(const Duration(milliseconds: 0)).switchMap(transitionFn);
   }
 
   @override

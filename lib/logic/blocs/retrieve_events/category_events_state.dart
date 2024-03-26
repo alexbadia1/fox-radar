@@ -27,11 +27,12 @@ class CategoryEventsStateSuccess extends CategoryEventsState {
   final bool maxEvents;
   final bool isFetching;
 
-  CategoryEventsStateSuccess(
-      {required this.eventModels,
-        required this.lastEvent,
-        required this.maxEvents,
-        required this.isFetching});
+  CategoryEventsStateSuccess({
+    required this.eventModels,
+    required this.lastEvent,
+    required this.maxEvents,
+    required this.isFetching,
+  });
   @override
   List<Object?> get props => [eventModels, maxEvents, lastEvent, isFetching];
 }

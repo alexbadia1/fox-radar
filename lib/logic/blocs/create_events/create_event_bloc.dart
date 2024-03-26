@@ -172,7 +172,7 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
     if (createEventAddHighlight.highlight != null) {
       // TODO: Create a  limits constant, preferably defined in the event model
       if (_highlightList.length < 6) {
-        _highlightList.add(createEventAddHighlight.highlight);
+        _highlightList.add(createEventAddHighlight.highlight!);
         this._eventModel =
             this._eventModel.copyWith(highlights: _highlightList);
       }
@@ -194,7 +194,7 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
     if (createEventRemoveHighlight.index != null) {
       // Obviously can't remove items from an empty list
       if (_highlightList.length > 0) {
-        _highlightList.removeAt(createEventRemoveHighlight.index);
+        _highlightList.removeAt(createEventRemoveHighlight.index!);
         this._eventModel =
             this._eventModel.copyWith(highlights: _highlightList);
       }
@@ -212,7 +212,7 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
 
     // Not empty highlight
     if (createEventSetHighlight.index != null) {
-      _highlightList[createEventSetHighlight.index] =
+      _highlightList[createEventSetHighlight.index!] =
           createEventSetHighlight.highlight ?? '';
       this._eventModel = this._eventModel.copyWith(highlights: _highlightList);
     }
@@ -223,7 +223,7 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
     CreateEventSetImage createEventSetImage,
     Emitter<CreateEventState> emitter,
   ) {
-    final Uint8List _bytes = createEventSetImage.imageBytes;
+    final Uint8List? _bytes = createEventSetImage.imageBytes;
 
     // Not empty highlight
     if (_bytes != null) {

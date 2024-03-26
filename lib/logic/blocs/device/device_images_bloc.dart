@@ -52,7 +52,7 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
           // Map photos to file data type
           List<Uint8List> tempFiles = await _mapPhotosToFiles(photos: photos!);
           List<String> tempFilesPaths =
-              await _mapPhotosToFilePaths(photos: photos!);
+              await _mapPhotosToFilePaths(photos: photos);
 
           if (tempFiles.length != this.paginationLimit) {
             _maxImages = true;
@@ -87,7 +87,7 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
           // Map photos to file data type
           List<Uint8List> tempFiles = await _mapPhotosToFiles(photos: photos!);
           List<String> tempFilesPaths =
-              await _mapPhotosToFilePaths(photos: photos!);
+              await _mapPhotosToFilePaths(photos: photos);
 
           // // Compress images
           // final List<Uint8List> compressedImageBytes = await _mapFilesToCompressedUint8List(tempFiles);

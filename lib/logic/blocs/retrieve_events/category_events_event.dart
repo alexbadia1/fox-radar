@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 
 @immutable
-abstract class CategoryEventsEvent extends Equatable{
+abstract class CategoryEventsEvent extends Equatable {
   const CategoryEventsEvent();
 }
 

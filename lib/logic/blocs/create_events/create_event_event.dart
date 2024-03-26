@@ -61,7 +61,7 @@ class CreateEventSetDescription extends CreateEventEvent {
 }
 
 class CreateEventSetRawStartDateTime extends CreateEventEvent {
-  final DateTime newRawStartDateTime;
+  final DateTime? newRawStartDateTime;
 
   CreateEventSetRawStartDateTime({required this.newRawStartDateTime});
 
@@ -70,7 +70,7 @@ class CreateEventSetRawStartDateTime extends CreateEventEvent {
 }
 
 class CreateEventSetRawEndDateTime extends CreateEventEvent {
-  final DateTime newRawEndDateTime;
+  final DateTime? newRawEndDateTime;
 
   CreateEventSetRawEndDateTime({required this.newRawEndDateTime});
 
@@ -85,7 +85,7 @@ class CreateEventRemoveRawEndDateTime extends CreateEventEvent {
 }
 
 class CreateEventSetCategory extends CreateEventEvent {
-  final String category;
+  final String? category;
 
   CreateEventSetCategory({required this.category});
 
@@ -94,7 +94,7 @@ class CreateEventSetCategory extends CreateEventEvent {
 }
 
 class CreateEventAddHighlight extends CreateEventEvent {
-  final String highlight;
+  final String? highlight;
 
   CreateEventAddHighlight({required this.highlight});
 
@@ -103,7 +103,7 @@ class CreateEventAddHighlight extends CreateEventEvent {
 }
 
 class CreateEventRemoveHighlight extends CreateEventEvent {
-  final int index;
+  final int? index;
 
   CreateEventRemoveHighlight({required this.index});
 
@@ -112,8 +112,8 @@ class CreateEventRemoveHighlight extends CreateEventEvent {
 }
 
 class CreateEventSetHighlight extends CreateEventEvent {
-  final int index;
-  final String highlight;
+  final int? index;
+  final String? highlight;
 
   CreateEventSetHighlight({required this.index, required this.highlight});
 
@@ -131,7 +131,7 @@ class CreateEventSetImage extends CreateEventEvent {
 }
 
 class CreateEventSetImageFitCover extends CreateEventEvent {
-  final bool fitCover;
+  final bool? fitCover;
   CreateEventSetImageFitCover({required this.fitCover});
 
   @override
@@ -139,7 +139,7 @@ class CreateEventSetImageFitCover extends CreateEventEvent {
 }
 
 class CreateEventSetImagePath extends CreateEventEvent {
-  final String imagePath;
+  final String? imagePath;
   CreateEventSetImagePath({required this.imagePath});
 
   @override

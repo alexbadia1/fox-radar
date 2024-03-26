@@ -12,21 +12,19 @@ import 'package:authentication_repository/authentication_repository.dart';
 class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
   final UserModel userModel;
   UpdateProfileBloc(this.userModel)
-      : super(UpdateProfileStateReady(oldImageBytes: userModel.imageBytes));
-
-  @override
-  Stream<UpdateProfileState> mapEventToState(UpdateProfileEvent event) async* {
-    if (event is UpdateProfileEventSetImage) {
-      yield* _mapProfileEventSetImageToState(event.imageBytes);
-    } else {
-      // Unrecognized event
-    }
+      : super(UpdateProfileStateReady(oldImageBytes: userModel.imageBytes)) {
+    on<UpdateProfileEventSetImage>(_mapProfileEventSetImageToState);
   }
 
-  Stream<UpdateProfileState> _mapProfileEventSetImageToState(Uint8List imageBytes) async* {
+  void _mapProfileEventSetImageToState(
+    UpdateProfileEventSetImage event,
+    Emitter<UpdateProfileState> emitter,
+  ) async {
+    Uint8List imageBytes = event.imageBytes;
+
     final currState = this.state;
 
-    yield UpdateProfileStateUpdating();
+    emitter(UpdateProfileStateUpdating());
 
     await Future.delayed(Duration(seconds: 3));
 
@@ -34,17 +32,18 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
     //
     // await Future.delayed(Duration(seconds: 3));
 
-    yield UpdateProfileStateFailed(
-      oldImageBytes: currState.imageBytes,
-      newImageBytes: imageBytes,
+    emitter(
+      UpdateProfileStateFailed(
+        oldImageBytes: currState.imageBytes,
+        newImageBytes: imageBytes,
+      ),
     );
 
     await Future.delayed(Duration(seconds: 3));
   }
 
-@override
+  @override
   void onChange(Change<UpdateProfileState> change) {
-    print("[Update Profile Bloc] $change");
     super.onChange(change);
   }
 }

@@ -36,7 +36,10 @@ class UpdateProfileStateUpdating extends UpdateProfileState {
 class UpdateProfileStateFailed extends UpdateProfileState {
   final Uint8List? oldImageBytes;
   final Uint8List? newImageBytes;
-  UpdateProfileStateFailed({required this.oldImageBytes, required this.newImageBytes}) : super(oldImageBytes);
+  UpdateProfileStateFailed({
+    required this.oldImageBytes,
+    required this.newImageBytes,
+  }) : super(oldImageBytes);
 
   @override
   List<Object?> get props => [this.imageBytes];

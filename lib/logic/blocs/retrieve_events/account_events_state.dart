@@ -22,12 +22,13 @@ class AccountEventsStateSuccess extends AccountEventsState {
   final bool isFetching;
   bool isDeleting = false;
 
-  AccountEventsStateSuccess(
-      {required this.eventModels,
-      required this.lastEvent,
-      required this.maxEvents,
-      required this.isFetching,
-      isDeleting});
+  AccountEventsStateSuccess({
+    required this.eventModels,
+    required this.lastEvent,
+    required this.maxEvents,
+    required this.isFetching,
+    isDeleting,
+  });
 
   set deleting(bool newIsDeleting) {
     this.isDeleting = newIsDeleting;

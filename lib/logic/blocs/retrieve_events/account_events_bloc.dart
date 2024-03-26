@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'account_events_state.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:fox_radar/logic/logic.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:database_repository/database_repository.dart';
@@ -21,41 +19,16 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
   late PaginationEventsHandler _accountEventsHandler;
 
   AccountEventsBloc({required this.db, required this.accountID})
-      : super(AccountEventsStateFetching());
-
-  // Adds a debounce, to prevent the spamming of requesting events
-  @override
-  Stream<Transition<AccountEventsEvent, AccountEventsState>> transform(Stream<AccountEventsEvent> events, transitionFn) {
-    return events.debounceTime(const Duration(milliseconds: 0)).switchMap(transitionFn);
+      : super(AccountEventsStateFetching()) {
+    on<AccountEventsEvent>(_mapAccountEventsEventFetchToState);
+    on<AccountEventsEventReload>(_mapAccountEventsEventReloadToState);
+    on<AccountEventsEventRemove>(_mapAccountEventsEventRemoveToState);
   }
 
-  @override
-  Stream<AccountEventsState> mapEventToState(
-    AccountEventsEvent accountEventsEvent,
-  ) async* {
-    // Fetch some events
-    if (accountEventsEvent is AccountEventsEventFetch) {
-      yield* _mapAccountEventsEventFetchToState();
-    } // if
-
-    // Reload the events list
-    else if (accountEventsEvent is AccountEventsEventReload) {
-      yield* _mapAccountEventsEventReloadToState();
-    } // else if
-
-    // Remove an event
-    else if (accountEventsEvent is AccountEventsEventRemove) {
-      yield* _mapAccountEventsEventRemoveToState(accountEventsEventRemove: accountEventsEvent);
-    } // else if
-
-    // The event added to the bloc has not associated state
-    // either create one, or check the [account_events_state.dart]
-    else {
-      yield AccountEventsStateFailed("[AccountEventsBloc] Invalid event received");
-    } // else
-  } // mapEventToState
-
-  Stream<AccountEventsState> _mapAccountEventsEventFetchToState() async* {
+  void _mapAccountEventsEventFetchToState(
+    AccountEventsEvent event,
+    Emitter<AccountEventsState> emitter,
+  ) async {
     final _currentState = this.state;
     bool _maxEvents = false;
 
@@ -63,75 +36,92 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
       /// No posts were fetched yet
       ///
       /// Initial state was fetching, user tried to fetch events from a failed state
-      if (_currentState is AccountEventsStateFetching || _currentState is AccountEventsStateFailed) {
+      if (_currentState is AccountEventsStateFetching ||
+          _currentState is AccountEventsStateFailed) {
         /// Get user's created events document that lists
         /// all of the event id's that belong to this user.
         await this._getListOfAccountEvents();
 
         /// Fail, since no document id's are listed in the user's createEvent doc.
         if (this._accountEventsHandler.isEmpty()) {
-          yield AccountEventsStateFailed("[Account Events State Failed] Account events doc has no events!");
+          emitter(
+            AccountEventsStateFailed(
+                "[Account Events State Failed] Account events doc has no events!"),
+          );
           return;
-        } // if
+        }
 
         /// Get the first [paginationLimit] number of event id's from the [AccountEventsHandler]
-        final List<String> _eventIdsToFetch = this._accountEventsHandler.getEventIdsPaginated(this._paginationLimit);
+        final List<String> _eventIdsToFetch = this
+            ._accountEventsHandler
+            .getEventIdsPaginated(this._paginationLimit);
 
         /// Fetch the first [paginationLimit] number of events
         final List<DocumentSnapshot> _docs = [];
         for (int i = 0; i < _eventIdsToFetch.length; ++i) {
-          final DocumentSnapshot? docSnap = await this.db.getSearchEventById(eventId: _eventIdsToFetch[i]);
+          final DocumentSnapshot? docSnap =
+              await this.db.getSearchEventById(eventId: _eventIdsToFetch[i]);
           if (docSnap != null) {
             _docs.add(docSnap);
-          } // if
-        } // for
+          }
+        }
 
         /// No events were retrieved on the FIRST retrieval, fail.
         if (_docs.isEmpty) {
-          yield AccountEventsStateFailed(
-              "[Account Events State Failed] Failed to fetch the first ${this._paginationLimit} based on the account events doc!");
+          emitter(
+            AccountEventsStateFailed(
+                "[Account Events State Failed] Failed to fetch the first ${this._paginationLimit} based on the account events doc!"),
+          );
           return;
-        } // if
+        }
 
         /// Map the events to a list of "Search Result Models"
-        final List<SearchResultModel> _eventModels = _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+        final List<SearchResultModel> _eventModels =
+            _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
         /// The last remaining events where retrieved
         if (_eventModels.length != this._paginationLimit) {
           _maxEvents = true;
-        } // if
+        }
 
         /// First fetch, all good!
-        yield AccountEventsStateSuccess(
-          eventModels: _eventModels,
-          maxEvents: _maxEvents,
-          lastEvent: _docs.last,
-          isFetching: false,
+        emitter(
+          AccountEventsStateSuccess(
+            eventModels: _eventModels,
+            maxEvents: _maxEvents,
+            lastEvent: _docs.last,
+            isFetching: false,
+          ),
         );
-      } // if
+      }
 
       // Posts were fetched already, now fetch [paginationLimit] more events.
       else if (_currentState is AccountEventsStateSuccess) {
         /// Get the next [paginationLimit] number of event id's from the [AccountEventsHandler]
-        final List<String> _eventIdsToFetch = this._accountEventsHandler.getEventIdsPaginated(this._paginationLimit);
+        final List<String> _eventIdsToFetch = this
+            ._accountEventsHandler
+            .getEventIdsPaginated(this._paginationLimit);
 
         /// No event models were returned from the database
         ///
         /// Since events were already received, this means that all
         /// events were retrieved from the database (maxEvents = true).
         if (_eventIdsToFetch.isEmpty) {
-          yield AccountEventsStateSuccess(
-            eventModels: _currentState.eventModels,
-            maxEvents: true,
-            lastEvent: _currentState.lastEvent,
-            isFetching: false,
+          emitter(
+            AccountEventsStateSuccess(
+              eventModels: _currentState.eventModels,
+              maxEvents: true,
+              lastEvent: _currentState.lastEvent,
+              isFetching: false,
+            ),
           );
-        } // if
+        }
 
         /// Fetch the next [paginationLimit] number of events
         final List<DocumentSnapshot> _docs = [];
         for (int i = 0; i < _eventIdsToFetch.length; ++i) {
-          final DocumentSnapshot? docSnap = await this.db.getSearchEventById(eventId: _eventIdsToFetch[i]);
+          final DocumentSnapshot? docSnap =
+              await this.db.getSearchEventById(eventId: _eventIdsToFetch[i]);
           if (docSnap != null) {
             _docs.add(docSnap);
           } // if
@@ -139,11 +129,13 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
 
         /// No events were retrieved on the FIRST retrieval, fail.
         if (_docs.isEmpty) {
-          yield AccountEventsStateSuccess(
-            eventModels: _currentState.eventModels,
-            maxEvents: true,
-            lastEvent: _currentState.lastEvent,
-            isFetching: false,
+          emitter(
+            AccountEventsStateSuccess(
+              eventModels: _currentState.eventModels,
+              maxEvents: true,
+              lastEvent: _currentState.lastEvent,
+              isFetching: false,
+            ),
           );
           return;
         } // if
@@ -151,50 +143,60 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
         /// At least 1 event was returned from the database, update
         /// the AccountEventBloc's State by adding the new events.
         /// Map the events to a list of "Search Result Models"
-        final List<SearchResultModel> _eventModels = _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+        final List<SearchResultModel> _eventModels =
+            _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
         /// The last remaining events where retrieved
         if (_eventModels.length != this._paginationLimit) {
           _maxEvents = true;
         } // if
 
-        yield AccountEventsStateSuccess(
-          eventModels: _currentState.eventModels + _eventModels,
-          maxEvents: _maxEvents,
-          lastEvent: _docs?.last ?? _currentState.lastEvent,
-          isFetching: false,
+        emitter(
+          AccountEventsStateSuccess(
+            eventModels: _currentState.eventModels + _eventModels,
+            maxEvents: _maxEvents,
+            lastEvent: _docs?.last ?? _currentState.lastEvent,
+            isFetching: false,
+          ),
         );
-      } // else if
+      }
     } catch (e) {
-      print(e);
-      yield AccountEventsStateFailed(e.toString());
-    } // catch
-  } // _mapAccountEventsEventFetchToState
+      emitter(
+        AccountEventsStateFailed(e.toString()),
+      );
+    }
+  }
 
-  Stream<AccountEventsState> _mapAccountEventsEventReloadToState() async* {
+  void _mapAccountEventsEventReloadToState(
+    AccountEventsEventReload event,
+    Emitter<AccountEventsState> emitter,
+  ) async {
     final _currentState = this.state;
     bool _maxEvents = false;
 
     /// Change "isFetching" to true, to show a
     /// loading widget at the bottom of the list view.
     if (_currentState is AccountEventsStateSuccess) {
-      yield AccountEventsStateSuccess(
-        eventModels: _currentState.eventModels,
-        maxEvents: _currentState.maxEvents,
-        lastEvent: _currentState.lastEvent,
-        isFetching: true,
+      emitter(
+        AccountEventsStateSuccess(
+          eventModels: _currentState.eventModels,
+          maxEvents: _currentState.maxEvents,
+          lastEvent: _currentState.lastEvent,
+          isFetching: true,
+        ),
       );
-    } // if
+    }
 
     try {
       // User is fetching events from a failed state
-      if (!(_currentState is AccountEventsStateFetching) && !(_currentState is AccountEventsStateSuccess)) {
-        yield AccountEventsStateFetching();
+      if (!(_currentState is AccountEventsStateFetching) &&
+          !(_currentState is AccountEventsStateSuccess)) {
+        emitter(AccountEventsStateFetching());
         // Retry will fail to quickly,
         //
         // Give the user a good feeling that events are actually being searched for.
         await Future.delayed(Duration(milliseconds: 350));
-      } // if
+      }
 
       /// Get user's created events document that lists
       /// all of the event id's that belong to this user.
@@ -202,53 +204,67 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
 
       /// Fail, since no document id's are listed in the user's createEvent doc.
       if (this._accountEventsHandler.isEmpty()) {
-        yield AccountEventsStateFailed("Account ID Doc doesn't list any events");
+        emitter(
+          AccountEventsStateFailed("Account ID Doc doesn't list any events"),
+        );
         return;
-      } // if
+      }
 
       /// Get the first [paginationLimit] number of event id's from the [AccountEventsHandler]
-      final List<String> _eventIdsToFetch = this._accountEventsHandler.getEventIdsPaginated(this._paginationLimit);
+      final List<String> _eventIdsToFetch = this
+          ._accountEventsHandler
+          .getEventIdsPaginated(this._paginationLimit);
 
       /// Fetch the first [paginationLimit] number of events
       final List<DocumentSnapshot> _docs = [];
       for (int i = 0; i < _eventIdsToFetch.length; ++i) {
-        final DocumentSnapshot? docSnap = await this.db.getSearchEventById(eventId: _eventIdsToFetch[i]);
+        final DocumentSnapshot? docSnap =
+            await this.db.getSearchEventById(eventId: _eventIdsToFetch[i]);
         if (docSnap != null) {
           _docs.add(docSnap);
-        } // if
-      } // for
+        }
+      }
 
       if (_currentState is AccountEventsStateFailed) {
-        yield AccountEventsStateReloadFailed();
-      } // if
+        emitter(AccountEventsStateReloadFailed());
+      }
 
       // No events were retrieved on the FIRST retrieval, fail.
       if (_docs.isEmpty) {
-        yield AccountEventsStateFailed("No events retrieved");
+        emitter(
+          AccountEventsStateFailed("No events retrieved"),
+        );
         return;
-      } // if
+      }
 
       // Map the events to a list of "Search Result Models"
-      final List<SearchResultModel> _eventModels = _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
+      final List<SearchResultModel> _eventModels =
+          _mapDocumentSnapshotsToSearchEventModels(docs: _docs);
 
       // The last remaining events where retrieved
       if (_eventModels.length != this._paginationLimit) {
         _maxEvents = true;
-      } // if
+      }
 
-      yield AccountEventsStateSuccess(
-        eventModels: _eventModels,
-        maxEvents: _maxEvents,
-        lastEvent: _docs.last,
-        isFetching: false,
+      emitter(
+        AccountEventsStateSuccess(
+          eventModels: _eventModels,
+          maxEvents: _maxEvents,
+          lastEvent: _docs.last,
+          isFetching: false,
+        ),
       );
-    } // try
-    catch (e) {
-      yield AccountEventsStateFailed(e.toString());
-    } // catch
-  } // _mapAccountEventsEventReloadToState
+    } catch (e) {
+      emitter(
+        AccountEventsStateFailed(e.toString()),
+      );
+    }
+  }
 
-  Stream<AccountEventsState> _mapAccountEventsEventRemoveToState({required AccountEventsEventRemove accountEventsEventRemove}) async* {
+  void _mapAccountEventsEventRemoveToState(
+    AccountEventsEventRemove accountEventsEventRemove,
+    Emitter<AccountEventsState> emitter,
+  ) async {
     final currentState = this.state;
 
     if (currentState is AccountEventsStateSuccess) {
@@ -259,12 +275,15 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
         // UI should show a loading widget in the UI
         // to indicate that the deletion is in process.
         // Still emit a success state, so list view remains unchanged
-        yield AccountEventsStateSuccess(
+        emitter(
+          AccountEventsStateSuccess(
             eventModels: currentState.eventModels,
             lastEvent: currentState.lastEvent,
             maxEvents: currentState.maxEvents,
             isFetching: currentState.isFetching,
-            isDeleting: true);
+            isDeleting: true,
+          ),
+        );
 
         // Remove event from "My Events" list view on the device
         if (currentState.eventModels.isNotEmpty) {
@@ -278,7 +297,9 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
         } // if
 
         // Delete event from firebase cloud
-        await this.db.deleteEvent(accountEventsEventRemove.searchResultModel.eventId!, this.accountID);
+        await this.db.deleteEvent(
+            accountEventsEventRemove.searchResultModel.eventId!,
+            this.accountID);
 
         // Remove image from storage
         //
@@ -290,24 +311,29 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
         // Show lonely panda image with a reload button,
         // just in case there's more events in the database
         if (newEventModelReference.isEmpty) {
-          yield AccountEventsStateFailed("Deleted the last event");
+          emitter(
+            AccountEventsStateFailed("Deleted the last event"),
+          );
         } // if
 
         // Set [isDeleting] false, as there are still events
         else {
-          yield AccountEventsStateSuccess(
-              eventModels: newEventModelReference,
-              lastEvent: currentState.lastEvent,
-              maxEvents: currentState.maxEvents,
-              isFetching: currentState.isFetching,
-              isDeleting: false);
-        } // else
-      } // if
-    } // if
-  } // _mapAccountEventsEventRemoveToState
+          emitter(
+            AccountEventsStateSuccess(
+                eventModels: newEventModelReference,
+                lastEvent: currentState.lastEvent,
+                maxEvents: currentState.maxEvents,
+                isFetching: currentState.isFetching,
+                isDeleting: false),
+          );
+        }
+      }
+    }
+  }
 
   Future<void> _getListOfAccountEvents() async {
-    final DocumentSnapshot? docSnap = await this.db.getAccountCreatedEvents(uid: this.accountID);
+    final DocumentSnapshot? docSnap =
+        await this.db.getAccountCreatedEvents(uid: this.accountID);
 
     final List<String> eventIds = [];
     try {
@@ -328,7 +354,8 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
   /// Name: _mapDocumentSnapshotsToSearchEventModels
   ///
   /// Description: maps the document snapshot from firebase to the event model
-  List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels({required List<DocumentSnapshot?> docs}) {
+  List<SearchResultModel> _mapDocumentSnapshotsToSearchEventModels(
+      {required List<DocumentSnapshot?> docs}) {
     return docs.map((doc) {
       Map<String, dynamic>? docAsMap = doc?.data() as Map<String, dynamic>?;
 
@@ -336,7 +363,10 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
       DateTime? tempRawStartDateAndTimeToDateTime;
       Timestamp _startTimestamp = docAsMap?[ATTRIBUTE_RAW_START_DATE_TIME];
       if (_startTimestamp != null) {
-        tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(_startTimestamp.millisecondsSinceEpoch).toUtc().toLocal();
+        tempRawStartDateAndTimeToDateTime = DateTime.fromMillisecondsSinceEpoch(
+                _startTimestamp.millisecondsSinceEpoch)
+            .toUtc()
+            .toLocal();
       } // if
       else {
         tempRawStartDateAndTimeToDateTime = null;

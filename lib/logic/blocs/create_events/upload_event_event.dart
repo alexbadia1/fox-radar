@@ -7,7 +7,7 @@ abstract class UploadEventEvent extends Equatable {} // UploadEventEvent
 /// Starts an upload, if an upload is not already occurring
 class UploadEventUpload extends UploadEventEvent {
   final CreateEventFormAction createEventFormAction;
-  final EventModel newEventModel;
+  final EventModel? newEventModel;
 
   UploadEventUpload({
     required this.newEventModel,
