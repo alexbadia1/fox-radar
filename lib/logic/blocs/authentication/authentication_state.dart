@@ -1,31 +1,27 @@
 import 'dart:typed_data';
-
 import 'package:equatable/equatable.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 
-abstract class AuthenticationState extends Equatable {
+abstract class AuthState extends Equatable {
   @override
   List<Object?> get props => [];
 }
 
-// Authenticated
-class AuthenticationStateAuthenticated extends AuthenticationState {
+class AuthStateAuthenticated extends AuthState {
   final UserModel? user;
   final Uint8List? imageBytes;
-  AuthenticationStateAuthenticated(this.user, [this.imageBytes]);
+  AuthStateAuthenticated(this.user, [this.imageBytes]);
 
   @override
   List<Object?> get props => [user];
 }
 
-/// Unauthenticated
-class AuthenticationStateUnauthenticated extends AuthenticationState {
+class AuthStateUnauthenticated extends AuthState {
   @override
   List<Object?> get props => [];
 }
 
-/// Authenticating
-class AuthenticationStateAuthenticating extends AuthenticationState {
+class AuthStateAuthenticating extends AuthState {
   @override
   List<Object?> get props => [];
 }

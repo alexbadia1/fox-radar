@@ -10,7 +10,8 @@ class AccountDrawerContents extends StatefulWidget {
 }
 
 class _AccountDrawerContentsState extends State<AccountDrawerContents> {
-  final double topPadding = WidgetsBinding.instance.window.padding.top / WidgetsBinding.instance.window.devicePixelRatio;
+  final double topPadding = WidgetsBinding.instance.window.padding.top /
+      WidgetsBinding.instance.window.devicePixelRatio;
 
   Future<dynamic> showEditAccount(BuildContext context) {
     return showModalBottomSheet(
@@ -20,8 +21,12 @@ class _AccountDrawerContentsState extends State<AccountDrawerContents> {
       builder: (modalContext) {
         return MultiBlocProvider(
           providers: [
-            BlocProvider.value(value: BlocProvider.of<AuthenticationBloc>(context)),
-            BlocProvider.value(value: BlocProvider.of<UpdateProfileBloc>(context)),
+            BlocProvider.value(
+              value: BlocProvider.of<AuthenticationBloc>(context),
+            ),
+            BlocProvider.value(
+              value: BlocProvider.of<UpdateProfileBloc>(context),
+            ),
           ],
           child: RepositoryProvider<AuthenticationRepository>.value(
             value: RepositoryProvider.of<AuthenticationRepository>(context),
@@ -50,9 +55,10 @@ class _AccountDrawerContentsState extends State<AccountDrawerContents> {
                 enableBorders: false,
                 leading: Builder(
                   builder: (circleAvatarContext) {
-                    final _auth = circleAvatarContext.watch<AuthenticationBloc>().state;
+                    final _auth =
+                        circleAvatarContext.watch<AuthenticationBloc>().state;
 
-                    if (_auth is AuthenticationStateAuthenticated) {
+                    if (_auth is AuthStateAuthenticated) {
                       final Uint8List? _imageBytes = _auth.imageBytes;
 
                       /// Try to show profile image
@@ -60,11 +66,13 @@ class _AccountDrawerContentsState extends State<AccountDrawerContents> {
                         return CircleAvatar(
                           backgroundImage: MemoryImage(_imageBytes),
                         );
-                      } // if
+                      }
 
                       /// Show initials, if no profile image
-                      final String firstInitial = _auth.user?.firstName[0].toUpperCase() ?? '';
-                      final String lastInitial = _auth.user?.lastName[0].toUpperCase() ?? '';
+                      final String firstInitial =
+                          _auth.user?.firstName[0].toUpperCase() ?? '';
+                      final String lastInitial =
+                          _auth.user?.lastName[0].toUpperCase() ?? '';
                       return CircleAvatar(
                         child: Text('$firstInitial$lastInitial'),
                       );
@@ -72,14 +80,16 @@ class _AccountDrawerContentsState extends State<AccountDrawerContents> {
                     return IconButton(
                       color: kHavenLightGray,
                       onPressed: () => Navigator.of(circleAvatarContext).pop(),
-                      icon: Icon(Icons.account_circle_outlined, color: kHavenLightGray),
+                      icon: Icon(Icons.account_circle_outlined,
+                          color: kHavenLightGray),
                     );
                   },
                 ),
                 subtitle: Builder(builder: (userTypeContext) {
-                  final _auth = userTypeContext.watch<AuthenticationBloc>().state;
+                  final _auth =
+                      userTypeContext.watch<AuthenticationBloc>().state;
 
-                  if (_auth is AuthenticationStateAuthenticated) {
+                  if (_auth is AuthStateAuthenticated) {
                     return Text(
                       'Type: User',
                       style: TextStyle(color: cWhite70, fontSize: 12.0),
@@ -94,7 +104,7 @@ class _AccountDrawerContentsState extends State<AccountDrawerContents> {
                 description: Builder(builder: (emailContext) {
                   final _auth = emailContext.watch<AuthenticationBloc>().state;
 
-                  if (_auth is AuthenticationStateAuthenticated) {
+                  if (_auth is AuthStateAuthenticated) {
                     return Text(
                       _auth.user?.email ?? "",
                       overflow: TextOverflow.ellipsis,

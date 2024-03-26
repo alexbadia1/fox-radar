@@ -13,7 +13,8 @@ class DeviceImagesStateFetching extends DeviceImagesState {
 class DeviceImagesStateFailed extends DeviceImagesState {
   final int failedAttempts;
 
-  DeviceImagesStateFailed({required this.failedAttempts}) : assert(failedAttempts != null && failedAttempts >= 0);
+  DeviceImagesStateFailed({required this.failedAttempts})
+      : assert(failedAttempts >= 0);
 
   @override
   List<Object?> get props => [failedAttempts];
@@ -31,12 +32,13 @@ class DeviceImagesStateSuccess extends DeviceImagesState {
   final bool maxImages;
   final bool isFetching;
 
-  DeviceImagesStateSuccess(
-      {required this.paths,
-        required this.images,
-        required this.lastPage,
-        required this.maxImages,
-        required this.isFetching});
+  DeviceImagesStateSuccess({
+    required this.paths,
+    required this.images,
+    required this.lastPage,
+    required this.maxImages,
+    required this.isFetching,
+  });
   @override
   List<Object?> get props => [images, maxImages, lastPage, isFetching];
 }

@@ -1,19 +1,16 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class AuthenticationEvent extends Equatable {
+abstract class AuthEvent extends Equatable {
   @override
   List<Object?> get props => [];
 }
 
-// Authenticated
-class AuthenticationStarted extends AuthenticationEvent {}
+class AuthStarted extends AuthEvent {}
 
-// Unauthenticated
-class AuthenticationLoggedIn extends AuthenticationEvent {
+class AuthLoggedIn extends AuthEvent {
   final UserModel? user;
-  AuthenticationLoggedIn(this.user);
+  AuthLoggedIn(this.user);
 }
 
-// Authenticating
-class AuthenticationLoggedOut extends AuthenticationEvent {}
+class AuthLoggedOut extends AuthEvent {}

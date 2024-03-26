@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -23,39 +22,33 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
     try {
       Navigator.of(context).pop();
       XFile? image = await this._picker?.pickImage(
-          source: ImageSource.gallery,
-          maxWidth: 1080,
-          maxHeight: 1350
-      );
+          source: ImageSource.gallery, maxWidth: 1080, maxHeight: 1350);
 
       if (image != null) {
         final bytes = await image.readAsBytes();
-        BlocProvider.of<UpdateProfileBloc>(context).add(UpdateProfileEventSetImage(bytes));
+        BlocProvider.of<UpdateProfileBloc>(context)
+            .add(UpdateProfileEventSetImage(bytes));
         this._profileUpdateCompleter = new Completer();
         _showSnackBar(context, bytes);
       }
-    }
-    catch (e) {}
+    } catch (e) {}
   }
 
   Future getImageFromCamera(BuildContext context) async {
     try {
+      // Try to access camera
       Navigator.of(context).pop();
       XFile? image = await this._picker?.pickImage(
-          source: ImageSource.camera,
-          maxWidth: 1080,
-          maxHeight: 1350
-      );
+          source: ImageSource.camera, maxWidth: 1080, maxHeight: 1350);
       if (image != null) {
         final bytes = await image.readAsBytes();
-        BlocProvider.of<UpdateProfileBloc>(context).add(UpdateProfileEventSetImage(bytes));
+        BlocProvider.of<UpdateProfileBloc>(context)
+            .add(UpdateProfileEventSetImage(bytes));
         this._profileUpdateCompleter = new Completer();
         _showSnackBar(context, bytes);
       }
-    }
-
-    /// Error opening the camera
-    catch (platformException) {
+    } catch (platformException) {
+      // Error accessing camera
       PlatformException e = platformException as PlatformException;
       showDialog<String>(
         context: context,
@@ -75,8 +68,9 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
     }
   }
 
-  /// Can't call showSnackbar in a Build() widget, so must use a completer instead
-  Future<void> _showSnackBar(BuildContext context, Uint8List retryImageBytes) async {
+  // Can't call showSnackbar in Build() widget, so must use completer instead
+  Future<void> _showSnackBar(
+      BuildContext context, Uint8List retryImageBytes) async {
     final bool success = await this._profileUpdateCompleter.future;
     this._profileUpdateCompleter = new Completer();
     if (!success) {
@@ -94,9 +88,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
           ),
         ),
       );
-    }
-
-    else {
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Profile image successfully updated!"),
@@ -113,7 +105,8 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double topPadding = WidgetsBinding.instance.window.padding.top / WidgetsBinding.instance.window.devicePixelRatio;
+    final double topPadding = WidgetsBinding.instance.window.padding.top /
+        WidgetsBinding.instance.window.devicePixelRatio;
 
     return Scaffold(
       key: this._scaffoldKey,
@@ -132,12 +125,13 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
               builder: (avatarContext) {
                 final _auth = avatarContext.watch<AuthenticationBloc>().state;
 
-                if (_auth is AuthenticationStateAuthenticated) {
+                if (_auth is AuthStateAuthenticated) {
                   return CircleAvatar(
                     radius: 40,
                     child: Builder(
                       builder: (BuildContext context) {
-                        final _updateProfileState = avatarContext.watch<UpdateProfileBloc>().state;
+                        final _updateProfileState =
+                            avatarContext.watch<UpdateProfileBloc>().state;
 
                         if (_updateProfileState is UpdateProfileStateUpdating) {
                           return CustomCircularProgressIndicator();
@@ -154,20 +148,25 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 
                         /// Try to show profile image
                         if (_updateProfileState.imageBytes != null) {
-                          return Image.memory(_updateProfileState.imageBytes as Uint8List, fit: BoxFit.cover);
+                          return Image.memory(
+                              _updateProfileState.imageBytes as Uint8List,
+                              fit: BoxFit.cover);
                         }
 
                         /// Show initials, if no profile image
                         else {
-                          final String firstInitial = _auth.user?.firstName[0].toUpperCase() ?? '';
-                          final String lastInitial = _auth.user?.lastName[0].toUpperCase() ?? '';
+                          final String firstInitial =
+                              _auth.user?.firstName[0].toUpperCase() ?? '';
+                          final String lastInitial =
+                              _auth.user?.lastName[0].toUpperCase() ?? '';
                           return Text('$firstInitial$lastInitial');
                         }
                       },
                     ),
                   );
                 }
-                return Icon(Icons.account_circle_outlined, color: kHavenLightGray);
+                return Icon(Icons.account_circle_outlined,
+                    color: kHavenLightGray);
               },
             ),
             TextButton(
@@ -176,7 +175,8 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                 style: TextStyle(color: Colors.blueAccent, fontSize: 16.0),
               ),
               onPressed: () {
-                final _updateProfileState = BlocProvider.of<UpdateProfileBloc>(context).state;
+                final _updateProfileState =
+                    BlocProvider.of<UpdateProfileBloc>(context).state;
 
                 if (_updateProfileState is UpdateProfileStateUpdating) {
                   // Profile picture already being uploaded
@@ -185,16 +185,19 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                       content: Text("A Profile picture is already uploading!"),
                     ),
                   );
-                }
-                else {
+                } else {
                   // Update profile picture
                   showModalBottomSheet(
                       context: context,
                       builder: (chooseImageContext) {
                         return MultiBlocProvider(
                           providers: [
-                            BlocProvider.value(value: BlocProvider.of<AuthenticationBloc>(context)),
-                            BlocProvider.value(value: BlocProvider.of<UpdateProfileBloc>(context)),
+                            BlocProvider.value(
+                                value: BlocProvider.of<AuthenticationBloc>(
+                                    context)),
+                            BlocProvider.value(
+                                value: BlocProvider.of<UpdateProfileBloc>(
+                                    context)),
                           ],
                           child: ModalActionMenu(
                             actions: [
@@ -206,7 +209,8 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                               ModalActionMenuButton(
                                 icon: Icons.image_outlined,
                                 description: "From Device",
-                                onPressed: () => getImageFromDeviceGallery(context),
+                                onPressed: () =>
+                                    getImageFromDeviceGallery(context),
                               ),
                             ],
                             cancel: true,
@@ -219,7 +223,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
             Builder(builder: (userTypeContext) {
               final _auth = userTypeContext.watch<AuthenticationBloc>().state;
 
-              if (_auth is AuthenticationStateAuthenticated) {
+              if (_auth is AuthStateAuthenticated) {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
@@ -240,7 +244,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
             Builder(builder: (emailContext) {
               final _auth = emailContext.watch<AuthenticationBloc>().state;
 
-              if (_auth is AuthenticationStateAuthenticated) {
+              if (_auth is AuthStateAuthenticated) {
                 return Text(
                   "Email: ${_auth.user?.email ?? ''}",
                   overflow: TextOverflow.ellipsis,

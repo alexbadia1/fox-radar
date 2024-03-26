@@ -6,7 +6,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 class ViewsWrapper extends StatefulWidget {
   @override
   _ViewsWrapperState createState() => _ViewsWrapperState();
-} // ViewsWrapper
+}
 
 class _ViewsWrapperState extends State<ViewsWrapper> {
   @override
@@ -14,21 +14,21 @@ class _ViewsWrapperState extends State<ViewsWrapper> {
     final _authRepo = RepositoryProvider.of<AuthenticationRepository>(context);
     return Builder(
       builder: (context) {
-        final _authenticationBlocState = context.watch<AuthenticationBloc>().state;
+        final _authBlocState = context.watch<AuthenticationBloc>().state;
 
         /// Authenticated
         ///
         /// Returns the main content/views of the app,
         /// which may vary depending on the type of user.
-        if (_authenticationBlocState is AuthenticationStateAuthenticated) {
+        if (_authBlocState is AuthStateAuthenticated) {
           return MainView(routeGeneratorMain: RouteGeneratorMain());
-        } // if
+        }
 
         /// Unauthenticated
         ///
         /// Returns the authentication screens. For
         /// now just a basic login and sign up screen.
-        else if (_authenticationBlocState is AuthenticationStateUnauthenticated) {
+        else if (_authBlocState is AuthStateUnauthenticated) {
           return AuthView(
             /// Passing BloCs and Repositories to the
             /// RouteGenerator, so the RouteGenerator can wrap
@@ -40,7 +40,7 @@ class _ViewsWrapperState extends State<ViewsWrapper> {
               signUpBloc: SignUpBloc(authenticationRepository: _authRepo),
             ),
           );
-        } // else if
+        }
 
         /// Authenticating (Some Error Message)
         ///
@@ -68,12 +68,12 @@ class _ViewsWrapperState extends State<ViewsWrapper> {
         );
       },
     );
-  } // builder
+  }
 
   @override
   void dispose() {
     BlocProvider.of<LoginBloc>(context).close();
     BlocProvider.of<AuthenticationBloc>(context).close();
     super.dispose();
-  } // dispose
-} // _ViewsWrapperState
+  }
+}

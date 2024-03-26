@@ -1,47 +1,41 @@
 import 'dart:async';
-import 'authentication.dart';
 import 'package:fox_radar/logic/logic.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 
-class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
-  final AuthenticationRepository _authenticationRepository;
+class AuthenticationBloc extends Bloc<AuthEvent, AuthState> {
+  final AuthenticationRepository _authRepo;
   StreamSubscription? _userSubscription;
 
-  AuthenticationBloc(AuthenticationRepository authenticationRepository)
-      : _authenticationRepository = authenticationRepository,
-        super(AuthenticationStateAuthenticating()) {
-    this.add(AuthenticationStarted());
+  AuthenticationBloc(AuthenticationRepository authRepo)
+      : _authRepo = authRepo,
+        super(AuthStateAuthenticating()) {
+    on<AuthStarted>((event, emit) async {
+      Authenticating();
+    });
+    on<AuthLoggedIn>((event, emit) async {
+      LoggedIn(event.user, emit);
+    });
+    on<AuthLoggedOut>((event, emit) async {
+      LoggedOut(emit);
+    });
   }
 
-  @override
-  Stream<AuthenticationState> mapEventToState(AuthenticationEvent event) async* {
-    if (event is AuthenticationStarted) {
-      yield* _mapAuthenticationStartedToState();
-    } else if (event is AuthenticationLoggedIn) {
-      yield* _mapAuthenticationLoggedInToState(event.user);
-    } else if (event is AuthenticationLoggedOut) {
-      yield* _mapAuthenticationLoggedOutToState();
-    }
-  }
-
-  // Check to see if the user is signed in...
-  Stream<AuthenticationState> _mapAuthenticationStartedToState() async* {
-    _userSubscription = _authenticationRepository.user.listen((UserModel user) {
+  void Authenticating() {
+    _userSubscription = _authRepo.user.listen((UserModel user) {
       if (user != UserModel.nullConstructor()) {
-        this.add(AuthenticationLoggedIn(user));
-      }
-      else {
-        this.add(AuthenticationLoggedOut());
+        this.add(AuthLoggedIn(user));
+      } else {
+        this.add(AuthLoggedOut());
       }
     });
   }
 
-  Stream<AuthenticationState> _mapAuthenticationLoggedInToState(UserModel? user) async* {
-    yield AuthenticationStateAuthenticated(user);
+  void LoggedIn(UserModel? user, Emitter<AuthState> e) {
+    e(AuthStateAuthenticated(user));
   }
 
-  Stream<AuthenticationState> _mapAuthenticationLoggedOutToState() async* {
-    yield AuthenticationStateUnauthenticated();
+  void LoggedOut(Emitter<AuthState> e) {
+    e(AuthStateUnauthenticated());
   }
 
   @override

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:fox_radar/logic/logic.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -7,52 +6,53 @@ import 'package:photo_manager/photo_manager.dart';
 class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
   final int paginationLimit = 10;
   int failedAttempts = 0;
-  DeviceImagesBloc() : super(DeviceImagesStateFetching());
-
-  @override
-  Stream<DeviceImagesState> mapEventToState(DeviceImagesEvent event) async* {
-    if (event is DeviceImagesEventFetch) {
-      yield* _mapDeviceImagesEventFetchToDeviceImagesState();
-    } else {
-      // error
-    }
+  DeviceImagesBloc() : super(DeviceImagesStateFetching()) {
+    on<DeviceImagesEventFetch>((event, emit) {
+      _mapDeviceImagesEventFetchToDeviceImagesState(emit);
+    });
   }
 
-  Stream<DeviceImagesState> _mapDeviceImagesEventFetchToDeviceImagesState() async* {
+  void _mapDeviceImagesEventFetchToDeviceImagesState(
+    Emitter<DeviceImagesState> emit,
+  ) async {
     // Get the current state for later use...
     final _currentState = this.state;
     bool _maxImages = false;
 
     // Fetch called fom fail state
     if (_currentState is DeviceImagesStateFailed) {
-      yield DeviceImagesStateFetching();
+      emit(DeviceImagesStateFetching());
     }
 
     try {
       bool hasPermission = false;
 
       try {
-        final PermissionState result = await PhotoManager.requestPermissionExtend();
+        final PermissionState result =
+            await PhotoManager.requestPermissionExtend();
         hasPermission = result.isAuth;
       } catch (newApiError) {
-        yield DeviceImagesStateFailed(failedAttempts: this.failedAttempts++);
+        emit(DeviceImagesStateFailed(failedAttempts: this.failedAttempts++));
       }
 
       if (hasPermission) {
         // No posts were fetched yet...
-        if (_currentState is DeviceImagesStateFetching || _currentState is DeviceImagesStateFailed || _currentState is DeviceImagesStateDenied) {
+        if (_currentState is DeviceImagesStateFetching ||
+            _currentState is DeviceImagesStateFailed ||
+            _currentState is DeviceImagesStateDenied) {
           // Set "onlyAll == true": to only get ONE Album (Recent Album by default)
-          final List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(onlyAll: true, type: RequestType.image);
+          final List<AssetPathEntity> albums =
+              await PhotoManager.getAssetPathList(
+                  onlyAll: true, type: RequestType.image);
 
           // Get photos
-          final List<AssetEntity>? photos = await albums[0].getAssetListPaged(
-              page: 0,
-              size: this.paginationLimit
-          );
+          final List<AssetEntity>? photos = await albums[0]
+              .getAssetListPaged(page: 0, size: this.paginationLimit);
 
           // Map photos to file data type
           List<Uint8List> tempFiles = await _mapPhotosToFiles(photos: photos!);
-          List<String> tempFilesPaths = await _mapPhotosToFilePaths(photos: photos!);
+          List<String> tempFilesPaths =
+              await _mapPhotosToFilePaths(photos: photos!);
 
           if (tempFiles.length != this.paginationLimit) {
             _maxImages = true;
@@ -62,75 +62,79 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
           // print("Compressing images");
           // final List<Uint8List> compressedImageBytes = await _mapFilesToCompressedUint8List(tempFiles);
 
-          yield DeviceImagesStateSuccess(
+          emit(
+            DeviceImagesStateSuccess(
               paths: tempFilesPaths,
               images: tempFiles,
               lastPage: 0,
               maxImages: _maxImages,
-              isFetching: false
+              isFetching: false,
+            ),
           );
         }
 
         // Some images were already fetched from storage, get more
         else if (_currentState is DeviceImagesStateSuccess) {
           // Set "onlyAll == true": to only get ONE Album (Recent Album by default)
-          final List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(onlyAll: true, type: RequestType.image);
+          final List<AssetPathEntity> albums =
+              await PhotoManager.getAssetPathList(
+                  onlyAll: true, type: RequestType.image);
 
           // Get photos
           final List<AssetEntity>? photos = await albums[0].getAssetListPaged(
-              page: _currentState.lastPage + 1,
-              size: paginationLimit
-          );
+              page: _currentState.lastPage + 1, size: paginationLimit);
 
           // Map photos to file data type
           List<Uint8List> tempFiles = await _mapPhotosToFiles(photos: photos!);
-          List<String> tempFilesPaths = await _mapPhotosToFilePaths(photos: photos!);
+          List<String> tempFilesPaths =
+              await _mapPhotosToFilePaths(photos: photos!);
 
           // // Compress images
           // final List<Uint8List> compressedImageBytes = await _mapFilesToCompressedUint8List(tempFiles);
 
           // No images were retrieved
           if (tempFiles.isEmpty) {
-            yield DeviceImagesStateSuccess(
+            emit(
+              DeviceImagesStateSuccess(
                 paths: _currentState.paths,
                 images: _currentState.images,
                 lastPage: _currentState.lastPage,
                 maxImages: true,
-                isFetching: false
+                isFetching: false,
+              ),
             );
-          }
-
-          else {
+          } else {
             if (tempFiles.length != this.paginationLimit) {
               _maxImages = true;
             }
 
-            yield DeviceImagesStateSuccess(
-              paths: _currentState.paths + tempFilesPaths,
-              images: _currentState.images + tempFiles,
-              maxImages: _maxImages,
-              lastPage: _currentState.lastPage + 1,
-              isFetching: false,
+            emit(
+              DeviceImagesStateSuccess(
+                paths: _currentState.paths + tempFilesPaths,
+                images: _currentState.images + tempFiles,
+                maxImages: _maxImages,
+                lastPage: _currentState.lastPage + 1,
+                isFetching: false,
+              ),
             );
           }
         }
-
       } else {
-        yield DeviceImagesStateDenied();
+        emit(DeviceImagesStateDenied());
       }
-    } catch (e) {
-      print(e);
-      if (e is PlatformException) {
-        if (e.code == 'Request for permission failed.') {
-          yield DeviceImagesStateDenied();
+    } catch (err) {
+      if (err is PlatformException) {
+        if (err.code == 'Request for permission failed.') {
+          emit(DeviceImagesStateDenied());
         }
       }
 
-      yield DeviceImagesStateFailed(failedAttempts: this.failedAttempts++);
+      emit(DeviceImagesStateFailed(failedAttempts: this.failedAttempts++));
     }
   }
 
-  Future<List<Uint8List>> _mapPhotosToFiles({required List<AssetEntity> photos}) async {
+  Future<List<Uint8List>> _mapPhotosToFiles(
+      {required List<AssetEntity> photos}) async {
     List<Uint8List> ans = [];
 
     ans = await Future.microtask(() async {
@@ -145,7 +149,8 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
     return ans;
   }
 
-  Future<List<String>> _mapPhotosToFilePaths({required List<AssetEntity> photos}) async {
+  Future<List<String>> _mapPhotosToFilePaths(
+      {required List<AssetEntity> photos}) async {
     List<String> ans = [];
 
     ans = await Future.microtask(() async {

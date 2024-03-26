@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-abstract class SignUpState extends Equatable{
+abstract class SignUpState extends Equatable {
   const SignUpState();
 }
 
@@ -9,12 +9,12 @@ class SignUpStateSubmitted extends SignUpState {
   List<Object?> get props => [];
 }
 
-class SignUpStateSuccessful extends SignUpState{
+class SignUpStateSuccessful extends SignUpState {
   @override
   List<Object?> get props => [];
 }
 
-class SignUpStateFailed extends SignUpState{
+class SignUpStateFailed extends SignUpState {
   final String msg;
 
   SignUpStateFailed(this.msg);
@@ -22,4 +22,3 @@ class SignUpStateFailed extends SignUpState{
   @override
   List<Object?> get props => [];
 }
-

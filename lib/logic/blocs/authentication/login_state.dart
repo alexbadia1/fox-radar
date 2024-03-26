@@ -26,4 +26,3 @@ class LoginStateLoggedOut extends LoginState {
   @override
   List<Object?> get props => [this.msg];
 }
-

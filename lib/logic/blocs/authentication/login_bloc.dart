@@ -6,21 +6,20 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final AuthenticationRepository authenticationRepository;
 
   LoginBloc({required this.authenticationRepository})
-      : super(LoginStateLoggedOut(msg: ''));
-
-  @override
-  Stream<LoginState> mapEventToState(LoginEvent loginEvent) async* {
-    if (loginEvent is LoginEventLogin) {
-      yield* _mapLoginEventLoginToState(loginEvent);
-    } else if (loginEvent is LoginEventLogout) {
-      yield* _mapLoginEventLogoutToState();
-    }
+      : super(LoginStateLoggedOut(msg: '')) {
+    on<LoginEventLogin>((event, emit) {
+      _mapLoginEventLoginToState(event, emit);
+    });
+    on<LoginEventLogout>((event, emit) {
+      _mapLoginEventLogoutToState(emit);
+    });
   }
 
-  Stream<LoginState> _mapLoginEventLoginToState(LoginEventLogin loginEvent) async* {
+  void _mapLoginEventLoginToState(
+      LoginEventLogin loginEvent, Emitter<LoginState> e) async {
     // Emit state to let user know the form is being processed
     // Probably should show a loading widget or something
-    yield LoginStateLoginSubmitted();
+    e(LoginStateLoginSubmitted());
 
     // Remove artificial delay
     // await Future.delayed(Duration(milliseconds: 3000));
@@ -30,29 +29,33 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     // Ensure a firebase user was returned
     if (user != null) {
-      yield LoginStateLoggedIn(user: user);
+      e(LoginStateLoggedIn(user: user));
     } else {
-      yield LoginStateLoggedOut(msg: "\u26A0 Login failed: Invalid username or password");
+      e(
+        LoginStateLoggedOut(
+          msg: "\u26A0 Login failed: Invalid username or password",
+        ),
+      );
     }
   }
 
-  Stream<LoginState> _mapLoginEventLogoutToState() async* {
+  void _mapLoginEventLogoutToState(Emitter<LoginState> e) async {
     await this.authenticationRepository.signOut();
-    yield LoginStateLoggedOut(msg: '');
+    e(LoginStateLoggedOut(msg: ''));
   }
 
-  Future<UserModel?> _mapLoginTypeToLoginMethod(LoginEventLogin loginEvent) async {
-    /// TODO: Map more login types to login methods from the authentication repository
+  // TODO: Support more login methods from the authentication repository
+  Future<UserModel?> _mapLoginTypeToLoginMethod(
+      LoginEventLogin loginEvent) async {
     if (loginEvent.loginType == LoginType.emailAndPassword) {
       // Returns UserModel on successful login or null on failed login attempt
       return await this.authenticationRepository.signInWithEmailAndPassword(
           newEmail: loginEvent.hashedEmail,
-          newPassword: loginEvent.hashedPassword
-      );
-    } else {
-      // No login methods are supported (or even exist) for this login type.
-      return null;
+          newPassword: loginEvent.hashedPassword);
     }
+
+    // No login methods are supported (or even exist) for this login type.
+    return null;
   }
 
   @override

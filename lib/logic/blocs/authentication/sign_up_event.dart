@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:fox_radar/logic/constants/enums.dart';
 
-abstract class SignUpEvent extends Equatable{
+abstract class SignUpEvent extends Equatable {
   const SignUpEvent();
 }
 
@@ -13,8 +13,9 @@ class SignUpEventSignUp extends SignUpEvent {
   SignUpEventSignUp({
     required this.hashedEmail,
     required this.hashedPassword,
-    required this.signUpType
-  }) : assert(hashedEmail != null), assert(hashedPassword != null);
+    required this.signUpType,
+  })  : assert(hashedEmail != null),
+        assert(hashedPassword != null);
 
   @override
   List<Object?> get props => [this.hashedEmail, this.hashedPassword];
