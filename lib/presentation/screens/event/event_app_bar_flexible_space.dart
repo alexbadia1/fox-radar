@@ -20,18 +20,16 @@ class EventSliverAppBarFlexibleSpace extends StatelessWidget {
         screenPaddingBottom +
         screenInsetsBottom;
 
-    // Event has image
     if (imageBytes != null) {
+      // Event has image
       return Image.memory(this.imageBytes!, fit: BoxFit.cover);
-    }// if
-
-    // Event doesn't have image
-    else {
+    } else {
+      // Event doesn't have image
       return Container(
         width: double.infinity,
         height: height,
       );
-    }// else
+    }
   }
 }
 

@@ -48,5 +48,5 @@ class Subtitle extends StatelessWidget {
         )
       ],
     );
-  }// build
-}// Subtitle
+  }
+}

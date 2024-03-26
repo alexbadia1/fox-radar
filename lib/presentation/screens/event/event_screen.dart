@@ -1,19 +1,16 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:fox_radar/logic/logic.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:database_repository/database_repository.dart';
 import 'package:fox_radar/presentation/presentation.dart';
 
 class EventScreen extends StatelessWidget {
-  final String? eventId;
+  final String eventId;
   final Uint8List? imageBytes;
-  EventScreen({this.eventId, this.imageBytes});
+  EventScreen({required this.eventId, this.imageBytes});
 
   @override
   Widget build(BuildContext context) {
-    print(eventId.toString());
-
     double _screenWidth = MediaQuery.of(context).size.width;
     double _screenHeight = MediaQuery.of(context).size.height;
 
@@ -27,7 +24,7 @@ class EventScreen extends StatelessWidget {
             onPanUpdate: (details) {
               if (details.delta.dx > 0) {
                 Navigator.pop(context);
-              } // if
+              }
             },
             child: Container(
               color: Colors.black,
@@ -41,7 +38,7 @@ class EventScreen extends StatelessWidget {
                     backgroundColor: Colors.black,
                     automaticallyImplyLeading: false,
                     flexibleSpace: EventSliverAppBarFlexibleSpace(
-                        imageBytes: this.imageBytes!),
+                        imageBytes: this.imageBytes),
                     expandedHeight: (9 * _screenWidth) / 16,
                   ),
                   SliverToBoxAdapter(
@@ -52,10 +49,15 @@ class EventScreen extends StatelessWidget {
 
                         if (_fetchEventState is FetchFullEventSuccess) {
                           final EventModel _event = _fetchEventState.eventModel;
+                          bool highlightsBool = (_event.highlights != null && _event.highlights!.isNotEmpty);
+                          bool descriptionBool = (_event.description != null && _event.description!.replaceAll(" ", "").isNotEmpty);
+                          bool locationBool = (_event.location != null && _event.location!.replaceAll(" ", "").isNotEmpty);
+                          bool roomBool = (_event.room != null && _event.room!.replaceAll(" ", "").isNotEmpty);
+                          bool hostBool = (_event.host != null && _event.host!.replaceAll(" ", "").isNotEmpty);
                           return Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
-                              HeaderLevelOne(text: _event.title!),
+                              HeaderLevelOne(text: _event.title ?? ''),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Column(
@@ -63,7 +65,7 @@ class EventScreen extends StatelessWidget {
                                     /// Host
                                     ///
                                     /// Only show [Icons.person] followed by host name if it was included
-                                    _event.host!.replaceAll(" ", "").isNotEmpty
+                                    hostBool
                                         ? Subtitle(
                                             icon: Icons.person,
                                             text: _event.host)
@@ -72,14 +74,10 @@ class EventScreen extends StatelessWidget {
                                     /// Location
                                     ///
                                     /// Only show [Icons.location_on] followed by location if it was included
-                                    _event.location
-                                            !.replaceAll(" ", "")
-                                            .isNotEmpty
+                                    locationBool
                                         ? Subtitle(
                                             icon: Icons.location_on,
-                                            text: _event.room
-                                                    !.replaceAll(" ", "")
-                                                    .isNotEmpty
+                                            text: roomBool
                                                 ? '${_event.location} ${_event.room}'
                                                     .trim()
                                                 : _event.location!.trim(),
@@ -113,13 +111,13 @@ class EventScreen extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              _event.highlights!.isNotEmpty ? HeaderLevelTwo(text: 'Highlights') : SizedBox(),
-                              _event.highlights!.isNotEmpty ? HighlightsList(highlights: _event.highlights!) : SizedBox(),
+
+                              highlightsBool ? HeaderLevelTwo(text: 'Highlights') : SizedBox(),
+                              highlightsBool ? HighlightsList(highlights: _event.highlights ?? []) : SizedBox(),
 
                               /// Summary Section
-                              _event.description!.replaceAll(" ", "").isNotEmpty ? HeaderLevelTwo(text: 'Summary') : SizedBox(),
-
-                              _event.description!.replaceAll(" ", "").isNotEmpty ? Padding(
+                              descriptionBool ? HeaderLevelTwo(text: 'Summary') : SizedBox(),
+                              descriptionBool ? Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Row(
                                   children: <Widget>[
@@ -130,7 +128,7 @@ class EventScreen extends StatelessWidget {
                                     Expanded(
                                       flex: 9,
                                       child: Text(
-                                        _event.description!,
+                                        _event.description ?? '',
                                         style: TextStyle(
                                           color: cWhite70,
                                           fontSize: 12.0,

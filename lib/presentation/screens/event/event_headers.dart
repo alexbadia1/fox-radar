@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fox_radar/presentation/presentation.dart';
 
 class HeaderLevelOne extends StatelessWidget {
-  final String? text;
-  const HeaderLevelOne({this.text});
+  final String text;
+  const HeaderLevelOne({required this.text});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -15,7 +15,7 @@ class HeaderLevelOne extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              this.text!,
+              this.text,
               style: TextStyle(
                 color: cWhite100,
                 fontSize: 28.0,
@@ -30,12 +30,12 @@ class HeaderLevelOne extends StatelessWidget {
         ],
       ),
     );
-  } // build
-} // HeaderLevelOne
+  }
+}
 
 class HeaderLevelTwo extends StatelessWidget {
-  final String? text;
-  const HeaderLevelTwo({this.text});
+  final String text;
+  const HeaderLevelTwo({required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class HeaderLevelTwo extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              this.text ?? '',
+              this.text,
               style: TextStyle(
                 color: cWhite100,
                 fontSize: 22.0,
@@ -63,5 +63,5 @@ class HeaderLevelTwo extends StatelessWidget {
         ],
       ),
     );
-  } // build
-} // HeaderLevelTwo
+  }
+}
