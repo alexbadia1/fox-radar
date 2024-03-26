@@ -13,7 +13,7 @@ class SingleCategoryView extends StatefulWidget {
   const SingleCategoryView({Key? key}) : super(key: key);
   @override
   _SingleCategoryViewState createState() => _SingleCategoryViewState();
-} // SingleCategoryView
+}
 
 class _SingleCategoryViewState extends State<SingleCategoryView> {
   late Completer _refreshCompleter;
@@ -69,7 +69,7 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
               ],
             ),
           );
-        } // if
+        }
 
         if (!(_categoryEventsState is CategoryEventsStateFetching)) {
           // To stop the Refresh Indicator's loading widget,
@@ -78,7 +78,7 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
 
           // Instantiate a new Completer to allow for a new reload event.
           this._refreshCompleter = Completer();
-        } // if
+        }
 
         return Scrollbar(
           radius: Radius.circular(50.0),
@@ -136,7 +136,7 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
                                       ],
                                       cancel: true,
                                     );
-                                  } // if
+                                  }
 
                                   // Already pinned, so let user pin the bloc
                                   return ModalActionMenu(
@@ -159,26 +159,24 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
                           );
                         },
                       );
-                    } // if
-                    else {
+                    } else {
                       return Builder(builder: (context) {
                         final CategoryEventsState _nestedNestedCategoryEventsState = context.watch<CategoryEventsBloc>().state;
                         if (_nestedNestedCategoryEventsState is CategoryEventsStateSuccess) {
                           if (!_nestedNestedCategoryEventsState.maxEvents) {
                             return BottomLoadingWidget();
-                          } // if
-                          else {
+                          } else {
                             return Container();
-                          } // else
-                        } // if
+                          }
+                        }
                         else {
                           return Container();
-                        } // else
+                        }
                       });
-                    } // else
+                    }
                   },
                 );
-              } // if
+              }
 
               /// Kindly tell the user there are no events
               else if (_nestedCategoryEventsState is CategoryEventsStateFailed) {
@@ -220,7 +218,7 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
 
                           if (_state is CategoryEventsStateFetching) {
                             return CustomCircularProgressIndicator();
-                          } // if
+                          }
 
                           return TextButton(
                             child: Text(
@@ -236,22 +234,22 @@ class _SingleCategoryViewState extends State<SingleCategoryView> {
                     ],
                   ),
                 );
-              } // else if
+              }
 
               /// CategoryEventsStateFetching is unreachable, and there are no other reachable states.
               else {
                 return Center(child: Text('Something went wrong!'));
-              } // else
+              }
             }),
           ),
         );
       }),
     );
-  } // build
+  }
 
   @override
   void dispose() {
     this._listViewController.dispose();
     super.dispose();
-  } //dispose
-} // _SingleCategoryViewState
+  }
+}
