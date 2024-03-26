@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fox_radar/logic/logic.dart';
 import 'package:fox_radar/presentation/presentation.dart';
 
@@ -11,24 +10,25 @@ class SignUpForm extends StatefulWidget {
 class _SignUpFormState extends State<SignUpForm> {
   final GlobalKey<FormState> _signUpFormKeyEmail = new GlobalKey<FormState>();
   final GlobalKey<FormState> _signUpFormKeyPassword = new GlobalKey<FormState>();
-  FocusNode? emailFocusNode;
-  FocusNode? passwordFocusNode;
-  TextEditingController? emailTextEditingController;
-  TextEditingController? passwordTextEditingController;
+
+  late FocusNode emailFocusNode;
+  late FocusNode passwordFocusNode;
+  late TextEditingController emailTextEditingController;
+  late TextEditingController passwordTextEditingController;
 
   @override
   void initState() {
     super.initState();
     emailFocusNode = new FocusNode();
-    emailFocusNode!.addListener(() {
-      if (!emailFocusNode!.hasFocus) {
+    emailFocusNode.addListener(() {
+      if (!emailFocusNode.hasFocus) {
         _signUpFormKeyEmail.currentState!.validate();
       } // if
     });
 
     passwordFocusNode = new FocusNode();
-    passwordFocusNode!.addListener(() {
-      if (!passwordFocusNode!.hasFocus) {
+    passwordFocusNode.addListener(() {
+      if (!passwordFocusNode.hasFocus) {
         _signUpFormKeyPassword.currentState!.validate();
       } // if
     });
@@ -58,8 +58,8 @@ class _SignUpFormState extends State<SignUpForm> {
                     width: MediaQuery.of(context).size.width * .65,
                     child: EmailTextFormField(
                       loginFormKeyEmail: this._signUpFormKeyEmail,
-                      emailFocusNode: this.emailFocusNode!,
-                      emailTextEditingController: this.emailTextEditingController!,
+                      emailFocusNode: this.emailFocusNode,
+                      emailTextEditingController: this.emailTextEditingController,
                     ),
                   ),
                 ],
@@ -78,8 +78,8 @@ class _SignUpFormState extends State<SignUpForm> {
                     width: MediaQuery.of(context).size.width * .65,
                     child: PasswordTextFormField(
                       loginFormKeyPassword: this._signUpFormKeyPassword,
-                      passwordFocusNode: this.passwordFocusNode!,
-                      passwordTextEditingController: this.passwordTextEditingController!,
+                      passwordFocusNode: this.passwordFocusNode,
+                      passwordTextEditingController: this.passwordTextEditingController,
                     ),
                   ),
                 ],
@@ -140,8 +140,8 @@ class _SignUpFormState extends State<SignUpForm> {
                       BlocProvider.of<SignUpBloc>(context).add(
                         SignUpEventSignUp(
                           signUpType: SignUpType.emailAndPassword,
-                          hashedEmail: emailTextEditingController!.text.trim(),
-                          hashedPassword: passwordTextEditingController!.text.trim(),
+                          hashedEmail: emailTextEditingController.text.trim(),
+                          hashedPassword: passwordTextEditingController.text.trim(),
                         ),
                       );
                     } // if
@@ -158,13 +158,13 @@ class _SignUpFormState extends State<SignUpForm> {
 
   @override
   void dispose() {
-    emailFocusNode?.dispose();
-    passwordFocusNode?.dispose();
-    emailTextEditingController?.dispose();
-    passwordTextEditingController?.dispose();
+    emailFocusNode.dispose();
+    passwordFocusNode.dispose();
+    emailTextEditingController.dispose();
+    passwordTextEditingController.dispose();
     super.dispose();
-  } // dispose
-} // _SignUpFormState
+  }
+}
 
 class SignUpMessage extends StatelessWidget {
   final String msg;
@@ -184,5 +184,5 @@ class SignUpMessage extends StatelessWidget {
         ),
       ),
     );
-  } // build
-} // SignUpMessage
+  }
+}
