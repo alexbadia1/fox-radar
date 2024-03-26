@@ -9,7 +9,7 @@ typedef OnEditCallback = Function(EventModel);
 class AccountModalBottomSheet extends StatelessWidget {
   /// The position the event in the list
   /// view the opened this modal bottom sheet.
-  final int? listViewIndex;
+  final int listViewIndex;
 
   /// The search result that the user
   /// clicked on the "More Vert Bar" icon.
@@ -17,9 +17,11 @@ class AccountModalBottomSheet extends StatelessWidget {
 
   final OnEditCallback? onEdit;
 
-  const AccountModalBottomSheet({Key? key, required this.searchResultModel, this.listViewIndex, this.onEdit})
-      : assert(searchResultModel != null),
-        super(key: key);
+  const AccountModalBottomSheet({
+    Key? key, required this.searchResultModel,
+    required this.listViewIndex,
+    this.onEdit
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext pContext) {
@@ -35,7 +37,7 @@ class AccountModalBottomSheet extends StatelessWidget {
                 if (this.onEdit != null) {
                   this.onEdit!(state.eventModel);
                 }
-              } // if
+              }
             }),
         ModalActionMenuButton(
           icon: Icons.delete,
@@ -58,22 +60,20 @@ class AccountModalBottomSheet extends StatelessWidget {
       ],
       cancel: true,
     );
-  } // build
-} // AccountModalBottomSheet
+  }
+}
 
 class ConfirmDelete extends StatelessWidget {
   /// The position the event in the list
   /// view the opened this modal bottom sheet.
-  final int? listViewIndex;
+  final int listViewIndex;
 
   /// The search result that the user
   /// clicked on the "More Vert Bar" icon.
-  final SearchResultModel? searchResultModel;
+  final SearchResultModel searchResultModel;
 
-  const ConfirmDelete({Key? key, @required this.searchResultModel, @required this.listViewIndex})
-      : assert(searchResultModel != null),
-        assert(listViewIndex != null),
-        super(key: key);
+  const ConfirmDelete({Key? key, required this.searchResultModel, required this.listViewIndex})
+      : super(key: key);
 
   @override
   Widget build(BuildContext pContext) {
@@ -101,5 +101,5 @@ class ConfirmDelete extends StatelessWidget {
         Navigator.of(pContext).popUntil((route) => route.isFirst);
       },
     );
-  } // build
-} // ConfirmDelete
+  }
+}

@@ -15,7 +15,7 @@ class EditAccountScreen extends StatefulWidget {
 }
 
 class _EditAccountScreenState extends State<EditAccountScreen> {
-  late final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   late Completer<bool> _profileUpdateCompleter = new Completer();
   late ImagePicker? _picker;
 
@@ -154,13 +154,13 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 
                         /// Try to show profile image
                         if (_updateProfileState.imageBytes != null) {
-                          return Image.memory(_updateProfileState.imageBytes, fit: BoxFit.cover);
+                          return Image.memory(_updateProfileState.imageBytes as Uint8List, fit: BoxFit.cover);
                         }
 
                         /// Show initials, if no profile image
                         else {
-                          final String firstInitial = _auth.user.firstName[0]?.toUpperCase() ?? '';
-                          final String lastInitial = _auth.user.lastName[0]?.toUpperCase() ?? '';
+                          final String firstInitial = _auth.user?.firstName[0].toUpperCase() ?? '';
+                          final String lastInitial = _auth.user?.lastName[0].toUpperCase() ?? '';
                           return Text('$firstInitial$lastInitial');
                         }
                       },
@@ -242,7 +242,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
 
               if (_auth is AuthenticationStateAuthenticated) {
                 return Text(
-                  "Email: ${_auth.user.email}" ?? "",
+                  "Email: ${_auth.user?.email ?? ''}",
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                   style: TextStyle(color: cWhite70, fontSize: 14.0),

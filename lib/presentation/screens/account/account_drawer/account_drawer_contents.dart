@@ -7,7 +7,7 @@ import 'package:fox_radar/presentation/presentation.dart';
 class AccountDrawerContents extends StatefulWidget {
   @override
   _AccountDrawerContentsState createState() => _AccountDrawerContentsState();
-} // AccountDrawerContents
+}
 
 class _AccountDrawerContentsState extends State<AccountDrawerContents> {
   final double topPadding = WidgetsBinding.instance.window.padding.top / WidgetsBinding.instance.window.devicePixelRatio;
@@ -30,7 +30,7 @@ class _AccountDrawerContentsState extends State<AccountDrawerContents> {
         );
       },
     );
-  } // showEditAccount
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +53,7 @@ class _AccountDrawerContentsState extends State<AccountDrawerContents> {
                     final _auth = circleAvatarContext.watch<AuthenticationBloc>().state;
 
                     if (_auth is AuthenticationStateAuthenticated) {
-                      final Uint8List _imageBytes = _auth.imageBytes;
+                      final Uint8List? _imageBytes = _auth.imageBytes;
 
                       /// Try to show profile image
                       if (_imageBytes != null) {
@@ -63,12 +63,12 @@ class _AccountDrawerContentsState extends State<AccountDrawerContents> {
                       } // if
 
                       /// Show initials, if no profile image
-                      final String firstInitial = _auth.user.firstName[0]?.toUpperCase() ?? '';
-                      final String lastInitial = _auth.user.lastName[0]?.toUpperCase() ?? '';
+                      final String firstInitial = _auth.user?.firstName[0].toUpperCase() ?? '';
+                      final String lastInitial = _auth.user?.lastName[0].toUpperCase() ?? '';
                       return CircleAvatar(
                         child: Text('$firstInitial$lastInitial'),
                       );
-                    } // if
+                    }
                     return IconButton(
                       color: kHavenLightGray,
                       onPressed: () => Navigator.of(circleAvatarContext).pop(),
@@ -84,7 +84,7 @@ class _AccountDrawerContentsState extends State<AccountDrawerContents> {
                       'Type: User',
                       style: TextStyle(color: cWhite70, fontSize: 12.0),
                     );
-                  } // if
+                  }
 
                   return Text(
                     'Type: Admin',
@@ -96,12 +96,12 @@ class _AccountDrawerContentsState extends State<AccountDrawerContents> {
 
                   if (_auth is AuthenticationStateAuthenticated) {
                     return Text(
-                      _auth.user.email ?? "",
+                      _auth.user?.email ?? "",
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                       style: TextStyle(color: cWhite70, fontSize: 12.0),
                     );
-                  } // if
+                  }
 
                   return Text(
                     'example.com@marist.edu',
@@ -138,5 +138,5 @@ class _AccountDrawerContentsState extends State<AccountDrawerContents> {
         ],
       ),
     );
-  } // build
-} // _AccountDrawerContentsState
+  }
+}

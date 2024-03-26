@@ -21,5 +21,5 @@ class AccountScreen extends StatelessWidget {
         ),
       ],
     );
-  } // build
-} // AccountScreen
+  }
+}

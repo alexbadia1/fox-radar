@@ -8,11 +8,11 @@ import 'package:database_repository/database_repository.dart';
 class AccountEventsScreen extends StatefulWidget {
   @override
   _AccountEventsScreenState createState() => _AccountEventsScreenState();
-} // AccountEventsScreen
+}
 
 class _AccountEventsScreenState extends State<AccountEventsScreen> with AutomaticKeepAliveClientMixin {
-  Completer<void> _refreshCompleter;
-  ScrollController _scrollController;
+  late Completer<void> _refreshCompleter;
+  late ScrollController _scrollController;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
@@ -37,11 +37,11 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
           if (!_currentState.maxEvents) {
             // Add a fetch event to the AccountsEventsBloc
             BlocProvider.of<AccountEventsBloc>(context).add(AccountEventsEventFetch());
-          } // if
-        } // if
-      } // else-if
+          }
+        }
+      }
     });
-  } // initState
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -278,7 +278,7 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
                                                             );
                                                           }, // builder
                                                         );
-                                                      } // else
+                                                      }
                                                     },
                                                   );
                                                 }),
@@ -291,7 +291,7 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
                                         Builder(builder: (context) {
                                           return GestureDetector(
                                             onTap: () {
-                                              Slidable.of(context).close();
+                                              Slidable.of(context)?.close();
 
                                               // Confirm Delete
                                               showModalBottomSheet(
@@ -432,7 +432,7 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
                                 child: Text('Something Went Wrong Oops!'),
                               ),
                             );
-                          } // else
+                          }
                         }),
                       ],
                     ),
@@ -444,7 +444,7 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
         ],
       ),
     );
-  } // build
+  }
 
   @override
   bool get wantKeepAlive => true;
@@ -453,5 +453,5 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
   void dispose() {
     this._scrollController.dispose();
     super.dispose();
-  } // dispose
-} // _AccountEventsScreenState
+  }
+}

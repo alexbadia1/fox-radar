@@ -36,11 +36,11 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
           if (!_currentState.maxEvents) {
             // Add a fetch event to the SavedEventsBloc
             BlocProvider.of<PinnedEventsBloc>(context).add(PinnedEventsEventFetch());
-          } // if
-        } // if
-      } // else-if
+          }
+        }
+      }
     });
-  } // initState
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -249,8 +249,7 @@ class _PinnedEventsScreenState extends State<PinnedEventsScreen> with AutomaticK
                                                             color: Colors.redAccent,
                                                             onPressed: () {
                                                               // Remove from local list
-                                                              BlocProvider.of<PinnedEventsBloc>(modalSheetContext)
-                                                                  .add(PinnedEventsEventUnpin(_pinnedEvent.eventId!));
+                                                              BlocProvider.of<PinnedEventsBloc>(modalSheetContext).add(PinnedEventsEventUnpin(_pinnedEvent.eventId));
                                                               Navigator.pop(modalSheetContext);
                                                             },
                                                           ),
