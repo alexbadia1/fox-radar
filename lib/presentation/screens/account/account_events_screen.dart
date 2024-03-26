@@ -179,7 +179,7 @@ class _AccountEventsScreenState extends State<AccountEventsScreen> with Automati
                                     return Slidable(
                                       enabled: true,
                                       direction: Axis.horizontal,
-                                      endActionPane: SlidableStrechActionPane(),
+                                      actionPane: SlidableStrechActionPane(),
                                       actionExtentRatio: 0.3,
                                       child: EventCard(
                                         key: ObjectKey(searchResult),

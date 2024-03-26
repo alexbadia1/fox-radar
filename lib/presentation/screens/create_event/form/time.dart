@@ -78,7 +78,7 @@ class Time extends StatelessWidget {
                     if (!_expansionPanelIsOpen) {
                       BlocProvider.of<DateTimePickerCubit>(context)
                           .openExpansionPanelToDatePicker();
-                    } //
+                    }
                   },
                   titleLabelCallback: (CreateEventState state) {
                     return state.eventModel.rawEndDateAndTime;
@@ -91,8 +91,8 @@ class Time extends StatelessWidget {
                   },
                   onConfirmButtonPressed: (DateTime dateTime) {
                     BlocProvider.of<CreateEventBloc>(context).add(
-                        CreateEventSetRawEndDateTime(
-                            newRawEndDateTime: dateTime));
+                        CreateEventSetRawEndDateTime(newRawEndDateTime: dateTime)
+                    );
                   },
                 ),
 

@@ -5,7 +5,7 @@ import 'package:fox_radar/logic/logic.dart';
 import 'package:fox_radar/presentation/presentation.dart';
 
 /// Callback function used to return a DateTime from a CreateEventBloc State.
-typedef RetrieveDateTimeFromBlocCallback = DateTime Function(
+typedef RetrieveDateTimeFromBlocCallback = DateTime? Function(
     CreateEventState currentState);
 
 /// Callback function used to return a DateTime from a CreateEventBloc State.

@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fox_radar/logic/logic.dart';
 import 'package:fox_radar/presentation/presentation.dart';
 
-typedef DateLabelCallback = DateTime Function(CreateEventState state);
-typedef TimeLabelCallback = DateTime Function(CreateEventState state);
+typedef DateLabelCallback = DateTime? Function(CreateEventState state);
+typedef TimeLabelCallback = DateTime? Function(CreateEventState state);
 typedef OnConfirmButtonPressedCallback = void Function(DateTime dateTime);
-typedef TitleLabelCallback = DateTime Function(CreateEventState state);
+typedef TitleLabelCallback = DateTime? Function(CreateEventState state);
 typedef OnHeaderTapCallback = void Function();
 
 /// An Animated Container that listens to a bloc/cubit and animates changes in the UI.
