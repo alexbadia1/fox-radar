@@ -30,6 +30,9 @@ dependencies:
   calender_strip_fixed:
     path: packages/calender_strip_fixed
 
+  # Hack for firebase issue: https://github.com/firebase/flutterfire/issues/10306
+  flutter_dotenv: ^5.1.0
+
   # Bloc Architecture
   flutter_bloc: ^8.1.5
   equatable: ^2.0.5
@@ -79,6 +82,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - images/
+    # Hack for firebase issue: https://github.com/firebase/flutterfire/issues/10306
+    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

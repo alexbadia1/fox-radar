@@ -2,27 +2,37 @@ import 'preload_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fox_radar/logic/logic.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:database_repository/database_repository.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fox_radar/presentation/presentation.dart';
+import 'package:database_repository/database_repository.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 
-/// Some things to think about:
-///   1.) Flutter recommends Algolia for more advanced search functions
-///   2.) Perhaps implement sql lite for cache
+// Hack: https://github.com/firebase/flutterfire/issues/10306
+// options: FirebaseOptions(
+//     apiKey: dotenv.env['API_KEY'] as String,
+//     appId: dotenv.env['APP_ID'] as String,
+//     messagingSenderId: dotenv.env['MESSAGE_SENDER_ID'] as String,
+//     projectId: dotenv.env['PROJECT_ID'] as String
+// ),
+// options: const FirebaseOptions(
+//     apiKey: 'AIzaSyBDhbOrV4VcsnoxmkGG5AL0zxgN4JzmnOQ',
+//     appId: '1:53662614301:android:5b6608e9da8b312eb317f4',
+//     messagingSenderId: '53662614301',
+//     projectId: 'fox-radar-f8810'
+// ),
+
 void main() async {
-  /// Usually called during [runApp], since firebase uses
-  /// native code, retrieving an instance of the WidgetsBinding
-  /// required to use platform  channels to call the native code.
+  // await dotenv.load();
+
   final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
-  /// Call this before using any firebase plugins
   await Firebase.initializeApp();
 
-  /// Global singleton instances of Database Repo and Authentication Repo
+  // Global singleton instances of Database Repo and Authentication Repo
   final DatabaseRepository databaseRepository = new DatabaseRepository();
   final AuthenticationRepository authenticationRepository = new AuthenticationRepository();
 
-  /// Resolve image assets
+  // Resolve image assets
   await loadImage(
       imageProvider: AssetImage('images/image1.jpg'),
       devicePixelRatio:  widgetsBinding.window.devicePixelRatio,
