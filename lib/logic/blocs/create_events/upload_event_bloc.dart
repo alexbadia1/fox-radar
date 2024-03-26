@@ -8,7 +8,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
   final DatabaseRepository db;
   final String uid;
-  late UploadTask? uploadTask;
+  UploadTask? uploadTask;
 
   UploadEventBloc({required this.db, required this.uid})
       : super(UploadEventStateInitial()) {
@@ -23,7 +23,7 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
     Emitter<UploadEventState> emitter,
   ) async {
     // Only allow one upload task at a time
-    if (uploadTask != null) {
+    if (this.uploadTask != null) {
       return;
     }
 
@@ -66,10 +66,12 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
               eventID: newEventModel.eventID!,
               imageBytes: await compressedBytes);
 
-          emitter(UploadEventStateUploading(
-            uploadTask: this.uploadTask!,
-            eventModel: newEventModel,
-          ));
+          if (this.uploadTask != null) {
+            emitter(UploadEventStateUploading(
+              uploadTask: this.uploadTask!,
+              eventModel: newEventModel,
+            ),);
+          }
         }
       }
     }

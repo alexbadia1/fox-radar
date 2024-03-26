@@ -18,6 +18,8 @@ class DatabaseRepository {
   final CollectionReference _userCreatedEventsCollection = FirebaseFirestore.instance.collection(COLLECTION_USER_CREATED_EVENTS);
   final CollectionReference _userSavedEventsCollection = FirebaseFirestore.instance.collection(COLLECTION_USER_SAVED_EVENTS);
 
+  final FirebaseStorage _firebaseStorage = FirebaseStorage.instanceFor(bucket: "gs://fox-radar-f8810.appspot.com");
+
   /// Retrieves events from the "Search Events Collection" based on
   /// [category] and returns a [QueryDocumentSnapshot] with the events.
   ///
@@ -334,8 +336,9 @@ class DatabaseRepository {
     required String eventID, required Uint8List imageBytes
   }) {
     try {
-      return FirebaseStorage.instance.ref().child(this.imagePath(eventID: eventID)).putData(imageBytes);
+      return _firebaseStorage.ref().child(this.imagePath(eventID: eventID)).putData(imageBytes);
     } catch (e) {
+      print(e);
       return null;
     }
   }
@@ -346,7 +349,7 @@ class DatabaseRepository {
   /// Returns a listenable upload task, to show upload progress.
   Future<void>? deleteImageFromStorage({required String eventID}) {
     try {
-      return FirebaseStorage.instance.ref().child(this.imagePath(eventID: eventID)).delete();
+      return _firebaseStorage.ref().child(this.imagePath(eventID: eventID)).delete();
     } catch (e) {
       return null;
     }
@@ -354,7 +357,7 @@ class DatabaseRepository {
 
   Future<Uint8List?> getImageFromStorage({required String eventID}) async {
     try {
-      return await FirebaseStorage.instance.ref().child(this.imagePath(eventID: eventID)).getData(4194304);
+      return await _firebaseStorage.ref().child(this.imagePath(eventID: eventID)).getData(4194304);
     } catch (e) {
       return null;
     }

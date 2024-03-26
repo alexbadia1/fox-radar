@@ -26,7 +26,7 @@ class EventCard extends StatefulWidget {
 } // EventCard
 
 class _EventCardState extends State<EventCard> with AutomaticKeepAliveClientMixin {
-  late Uint8List _imageBytes;
+  Uint8List? _imageBytes;
 
   @override
   Widget build(BuildContext context) {

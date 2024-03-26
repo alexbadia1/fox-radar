@@ -23,7 +23,7 @@ class BallSpinFadeLoaderIndicator extends Indicator {
 
   @override
   List<AnimationController> animation() {
-    var controllers = List<AnimationController>.empty();
+    var controllers = List<AnimationController>.empty(growable: true);
     for (int i = 0; i < 8; i++) {
       var controller = new AnimationController(
           duration: Duration(milliseconds: 500), vsync: context);
