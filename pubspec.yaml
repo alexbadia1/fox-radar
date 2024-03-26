@@ -52,7 +52,7 @@ dependencies:
   # Shouldn't be a problem when switching backend to sql.
   # Bugged: image_picker: ^0.6.7+22
   image_picker: ^0.8.2
-  photo_manager: ^1.2.8
+  photo_manager: ^3.0.0
   image_cropper: ^1.4.0
   flutter_image_compress: ^1.1.0
 

@@ -35,12 +35,7 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
         final PermissionState result = await PhotoManager.requestPermissionExtend();
         hasPermission = result.isAuth;
       } catch (newApiError) {
-        try {
-          await PhotoManager.forceOldApi();
-          hasPermission = await PhotoManager.requestPermission();
-        } catch (oldApiError) {
-          yield DeviceImagesStateFailed(failedAttempts: this.failedAttempts++);
-        }
+        yield DeviceImagesStateFailed(failedAttempts: this.failedAttempts++);
       }
 
       if (hasPermission) {
@@ -50,7 +45,10 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
           final List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(onlyAll: true, type: RequestType.image);
 
           // Get photos
-          final List<AssetEntity>? photos = await albums[0]?.getAssetListPaged(0, this.paginationLimit);
+          final List<AssetEntity>? photos = await albums[0].getAssetListPaged(
+              page: 0,
+              size: this.paginationLimit
+          );
 
           // Map photos to file data type
           List<Uint8List> tempFiles = await _mapPhotosToFiles(photos: photos!);
@@ -79,7 +77,10 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
           final List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(onlyAll: true, type: RequestType.image);
 
           // Get photos
-          final List<AssetEntity>? photos = await albums[0]?.getAssetListPaged(_currentState.lastPage + 1, paginationLimit);
+          final List<AssetEntity>? photos = await albums[0].getAssetListPaged(
+              page: _currentState.lastPage + 1,
+              size: paginationLimit
+          );
 
           // Map photos to file data type
           List<Uint8List> tempFiles = await _mapPhotosToFiles(photos: photos!);
