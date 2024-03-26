@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 /// Screen, where that data is used to retrieve th full event details.
 class EventScreenArguments {
   /// Document ID of the full event in firebase cloud
-  final String? documentId;
+  final String documentId;
 
   /// The thumbnail of the event retrieved from firebase storage
   final Uint8List? imageBytes;

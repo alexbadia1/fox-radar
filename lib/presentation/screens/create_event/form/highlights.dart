@@ -99,11 +99,11 @@ class Highlights extends StatelessWidget {
                         padding: const EdgeInsets.only(left: 12.0),
                         child: CreateEventFormTextField(
                           // TODO: A better key would be an object called Highlight()
-                          key: Key(_highlights[i]),
+                          key: Key(_highlights![i]),
                           height: _height,
                           width: _width,
                           hintText: 'Highlight ${i + 1}',
-                          initialTextValue: _highlights[i],
+                          initialTextValue: _highlights![i],
                           onEditingCompleteOrLostFocus: (String eventHighlight) {
                             BlocProvider.of<CreateEventBloc>(context).add(
                                 CreateEventSetHighlight(

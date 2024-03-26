@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:typed_data';
-import 'create_event_state.dart';
 import 'package:fox_radar/logic/logic.dart';
 import 'package:database_repository/database_repository.dart';
 
@@ -15,11 +14,11 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
   }
 
   @override
-  Stream<CreateEventState> mapEventToState(CreateEventEvent event) async* {
+  Stream<CreateEventState> mapEventToState(CreateEventEvent? event) async* {
     if (event is CreateEventSetEvent) {
       yield* _mapCreateEventSetEventToState(event);
     } else if (event is CreateEventSetTitle) {
-      yield* _mapCreateEventSetTitleToState(createEventSetTitle: event);
+      yield* _mapCreateEventSetTitleToState(event);
     } else if (event is CreateEventSetHost) {
       yield* _mapCreateEventSetHostToState(createEventSetHost: event);
     } else if (event is CreateEventSetLocation) {
