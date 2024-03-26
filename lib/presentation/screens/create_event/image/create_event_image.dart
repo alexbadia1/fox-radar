@@ -11,12 +11,12 @@ import 'package:fox_radar/presentation/presentation.dart';
 class CreateEventImage extends StatefulWidget {
   @override
   _CreateEventImageState createState() => _CreateEventImageState();
-} // CreateEventImage
+}
 
 class _CreateEventImageState extends State<CreateEventImage> with WidgetsBindingObserver {
-  File pickedImage;
-  ImagePicker picker;
-  AppLifecycleState prevAppState;
+  File? pickedImage;
+  late ImagePicker picker;
+  AppLifecycleState? prevAppState;
 
   @override
   void initState() {
@@ -24,9 +24,10 @@ class _CreateEventImageState extends State<CreateEventImage> with WidgetsBinding
     WidgetsBinding.instance.addObserver(this);
     pickedImage = null;
     picker = ImagePicker();
-
-    BlocProvider.of<DeviceImagesBloc>(this.context).add(DeviceImagesEventFetch());
-  } // initState
+    BlocProvider.of<DeviceImagesBloc>(this.context).add(
+        DeviceImagesEventFetch()
+    );
+  }
 
   @override
   Widget build(BuildContext createEventImageContext) {
@@ -36,17 +37,17 @@ class _CreateEventImageState extends State<CreateEventImage> with WidgetsBinding
         MediaQuery.of(createEventImageContext).padding.bottom +
         MediaQuery.of(createEventImageContext).viewInsets.bottom;
 
+    DateTime? rawStartDate = BlocProvider.of<CreateEventBloc>(createEventImageContext).state.eventModel.rawStartDateAndTime;
+    DateTime? rawStartTime = BlocProvider.of<CreateEventBloc>(createEventImageContext).state.eventModel.rawStartDateAndTime;
+
     return Column(children: <Widget>[
       SelectedImage(),
       EventCardDescription(
         profilePicture: Icon(Icons.person, color: cWhite70),
-        title: BlocProvider.of<CreateEventBloc>(createEventImageContext).state?.eventModel?.title ?? '[Event Title]',
-        location: BlocProvider.of<CreateEventBloc>(createEventImageContext).state?.eventModel?.location ?? '[Location]',
-        startDate:
-            DateFormat('E, MMMM d, y')?.format(BlocProvider.of<CreateEventBloc>(createEventImageContext).state?.eventModel?.rawStartDateAndTime) ??
-                '[Start Date]',
-        startTime: DateFormat.jm()?.format(BlocProvider.of<CreateEventBloc>(createEventImageContext).state?.eventModel?.rawStartDateAndTime) ??
-            "[Start Time]",
+        title: BlocProvider.of<CreateEventBloc>(createEventImageContext).state.eventModel.title ?? '[Event Title]',
+        location: BlocProvider.of<CreateEventBloc>(createEventImageContext).state.eventModel.location ?? '[Location]',
+        startDate: rawStartDate != null ? DateFormat('E, MMMM d, y').format(rawStartDate) : '[Start Date]',
+        startTime: rawStartTime != null ? DateFormat.jm().format(rawStartTime) : '[Start Time]',
         trailingActions: [Icon(Icons.more_vert, color: cWhite70)],
       ),
       Expanded(
@@ -78,10 +79,10 @@ class _CreateEventImageState extends State<CreateEventImage> with WidgetsBinding
                 if (state is DeviceImagesStateSuccess) {
                   if (!state.maxImages) {
                     BlocProvider.of<DeviceImagesBloc>(createEventImageContext).add(DeviceImagesEventFetch());
-                  } // if
-                } // if
-              } // if
-              return;
+                  }
+                }
+              }
+              return false;
             },
             child: Builder(builder: (deviceImageContext) {
               final deviceImagesBlocState = deviceImageContext.watch<DeviceImagesBloc>().state;
@@ -117,7 +118,7 @@ class _CreateEventImageState extends State<CreateEventImage> with WidgetsBinding
                     ],
                   ),
                 );
-              } // if
+              }
 
               else if (deviceImagesBlocState is DeviceImagesStateFailed) {
                 final int failedAttempts = deviceImagesBlocState.failedAttempts;
@@ -162,7 +163,7 @@ class _CreateEventImageState extends State<CreateEventImage> with WidgetsBinding
                     ],
                   ),
                 );
-              } // if
+              }
 
               else if (deviceImagesBlocState is DeviceImagesStateFetching) {
                 return Center(
@@ -189,7 +190,7 @@ class _CreateEventImageState extends State<CreateEventImage> with WidgetsBinding
                     ],
                   ),
                 );
-              } // if
+              }
 
               else if (deviceImagesBlocState is DeviceImagesStateSuccess) {
                 return Container(
@@ -215,7 +216,7 @@ class _CreateEventImageState extends State<CreateEventImage> with WidgetsBinding
                             if (deviceImagesBlocState.paths.isNotEmpty) {
                               BlocProvider.of<CreateEventBloc>(gridListContext).add(
                                   CreateEventSetImagePath(imagePath: deviceImagesBlocState.paths[index]));
-                            }// if
+                            }
                           },
                           child: Image.memory(
                             _imageBytes,
@@ -224,11 +225,9 @@ class _CreateEventImageState extends State<CreateEventImage> with WidgetsBinding
                         );
                       }),
                 );
-              } // else-if
-
-              else {
+              } else {
                 return Text("Hmm.. something went wrong");
-              } // else
+              }
             }),
           ),
         ),
@@ -256,14 +255,14 @@ class _CreateEventImageState extends State<CreateEventImage> with WidgetsBinding
                   onPressed: () async {
                     FocusScope.of(context).unfocus();
                     try {
-                      XFile image = await this.picker.pickImage(source: ImageSource.camera);
+                      XFile? image = await this.picker.pickImage(source: ImageSource.camera);
                       if (image != null) {
                         final bytes = await image.readAsBytes();
                         BlocProvider.of<CreateEventBloc>(context).add(CreateEventSetImage(imageBytes: bytes));
                         BlocProvider.of<CreateEventBloc>(context).add(CreateEventSetImagePath(imagePath: image.path));
                         BlocProvider.of<CreateEventBloc>(context).add(CreateEventSetImageFitCover(fitCover: false));
-                      } // if
-                    } // try
+                      }
+                    }
 
                     /// Error opening the camera
                     catch (platformException) {
@@ -283,7 +282,7 @@ class _CreateEventImageState extends State<CreateEventImage> with WidgetsBinding
                           ],
                         ),
                       );
-                    } // catch
+                    }
                   },
                 ),
               ),
@@ -295,7 +294,7 @@ class _CreateEventImageState extends State<CreateEventImage> with WidgetsBinding
         height: MediaQuery.of(context).size.height * .0325,
       ),
     ]);
-  } // build
+  }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -304,19 +303,19 @@ class _CreateEventImageState extends State<CreateEventImage> with WidgetsBinding
       if (prevAppState == AppLifecycleState.paused) {
         if (state == AppLifecycleState.resumed) {
           BlocProvider.of<DeviceImagesBloc>(context).add(DeviceImagesEventFetch());
-        } // if
-      } // if
-    } // if
+        }
+      }
+    }
 
     // Record previous App State
     prevAppState = state;
 
     super.didChangeAppLifecycleState(state);
-  } // didChangeAppLifecycleState
+  }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
-  } // dispose
-} // _CreateEventImageState
+  }
+}

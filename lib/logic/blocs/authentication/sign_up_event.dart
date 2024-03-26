@@ -6,17 +6,15 @@ abstract class SignUpEvent extends Equatable{
 }
 
 class SignUpEventSignUp extends SignUpEvent {
-  final SignUpType? signUpType;
+  final SignUpType signUpType;
   final hashedEmail;
   final hashedPassword;
 
-  SignUpEventSignUp(
-      {required this.hashedEmail,
-        required this.hashedPassword,
-        required this.signUpType})
-      : assert(hashedEmail != null),
-        assert(hashedPassword != null),
-        assert(signUpType != null);
+  SignUpEventSignUp({
+    required this.hashedEmail,
+    required this.hashedPassword,
+    required this.signUpType
+  }) : assert(hashedEmail != null), assert(hashedPassword != null);
 
   @override
   List<Object?> get props => [this.hashedEmail, this.hashedPassword];

@@ -10,12 +10,11 @@ class LoginEventLogin extends LoginEvent {
   final hashedEmail;
   final hashedPassword;
 
-  LoginEventLogin(
-      {required this.hashedEmail,
-      required this.hashedPassword,
-      required this.loginType})
-      : assert(hashedEmail != null),
-        assert(hashedPassword != null) {
+  LoginEventLogin({
+    required this.hashedEmail,
+    required this.hashedPassword,
+    required this.loginType
+  }) : assert(hashedEmail != null), assert(hashedPassword != null) {
     print("Login: ${this.hashedEmail} : ${this.hashedPassword}");
   }
 

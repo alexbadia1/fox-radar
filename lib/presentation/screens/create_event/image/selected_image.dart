@@ -8,28 +8,33 @@ import 'package:fox_radar/presentation/presentation.dart';
 class SelectedImage extends StatefulWidget {
   @override
   _SelectedImageState createState() => _SelectedImageState();
-} // SelectedImage
+}
 
 class _SelectedImageState extends State<SelectedImage> {
-  ImagePicker picker;
+
+  // Initialized in initState(), will be non-null before first use
+  late ImagePicker picker;
 
   @override
   void initState() {
     super.initState();
     picker = ImagePicker();
-  } // initState
+  }
 
   Future getImageFromDeviceGallery() async {
     try {
-      XFile image = await picker.pickImage(source: ImageSource.gallery);
+      XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
       if (image != null) {
         final bytes = await image.readAsBytes();
-        BlocProvider.of<CreateEventBloc>(context).add(CreateEventSetImage(imageBytes: bytes));
-      } // if
-    } // try
-    catch (e) {} // catch
-  } // getImageFromDeviceGallery
+        BlocProvider.of<CreateEventBloc>(context).add(
+            CreateEventSetImage(imageBytes: bytes)
+        );
+      }
+    } catch (e) {
+      // TODO: Implement error handling
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,27 +54,25 @@ class _SelectedImageState extends State<SelectedImage> {
                   width: double.infinity,
                   child: Image.memory(
                     imageBytes,
-                    fit: state.eventModel.imageFitCover ? BoxFit.cover : BoxFit.contain,
+                    fit: state.eventModel.imageFitCover ?? state.eventModel.defaultImageFitCover ? BoxFit.cover : BoxFit.contain,
                   ),
                 ),
               );
-            } // if
-
-            else {
+            } else {
               return AspectRatio(
                 aspectRatio: 16 / 9,
                 child: Container(
                   color: cBackground,
                 ),
               );
-            } //else
+            }
           },
           buildWhen: (CreateEventState prevState, CreateEventState currState) {
             if (prevState.eventModel.imageFitCover != currState.eventModel.imageFitCover ||
                 prevState.eventModel.imageBytes != currState.eventModel.imageBytes ||
                 prevState.eventModel.imagePath != currState.eventModel.imagePath) {
               return true;
-            } // if
+            }
             return false;
           },
         ),
@@ -96,8 +99,8 @@ class _SelectedImageState extends State<SelectedImage> {
                   ),
                   onTap: () async {
                     try {
-                      File croppedFile = await ImageCropper().cropImage(
-                        sourcePath: BlocProvider.of<CreateEventBloc>(context).state.eventModel.imagePath,
+                      File? croppedFile = await ImageCropper().cropImage(
+                        sourcePath: BlocProvider.of<CreateEventBloc>(context).state.eventModel.imagePath ?? "",
                         aspectRatioPresets: Platform.isAndroid
                             ? [
                                 CropAspectRatioPreset.square,
@@ -129,12 +132,15 @@ class _SelectedImageState extends State<SelectedImage> {
                         ),
                       );
                       if (croppedFile != null) {
-                        BlocProvider.of<CreateEventBloc>(context).add(CreateEventSetImage(imageBytes: croppedFile?.readAsBytesSync()));
-                      } // if
-                    } // try
-                    catch (e) {
+                        BlocProvider.of<CreateEventBloc>(context).add(
+                            CreateEventSetImage(
+                                imageBytes: croppedFile.readAsBytesSync()
+                            )
+                        );
+                      }
+                    } catch (e) {
                       print(e);
-                    } // catch
+                    }
                   },
                 ),
                 VerticalDivider(
@@ -165,7 +171,7 @@ class _SelectedImageState extends State<SelectedImage> {
           child: BlocBuilder<CreateEventBloc, CreateEventState>(
             builder: (context, state) {
               // Image will cover the entire card
-              if (state.eventModel.imageFitCover) {
+              if (state.eventModel.imageFitCover ?? state.eventModel.defaultImageFitCover) {
                 return GestureDetector(
                   onTap: () {
                     BlocProvider.of<CreateEventBloc>(context).add(CreateEventSetImageFitCover(fitCover: false));
@@ -174,7 +180,7 @@ class _SelectedImageState extends State<SelectedImage> {
                       decoration: BoxDecoration(color: Color.fromRGBO(0, 0, 0, .6), shape: BoxShape.circle),
                       child: Icon(Icons.photo_size_select_actual, color: cWhite100)),
                 );
-              } // if
+              }
 
               // Image will shrink to fit entirely in the card
               else {

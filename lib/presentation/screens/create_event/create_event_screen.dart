@@ -30,7 +30,7 @@ class CreateEventScreen extends StatelessWidget {
     if (this.initialEventModel != null) {
       formAction = CreateEventFormAction.update;
       initialState = CreateEventValid(this.initialEventModel!);
-    } // if
+    }
 
     /// User wants to CREATE an event.
     ///
@@ -51,5 +51,5 @@ class CreateEventScreen extends StatelessWidget {
       ],
       child: CreateEventBody(createEventFormAction: formAction),
     );
-  }// build
-}// CreateEventScreen
+  }
+}

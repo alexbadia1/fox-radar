@@ -21,7 +21,7 @@ class Required extends StatelessWidget {
           BorderTopBottom(
             child: CreateEventFormTextField(
                 initialTextValue:
-                    _currentCreateEventBlocState.eventModel.title,
+                    _currentCreateEventBlocState.eventModel.title ?? '',
                 hintText: 'Title (Required)',
                 height: _textFormFieldHeight,
                 width: double.infinity,
@@ -35,7 +35,7 @@ class Required extends StatelessWidget {
           BorderBottom(
             child: CreateEventFormTextField(
                 initialTextValue:
-                    _currentCreateEventBlocState.eventModel.host,
+                    _currentCreateEventBlocState.eventModel.host ?? '',
                 hintText: 'Host (Required)',
                 height: _textFormFieldHeight,
                 width: _textFormFieldWidth,
@@ -56,7 +56,7 @@ class Required extends StatelessWidget {
                   /// Location TextFormField
                   child: CreateEventFormTextField(
                     initialTextValue:
-                        _currentCreateEventBlocState.eventModel.location,
+                        _currentCreateEventBlocState.eventModel.location ?? '',
                     hintText: 'Location (Required)',
                     height: _textFormFieldHeight,
                     width: _textFormFieldWidth,
@@ -71,7 +71,7 @@ class Required extends StatelessWidget {
                   flex: 4,
                   child: CreateEventFormTextField(
                     initialTextValue:
-                        _currentCreateEventBlocState.eventModel.room,
+                        _currentCreateEventBlocState.eventModel.room ?? '',
                     hintText: 'Room',
                     height: _textFormFieldHeight,
                     width: _textFormFieldWidth,
@@ -87,5 +87,5 @@ class Required extends StatelessWidget {
         ],
       ),
     );
-  } // build
-} // CreateEventFormRequired
+  }
+}

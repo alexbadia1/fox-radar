@@ -57,16 +57,10 @@ class SearchResultModel {
       String? newEventId,
       String? newSearchID,
       String? newAccountID}) {
-    // Set the Event Title
+
     this._title = newTitle;
-
-    // Set the Event Host
     this._host = newHost;
-
-    // Set the Event Location
     this._location = newLocation;
-
-    // Set the Event Category
     this._category = newCategory;
 
     this._rawStartDateAndTime = newRawStartDateAndTime;
@@ -85,15 +79,10 @@ class SearchResultModel {
     // Decide if image should cover it's container
     this._imageFitCover = newImageFitCover;
 
-    // Set the Event ID
     this._eventId = newEventId;
-
-    // Set the Search ID
     this._searchID = newSearchID;
-
-    // Set Account ID
     this._accountID = newAccountID;
-  } // SearchResultModel
+  }
 
   String? get title => this._title;
   String? get host => this._host;
@@ -120,5 +109,5 @@ class SearchResultModel {
         "\tEvent ID (Events Collection): ${this._eventId}\n"
         "\tAccount ID (Owner of Event): ${this._accountID}\n"
         "}\n";
-  } // toString
-} //class
+  }
+}

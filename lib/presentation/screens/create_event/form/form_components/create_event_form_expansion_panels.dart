@@ -48,14 +48,14 @@ class ExpansionPanelDateTime extends StatelessWidget {
   final OnHeaderTapCallback onTap;
 
   ExpansionPanelDateTime({
-    @required this.height,
-    @required this.title,
-    @required this.hintText,
-    @required this.titleLabelCallback,
-    @required this.dateLabelCallback,
-    @required this.timeLabelCallback,
-    @required this.onConfirmButtonPressed,
-    @required this.onTap,
+    required this.height,
+    required this.title,
+    required this.hintText,
+    required this.titleLabelCallback,
+    required this.dateLabelCallback,
+    required this.timeLabelCallback,
+    required this.onConfirmButtonPressed,
+    required this.onTap,
   });
   @override
   Widget build(BuildContext context) {

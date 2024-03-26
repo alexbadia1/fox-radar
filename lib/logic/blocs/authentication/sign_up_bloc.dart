@@ -6,43 +6,48 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   final AuthenticationRepository authenticationRepository;
 
   SignUpBloc({required this.authenticationRepository})
-      : super(SignUpStateFailed(msg: ''));
+      : super(SignUpStateFailed(''));
 
   @override
   Stream<SignUpState> mapEventToState(SignUpEvent signUpEvent) async* {
     if (signUpEvent is SignUpEventSignUp) {
-      yield* _mapSignUpEventSignUpToState(signUpEvent: signUpEvent);
+      yield* _mapSignUpEventSignUpToState(signUpEvent);
     }
   }
 
-  Stream<SignUpState> _mapSignUpEventSignUpToState ({required SignUpEventSignUp signUpEvent}) async* {
+  Stream<SignUpState> _mapSignUpEventSignUpToState (SignUpEventSignUp signUpEvent) async* {
     // Should trigger a loading widget
     yield SignUpStateSubmitted();
 
     // Try to sign up using authentication repository
-    final UserModel? user = await _mapSignUpEventSignUpToSignUpMethod(signUpEventSignUp: signUpEvent);
+    final UserModel? user = await _mapSignUpEventSignUpToSignUpMethod(signUpEvent);
 
     if (user != null) {
 
-      UserModel? loggedInUser = await authenticationRepository.signInWithEmailAndPassword(signUpEvent.hashedEmail, signUpEvent.hashedPassword);
+      UserModel? loggedInUser = await authenticationRepository.signInWithEmailAndPassword(
+          newEmail: signUpEvent.hashedEmail,
+          newPassword: signUpEvent.hashedPassword
+      );
 
       if (loggedInUser != null) {
         yield SignUpStateSuccessful();
       } else {
-        yield SignUpStateFailed(msg: 'Sign Up Successful!');
+        yield SignUpStateFailed('Sign Up Successful!');
       }
     } else {
       /// TODO: Indicate if the email already is in use!
-      yield SignUpStateFailed(msg: '\u26A0 Sign up failed');
+      yield SignUpStateFailed('\u26A0 Sign up failed');
     }
   }
 
-  Future<UserModel?> _mapSignUpEventSignUpToSignUpMethod({required SignUpEventSignUp signUpEventSignUp}) async {
+  Future<UserModel?> _mapSignUpEventSignUpToSignUpMethod(SignUpEventSignUp signUpEventSignUp) async {
     /// TODO: Implement more sign up methods that firebase provides
     if (signUpEventSignUp.signUpType == SignUpType.emailAndPassword) {
-      return await authenticationRepository.registerWithEmailAndPassword(signUpEventSignUp.hashedEmail, signUpEventSignUp.hashedPassword);
-    }
-    else {
+      return await authenticationRepository.signInWithEmailAndPassword(
+          newEmail: signUpEventSignUp.hashedEmail,
+          newPassword: signUpEventSignUp.hashedPassword
+      );
+    } else {
       return null;
     }
   }

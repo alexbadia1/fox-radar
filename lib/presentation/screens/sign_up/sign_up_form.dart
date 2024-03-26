@@ -6,7 +6,7 @@ import 'package:fox_radar/presentation/presentation.dart';
 class SignUpForm extends StatefulWidget {
   @override
   _SignUpFormState createState() => _SignUpFormState();
-} // SignUpForm
+}
 
 class _SignUpFormState extends State<SignUpForm> {
   final GlobalKey<FormState> _signUpFormKeyEmail = new GlobalKey<FormState>();

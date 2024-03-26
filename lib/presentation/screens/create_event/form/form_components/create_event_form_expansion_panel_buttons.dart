@@ -13,49 +13,49 @@ class ExpansionPanelCancelButton extends StatelessWidget {
 
   /// A void callback that triggers from the Flutter defined Button onPressed() property.
   final OnPressedCallback onPressedCallback;
-  const ExpansionPanelCancelButton({Key key, @required this.onPressedCallback}) : super(key: key);
+  const ExpansionPanelCancelButton({Key? key, required this.onPressedCallback}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
+    return TextButton(
       child: Text('Cancel', style: TextStyle(color: cWhite100)),
       onPressed: onPressedCallback,
     );
-  }// build
-}// ExpansionPanelCancelButton
+  }
+}
 
 class ExpansionPanelBackButton extends StatelessWidget {
   /// A void callback that triggers from the Flutter defined Button onPressed() property.
-  final OnPressedCallback onPressedCallback;
-  const ExpansionPanelBackButton({Key key, this.onPressedCallback}) : super(key: key);
+  final OnPressedCallback? onPressedCallback;
+  const ExpansionPanelBackButton({Key? key, this.onPressedCallback}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
+    return TextButton(
       child: Text('Back', style: TextStyle(color: cWhite100)),
       onPressed: () {
         BlocProvider.of<DateTimePickerCubit>(context).openExpansionPanelToDatePicker();
       },
     );
-  }// build
-}// ExpansionPanelPreviousButton
+  }
+}
 
 
 class ExpansionPanelContinueButton extends StatelessWidget {
   /// A void callback that triggers from the Flutter defined Button onPressed() property.
-  final OnPressedCallback onPressedCallback;
-  const ExpansionPanelContinueButton({Key key, this.onPressedCallback}) : super(key: key);
+  final OnPressedCallback? onPressedCallback;
+  const ExpansionPanelContinueButton({Key? key, this.onPressedCallback}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
+    return TextButton(
       child: Text('Continue', style: TextStyle(color: cBlue)),
       onPressed: () {
         BlocProvider.of<DateTimePickerCubit>(context).openExpansionPanelToTimePicker();
       },
     );
-  }// build
-}// ExpansionPanelPreviousButton
+  }
+}
 
 class ExpansionPanelConfirmButton extends StatelessWidget {
 
@@ -63,12 +63,12 @@ class ExpansionPanelConfirmButton extends StatelessWidget {
   ///
   /// The argument passed back during the callback is the current temporary DateTime stored in the ExpansionPanelCubit.
   final OnPressedCallback onPressedCallback;
-  const ExpansionPanelConfirmButton({Key key, @required this.onPressedCallback}) : super(key: key);
+  const ExpansionPanelConfirmButton({Key? key, required this.onPressedCallback}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
+    return TextButton(
       child: Text('Confirm', style: TextStyle(color: cBlue)),
       onPressed: onPressedCallback,
     );
-  }// build
-}// ExpansionPanelConfirmButton
+  }
+}

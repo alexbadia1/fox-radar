@@ -31,7 +31,7 @@ class Time extends StatelessWidget {
                   if (!_expansionPanelIsOpen) {
                     BlocProvider.of<DateTimePickerCubit>(context)
                         .openExpansionPanelToDatePicker();
-                  } //
+                  }
                 },
                 titleLabelCallback: (CreateEventState state) {
                   return state.eventModel.rawStartDateAndTime;
@@ -45,7 +45,8 @@ class Time extends StatelessWidget {
                 onConfirmButtonPressed: (DateTime dateTime) {
                   BlocProvider.of<CreateEventBloc>(context).add(
                       CreateEventSetRawStartDateTime(
-                          newRawStartDateTime: dateTime));
+                          newRawStartDateTime: dateTime
+                      ));
                 },
               );
             }),
@@ -106,7 +107,7 @@ class Time extends StatelessWidget {
                               key: UniqueKey(),
                               icon: Icon(Icons.delete, color: Colors.white),
                               onPressed: () {
-                                Slidable.of(context).close();
+                                Slidable.of(context)?.close();
                                 // Remove the end date from the event bloc
                                 BlocProvider.of<CreateEventBloc>(context).add(
                                     CreateEventRemoveRawEndDateTime()

@@ -20,7 +20,7 @@ class EventModel {
   late String? _room;
 
   /// Raw Event Start Date (Required)
-  late DateTime? _rawStartDateAndTime;
+  DateTime? _rawStartDateAndTime;
 
   /// Event Start Date (Required)
   ///
@@ -33,7 +33,7 @@ class EventModel {
   late String? _startTime;
 
   /// Raw Event End Date (Optional)
-  late DateTime? _rawEndDateAndTime;
+  DateTime? _rawEndDateAndTime;
 
   /// Event End Date (Optional)
   ///
@@ -80,34 +80,30 @@ class EventModel {
   /// Account ID of of the Account that created this event
   late String? _accountID;
 
+  final bool defaultImageFitCover = false;
+
   /// Full Constructor
   EventModel(
       {String? newHost,
-      String? newTitle,
-      String? newLocation,
-      String? newRoom,
-      DateTime? newRawStartDateAndTime,
-      DateTime? newRawEndDateAndTime,
-      String? newCategory,
-      List<String>? newHighlights,
-      String? newDescription,
-      Uint8List? newImageBytes,
-      bool? newImageFitCover,
-      String? newImagePath,
-      String? newEventID,
+        String? newTitle,
+        String? newLocation,
+        String?  newRoom,
+        DateTime? newRawStartDateAndTime,
+        DateTime? newRawEndDateAndTime,
+        String? newCategory,
+        List<String>? newHighlights,
+        String? newDescription,
+        Uint8List? newImageBytes,
+        bool? newImageFitCover,
+        String? newImagePath,
+        String? newEventID,
         String? newSearchID,
-      String? newAccountID,
-      String? newPinnedID}) {
-    // Set the Event Title
+        String? newAccountID,
+        String? newPinnedID}) {
+
     this._title = newTitle;
-
-    // Set the Event Host
     this._host = newHost;
-
-    // Set the Event Location
     this._location = newLocation;
-
-    // Set the Event Room
     this._room = newRoom;
 
     // Parse the Start DATE from [rawStartDateAndTime]
@@ -118,12 +114,12 @@ class EventModel {
             DateFormat('E, MMMM d, y').format(newRawStartDateAndTime);
 
     // Parse the  Start TIME from [rawStartDateAndTime]
-    this._rawEndDateAndTime = newRawEndDateAndTime;
     newRawStartDateAndTime == null
         ? this._startTime = ''
         : this._startTime = DateFormat.jm().format(newRawStartDateAndTime);
 
     // Parse the End DATE from [rawEndDateAndTime]
+    this._rawEndDateAndTime = newRawEndDateAndTime;
     newRawEndDateAndTime == null
         ? this._endDate = ''
         : this._endDate =
@@ -134,30 +130,15 @@ class EventModel {
         ? this._endTime = ''
         : this._endTime = DateFormat.jm().format(newRawEndDateAndTime);
 
-    // Set the Event Category
     this._category = newCategory;
-
-    // Set Event Highlights
     this._highlights = newHighlights;
-
-    // Set Event Description
     this._description = newDescription;
-
-    // Set Event's Image
     this._imageBytes = newImageBytes!;
-
-    // Whether the image will scale to cover the entire aspect ratio
     this._imageFitCover = newImageFitCover;
-
-    // Firebase Storage bucket path to event's image
     this._imagePath = newImagePath;
-
-    // Set the Event ID
     this._eventID = newEventID;
-
-    // Set Account ID
     this._accountID = newAccountID;
-  } // EventModel
+  }
 
   /// Null Constructor
   EventModel.nullConstructor() {
@@ -182,7 +163,7 @@ class EventModel {
     this._rawEndDateAndTime = null;
     this._endDate = '';
     this._endTime = '';
-  } // EventModel.nullConstructor
+  }
 
   /// Copies all of the objects attributes into a new instance of the
   /// object, allowing specified attributes to be changed while copying.
@@ -217,13 +198,13 @@ class EventModel {
     // Use previous rawEndDateAndTime
     if (rawEndDateAndTime == null) {
       rawEndDateAndTime = this._rawEndDateAndTime;
-    } // if
+    }
 
     // If the endDate and endTime are set to empty string
     // Override the rawEndDateAndTime to 'null'
     if (endDate == '' && endTime == '') {
       rawEndDateAndTime = null;
-    } // if
+    }
 
     return EventModel(
       newTitle: title ?? this._title,
@@ -241,7 +222,7 @@ class EventModel {
       newEventID: eventID ?? this._eventID,
       newAccountID: accountID ?? this._accountID,
     );
-  } // copyWith
+  }
 
   String? get title => this._title;
   String? get host => this._host;
@@ -264,19 +245,19 @@ class EventModel {
 
   set imagePath(String? value) {
     this._imagePath = value;
-  }// imagePath
+  }
 
   set imageBytes(Uint8List? newImageBytes) {
     this._imageBytes = newImageBytes;
-  }// imagePath
+  }
 
   set eventID(String? value) {
     this._eventID = value;
-  }// eventId
+  }
 
   set accountID(String? value) {
     this._accountID = value;
-  }// accountId
+  }
 
   @override
   String toString() {
@@ -296,5 +277,5 @@ class EventModel {
         "\tEvent ID (Events Collection): ${this._eventID}\n"
         "\tAccount ID (Owner of Event): ${this._accountID}\n"
         "}\n";
-  } // toString
-} //class
+  }
+}

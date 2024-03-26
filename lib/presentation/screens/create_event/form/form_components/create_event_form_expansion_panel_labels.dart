@@ -17,8 +17,8 @@ typedef RetrieveCategoryFromBlocCallback = String Function(
 /// Returns true if the two DateTimes are not equal,
 /// since that means the DateTime changed between the two CreateEventBloc states.
 bool _didDateChanged({
-  @required DateTime previousDateTime,
-  @required DateTime nextDateTime,
+  required DateTime? previousDateTime,
+  required DateTime? nextDateTime,
 }) {
   // Null check, do not rebuild widget if both DateTimes are null.
   //
@@ -49,8 +49,8 @@ bool _didDateChanged({
 /// Returns true if the two Categories are not equal,
 /// since that means the DateTime changed between the two CreateEventBloc states.
 bool _didCategoryChanged({
-  @required String previousCategory,
-  @required String nextCategory,
+  required String? previousCategory,
+  required String? nextCategory,
 }) {
   // Null check, do not rebuild widget if both DateTimes are null.
   //
@@ -93,10 +93,10 @@ class ExpansionPanelDateTimeTitle extends StatelessWidget {
   final RetrieveDateTimeFromBlocCallback retrieveDateTimeFromBlocCallback;
 
   const ExpansionPanelDateTimeTitle(
-      {Key key,
-      @required this.title,
-      @required this.hintText,
-      @required this.retrieveDateTimeFromBlocCallback})
+      {Key? key,
+      required this.title,
+      required this.hintText,
+      required this.retrieveDateTimeFromBlocCallback})
       : super(key: key);
 
   @override
@@ -134,7 +134,7 @@ class ExpansionPanelDateLabel extends StatelessWidget {
   final RetrieveDateTimeFromBlocCallback retrieveDateTimeFromBlocCallback;
 
   const ExpansionPanelDateLabel(
-      {Key key, @required this.retrieveDateTimeFromBlocCallback})
+      {Key? key, required this.retrieveDateTimeFromBlocCallback})
       : super(key: key);
 
   @override
@@ -149,7 +149,7 @@ class ExpansionPanelDateLabel extends StatelessWidget {
       }, // ListenWhen
       builder: (BuildContext context, createEventBlocState) {
         String _date = '';
-        DateTime _rawDate =
+        DateTime? _rawDate =
             this.retrieveDateTimeFromBlocCallback(createEventBlocState);
 
         if (_rawDate != null) {
@@ -170,7 +170,7 @@ class ExpansionPanelTimeLabel extends StatelessWidget {
   final RetrieveDateTimeFromBlocCallback retrieveDateTimeFromBlocCallback;
 
   const ExpansionPanelTimeLabel(
-      {Key key, this.retrieveDateTimeFromBlocCallback})
+      {Key? key, required this.retrieveDateTimeFromBlocCallback})
       : super(key: key);
 
   @override
@@ -182,21 +182,21 @@ class ExpansionPanelTimeLabel extends StatelessWidget {
               this.retrieveDateTimeFromBlocCallback(previousState),
           nextDateTime: this.retrieveDateTimeFromBlocCallback(currentState),
         );
-      }, // ListenWhen
+      },
 
       builder: (BuildContext context, createEventBlocState) {
         String _timeOfDay = '';
-        DateTime _rawTimeOfDay =
+        DateTime? _rawTimeOfDay =
             this.retrieveDateTimeFromBlocCallback(createEventBlocState);
         if (_rawTimeOfDay != null) {
           _timeOfDay = DateFormat.jm().format(_rawTimeOfDay);
-        } // if
+        }
         return Text(_timeOfDay,
             style: TextStyle(fontSize: 15.0, color: cWhite100));
       },
     );
-  } // build
-} // TimeLabel
+  }
+}
 
 class ExpansionPanelCategoryTitle extends StatelessWidget {
   /// Text positioned in the leading left side of the
@@ -215,10 +215,10 @@ class ExpansionPanelCategoryTitle extends StatelessWidget {
   final RetrieveCategoryFromBlocCallback retrieveCategoryFromBlocCallback;
 
   const ExpansionPanelCategoryTitle(
-      {Key key,
-      @required this.title,
-      @required this.hintText,
-      @required this.retrieveCategoryFromBlocCallback})
+      {Key? key,
+      required this.title,
+      required this.hintText,
+      required this.retrieveCategoryFromBlocCallback})
       : super(key: key);
 
   @override
@@ -232,7 +232,7 @@ class ExpansionPanelCategoryTitle extends StatelessWidget {
               this.retrieveCategoryFromBlocCallback(previousState),
           nextCategory: this.retrieveCategoryFromBlocCallback(currentState),
         );
-      }, // ListenWhen
+      },
 
       builder: (BuildContext context, createEventState) {
         String _category = retrieveCategoryFromBlocCallback(createEventState);
@@ -240,14 +240,14 @@ class ExpansionPanelCategoryTitle extends StatelessWidget {
           if (_category.isNotEmpty) {
             return Text(this.title,
                 style: TextStyle(fontSize: 15.0, color: cWhite100));
-          } // if
-        } // if
+          }
+        }
         return Text(this.hintText,
             style: TextStyle(fontSize: 15.0, color: cWhite65));
       },
     );
-  } // build
-} // ExpansionPanelTitle
+  }
+}
 
 class ExpansionPanelCategoryLabel extends StatelessWidget {
   /// A function that receives a Bloc and returns a Category.
@@ -257,7 +257,7 @@ class ExpansionPanelCategoryLabel extends StatelessWidget {
   final RetrieveCategoryFromBlocCallback retrieveCategoryFromBlocCallback;
 
   const ExpansionPanelCategoryLabel(
-      {Key key, @required this.retrieveCategoryFromBlocCallback})
+      {Key? key, required this.retrieveCategoryFromBlocCallback})
       : super(key: key);
 
   @override
@@ -269,7 +269,7 @@ class ExpansionPanelCategoryLabel extends StatelessWidget {
               this.retrieveCategoryFromBlocCallback(previousState),
           nextCategory: this.retrieveCategoryFromBlocCallback(currentState),
         );
-      }, // ListenWhen
+      },
       builder: (BuildContext context, createEventBlocState) {
         String _category =
             this.retrieveCategoryFromBlocCallback(createEventBlocState);
@@ -277,10 +277,10 @@ class ExpansionPanelCategoryLabel extends StatelessWidget {
         if (_category != null) {
           return Text(_category,
               style: TextStyle(fontSize: 15.0, color: cWhite100));
-        } // if
+        }
 
         return Text('', style: TextStyle(fontSize: 15.0, color: cWhite100));
       }, // Listener
     );
-  } // build
-} // ExpansionPanelCategoryLabel
+  }
+}

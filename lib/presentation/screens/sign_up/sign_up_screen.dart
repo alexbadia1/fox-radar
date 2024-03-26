@@ -7,7 +7,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 class SignUpScreen extends StatefulWidget {
   @override
   _SignUpScreenState createState() => _SignUpScreenState();
-} // SignUpScreen
+}
 
 class _SignUpScreenState extends State<SignUpScreen> {
   @override
@@ -175,7 +175,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 ),
                               ],
                             );
-                          } // if
+                          }
 
                           /// Login form wasn't submitted, show the form itself.
                           return Column(
@@ -231,5 +231,5 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ],
       ),
     );
-  } // build
-} // _SignUpScreenState
+  }
+}

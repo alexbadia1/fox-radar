@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class SignUpState extends Equatable{
@@ -16,9 +15,9 @@ class SignUpStateSuccessful extends SignUpState{
 }
 
 class SignUpStateFailed extends SignUpState{
-  final msg;
+  final String msg;
 
-  SignUpStateFailed({@required this.msg});
+  SignUpStateFailed(this.msg);
 
   @override
   List<Object?> get props => [];

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
 import 'package:fox_radar/logic/logic.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 
@@ -12,14 +11,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   @override
   Stream<LoginState> mapEventToState(LoginEvent loginEvent) async* {
     if (loginEvent is LoginEventLogin) {
-      yield* _mapLoginEventLoginToState(loginEvent: loginEvent);
-    }
-    else if (loginEvent is LoginEventLogout) {
+      yield* _mapLoginEventLoginToState(loginEvent);
+    } else if (loginEvent is LoginEventLogout) {
       yield* _mapLoginEventLogoutToState();
     }
   }
 
-  Stream<LoginState> _mapLoginEventLoginToState({required LoginEventLogin loginEvent}) async* {
+  Stream<LoginState> _mapLoginEventLoginToState(LoginEventLogin loginEvent) async* {
     // Emit state to let user know the form is being processed
     // Probably should show a loading widget or something
     yield LoginStateLoginSubmitted();
@@ -28,7 +26,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     // await Future.delayed(Duration(milliseconds: 3000));
 
     // Choose a sign in method to use...
-    final UserModel? user = await _mapLoginTypeToLoginMethod(loginEvent: loginEvent);
+    final UserModel? user = await _mapLoginTypeToLoginMethod(loginEvent);
 
     // Ensure a firebase user was returned
     if (user != null) {
@@ -39,20 +37,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   Stream<LoginState> _mapLoginEventLogoutToState() async* {
-    // logout
     await this.authenticationRepository.signOut();
-
     yield LoginStateLoggedOut(msg: '');
   }
 
-  Future<UserModel?> _mapLoginTypeToLoginMethod({required LoginEventLogin loginEvent}) async {
-
+  Future<UserModel?> _mapLoginTypeToLoginMethod(LoginEventLogin loginEvent) async {
     /// TODO: Map more login types to login methods from the authentication repository
     if (loginEvent.loginType == LoginType.emailAndPassword) {
       // Returns UserModel on successful login or null on failed login attempt
-      return await this.authenticationRepository.signInWithEmailAndPassword(loginEvent.hashedEmail, loginEvent.hashedPassword);
-    }
-    else {
+      return await this.authenticationRepository.signInWithEmailAndPassword(
+          newEmail: loginEvent.hashedEmail,
+          newPassword: loginEvent.hashedPassword
+      );
+    } else {
       // No login methods are supported (or even exist) for this login type.
       return null;
     }

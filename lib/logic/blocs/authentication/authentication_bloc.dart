@@ -5,7 +5,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   final AuthenticationRepository _authenticationRepository;
-  late StreamSubscription _userSubscription;
+  StreamSubscription? _userSubscription;
 
   AuthenticationBloc(AuthenticationRepository authenticationRepository)
       : _authenticationRepository = authenticationRepository,
@@ -17,13 +17,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   Stream<AuthenticationState> mapEventToState(AuthenticationEvent event) async* {
     if (event is AuthenticationStarted) {
       yield* _mapAuthenticationStartedToState();
-    }
-
-    if (event is AuthenticationLoggedIn) {
+    } else if (event is AuthenticationLoggedIn) {
       yield* _mapAuthenticationLoggedInToState(event.user);
-    }
-
-    else if (event is AuthenticationLoggedOut) {
+    } else if (event is AuthenticationLoggedOut) {
       yield* _mapAuthenticationLoggedOutToState();
     }
   }
@@ -50,7 +46,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   @override
   Future<void> close() {
-    _userSubscription.cancel();
+    _userSubscription?.cancel();
     return super.close();
   }
 }

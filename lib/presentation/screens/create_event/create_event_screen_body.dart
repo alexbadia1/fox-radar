@@ -9,12 +9,13 @@ class CreateEventBody extends StatelessWidget {
   /// and assumes the user wants to update an event.
   ///
   /// Leave null, if the user is creating a new event.
-  final EventModel initialEventModel;
+  final EventModel? initialEventModel;
   final CreateEventFormAction createEventFormAction;
 
-  const CreateEventBody({Key key, @required this.createEventFormAction, this.initialEventModel})
-      : assert(createEventFormAction != null),
-        super(key: key);
+  const CreateEventBody({
+    Key? key, required this.createEventFormAction, this.initialEventModel
+  })
+      : super(key: key);
 
   @override
   Widget build(BuildContext parentContext) {
@@ -51,7 +52,7 @@ class CreateEventBody extends StatelessWidget {
                                   onBack: () => BlocProvider.of<CreateEventPageViewCubit>(context).animateToEventForm(),
                               ),
                             );
-                          } // if
+                          }
                           return Padding(
                             padding: EdgeInsets.only(top: safePadding),
                             child: CustomCloseButton(
@@ -109,7 +110,7 @@ class CreateEventBody extends StatelessWidget {
 
                                 // Only upload event if there's an event not already being uploaded
                                 if (BlocProvider.of<UploadEventBloc>(context).state is UploadEventStateUploading) {
-                                  return showDialog<String>(
+                                  showDialog<String>(
                                     context: context,
                                     builder: (BuildContext context) => AlertDialog(
                                       title: Text('Cannot Upload Event'),
@@ -126,7 +127,7 @@ class CreateEventBody extends StatelessWidget {
                                       ],
                                     ),
                                   );
-                                } // if
+                                }
 
                                 // No event is uploading
                                 else {
@@ -147,11 +148,11 @@ class CreateEventBody extends StatelessWidget {
                                       newEventModel: BlocProvider.of<CreateEventBloc>(context).state.eventModel,
                                     ),
                                   );
-                                } // else
-                              }, // onCreate
+                                }
+                              },
                             ),
                           );
-                        } // if
+                        }
 
                         /// Currently on the Event Form Page
                         /// Show a "next" button in the top right.
@@ -173,7 +174,7 @@ class CreateEventBody extends StatelessWidget {
                                     ),
                                   ),
                                 );
-                              } // if
+                              }
 
                               // Continue to event photo
                               else {
@@ -182,7 +183,7 @@ class CreateEventBody extends StatelessWidget {
 
                                 // Advance Page Index
                                 BlocProvider.of<CreateEventPageViewCubit>(context).animateToEventPhoto();
-                              } // else
+                              }
                             },
                           ),
                         );

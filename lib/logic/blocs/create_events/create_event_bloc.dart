@@ -17,7 +17,7 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
   @override
   Stream<CreateEventState> mapEventToState(CreateEventEvent event) async* {
     if (event is CreateEventSetEvent) {
-      yield* _mapCreateEventSetEventToState(createEventSetEvent: event);
+      yield* _mapCreateEventSetEventToState(event);
     } else if (event is CreateEventSetTitle) {
       yield* _mapCreateEventSetTitleToState(createEventSetTitle: event);
     } else if (event is CreateEventSetHost) {
@@ -65,15 +65,15 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
   ///              that users may want to modify.
   ///
   /// Returns: a new valid or invalid BloC state
-  Stream<CreateEventState> _mapCreateEventSetEventToState({required CreateEventSetEvent createEventSetEvent}) async* {
+  Stream<CreateEventState> _mapCreateEventSetEventToState(CreateEventSetEvent? createEventSetEvent) async* {
     // Empty Title, set title to empty string
     if (createEventSetEvent != null) {
       this._eventModel = createEventSetEvent.eventModel;
-    } // if
+    }
 
     // Changing this attribute may affect the validity of the BloC
     yield isValid();
-  } // _mapCreateEventSetEventToState
+  }
 
   /// Name: _mapCreateEventSetTitleToState
   ///
@@ -81,20 +81,18 @@ class CreateEventBloc extends Bloc<CreateEventEvent, CreateEventState> {
   ///              a valid in place on the Marist campus.
   ///
   /// Returns: a new valid or invalid BloC state
-  Stream<CreateEventState> _mapCreateEventSetTitleToState({required CreateEventSetTitle createEventSetTitle}) async* {
-    // Empty Title, set title to empty string
+  Stream<CreateEventState> _mapCreateEventSetTitleToState(CreateEventSetTitle createEventSetTitle) async* {
     if (createEventSetTitle.newTitle.trim().isEmpty) {
+      // Empty Title, set title to empty string
       this._eventModel = this._eventModel.copyWith(title: '');
-    } // if
-
-    // Not empty title, so update the _event
-    else {
+    } else {
+      // Not empty title, so update the _event
       this._eventModel = this._eventModel.copyWith(title: createEventSetTitle.newTitle.trim());
-    } // else
+    }
 
     // Changing this attribute may affect the validity of the BloC
     yield isValid();
-  } // _mapCreateEventSetTitleToState
+  }
 
   /// Name: _mapCreateEventSetHostToState
   ///

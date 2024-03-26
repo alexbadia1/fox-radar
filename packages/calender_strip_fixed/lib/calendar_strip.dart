@@ -498,17 +498,17 @@ class SlideFadeTransitionState extends State<SlideFadeTransition>
   }
 
   @override
-  void dispose() {
-    _disposed = true;
-    _animController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return FadeTransition(
       child: SlideTransition(position: _animOffset, child: widget.child),
       opacity: _animController,
     );
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    _animController.dispose();
+    super.dispose();
   }
 }

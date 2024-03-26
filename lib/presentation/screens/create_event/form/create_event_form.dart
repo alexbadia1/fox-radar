@@ -37,4 +37,5 @@ class _CreateEventFormState extends State<CreateEventForm> {
         ),
       ),
     );
-  }}// CreateEventForm
+  }
+}

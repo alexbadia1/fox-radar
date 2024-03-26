@@ -33,11 +33,11 @@ class CreateEventFormTextField extends StatefulWidget {
   /// Creates a FormField that contains a TextField.
   /// When a controller is specified, initialValue must be null (the default). If controller is null, then a TextEditingController will be constructed automatically and its text will be initialized to initialValue or the empty string.
   /// For documentation about the various parameters, see the TextField class and new TextField, the constructor.
-  final TextInputType keyboardType;
+  final TextInputType? keyboardType;
 
-  final int maxLines;
+  final int? maxLines;
 
-  final int minLines;
+  final int? minLines;
 
   /// A void callback that triggers when either the Form Field loses focus or on Editing Complete.
   ///
@@ -46,12 +46,12 @@ class CreateEventFormTextField extends StatefulWidget {
   final OnEditingCompleteOrLostFocusCallBack onEditingCompleteOrLostFocus;
 
   const CreateEventFormTextField({
-    Key key,
-    @required this.initialTextValue,
-    @required this.hintText,
-    @required this.height,
-    @required this.width,
-    @required this.onEditingCompleteOrLostFocus,
+    Key? key,
+    required this.initialTextValue,
+    required this.hintText,
+    required this.height,
+    required this.width,
+    required this.onEditingCompleteOrLostFocus,
     this.keyboardType,
     this.maxLines,
     this.minLines,
@@ -59,12 +59,12 @@ class CreateEventFormTextField extends StatefulWidget {
 
   @override
   _CreateEventFormTextFieldState createState() => _CreateEventFormTextFieldState();
-} // CreateEventFormTextField
+}
 
 class _CreateEventFormTextFieldState extends State<CreateEventFormTextField> {
-  FocusNode _focusNode;
-  String temporaryTextFieldValue;
-  TextEditingController _textEditingController;
+  late FocusNode _focusNode;
+  late String temporaryTextFieldValue;
+  late TextEditingController _textEditingController;
 
   @override
   void initState() {
@@ -81,16 +81,16 @@ class _CreateEventFormTextFieldState extends State<CreateEventFormTextField> {
       if (!_focusNode.hasFocus) {
         if (temporaryTextFieldValue.trim().isEmpty) {
           this.widget.onEditingCompleteOrLostFocus('');
-        } // if
+        }
         else {
           this.widget.onEditingCompleteOrLostFocus(temporaryTextFieldValue);
-        } // else
-      } // if
+        }
+      }
     });
 
     // Declare here, in order to remember cursor position
     _textEditingController = new TextEditingController(text: this.widget.initialTextValue);
-  } // initState
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -137,12 +137,12 @@ class _CreateEventFormTextFieldState extends State<CreateEventFormTextField> {
         ],
       ),
     );
-  } // build
+  }
 
   @override
   void dispose() {
     _focusNode.dispose();
     _textEditingController.dispose();
     super.dispose();
-  } // dispose
-} // _CreateEventFormTextFieldState
+  }
+}

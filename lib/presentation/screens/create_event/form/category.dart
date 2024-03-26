@@ -33,7 +33,7 @@ class Category extends StatelessWidget {
                             title: 'Category',
                             hintText: 'Add Category (Required)',
                             retrieveCategoryFromBlocCallback: (state) {
-                              return state.eventModel.category;
+                              return state.eventModel.category ?? '';
                             },
                           ),
 
@@ -43,7 +43,7 @@ class Category extends StatelessWidget {
                           ExpansionPanelCategoryLabel(
                             retrieveCategoryFromBlocCallback:
                                 (CreateEventState state) {
-                              return state.eventModel.category;
+                              return state.eventModel.category ?? '';
                             },
                           ),
 
@@ -68,11 +68,10 @@ class Category extends StatelessWidget {
                                       .openExpansionPanelToCategoryPicker(
                                           newPickerIndex: index),
                             );
-                          } // if
-                          // Show empty container, this may not be necessary
-                          else {
+                          } else {
+                            // Show empty container, this may not be necessary
                             return Container(height: 0, width: 0);
-                          } // else
+                          }
                         }),
 
                         // Category Buttons
@@ -107,14 +106,14 @@ class Category extends StatelessWidget {
                                                         .of<CategoryPickerCubit>(
                                                             context)
                                                     .state
-                                                    .index]));
+                                                    .index]
+                                        ));
                                       },
                                     ),
                                   ],
                                 ),
                               );
-                            } // Show empty container, this may not be necessary
-                            else {
+                            } else {
                               return Container(height: 0, width: 0);
                             } // else
                           },
@@ -124,6 +123,8 @@ class Category extends StatelessWidget {
                   ),
                 ],
               );
-            })));
+            })
+        )
+    );
   }
-} // CreateEventFormCategory
+}

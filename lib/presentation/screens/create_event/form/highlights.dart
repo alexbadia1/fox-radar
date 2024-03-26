@@ -37,7 +37,7 @@ class Highlights extends StatelessWidget {
 
                     /// TODO: Set limit as a constant in the Event Model
                     // Disable the "Add Highlights" Button if Highlight length is reached
-                    if (_createEventState.eventModel.highlights.length >= HIGHLIGHTS_LIMIT) {
+                    if ((_createEventState.eventModel.highlights?.length ?? 0) >= HIGHLIGHTS_LIMIT) {
                       return Center(
                         child: IconButton(
                           icon: Icon(
@@ -58,15 +58,9 @@ class Highlights extends StatelessWidget {
                         onPressed: () {
                           /// TODO: Add CreateEventSetHighlights Event to the Create Event Bloc
                           FocusScope.of(context).unfocus();
-                          if (BlocProvider.of<CreateEventBloc>(context)
-                                  .state
-                                  .eventModel
-                                  .highlights
-                                  .length <
-                              5) {
-                            BlocProvider.of<CreateEventBloc>(context)
-                                .add(CreateEventAddHighlight(highlight: ''));
-                          } // if
+                          if ((BlocProvider.of<CreateEventBloc>(context).state.eventModel.highlights?.length ?? 0) < 5) {
+                            BlocProvider.of<CreateEventBloc>(context).add(CreateEventAddHighlight(highlight: ''));
+                          }
                         },
                       ),
                     );
@@ -81,11 +75,10 @@ class Highlights extends StatelessWidget {
               if (previousState.eventModel.highlights == null) {
                 if (currentState.eventModel.highlights == null) {
                   return false;
-                } // if
-                else {
+                } else {
                   return true;
-                } // else
-              } // if
+                }
+              }
               return !ListEquality().equals(
                   previousState.eventModel.highlights,
                   currentState.eventModel.highlights);
@@ -94,7 +87,7 @@ class Highlights extends StatelessWidget {
               final _highlights = createEventState.eventModel.highlights;
               List<Widget> _highlightTextFieldList = [];
 
-              for (int i = 0; i < _highlights.length; ++i) {
+              for (int i = 0; i < (_highlights?.length ?? 0); ++i) {
                 _highlightTextFieldList.add(
                   BorderBottom(
                     child: Slidable(
@@ -128,7 +121,7 @@ class Highlights extends StatelessWidget {
                                   key: UniqueKey(),
                                   icon: Icon(Icons.delete, color: Colors.white),
                                   onPressed: () {
-                                    Slidable.of(context).close();
+                                    Slidable.of(context)?.close();
                                     BlocProvider.of<CreateEventBloc>(context).add(
                                         CreateEventSetHighlight(
                                             highlight: 'deleted', index: i));
@@ -144,8 +137,7 @@ class Highlights extends StatelessWidget {
                     ),
                   ),
                 );
-              } // for
-
+              }
               return ListView(
                 physics: NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
@@ -156,5 +148,5 @@ class Highlights extends StatelessWidget {
         ],
       ),
     );
-  } // build
-} // Highlights
+  }
+}
