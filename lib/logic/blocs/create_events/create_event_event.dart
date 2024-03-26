@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:database_repository/database_repository.dart';
 
 @immutable
-abstract class CreateEventEvent extends Equatable{}// CreateEventEvent
+abstract class CreateEventEvent extends Equatable {} // CreateEventEvent
 
 class CreateEventSetEvent extends CreateEventEvent {
   final EventModel eventModel;

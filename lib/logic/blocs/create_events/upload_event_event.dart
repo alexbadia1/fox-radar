@@ -9,8 +9,10 @@ class UploadEventUpload extends UploadEventEvent {
   final CreateEventFormAction createEventFormAction;
   final EventModel newEventModel;
 
-  UploadEventUpload(
-      {required this.newEventModel, required this.createEventFormAction});
+  UploadEventUpload({
+    required this.newEventModel,
+    required this.createEventFormAction,
+  });
 
   @override
   List<Object?> get props => [this.newEventModel, this.createEventFormAction];

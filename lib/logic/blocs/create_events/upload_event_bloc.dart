@@ -11,25 +11,17 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
   late UploadTask? uploadTask;
 
   UploadEventBloc({required this.db, required this.uid})
-      : super(UploadEventStateInitial());
-
-  @override
-  Stream<UploadEventState> mapEventToState(
-    UploadEventEvent event,
-  ) async* {
-    // Start Upload
-    if (event is UploadEventUpload) {
-      yield* _mapUploadEventUploadToState(uploadEventUpload: event);
-    } else if (event is UploadEventCancel) {
-      yield* _mapUploadEventCancelToState();
-    } else if (event is UploadEventReset) {
-      yield* _mapUploadEventResetToState();
-    } else if (event is UploadEventComplete) {
-      yield* _mapUploadEventCompleteToState();
-    }
+      : super(UploadEventStateInitial()) {
+    on<UploadEventUpload>(_mapUploadEventUploadToState);
+    on<UploadEventCancel>(_mapUploadEventCancelToState);
+    on<UploadEventReset>(_mapUploadEventResetToState);
+    on<UploadEventComplete>(_mapUploadEventCompleteToState);
   }
 
-  Stream<UploadEventState> _mapUploadEventUploadToState({required UploadEventUpload uploadEventUpload}) async* {
+  void _mapUploadEventUploadToState(
+    UploadEventUpload uploadEventUpload,
+    Emitter<UploadEventState> emitter,
+  ) async {
     // Only allow one upload task at a time
     if (uploadTask != null) {
       return;
@@ -45,7 +37,8 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
 
       // Form Action Create
       if (action == CreateEventFormAction.create) {
-        newEventModel.eventID = await this.db.createEvent(newEventModel, this.uid);
+        newEventModel.eventID =
+            await this.db.createEvent(newEventModel, this.uid);
       }
 
       // Form Action Update
@@ -58,34 +51,45 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
       // Only upload an image if the user chose one
       if (newEventModel.imageBytes != null) {
         // Begin compression...
-        final Future<Uint8List> compressedBytes = this._compressImage(newEventModel.imageBytes!);
+        final Future<Uint8List> compressedBytes =
+            this._compressImage(newEventModel.imageBytes!);
 
         // Generate the storage path for the image
-        newEventModel.imagePath = this.db.imagePath(eventID: newEventModel.eventID!);
+        newEventModel.imagePath =
+            this.db.imagePath(eventID: newEventModel.eventID!);
 
         // Upload image bytes to firebase storage bucket using
         // the new event's document id as a the name for the image.
-        if (newEventModel.eventID != null && newEventModel.eventID!.isNotEmpty) {
-          this.uploadTask = this.db.uploadImageToStorage(eventID: newEventModel.eventID!, imageBytes: await compressedBytes);
+        if (newEventModel.eventID != null &&
+            newEventModel.eventID!.isNotEmpty) {
+          this.uploadTask = this.db.uploadImageToStorage(
+              eventID: newEventModel.eventID!,
+              imageBytes: await compressedBytes);
 
-          yield UploadEventStateUploading(
+          emitter(UploadEventStateUploading(
             uploadTask: this.uploadTask!,
             eventModel: newEventModel,
-          );
+          ));
         }
       }
     }
   }
 
-  Stream<UploadEventStateInitial> _mapUploadEventResetToState() async* {
+  void _mapUploadEventResetToState(
+    UploadEventReset uploadEventReset,
+    Emitter<UploadEventState> emitter,
+  ) {
     // Only can reset the event BloC if there was an event uploaded
     if (this.uploadTask != null) {
-      yield (UploadEventStateInitial());
+      emitter(UploadEventStateInitial());
       this.uploadTask = null;
     }
   }
 
-  Stream<UploadEventState> _mapUploadEventCancelToState() async* {
+  void _mapUploadEventCancelToState(
+    UploadEventCancel uploadEventCancel,
+    Emitter<UploadEventState> emitter,
+  ) {
     // An event must already be being uploaded
     if (this.uploadTask == null) {
       return;
@@ -96,14 +100,17 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
     // if users want to undo canceling an upload event?
   }
 
-  Stream<UploadEventState> _mapUploadEventCompleteToState() async* {
+  void _mapUploadEventCompleteToState(
+    UploadEventComplete uploadEventComplete,
+    Emitter<UploadEventState> emitter,
+  ) {
     // An event must already be being uploaded
     if (this.uploadTask != null) {
       final state = this.state;
       if (state is UploadEventStateUploading) {
         // Emit state, but with upload complete flag
         state.uploadComplete();
-        yield state;
+        emitter(state);
       }
     }
   }
@@ -126,7 +133,8 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
       quality = quality < 1 ? 1 : quality;
       quality = quality > 100 ? 100 : quality;
 
-      final Uint8List compressedBytes = await FlutterImageCompress.compressWithList(
+      final Uint8List compressedBytes =
+          await FlutterImageCompress.compressWithList(
         bytes,
         minHeight: 1350,
         minWidth: 1080,
@@ -141,13 +149,11 @@ class UploadEventBloc extends Bloc<UploadEventEvent, UploadEventState> {
 
   @override
   void onChange(Change<UploadEventState> change) {
-    print('Upload Event Bloc $change');
     super.onChange(change);
   }
 
   @override
   Future<void> close() {
-    print('Upload Event Bloc Closed!');
     return super.close();
   }
 }
