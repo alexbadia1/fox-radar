@@ -307,7 +307,7 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
     }).toList();
   }
 
-  List<String>? get pinnedEvents => this._pinnedEventsHandler != null ? this._pinnedEventsHandler.eventIds : null;
+  List<String> get pinnedEvents => this._pinnedEventsHandler != null ? this._pinnedEventsHandler.eventIds : [];
 
   Stream<PinnedEventsState> _mapPinnedEventsEventPinToState(String newEventID) async* {
     if (this.pinnedEvents == null) { return; }// if

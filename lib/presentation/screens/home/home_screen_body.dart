@@ -7,7 +7,7 @@ import 'package:fox_radar/presentation/presentation.dart';
 class HomeScreenBody extends StatefulWidget {
   @override
   _HomeScreenBodyState createState() => _HomeScreenBodyState();
-} // HomeScreenBody
+}
 
 class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAliveClientMixin {
   late Completer<void> _refreshCompleter;
@@ -36,11 +36,11 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
           if (!_currentState.maxEvents) {
             // Add a fetch event to the SuggestedEventsBloc
             BlocProvider.of<SuggestedEventsBloc>(context).add(SuggestedEventsEventFetch());
-          } // if
-        } // if
-      } // else-if
+          }
+        }
+      }
     });
-  } // initState
+  }
 
   @override
   Widget build(BuildContext homeScreenBodyContext) {
@@ -94,7 +94,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
                     ),
                   ),
                 );
-              } // if
+              }
 
               /// Name: SliverFillRemaining
               ///
@@ -227,9 +227,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
                                               return BlocProvider<PinnedEventsBloc>.value(
                                                 value: BlocProvider.of<PinnedEventsBloc>(modalSheetContext),
                                                 child: Builder(builder: (modalSheetContext) {
-                                                  if (!BlocProvider.of<PinnedEventsBloc>(context)
-                                                      .pinnedEvents
-                                                      !.contains(_suggestedSearchEvent.eventId)) {
+                                                  if (!BlocProvider.of<PinnedEventsBloc>(context).pinnedEvents.contains(_suggestedSearchEvent.eventId)) {
                                                     return ModalActionMenu(
                                                       actions: [
                                                         ModalActionMenuButton(
@@ -237,15 +235,14 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
                                                           description: "Pin",
                                                           color: Colors.blueAccent,
                                                           onPressed: () {
-                                                            BlocProvider.of<PinnedEventsBloc>(modalSheetContext)
-                                                                .add(PinnedEventsEventPin(_suggestedSearchEvent.eventId!));
+                                                            BlocProvider.of<PinnedEventsBloc>(modalSheetContext).add(PinnedEventsEventPin(_suggestedSearchEvent.eventId));
                                                             Navigator.pop(modalSheetContext);
                                                           },
                                                         ),
                                                       ],
                                                       cancel: true,
                                                     );
-                                                  } // if
+                                                  }
 
                                                   return ModalActionMenu(
                                                     actions: [
@@ -254,8 +251,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
                                                         description: "Unpin",
                                                         color: Colors.redAccent,
                                                         onPressed: () {
-                                                          BlocProvider.of<PinnedEventsBloc>(modalSheetContext)
-                                                              .add(PinnedEventsEventUnpin(_suggestedSearchEvent.eventId!));
+                                                          BlocProvider.of<PinnedEventsBloc>(modalSheetContext).add(PinnedEventsEventUnpin(_suggestedSearchEvent.eventId));
                                                           Navigator.pop(modalSheetContext);
                                                         },
                                                       )
@@ -388,7 +384,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
         ],
       ),
     );
-  } // build
+  }
 
   @override
   bool get wantKeepAlive => true;
@@ -397,5 +393,5 @@ class _HomeScreenBodyState extends State<HomeScreenBody> with AutomaticKeepAlive
   void dispose() {
     _sliverController.dispose();
     super.dispose();
-  } // dispose
-} // _HomeScreenBodyState
+  }
+}
