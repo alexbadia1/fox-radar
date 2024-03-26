@@ -133,7 +133,7 @@ class EventModel {
     this._category = newCategory;
     this._highlights = newHighlights;
     this._description = newDescription;
-    this._imageBytes = newImageBytes!;
+    this._imageBytes = newImageBytes;
     this._imageFitCover = newImageFitCover;
     this._imagePath = newImagePath;
     this._eventID = newEventID;

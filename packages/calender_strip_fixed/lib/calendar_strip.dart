@@ -6,21 +6,21 @@ import 'calender_strip_date_utils.dart';
 
 class CalendarStrip extends StatefulWidget {
   // This widget is the root of your application.
-  late final Function onDateSelected;
-  late final Function? onWeekSelected;
-  late final Function? dateTileBuilder;
-  late final BoxDecoration? containerDecoration;
-  late final double? containerHeight;
-  late final Function? monthNameWidget;
-  late final Color? iconColor;
-  late final DateTime? selectedDate;
-  late final DateTime? startDate;
-  late final DateTime? endDate;
-  late final List<DateTime>? markedDates;
-  late final bool? addSwipeGesture;
-  late final bool? weekStartsOnSunday;
-  late final Icon? rightIcon;
-  late final Icon? leftIcon;
+  final Function onDateSelected;
+  final Function? onWeekSelected;
+  final Function? dateTileBuilder;
+  final BoxDecoration? containerDecoration;
+  final double? containerHeight;
+  final Function? monthNameWidget;
+  final Color? iconColor;
+  final DateTime? selectedDate;
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final List<DateTime>? markedDates;
+  final bool addSwipeGesture;
+  final bool weekStartsOnSunday;
+  final Icon? rightIcon;
+  final Icon? leftIcon;
 
   CalendarStrip({
     this.addSwipeGesture = false,
@@ -43,26 +43,26 @@ class CalendarStrip extends StatefulWidget {
   });
 
   State<CalendarStrip> createState() =>
-      CalendarStripState(selectedDate!, startDate!, endDate!);
+      CalendarStripState(selectedDate, startDate, endDate);
 }
 
 class CalendarStripState extends State<CalendarStrip>
     with TickerProviderStateMixin {
   DateTime currentDate = DateTime.utc(
       DateTime.now().year, DateTime.now().month, DateTime.now().day);
-  late DateTime selectedDate;
-  late String monthLabel;
+  DateTime? selectedDate;
+  String? monthLabel;
   bool inBetweenMonths = false;
-  late DateTime rowStartingDate;
+  DateTime? rowStartingDate;
   double opacity = 0.0;
-  late DateTime lastDayOfMonth;
+  DateTime? lastDayOfMonth;
   TextStyle monthLabelStyle = TextStyle(
       fontSize: 17, fontWeight: FontWeight.w600, color: Colors.black87);
   TextStyle selectedDateStyle =
       TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: Colors.white);
   bool isOnEndingWeek = false, isOnStartingWeek = false;
   bool doesDateRangeExists = false;
-  late DateTime today;
+  DateTime? today;
 
   List<String> monthLabels = [
     "January",
@@ -82,7 +82,7 @@ class CalendarStripState extends State<CalendarStrip>
   List<String> dayLabels = ["Mon", "Tue", "Wed", "Thr", "Fri", "Sat", "Sun"];
 
   CalendarStripState(
-      DateTime selectedDate, DateTime startDate, DateTime endDate) {
+      DateTime? selectedDate, DateTime? startDate, DateTime? endDate) {
     today = getDateOnly(DateTime.now());
     lastDayOfMonth = CalenderStripDateUtils.getLastDayOfMonth(currentDate);
     runPresetsAndExceptions(selectedDate, startDate, endDate);
@@ -160,16 +160,16 @@ class CalendarStripState extends State<CalendarStrip>
   }
 
   String getMonthLabel() {
-    DateTime startingDayObj = rowStartingDate,
-        endingDayObj = rowStartingDate.add(Duration(days: 6));
+    DateTime startingDayObj = rowStartingDate!,
+        endingDayObj = rowStartingDate!.add(Duration(days: 6));
     String label = "";
-    if (startingDayObj.month == endingDayObj.month) {
-      label = "${getMonthName(startingDayObj)} ${startingDayObj.year}";
+    if (startingDayObj?.month == endingDayObj?.month) {
+      label = "${getMonthName(startingDayObj)} ${startingDayObj?.year}";
     } else {
       var startingDayYear =
-          "${startingDayObj.year == endingDayObj.year ? "" : startingDayObj.year}";
+          "${startingDayObj?.year == endingDayObj?.year ? "" : startingDayObj?.year}";
       label =
-          "${getMonthName(startingDayObj)} $startingDayYear / ${getMonthName(endingDayObj)} ${endingDayObj.year}";
+          "${getMonthName(startingDayObj)} $startingDayYear / ${getMonthName(endingDayObj)} ${endingDayObj?.year}";
     }
     return label;
   }
@@ -209,10 +209,10 @@ class CalendarStripState extends State<CalendarStrip>
       DateTime weekStartingDate, weekEndingDate;
       if (mode != null) {
         _nextRowStartingDate = mode == "PREV"
-            ? rowStartingDate.subtract(Duration(days: 7))
-            : rowStartingDate.add(Duration(days: 7));
+            ? rowStartingDate!.subtract(Duration(days: 7))
+            : rowStartingDate!.add(Duration(days: 7));
       } else {
-        _nextRowStartingDate = rowStartingDate;
+        _nextRowStartingDate = rowStartingDate!;
       }
       weekStartingDate = getDateOnly(_nextRowStartingDate);
       weekEndingDate = getDateOnly(_nextRowStartingDate.add(Duration(days: 6)));
@@ -232,11 +232,11 @@ class CalendarStripState extends State<CalendarStrip>
     var dateRange = calculateDateRange("PREV");
     setState(() {
 
-      rowStartingDate = rowStartingDate.subtract(Duration(days: 7));
+      rowStartingDate = rowStartingDate!.subtract(Duration(days: 7));
 
       /// onWeekSelected is not a required parameter make sure to add null safety
       if (widget.onWeekSelected != null) {
-        widget.onWeekSelected!(rowStartingDate);
+        widget.onWeekSelected!(rowStartingDate!);
       }// if
 
         isOnEndingWeek = dateRange['isEndingWeekOnRange']!;
@@ -247,11 +247,11 @@ class CalendarStripState extends State<CalendarStrip>
   onNextRow() {
     var dateRange = calculateDateRange("NEXT");
     setState(() {
-      rowStartingDate = rowStartingDate.add(Duration(days: 7));
+      rowStartingDate = rowStartingDate!.add(Duration(days: 7));
 
       /// onWeekSelected is not a required parameter make sure to add null safety
       if (widget.onWeekSelected != null) {
-        widget.onWeekSelected!(rowStartingDate);
+        widget.onWeekSelected!(rowStartingDate!);
       }// if
         isOnEndingWeek = dateRange['isEndingWeekOnRange']!;
         isOnStartingWeek = dateRange['isStartingWeekOnRange']!;
@@ -338,7 +338,7 @@ class CalendarStripState extends State<CalendarStrip>
   }
 
   onStripDrag(DragEndDetails details) {
-    if (details.primaryVelocity == 0 || !widget.addSwipeGesture!) return;
+    if (details.primaryVelocity == 0 || !widget.addSwipeGesture) return;
     if (details.primaryVelocity! < 0) {
       if (!isOnEndingWeek) {
         onNextRow();
@@ -355,7 +355,7 @@ class CalendarStripState extends State<CalendarStrip>
     for (var eachDay = 0; eachDay < 7; eachDay++) {
       var index = eachDay;
       currentWeekRow.add(dateTileBuilder(
-          rowStartingDate.add(Duration(days: eachDay)), selectedDate, index));
+          rowStartingDate!.add(Duration(days: eachDay)), selectedDate!, index));
     }
     monthLabel = getMonthLabel();
     return Column(children: [
