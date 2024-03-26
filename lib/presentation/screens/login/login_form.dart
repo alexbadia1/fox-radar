@@ -6,11 +6,12 @@ import 'package:fox_radar/presentation/presentation.dart';
 class LoginForm extends StatefulWidget {
   @override
   _LoginFormState createState() => _LoginFormState();
-} // LoginForm
+}
 
 class _LoginFormState extends State<LoginForm> {
   final GlobalKey<FormState> _loginFormKeyEmail = new GlobalKey<FormState>();
   final GlobalKey<FormState> _loginFormKeyPassword = new GlobalKey<FormState>();
+
   late FocusNode _emailFocusNode;
   late FocusNode _passwordFocusNode;
   late TextEditingController _emailTextEditingController;
@@ -22,14 +23,14 @@ class _LoginFormState extends State<LoginForm> {
     this._emailFocusNode = new FocusNode();
     this._emailFocusNode.addListener(() {
       if (!this._emailFocusNode.hasFocus) {
-        this._loginFormKeyEmail.currentState!.validate();
+        this._loginFormKeyEmail.currentState?.validate();
       } // if
     });
 
     this._passwordFocusNode = new FocusNode();
     this._passwordFocusNode.addListener(() {
       if (!this._passwordFocusNode.hasFocus) {
-        this._loginFormKeyPassword.currentState!.validate();
+        this._loginFormKeyPassword.currentState?.validate();
       } // if
     });
 
@@ -138,8 +139,8 @@ class _LoginFormState extends State<LoginForm> {
                   onPressed: () {
                     final _networkState = BlocProvider.of<DeviceNetworkBloc>(context).state;
                     if (!(_networkState is DeviceNetworkStateNone) &&
-                        this._loginFormKeyEmail.currentState!.validate() &&
-                        this._loginFormKeyPassword.currentState!.validate()) {
+                        (this._loginFormKeyEmail.currentState?.validate() ?? false) &&
+                        (this._loginFormKeyPassword.currentState?.validate() ?? false)) {
                       BlocProvider.of<LoginBloc>(context).add(
                         LoginEventLogin(
                           loginType: LoginType.emailAndPassword,

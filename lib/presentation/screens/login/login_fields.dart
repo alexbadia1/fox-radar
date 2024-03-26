@@ -26,8 +26,13 @@ class EmailTextFormField extends StatelessWidget {
         textInputAction: TextInputAction.done,
         decoration: customTextField.copyWith(labelText: 'Marist Email'),
         validator: (String? email) {
-          // Missing password
-          if (!MARIST_EMAIL_REGEX.hasMatch(email!)) {
+
+          if (email == null) {
+            return '\u26A0 Email cannot be null.';
+          }
+
+          // Missing email
+          if (!MARIST_EMAIL_REGEX.hasMatch(email)) {
             return '\u26A0 Enter a MARIST email.';
           } // if
 
@@ -76,12 +81,17 @@ class PasswordTextFormField extends StatelessWidget {
                 ),
               ),
               validator: (String? password) {
+
+                if (password == null) {
+                  return '\u26A0 Password cannot be null.';
+                }
+
                 // Missing password
-                if (password!.isEmpty) {
+                if (password.isEmpty) {
                   return '\u26A0 Enter a password.';
                 } // if
                 // No Spaces
-                if (password!.contains(' ')) {
+                if (password.contains(' ')) {
                   return '\u26A0 Password cannot contain spaces.';
                 } // if
                 return null;
@@ -91,5 +101,5 @@ class PasswordTextFormField extends StatelessWidget {
         ),
       ),
     );
-  }//  build
-} // PasswordTextFormField
+  }
+}

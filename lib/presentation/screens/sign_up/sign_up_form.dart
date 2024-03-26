@@ -22,15 +22,15 @@ class _SignUpFormState extends State<SignUpForm> {
     emailFocusNode = new FocusNode();
     emailFocusNode.addListener(() {
       if (!emailFocusNode.hasFocus) {
-        _signUpFormKeyEmail.currentState!.validate();
-      } // if
+        _signUpFormKeyEmail.currentState?.validate();
+      }
     });
 
     passwordFocusNode = new FocusNode();
     passwordFocusNode.addListener(() {
       if (!passwordFocusNode.hasFocus) {
-        _signUpFormKeyPassword.currentState!.validate();
-      } // if
+        _signUpFormKeyPassword.currentState?.validate();
+      }
     });
 
     emailTextEditingController = new TextEditingController();
@@ -135,8 +135,8 @@ class _SignUpFormState extends State<SignUpForm> {
                   onPressed: () {
                     final _networkState = BlocProvider.of<DeviceNetworkBloc>(context).state;
                     if (!(_networkState is DeviceNetworkStateNone) &&
-                        _signUpFormKeyEmail.currentState!.validate() &&
-                        _signUpFormKeyPassword.currentState!.validate()) {
+                        (_signUpFormKeyEmail.currentState?.validate() ?? false) &&
+                        (_signUpFormKeyPassword.currentState!.validate() ?? false)) {
                       BlocProvider.of<SignUpBloc>(context).add(
                         SignUpEventSignUp(
                           signUpType: SignUpType.emailAndPassword,
@@ -154,7 +154,7 @@ class _SignUpFormState extends State<SignUpForm> {
         ),
       ],
     );
-  } // build
+  }
 
   @override
   void dispose() {

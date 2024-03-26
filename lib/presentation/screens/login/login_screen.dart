@@ -1,6 +1,4 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fox_radar/logic/logic.dart';
 import 'package:fox_radar/presentation/presentation.dart';
 import 'package:authentication_repository/authentication_repository.dart';
@@ -8,7 +6,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
-} // LoginScreen
+}
 
 class _LoginScreenState extends State<LoginScreen> {
   @override
@@ -175,5 +173,5 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
     );
-  } // build
-} // _LoginScreenState
+  }
+}
