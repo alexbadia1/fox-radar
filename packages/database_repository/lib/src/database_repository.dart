@@ -187,7 +187,8 @@ class DatabaseRepository {
         ATTRIBUTE_HOST: newEvent.host!.toLowerCase() ?? '',
         ATTRIBUTE_LOCATION: newEvent.location!.toLowerCase() ?? '',
         ATTRIBUTE_CATEGORY: newEvent.category ?? '',
-        ATTRIBUTE_RAW_START_DATE_TIME: newEvent.rawStartDateAndTime ?? null
+        ATTRIBUTE_RAW_START_DATE_TIME: newEvent.rawStartDateAndTime ?? null,
+        ATTRIBUTE_IMAGE_FIT_COVER: newEvent.imageFitCover ?? false
       });
 
       /// userCreatedEvents : {
