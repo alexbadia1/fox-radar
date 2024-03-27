@@ -35,8 +35,8 @@ class FetchFullEventCubit extends Cubit<FetchFullEventState> {
   EventModel _mapQueryDocumentSnapshotToEventModel(
       {required DocumentSnapshot doc}) {
     Map<String, dynamic> docSnap = doc.data() as Map<String, dynamic>;
-    Timestamp _startTimestamp = docSnap[ATTRIBUTE_RAW_START_DATE_TIME];
-    Timestamp _endTimestamp = docSnap[ATTRIBUTE_RAW_END_DATE_TIME];
+    Timestamp? _startTimestamp = docSnap[ATTRIBUTE_RAW_START_DATE_TIME];
+    Timestamp? _endTimestamp = docSnap[ATTRIBUTE_RAW_END_DATE_TIME];
 
     DateTime? tempRawStartDateAndTimeToDateTime;
     DateTime? tempRawEndDateAndTimeToDateTime;

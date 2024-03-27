@@ -8,7 +8,9 @@
     <application
         android:label="fox_radar"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:requestLegacyExternalStorage="true">
+        >
 
         <provider
             android:name="androidx.core.content.FileProvider"

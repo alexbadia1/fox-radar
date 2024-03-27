@@ -7,12 +7,11 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
   final int paginationLimit = 10;
   int failedAttempts = 0;
   DeviceImagesBloc() : super(DeviceImagesStateFetching()) {
-    on<DeviceImagesEventFetch>((event, emit) {
-      _mapDeviceImagesEventFetchToDeviceImagesState(emit);
-    });
+    on<DeviceImagesEventFetch>(_mapDeviceImagesEventFetchToDeviceImagesState);
   }
 
   void _mapDeviceImagesEventFetchToDeviceImagesState(
+    DeviceImagesEventFetch event,
     Emitter<DeviceImagesState> emit,
   ) async {
     // Get the current state for later use...
@@ -30,7 +29,7 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
       try {
         final PermissionState result =
             await PhotoManager.requestPermissionExtend();
-        hasPermission = result.isAuth;
+        hasPermission = result.isAuth || result.hasAccess;
       } catch (newApiError) {
         emit(DeviceImagesStateFailed(failedAttempts: this.failedAttempts++));
       }
@@ -40,10 +39,12 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
         if (_currentState is DeviceImagesStateFetching ||
             _currentState is DeviceImagesStateFailed ||
             _currentState is DeviceImagesStateDenied) {
+
           // Set "onlyAll == true": to only get ONE Album (Recent Album by default)
           final List<AssetPathEntity> albums =
-              await PhotoManager.getAssetPathList(
-                  onlyAll: true, type: RequestType.image);
+              await PhotoManager.getAssetPathList(onlyAll: true);
+
+          print(albums);
 
           // Get photos
           final List<AssetEntity>? photos = await albums[0]
@@ -129,6 +130,7 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
         }
       }
 
+      print(err);
       emit(DeviceImagesStateFailed(failedAttempts: this.failedAttempts++));
     }
   }
@@ -157,7 +159,7 @@ class DeviceImagesBloc extends Bloc<DeviceImagesEvent, DeviceImagesState> {
       for (int i = 0; i < photos.length; ++i) {
         final f = await photos[i].file;
         ans.add(f!.path);
-      } // for
+      }
 
       return ans;
     });
