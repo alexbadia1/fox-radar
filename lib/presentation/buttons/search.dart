@@ -9,15 +9,37 @@ class Search extends SearchDelegate {
   List<EventModel> myEvents = [];
 
   @override
+  ThemeData appBarTheme(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    return theme.copyWith(
+      scaffoldBackgroundColor: cBackground,
+      appBarTheme: AppBarTheme(
+        backgroundColor: cBackground,
+      ),
+      textTheme: TextTheme(
+        caption: TextStyle(color: Colors.white)
+      ),
+      inputDecorationTheme:
+          InputDecorationTheme(
+              hintStyle: TextStyle(color: kActiveHavenLightGray),
+              border: InputBorder.none,
+              fillColor: cBackground,
+          ),
+    );
+  }
+
+  @override
   List<Widget> buildActions(BuildContext context) {
     //Same as the app bar where a list actions on the right
     return [
       query == ''
           ? IconButton(
+              color: Colors.white,
               icon: Icon(Icons.mic),
               onPressed: () {},
             )
           : IconButton(
+              color: Colors.white,
               icon: Icon(Icons.clear),
               onPressed: () {
                 query = '';
@@ -32,7 +54,7 @@ class Search extends SearchDelegate {
     //Traditionally, the back button goes here
     return IconButton(
       icon: Icon(Icons.arrow_back),
-      color: kHavenLightGray,
+      color: Colors.white,
       splashColor: kActiveHavenLightGray,
       onPressed: () {
         //Close returning null for the result since the user canceled the search
@@ -95,21 +117,21 @@ class Search extends SearchDelegate {
                           ? Container()
                           : ListTile(
                               leading: IconButton(
-                                icon: Icon(Icons.search),
+                                icon: Icon(Icons.search, color: Colors.white,),
                                 onPressed: () {
                                   // Show results
                                   query = title;
                                   showResults(context);
                                 },
                               ),
-                              title: Text(title),
+                              title: Text(title, style: TextStyle(color: Colors.white),),
                               subtitle: Text('Host: ' + host),
                               onTap: () {
                                 // Show results for that search
                                 showResults(context);
                               },
                               trailing: IconButton(
-                                icon: Icon(Icons.call_made),
+                                icon: Icon(Icons.call_made, color: Colors.white),
                                 onPressed: () {
                                   // Replace search query with this suggestion
                                   query = title;
