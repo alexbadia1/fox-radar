@@ -6,7 +6,7 @@ import 'package:database_repository/database_repository.dart';
 class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
   /// Used to retrieve a firebase document containing
   /// all of the event document id's, belonging to this user.
-  late final String accountID;
+  final String? accountID;
 
   /// Database instance used to communicate with (in
   /// this case) Firebase Firestore and Firebase Storage.
@@ -265,6 +265,12 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
     AccountEventsEventRemove accountEventsEventRemove,
     Emitter<AccountEventsState> emitter,
   ) async {
+    String? accountID = this.accountID;
+
+    if (accountID == null) {
+      return;
+    }
+
     final currentState = this.state;
 
     if (currentState is AccountEventsStateSuccess) {
@@ -299,7 +305,7 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
         // Delete event from firebase cloud
         await this.db.deleteEvent(
             accountEventsEventRemove.searchResultModel.eventId!,
-            this.accountID);
+            accountID);
 
         // Remove image from storage
         //
@@ -332,8 +338,14 @@ class AccountEventsBloc extends Bloc<AccountEventsEvent, AccountEventsState> {
   }
 
   Future<void> _getListOfAccountEvents() async {
+    String? accountID = this.accountID;
+
+    if (accountID == null) {
+      return;
+    }
+
     final DocumentSnapshot? docSnap =
-        await this.db.getAccountCreatedEvents(uid: this.accountID);
+        await this.db.getAccountCreatedEvents(uid: accountID);
 
     final List<String> eventIds = [];
     try {

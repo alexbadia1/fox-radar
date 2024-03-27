@@ -8,7 +8,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 class MainView extends StatelessWidget {
   final RouteGeneratorMain routeGeneratorMain;
 
-  const MainView({required this.routeGeneratorMain}) : assert(routeGeneratorMain != null);
+  const MainView({required this.routeGeneratorMain});
 
   @override
   Widget build(BuildContext context) {

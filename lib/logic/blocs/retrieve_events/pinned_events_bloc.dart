@@ -7,7 +7,7 @@ import 'package:database_repository/database_repository.dart';
 class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
   /// Used to retrieve a firebase document containing
   /// all pinned event document id's, belonging to this user.
-  late final String accountID;
+  late final String? accountID;
 
   /// Database instance used to communicate with (in
   /// this case) Firebase Firestore and Firebase Storage.
@@ -237,8 +237,15 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
   /// Get user's created events document that lists
   /// all of the event id's that belong to this user.
   Future<void> _getListOfPinnedEvents() async {
+
+    String? accountID = this.accountID;
+
+    if (accountID == null) {
+      // Guest users don't have events
+      return;
+    }
     final DocumentSnapshot? docSnap =
-        await this.db.getAccountPinnedEvents(uid: this.accountID);
+        await this.db.getAccountPinnedEvents(uid: accountID);
 
     final List<String> eventIds = [];
     try {
@@ -252,7 +259,7 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
     catch (e) {} //catch
 
     this._pinnedEventsHandler = PaginationEventsHandler(eventIds);
-  } // getListOfPinnedEvents
+  }
 
   Future<List<DocumentSnapshot>> _fetchPinnedEventsPaginated(
       {@required eventIdsToFetch}) async {
@@ -282,7 +289,7 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
     });
 
     return _docs;
-  } // _fetchPinnedEventsPaginated
+  }
 
   /// Name: _mapDocumentSnapshotsToSearchEventModels
   ///
@@ -339,7 +346,11 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
     Emitter<PinnedEventsState> emitter,
   ) async {
     String? newEventID = event.eventId;
+    String? accountID = this.accountID;
 
+    if (accountID == null) {
+      return;
+    }
     if (this.pinnedEvents == null) {
       return;
     }
@@ -348,7 +359,7 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
     }
     if (newEventID.isNotEmpty) {
       this.pinnedEvents?.add(newEventID);
-      await this.db.pinEvent(newEventID, this.accountID);
+      await this.db.pinEvent(newEventID, accountID);
       this.add(PinnedEventsEventReload());
     }
   }
@@ -358,6 +369,11 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
     Emitter<PinnedEventsState> emitter,
   ) async {
     String? newEventID = event.eventId;
+    String? userID = this.accountID;
+
+    if (userID == null) {
+      return;
+    }
 
     final currState = this.state;
 
@@ -371,7 +387,7 @@ class PinnedEventsBloc extends Bloc<PinnedEventsEvent, PinnedEventsState> {
 
     if (newEventID.isNotEmpty) {
       this.pinnedEvents?.remove(newEventID);
-      await this.db.unpinEvent(newEventID, this.accountID);
+      await this.db.unpinEvent(newEventID, userID);
       // Not last event
       if (this.pinnedEvents!.isNotEmpty &&
           currState is PinnedEventsStateSuccess) {

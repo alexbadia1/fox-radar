@@ -2,10 +2,10 @@ import 'dart:typed_data';
 import 'package:equatable/equatable.dart';
 
 class UserModel extends Equatable {
-  late String userID;
-  late String email;
-  late String? imagePath;
-  late Uint8List? imageBytes;
+  String? userID;
+  String? email;
+  String? imagePath;
+  Uint8List? imageBytes;
   String _firstName = "";
   String _lastName = "";
 
@@ -17,8 +17,8 @@ class UserModel extends Equatable {
     int i = 0;
 
     // Get first name
-    while (i < email.length && email[i] != ".") {
-      this._firstName += email[i++];
+    while (i < (email?.length ?? 0) && email![i] != ".") {
+      this._firstName += email![i++];
     }
 
     if (this._firstName.isEmpty) {
@@ -29,8 +29,8 @@ class UserModel extends Equatable {
     i++;
 
     // Get last name
-    while (i < email.length && email[i] != "@") {
-      this._lastName += email[i++];
+    while (i < (email?.length ?? 0) && email![i] != "@") {
+      this._lastName += email![i++];
     }
 
     if (this._lastName.isEmpty) {

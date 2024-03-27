@@ -14,7 +14,8 @@ class EventCard extends StatefulWidget {
   /// The vert more bar, when pressed gives the user,
   /// more options to handle the search result.
   ///
-  /// The options will should be displayed using a modal bottom sheet
+  /// The options will should be displayed using a modal bottom
+  /// sheet
   final OnEventCardVertMoreCallback? onEventCardVertMoreCallback;
 
   EventCard({Key? key, required this.newSearchResult, this.onEventCardVertMoreCallback})
