@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fox_radar/presentation/buttons/search.dart';
 import 'package:fox_radar/presentation/presentation.dart';
 
 class SearchButton extends StatelessWidget {
@@ -10,7 +11,7 @@ class SearchButton extends StatelessWidget {
         splashColor: kActiveHavenLightGray,
         icon: Icon(Icons.search),
         onPressed: () async {
-          // await showSearch(context: context, delegate: Search());
+          await showSearch(context: context, delegate: Search());
         },
       ),
     );

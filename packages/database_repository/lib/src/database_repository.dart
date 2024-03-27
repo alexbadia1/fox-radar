@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-import 'models/models.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:database_repository/database_repository.dart';
@@ -100,6 +99,74 @@ class DatabaseRepository {
       print("[getSearchEventById] ${e.toString()}");
       return null;
     }
+  }
+
+  Future<List<SearchResultModel>> searchEventsByTitle(String searchTerm) async {
+    QuerySnapshot querySnapshot = await _searchEventsCollection
+        .where(ATTRIBUTE_TITLE, isEqualTo: searchTerm)
+        .get();
+
+    return querySnapshot.docs.map((doc) {
+      Map<String, dynamic> docData = doc.data() as Map<String, dynamic>;
+      return SearchResultModel(
+        // Title converted to [STRING] from [STRING] in Firebase.
+        newTitle: docData[ATTRIBUTE_TITLE] ?? '',
+
+        // Host converted to [STRING] from [STRING] in Firebase.
+        newHost: docData[ATTRIBUTE_HOST] ?? '',
+
+        // Location Converted to [] from [] in Firebase.
+        newLocation: docData[ATTRIBUTE_LOCATION] ?? '',
+
+        // RawStartDate converted to [DATETIME] from [TIMESTAMP] in Firebase.
+        newRawStartDateAndTime: docData[ATTRIBUTE_RAW_START_DATE_TIME]?.toDate(),
+
+        // Category converted to [STRING] from [STRING] in Firebase.
+        newCategory: docData[ATTRIBUTE_CATEGORY] ?? '',
+
+        // Implement Firebase Images.
+        newImageFitCover: docData[ATTRIBUTE_IMAGE_FIT_COVER] ?? true,
+
+        // DocumentId converted to [STRING] from [STRING] in firebase.
+        newEventId: doc.id,
+      );
+    }).toList();
+  }
+
+  Future<List<SearchResultModel>> searchSuggestions(String searchTerm) async {
+
+    // Just don't search like this in Firebase, use other tools
+    String upperCaseSearchTerm = searchTerm.toUpperCase();
+    QuerySnapshot querySnapshot = await _searchEventsCollection
+        .where(ATTRIBUTE_TITLE, isGreaterThanOrEqualTo: upperCaseSearchTerm)
+        .where(ATTRIBUTE_TITLE, isLessThan: upperCaseSearchTerm + 'Z')
+        .get();
+
+    return querySnapshot.docs.map((doc) {
+      Map<String, dynamic> docData = doc.data() as Map<String, dynamic>;
+      return SearchResultModel(
+        // Title converted to [STRING] from [STRING] in Firebase.
+        newTitle: docData[ATTRIBUTE_TITLE] ?? '',
+
+        // Host converted to [STRING] from [STRING] in Firebase.
+        newHost: docData[ATTRIBUTE_HOST] ?? '',
+
+        // Location Converted to [] from [] in Firebase.
+        newLocation: docData[ATTRIBUTE_LOCATION] ?? '',
+
+        // RawStartDate converted to [DATETIME] from [TIMESTAMP] in Firebase.
+        newRawStartDateAndTime: docData[ATTRIBUTE_RAW_START_DATE_TIME]?.toDate(),
+
+        // Category converted to [STRING] from [STRING] in Firebase.
+        newCategory: docData[ATTRIBUTE_CATEGORY] ?? '',
+
+        // Implement Firebase Images.
+        newImageFitCover: docData[ATTRIBUTE_IMAGE_FIT_COVER] ?? true,
+
+        // DocumentId converted to [STRING] from [STRING] in firebase.
+        newEventId: doc.id,
+      );
+    }).toList();
   }
 
   /// Retrieves events from the "User Created Events Collection > UserID > Created Events
